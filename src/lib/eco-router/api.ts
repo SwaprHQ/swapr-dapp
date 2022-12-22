@@ -40,9 +40,12 @@ export function sortTradesByExecutionPrice(trades: Trade[]) {
       return -1
     }
 
-    if (a.executionPrice.lessThan(b.executionPrice)) {
+    const aExecutionPrice = a instanceof CoWTrade ? a.executionPriceWithoutFee : a.executionPrice
+    const bExecutionPrice = b instanceof CoWTrade ? b.executionPriceWithoutFee : b.executionPrice
+
+    if (aExecutionPrice.lessThan(bExecutionPrice)) {
       return 1
-    } else if (a.executionPrice.equalTo(b.executionPrice)) {
+    } else if (aExecutionPrice.equalTo(bExecutionPrice)) {
       return 0
     } else {
       return -1
