@@ -6,7 +6,6 @@ import TransactionConfirmationModal, {
   ConfirmationModalContent,
   TransactionErrorContent,
 } from '../../../../../components/TransactionConfirmationModal'
-import { firstLetterCapital } from '../../../../../utils'
 import { LimitOrderFormContext } from '../../contexts'
 import { LimitOrderKind } from '../../interfaces'
 import { calculateMarketPriceDiffPercentage } from '../OrderLimitPriceField'
@@ -35,9 +34,7 @@ export default function ConfirmLimitOrderModal({
 
   const [baseTokenAmount, quoteTokenAmount] =
     limitOrder.kind === LimitOrderKind.SELL ? [sellTokenAmount, buyTokenAmount] : [buyTokenAmount, sellTokenAmount]
-  const askPrice = `${firstLetterCapital(limitOrder.kind)} ${
-    baseTokenAmount?.currency?.symbol
-  } at ${formattedLimitPrice} ${quoteTokenAmount?.currency?.symbol}`
+  const askPrice = `${limitOrder.kind} ${baseTokenAmount?.currency?.symbol} at ${formattedLimitPrice} ${quoteTokenAmount?.currency?.symbol}`
 
   let { marketPriceDiffPercentage, isDiffPositive } = calculateMarketPriceDiffPercentage(
     limitOrder.kind,
