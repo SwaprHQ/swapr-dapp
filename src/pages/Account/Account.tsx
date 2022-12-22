@@ -1,8 +1,9 @@
+import { Select } from '@rebass/forms'
 import Avatar from 'boring-avatars'
-import { useEffect, useLayoutEffect, useState } from 'react'
+import { ChangeEvent, useCallback, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useDispatch } from 'react-redux'
-import { Navigate } from 'react-router-dom'
+import { Navigate, useSearchParams } from 'react-router-dom'
 import { useToggle } from 'react-use'
 import { Box, Flex, Text } from 'rebass'
 
@@ -22,6 +23,7 @@ import { useAllBridgeTransactions, useAllSwapTransactions } from '../../state/tr
 import { BlurBox } from '../../ui/StyledElements/BlurBox'
 import { PageWrapper } from '../../ui/StyledElements/PageWrapper'
 import { getExplorerLink, shortenAddress } from '../../utils'
+import { useLimitOrderTransactions } from '../Swap/LimitOrderBox/utils/hooks'
 import {
   AvatarWrapper,
   Button,
@@ -34,14 +36,15 @@ import {
   StyledLink,
 } from './Account.styles'
 import { type Transaction } from './Account.types'
-import { formattedTransactions as formatTransactions } from './accountUtils'
 import CopyWrapper from './CopyWrapper'
 import { NoDataTransactionRow, TransactionHeaders, TransactionRows } from './TransactionRows'
+import { formatTransactions, TransactionFilter } from './utils/accountUtils'
 
 export function Account() {
   const { t } = useTranslation('account')
   const dispatch = useDispatch()
   const isMobile = useIsMobileByMedia()
+  const [searchParams, setSearchParams] = useSearchParams()
 
   // Account details
   const { account, chainId, active, deactivate } = useActiveWeb3React()
@@ -57,23 +60,46 @@ export function Account() {
   const [transactions, setTransactions] = useState<Transaction[]>([])
   const allTransactions = useAllSwapTransactions(showAllNetworkTransactions)
   const allBridgeTransactions = useAllBridgeTransactions(showAllNetworkTransactions)
+  const allLimitOrderTransactions = useLimitOrderTransactions(chainId, account, showAllNetworkTransactions)
 
   // Pagination
   const [page, setPage] = useState(1)
   const responsiveItemsPerPage = useResponsiveItemsPerPage()
   const transactionsByPage = usePage<Transaction>(transactions, responsiveItemsPerPage, page, 0)
 
-  useLayoutEffect(() => {
+  useEffect(() => {
     // Resetting Eco Bridge transaction filtering in selectors
     dispatch(ecoBridgeUIActions.setBridgeTxsFilter(BridgeTxsFilter.NONE))
-  })
+    // Set default filter to ALL on initial load if no filter is present
+    if (!searchParams.get('filter')) {
+      searchParams.set('filter', TransactionFilter.ALL)
+      setSearchParams(searchParams, { replace: true })
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
 
   useEffect(() => {
     // format and merge transactions
     if (account) {
-      setTransactions(formatTransactions(allTransactions, allBridgeTransactions, showPendingTransactions, account))
+      setTransactions(
+        formatTransactions(
+          allTransactions,
+          allBridgeTransactions,
+          allLimitOrderTransactions,
+          showPendingTransactions,
+          account,
+          searchParams.get('filter') as TransactionFilter
+        )
+      )
     }
-  }, [allTransactions, allBridgeTransactions, showPendingTransactions, account])
+  }, [
+    allTransactions,
+    allBridgeTransactions,
+    showPendingTransactions,
+    account,
+    allLimitOrderTransactions,
+    searchParams,
+  ])
 
   const handlePendingToggle = () => {
     setPage(1)
@@ -84,6 +110,13 @@ export function Account() {
     setPage(1)
     toggleAllTransactions()
   }
+
+  const handleTransactionFilter = useCallback(({ target: { name, value } }: ChangeEvent<HTMLSelectElement>) => {
+    setPage(1)
+    searchParams.set(name, value)
+    setSearchParams(searchParams, { replace: true })
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
 
   if (!account) {
     return <Navigate to="swap" replace />
@@ -132,8 +165,27 @@ export function Account() {
             </CallToActionWrapper>
           </Flex>
         </Flex>
-        <Flex sx={{ mb: 2 }} justifyContent="end">
-          <Flex>
+        <Flex justifyContent="space-between" flexWrap="wrap">
+          <Flex sx={{ mb: 2 }}>
+            <Select
+              name="filter"
+              sx={{
+                borderRadius: '8px',
+                border: 'solid 1px #3E4259',
+                minWidth: '140px',
+                fontSize: '13px',
+                textTransform: 'uppercase',
+                color: '#c0baf5',
+              }}
+              onChange={handleTransactionFilter}
+            >
+              <option value={TransactionFilter.ALL}>All</option>
+              <option value={TransactionFilter.SWAP}>Swap Orders</option>
+              <option value={TransactionFilter.BRIDGE}>Bridge Orders</option>
+              <option value={TransactionFilter.LIMIT}>Limit Orders</option>
+            </Select>
+          </Flex>
+          <Flex sx={{ mb: 2, alignItems: 'center' }}>
             <Switch
               label={t('pendingTransactions')}
               handleToggle={handlePendingToggle}

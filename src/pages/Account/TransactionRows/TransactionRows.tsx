@@ -2,6 +2,7 @@ import { Fragment } from 'react'
 
 import { type Transaction, TransactionTypes } from '../Account.types'
 import { BridgeTransactionRow } from './BridgeTransactionRow'
+import { LimitTransactionRow } from './LimitTransactionRow'
 import { SwapTransactionRow } from './SwapTransactionRow'
 
 interface TransactionRowProps {
@@ -14,7 +15,7 @@ export function TransactionRows({ transactions, showBackgroundStatus = true }: T
     <Fragment>
       {transactions.map((transaction, index) => {
         const { type, hash } = transaction
-        const key = `row__${hash ?? index}`
+        const key = `row__${index}__${hash}`
         switch (type) {
           case TransactionTypes.Swap:
             return (
@@ -24,7 +25,8 @@ export function TransactionRows({ transactions, showBackgroundStatus = true }: T
             return (
               <BridgeTransactionRow transaction={transaction} key={key} showBackgroundStatus={showBackgroundStatus} />
             )
-
+          case TransactionTypes.Limit:
+            return <LimitTransactionRow transaction={transaction} key={key} />
           default:
             return <Fragment key={key} />
         }

@@ -1,7 +1,8 @@
-import { useCallback } from 'react'
+import { ReactNode, useCallback } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { toast } from 'react-toastify'
 
+import { NotificationPopup } from '../../components/Popups/NotificationPopup'
 import { TransactionPopup } from '../../components/Popups/TransactionPopup'
 import { useActiveWeb3React } from '../../hooks'
 import { AppDispatch, AppState } from '../index'
@@ -85,6 +86,18 @@ export function useSimpleSettingsModal(): () => void {
 export function useAddPopup(): (content: PopupContent, autoClose?: number | false) => void {
   return useCallback((content: PopupContent, autoClose: number | false = 15000) => {
     toast.info(<TransactionPopup {...content} />, {
+      autoClose,
+      icon: false,
+      progressStyle: {
+        background: 'hsla(0,0%,100%,.7)',
+      },
+    })
+  }, [])
+}
+
+export function useNotificationPopup() {
+  return useCallback((text: ReactNode, status?: boolean, autoClose: number | false = 15000) => {
+    toast.info(<NotificationPopup text={text} status={status} />, {
       autoClose,
       icon: false,
       progressStyle: {
