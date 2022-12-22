@@ -28,8 +28,7 @@ export abstract class AbstractAdvancedTradingViewAdapter<AppState> {
 
   abstract getPairTradingAndActivityData(fetchDetails: AdapterFetchDetails): any
 
-  // TODO: UPDATE RES TYPE
-  abstract getPairData(fetchDetails: AdapterFetchDetailsExtended): Promise<void | BaseActionPayload>
+  abstract getPairData(fetchDetails: AdapterFetchDetailsExtended): any
 
   public updateActiveChainId(chainId: ChainId) {
     this._chainId = chainId

@@ -99,7 +99,6 @@ export class BaseAdapter<
     }
   }
 
-  // @ts-ignore
   public async getPairData({
     payloadType,
     inputToken,
