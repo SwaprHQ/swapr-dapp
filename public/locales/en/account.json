@@ -11,5 +11,6 @@
   "confirmedTime": "CONFIRMED TIME",
   "createdTime": "CREATED TIME",
   "changeWallet": "CHANGE WALLET",
-  "disconnect": "DISCONNECT"
+  "disconnect": "DISCONNECT",
+  "actions": "Actions"
 }
