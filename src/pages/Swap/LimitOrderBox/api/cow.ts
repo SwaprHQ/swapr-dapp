@@ -33,7 +33,7 @@ type GetLimitOrderQuoteParams = SignLimitOrderParams
  * @returns
  */
 export async function getQuote({ order, signer, chainId }: GetLimitOrderQuoteParams) {
-  const { buyToken, receiverAddress, userAddress, expiresAt, sellAmount, sellToken, kind } = order
+  const { buyToken, receiverAddress, userAddress, expiresAt, sellAmount, sellToken, kind, buyAmount } = order
 
   // const cowSdk = getCoWSdk(chainId, signer)
   const cowSdk = CoWTrade.getCowSdk(chainId, {
@@ -41,15 +41,33 @@ export async function getQuote({ order, signer, chainId }: GetLimitOrderQuotePar
     appDataHash: getAppDataIPFSHash(chainId),
   })
 
-  const cowQuote = await cowSdk.cowApi.getQuote({
-    buyToken,
-    sellToken,
-    amount: sellAmount,
-    validTo: expiresAt,
-    kind: kind === LimitOrderKind.BUY ? CoWOrderKind.BUY : CoWOrderKind.SELL,
-    receiver: receiverAddress,
-    userAddress: userAddress,
-  })
+  let cowQuote: Awaited<ReturnType<typeof cowSdk.cowApi.getQuote>>
+
+  if (kind === LimitOrderKind.BUY) {
+    cowQuote = await cowSdk.cowApi.getQuote({
+      appData: getAppDataIPFSHash(chainId),
+      buyAmountAfterFee: buyAmount,
+      buyToken,
+      from: userAddress,
+      kind: CoWOrderKind.BUY,
+      partiallyFillable: false,
+      receiver: receiverAddress,
+      sellToken,
+      validTo: expiresAt,
+    })
+  } else {
+    cowQuote = await cowSdk.cowApi.getQuote({
+      appData: getAppDataIPFSHash(chainId),
+      buyToken,
+      sellAmountBeforeFee: sellAmount,
+      from: userAddress,
+      kind: CoWOrderKind.SELL,
+      partiallyFillable: false,
+      receiver: receiverAddress,
+      sellToken,
+      validTo: expiresAt,
+    })
+  }
 
   return cowQuote
 }
