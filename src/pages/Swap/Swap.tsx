@@ -60,7 +60,7 @@ export function Swap() {
         setActiveTab,
       }}
     >
-      <Hero>
+      <Hero showMarquee={activeTab !== AdvancedTradingView}>
         <AppBodyContainer>
           {activeTab !== AdvancedTradingView && <Tabs />}
           {activeTab === Swap && <SwapBox />}
@@ -68,7 +68,7 @@ export function Swap() {
           {activeTab === LimitOrder && <LimitOrderBox />}
         </AppBodyContainer>
       </Hero>
-      <LandingSections />
+      {activeTab !== AdvancedTradingView && <LandingSections />}
     </SwapContext.Provider>
   )
 }
