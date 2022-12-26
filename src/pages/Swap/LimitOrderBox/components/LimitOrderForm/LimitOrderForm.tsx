@@ -1,6 +1,6 @@
 import { Web3Provider } from '@ethersproject/providers'
 import { formatUnits, parseUnits } from '@ethersproject/units'
-import { ChainId, Currency, JSBI, Price, Token, TokenAmount } from '@swapr/sdk'
+import { ChainId, Currency, JSBI, Token, TokenAmount } from '@swapr/sdk'
 
 import dayjs from 'dayjs'
 import dayjsUTCPlugin from 'dayjs/plugin/utc'
@@ -70,9 +70,6 @@ export function LimitOrderForm({ account, provider, chainId }: LimitOrderFormPro
   // State holding the sell and buy currency amounts
   const [sellTokenAmount, setSellTokenAmount] = useState<TokenAmount>(initialState.sellTokenAmount)
   const [buyTokenAmount, setBuyTokenAmount] = useState<TokenAmount>(initialState.buyTokenAmount)
-
-  // State holding the limit/order price
-  const [price, setPrice] = useState<Price>(initialState.price)
 
   // Final limit order to be sent to the internal API
   const [limitOrder, setLimitOrder] = useState<SerializableLimitOrder>(initialState.limitOrder)
@@ -151,11 +148,12 @@ export function LimitOrderForm({ account, provider, chainId }: LimitOrderFormPro
       setBuyTokenAmount(nextTokenBuyAmount)
       setFormattedLimitPrice(toFixedSix(nextLimitPriceFloat))
       setFormattedBuyAmount(toFixedSix(newBuyAmountAsFloat))
-      setLimitOrder({
-        ...limitOrder,
+      setLimitOrder(oldLimitOrder => ({
+        ...oldLimitOrder,
+        kind: limitOrder.kind,
         limitPrice: limitPrice,
         buyAmount: nextBuyAmountWei,
-      })
+      }))
     }
   }
 
@@ -286,15 +284,9 @@ export function LimitOrderForm({ account, provider, chainId }: LimitOrderFormPro
     amountWei,
     currency,
     amountFormatted,
-    updatedLimitOrder = limitOrder,
   }: HandleCurrencyAmountChangeParams) => {
     const limitPriceFloat = parseFloat(formattedLimitPrice)
     // Construct a new token amount and format it
-    const newLimitOrder = {
-      ...updatedLimitOrder,
-      sellAmount: amountWei,
-      sellToken: currency.address as string,
-    }
     // Update the buy currency amount if the user has selected a token
     // Update relevant state variables
     const nextSellTokenAmount = new TokenAmount(currency as Token, amountWei)
@@ -325,7 +317,11 @@ export function LimitOrderForm({ account, provider, chainId }: LimitOrderFormPro
     setFormattedBuyAmount(toFixedSix(nextBuyAmountFloat)) // update the token amount input
     setSellTokenAmount(nextSellTokenAmount)
     // Re-compute the limit order buy
-    setLimitOrder(newLimitOrder)
+    setLimitOrder(oldLimitOrder => ({
+      ...oldLimitOrder,
+      sellAmount: amountWei,
+      sellToken: currency.address as string,
+    }))
   }
 
   /**
@@ -335,16 +331,9 @@ export function LimitOrderForm({ account, provider, chainId }: LimitOrderFormPro
     amountWei,
     currency,
     amountFormatted,
-    updatedLimitOrder = limitOrder,
   }: HandleCurrencyAmountChangeParams) => {
     // Construct a new token amount and format it
     const limitPriceFloat = parseFloat(formattedLimitPrice)
-
-    const newLimitOrder = {
-      ...updatedLimitOrder,
-      buyAmount: amountWei,
-      buyToken: currency.address as string,
-    }
 
     const newBuyTokenAmount = new TokenAmount(currency as Token, amountWei)
     const nextBuyAmountFloat = parseFloat(amountFormatted)
@@ -375,7 +364,11 @@ export function LimitOrderForm({ account, provider, chainId }: LimitOrderFormPro
     setFormattedSellAmount(toFixedSix(nextSellAmountFloat)) // update the token amount input
     setBuyTokenAmount(newBuyTokenAmount)
     // Re-compute the limit order buy
-    setLimitOrder(newLimitOrder)
+    setLimitOrder(oldLimitOrder => ({
+      ...oldLimitOrder,
+      buyAmount: amountWei,
+      buyToken: currency.address as string,
+    }))
   }
 
   const handleInputOnChange = (token: Token, handleAmountChange: Function) => (formattedValue: string) => {
@@ -459,8 +452,6 @@ export function LimitOrderForm({ account, provider, chainId }: LimitOrderFormPro
           value={{
             limitOrder,
             setLimitOrder,
-            price,
-            setPrice,
             buyTokenAmount,
             setBuyTokenAmount,
             sellTokenAmount,

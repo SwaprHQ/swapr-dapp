@@ -5,7 +5,7 @@ import { ChainId, Price, Token, TokenAmount, USDC } from '@swapr/sdk'
 import createDebugger from 'debug'
 
 import { isAddress } from '../../../../utils'
-import { LimitOrderKind, SerializableLimitOrder } from '../interfaces'
+import { LimitOrderKind, MarketPrices, SerializableLimitOrder } from '../interfaces'
 import { TokenAmount as ITokenAmount } from '../interfaces/token.interface'
 
 /**
@@ -58,4 +58,34 @@ export function getInitialState(chainId: ChainId, account: string): InitialState
     price,
     limitOrder,
   }
+}
+
+export function calculateMarketPriceDiffPercentage(
+  limitOrderKind: LimitOrderKind,
+  marketPrices: MarketPrices,
+  formattedLimitPrice: string
+) {
+  const nextLimitPriceFloat = limitOrderKind === LimitOrderKind.SELL ? marketPrices.buy : marketPrices.sell
+  let marketPriceDiffPercentage = 0
+  let isDiffPositive = false
+
+  if (Boolean(Number(nextLimitPriceFloat))) {
+    if (limitOrderKind === LimitOrderKind.SELL) {
+      marketPriceDiffPercentage = (Number(formattedLimitPrice) / Number(nextLimitPriceFloat.toFixed(6)) - 1) * 100
+      isDiffPositive = Math.sign(Number(marketPriceDiffPercentage)) > 0
+    } else {
+      marketPriceDiffPercentage = (Number(nextLimitPriceFloat.toFixed(6)) / Number(formattedLimitPrice) - 1) * 100
+
+      if (marketPriceDiffPercentage < 0) {
+        marketPriceDiffPercentage = Math.abs(marketPriceDiffPercentage)
+      } else {
+        marketPriceDiffPercentage = Math.min(marketPriceDiffPercentage, 999)
+        marketPriceDiffPercentage = marketPriceDiffPercentage * -1
+      }
+      isDiffPositive = Math.sign(Number(marketPriceDiffPercentage)) < 0
+    }
+  }
+
+  marketPriceDiffPercentage = Math.min(marketPriceDiffPercentage, 999)
+  return { marketPriceDiffPercentage, isDiffPositive }
 }

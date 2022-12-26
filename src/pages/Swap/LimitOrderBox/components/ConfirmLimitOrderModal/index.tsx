@@ -8,7 +8,7 @@ import TransactionConfirmationModal, {
 } from '../../../../../components/TransactionConfirmationModal'
 import { LimitOrderFormContext } from '../../contexts'
 import { LimitOrderKind } from '../../interfaces'
-import { calculateMarketPriceDiffPercentage } from '../OrderLimitPriceField'
+import { calculateMarketPriceDiffPercentage } from '../../utils'
 import { ConfirmationFooter } from './ConfirmationFooter'
 import { ConfirmationHeader } from './ConfirmationHeader'
 
