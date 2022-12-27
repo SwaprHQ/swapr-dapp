@@ -19,7 +19,7 @@ export const ChartTabs = ({
   const isDesktop = useIsDesktop()
 
   return (
-    <MouseoverTooltip placement="top" disabled={isDesktop} content="Disabled on mobile">
+    <MouseoverTooltip placement="top" disabled={isDesktop} content="Available only on desktop">
       <Root>
         {/* <Tab
         active={activeChartTab === ChartOptions.SIMPLE_CHART}
