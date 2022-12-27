@@ -1,4 +1,4 @@
-import { PropsWithChildren, useRef } from 'react'
+import { PropsWithChildren, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Flex, Text } from 'rebass'
 
@@ -34,6 +34,8 @@ enum TradesWrapperHeight {
 }
 
 export const AdvancedSwapMode = ({ children }: PropsWithChildren) => {
+  const [onlyOpen, setOnlyOpen] = useState(false)
+
   const { t } = useTranslation('swap')
 
   const tradesWrapper = useRef<HTMLDivElement>(null)
@@ -44,6 +46,8 @@ export const AdvancedSwapMode = ({ children }: PropsWithChildren) => {
     liquidityHistory,
     hasMore: { hasMoreTrades, hasMoreActivity },
   } = useAllTrades()
+
+  console.log('TXS', transactions)
 
   const {
     chainId,
@@ -120,8 +124,12 @@ export const AdvancedSwapMode = ({ children }: PropsWithChildren) => {
       <OrdersWrapper>
         <AdvancedModeHeader>
           <Flex>
-            <OrderButton isActive>{t('advancedTradingView.column.orderHistory')}</OrderButton>
-            <OrderButton disabled>{t('advancedTradingView.column.openOrders')}</OrderButton>
+            <OrderButton isActive={!onlyOpen} onClick={() => setOnlyOpen(false)}>
+              {t('advancedTradingView.column.orderHistory')}
+            </OrderButton>
+            <OrderButton isActive={onlyOpen} onClick={() => setOnlyOpen(true)}>
+              {t('advancedTradingView.column.openOrders')}
+            </OrderButton>
           </Flex>
           <TransactionsWrapper style={{ padding: '5px' }} maxHeight="300px">
             <OrderHistoryHeader>
@@ -133,9 +141,11 @@ export const AdvancedSwapMode = ({ children }: PropsWithChildren) => {
               <Text>{t('advancedTradingView.orderHistory.status')}</Text>
               <Text>{t('advancedTradingView.orderHistory.tx')}</Text>
             </OrderHistoryHeader>
-            {transactions.map((tx, index) => (
-              <OrderHistoryTransaction key={index} tx={tx} />
-            ))}
+            {transactions
+              .filter(tx => (onlyOpen ? tx.status === 'open' : true))
+              .map((tx, index) => (
+                <OrderHistoryTransaction key={index} tx={tx} />
+              ))}
           </TransactionsWrapper>
         </AdvancedModeHeader>
       </OrdersWrapper>
