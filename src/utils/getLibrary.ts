@@ -1,9 +1,9 @@
 import { Web3Provider } from '@ethersproject/providers'
 
-export const POOLING_INTERVAL = 15000
+import { REFETCH_DATA_INTERVAL } from '../constants'
 
 export default function getLibrary(provider: any): Web3Provider {
   const library = new Web3Provider(provider, 'any')
-  library.pollingInterval = POOLING_INTERVAL
+  library.pollingInterval = REFETCH_DATA_INTERVAL
   return library
 }
