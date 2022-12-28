@@ -47,8 +47,6 @@ export const AdvancedSwapMode = ({ children }: PropsWithChildren) => {
     hasMore: { hasMoreTrades, hasMoreActivity },
   } = useAllTrades()
 
-  console.log('TXS', transactions)
-
   const {
     chainId,
     inputToken,
