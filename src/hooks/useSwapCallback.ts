@@ -61,15 +61,14 @@ type EstimatedSwapCall = SuccessfulCall | FailedCall
 export function useSwapsCallArguments(
   trades: (Trade | undefined)[] | undefined, // trade to execute, required
   allowedSlippage: number = INITIAL_ALLOWED_SLIPPAGE, // in bips
-  recipientAddressOrName: string | null // the ENS name or address of the recipient of the trade, or null if swap should be returned to sender
+  recipient?: string | null // the ENS name or address of the recipient of the trade, or null if swap should be returned to sender
 ): SwapCall[][] {
-  const { account, chainId, library } = useActiveWeb3React()
-  const { address: recipientAddress } = useENS(recipientAddressOrName)
-  const recipient = recipientAddressOrName === null ? account : recipientAddress
+  const { chainId, library } = useActiveWeb3React()
+
   const deadline = useTransactionDeadline()
 
   return useMemo(() => {
-    if (!trades || trades.length === 0 || !recipient || !library || !account || !chainId || !deadline) {
+    if (!trades || trades.length === 0 || !recipient || !library || !chainId || !deadline) {
       return []
     }
 
@@ -83,7 +82,7 @@ export function useSwapsCallArguments(
       if (trade instanceof CurveTrade || trade instanceof UniswapTrade || trade instanceof ZeroXTrade) {
         return [
           {
-            transactionParameters: trade.swapTransaction(),
+            transactionParameters: trade.swapTransaction({ recipient }),
           },
         ]
       }
@@ -114,7 +113,7 @@ export function useSwapsCallArguments(
 
       return swapMethods.map(transactionParameters => ({ transactionParameters }))
     })
-  }, [account, allowedSlippage, chainId, deadline, library, trades, recipient])
+  }, [allowedSlippage, chainId, deadline, library, trades, recipient])
 }
 
 /**
@@ -167,12 +166,12 @@ export function useSwapCallback({
   const { trackEcoEcoRouterTradeVolume } = useAnalytics()
 
   const memoizedTrades = useMemo(() => (trade ? [trade] : undefined), [trade])
-  const [swapCalls] = useSwapsCallArguments(memoizedTrades, allowedSlippage, recipientAddressOrName)
-
-  const addTransaction = useTransactionAdder()
 
   const { address: recipientAddress } = useENS(recipientAddressOrName)
   const recipient = recipientAddressOrName === null ? account : recipientAddress
+  const [swapCalls] = useSwapsCallArguments(memoizedTrades, allowedSlippage, recipient)
+
+  const addTransaction = useTransactionAdder()
 
   return useMemo(() => {
     if (!trade || !library || !account || !chainId) {
@@ -195,7 +194,7 @@ export function useSwapCallback({
 
           // Sign the order
           // and then submit the order to GPv2
-          await trade.signOrder(signer)
+          await trade.signOrder(signer, recipient)
           const orderId = await trade.submitOrder()
 
           trackEcoEcoRouterTradeVolume(trade)
@@ -205,7 +204,7 @@ export function useSwapCallback({
               hash: orderId,
             },
             {
-              summary: getSwapSummary(trade, recipientAddressOrName ?? null),
+              summary: getSwapSummary(trade, recipient ?? null),
               swapProtocol: SwapProtocol.COW,
             }
           )
