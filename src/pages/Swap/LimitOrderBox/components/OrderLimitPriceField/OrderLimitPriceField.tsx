@@ -112,39 +112,31 @@ export function OrderLimitPriceField({ id }: OrderLimitPriceFieldProps) {
       setInputLimitPrice(nextLimitPriceFormatted)
       // When price is below or equal to 0, set the limit price to 0, but don't update the state
 
-      // get and parse the sell token amount
+      const { amount, buyAmountWei, sellAmountWei, newBuyTokenAmount, newSellTokenAmount } = computeNewAmount(
+        buyTokenAmount,
+        sellTokenAmount,
+        nextLimitPriceFloat,
+        limitOrder.kind,
+        inputFocus
+      )
+
+      setFormattedLimitPrice(nextLimitPriceFormatted)
 
       if (inputFocus === InputFocus.SELL) {
-        const {
-          amount: newBuyAmountFloat,
-          buyAmountWei: nextBuyAmountWei,
-          newBuyTokenAmount,
-        } = computeNewAmount(buyTokenAmount, sellTokenAmount, nextLimitPriceFloat, limitOrder.kind, inputFocus)
-
         setBuyTokenAmount(newBuyTokenAmount)
-        setFormattedBuyAmount(newBuyAmountFloat.toString())
-
-        setFormattedLimitPrice(nextLimitPriceFormatted)
+        setFormattedBuyAmount(amount.toString())
         setLimitOrder({
           ...limitOrder,
           limitPrice: parseUnits(nextLimitPriceFormatted, quoteTokenAmount?.currency?.decimals).toString(),
-          buyAmount: nextBuyAmountWei,
+          buyAmount: buyAmountWei,
         })
       } else {
-        const {
-          amount: newSellAmountFloat,
-          sellAmountWei: nextSellAmountWei,
-          newSellTokenAmount,
-        } = computeNewAmount(buyTokenAmount, sellTokenAmount, nextLimitPriceFloat, limitOrder.kind, inputFocus)
-
         setSellTokenAmount(newSellTokenAmount)
-        setFormattedSellAmount(newSellAmountFloat.toString())
-
-        setFormattedLimitPrice(nextLimitPriceFormatted)
+        setFormattedSellAmount(amount.toString())
         setLimitOrder({
           ...limitOrder,
           limitPrice: parseUnits(nextLimitPriceFormatted, quoteTokenAmount?.currency?.decimals).toString(),
-          sellAmount: nextSellAmountWei,
+          sellAmount: sellAmountWei,
         })
       }
     }

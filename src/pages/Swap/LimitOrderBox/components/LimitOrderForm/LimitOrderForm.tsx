@@ -127,35 +127,31 @@ export function LimitOrderForm({ account, provider, chainId }: LimitOrderFormPro
         limitOrder.kind === LimitOrderKind.SELL ? sellTokenAmount.currency.decimals : buyTokenAmount.currency.decimals
       ).toString()
 
-      if (inputFocus === InputFocus.SELL) {
-        const {
-          amount: newBuyAmountFloat,
-          buyAmountWei: nextBuyAmountWei,
-          newBuyTokenAmount,
-        } = computeNewAmount(buyTokenAmount, sellTokenAmount, nextLimitPriceFloat, limitOrder.kind, inputFocus)
+      const { amount, buyAmountWei, sellAmountWei, newBuyTokenAmount, newSellTokenAmount } = computeNewAmount(
+        buyTokenAmount,
+        sellTokenAmount,
+        nextLimitPriceFloat,
+        limitOrder.kind,
+        inputFocus
+      )
 
+      setFormattedLimitPrice(toFixedSix(nextLimitPriceFloat))
+
+      if (inputFocus === InputFocus.SELL) {
         setBuyTokenAmount(newBuyTokenAmount)
-        setFormattedLimitPrice(toFixedSix(nextLimitPriceFloat))
-        setFormattedBuyAmount(toFixedSix(newBuyAmountFloat))
+        setFormattedBuyAmount(toFixedSix(amount))
         setLimitOrder({
           ...limitOrder,
           limitPrice: limitPrice,
-          buyAmount: nextBuyAmountWei,
+          buyAmount: buyAmountWei,
         })
       } else {
-        const {
-          amount: newSellAmountFloat,
-          sellAmountWei: nextSellAmountWei,
-          newSellTokenAmount,
-        } = computeNewAmount(buyTokenAmount, sellTokenAmount, nextLimitPriceFloat, limitOrder.kind, inputFocus)
-
         setSellTokenAmount(newSellTokenAmount)
-        setFormattedLimitPrice(toFixedSix(nextLimitPriceFloat))
-        setFormattedSellAmount(toFixedSix(newSellAmountFloat))
+        setFormattedSellAmount(toFixedSix(amount))
         setLimitOrder({
           ...limitOrder,
           limitPrice: limitPrice,
-          sellAmount: nextSellAmountWei,
+          sellAmount: sellAmountWei,
         })
       }
     }
