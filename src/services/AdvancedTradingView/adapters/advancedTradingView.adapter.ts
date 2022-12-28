@@ -12,7 +12,7 @@ import {
   AdvancedTradingViewAdapterConstructorParams,
 } from '../advancedTradingView.types'
 import { actions } from '../store/advancedTradingView.reducer'
-import { BaseActionPayload } from './baseAdapter/base.types'
+import { BaseActionPayload, SetSwapsBurnsAndMintsActionPayload } from './baseAdapter/base.types'
 
 // each adapter should extend this class
 export abstract class AbstractAdvancedTradingViewAdapter<AppState> {
@@ -26,9 +26,11 @@ export abstract class AbstractAdvancedTradingViewAdapter<AppState> {
     this._adapterSupportedChains = adapterSupportedChains
   }
 
-  abstract getPairTradingAndActivityData(fetchDetails: AdapterFetchDetails): any
+  abstract getPairTradingAndActivityData(
+    fetchDetails: AdapterFetchDetails
+  ): Promise<SetSwapsBurnsAndMintsActionPayload | void>
 
-  abstract getPairData(fetchDetails: AdapterFetchDetailsExtended): any
+  abstract getPairData(fetchDetails: AdapterFetchDetailsExtended): Promise<BaseActionPayload | void>
 
   public updateActiveChainId(chainId: ChainId) {
     this._chainId = chainId
@@ -56,6 +58,11 @@ export abstract class AbstractAdvancedTradingViewAdapter<AppState> {
 
     return this._adapterSupportedChains.includes(chainId)
   }
+}
+
+interface PromiseFulfilledResult<T> {
+  status: 'fulfilled'
+  value: T
 }
 
 export class AdvancedTradingViewAdapter<AppState> {
@@ -120,11 +127,15 @@ export class AdvancedTradingViewAdapter<AppState> {
       })
     )
 
-    const response = await Promise.allSettled(promises).then(res =>
-      res.filter(el => el.status === 'fulfilled' && el.value).map(el => el.status === 'fulfilled' && el.value)
-    )
+    const response = await Promise.allSettled(promises)
 
-    this.store.dispatch(this.actions.setSwapsBurnsAndMintsDataForAllPairs(response))
+    const sucessfulResults: SetSwapsBurnsAndMintsActionPayload[] = response
+      .filter(el => el.status === 'fulfilled')
+      .map(el => (el as PromiseFulfilledResult<SetSwapsBurnsAndMintsActionPayload>).value)
+
+    this.store.dispatch(
+      this.actions.setSwapsBurnsAndMintsDataForAllPairs(sucessfulResults as SetSwapsBurnsAndMintsActionPayload[])
+    )
   }
 
   public async fetchPairTradesBulkUpdate(fetchDetails: Omit<AdapterFetchDetails, 'abortController'>) {

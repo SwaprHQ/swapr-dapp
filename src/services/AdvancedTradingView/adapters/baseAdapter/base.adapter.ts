@@ -19,9 +19,9 @@ export interface BaseAppState {
 
 export class BaseAdapter<
   AppState extends BaseAppState,
-  GenericPairSwapsBurnsAndMints extends { swaps: unknown[]; burns: unknown[]; mints: unknown[] },
-  GenericPairSwaps extends { swaps: unknown[] },
-  GenericPairBurnsAndMints extends { burns: unknown[]; mints: unknown[] }
+  GenericPairSwapsBurnsAndMints extends { swaps: any[]; burns: any[]; mints: any[] },
+  GenericPairSwaps extends { swaps: any[] },
+  GenericPairBurnsAndMints extends { burns: any[]; mints: any[] }
 > extends AbstractAdvancedTradingViewAdapter<AppState> {
   protected _platform: UniswapV2RoutablePlatform | undefined
   protected _subgraphUrls: {

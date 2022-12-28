@@ -19,7 +19,7 @@ export interface PairBurnsAndMintsTransaction {
   type: LiquidityTypename
 }
 
-interface PairSwapTransaction {
+export interface PairSwapTransaction {
   amount0In: string
   amount0Out: string
   amount1In: string
