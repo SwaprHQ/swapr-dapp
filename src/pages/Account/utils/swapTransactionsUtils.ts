@@ -1,4 +1,4 @@
-import { AllSwapTransactions, TransactionStatus, TransactionTypes } from '../Account.types'
+import { AllSwapTransactions, TransactionStatus, TransactionType } from '../Account.types'
 
 const expressions = {
   swap: new RegExp(
@@ -33,7 +33,7 @@ export const formatSwapTransactions = (transactions: AllSwapTransactions, accoun
         type,
       }
 
-      if (expressions.swap.test(summary) && type === TransactionTypes.Swap) {
+      if (expressions.swap.test(summary) && type === TransactionType.Swap) {
         expressions.swap.lastIndex = 0
         const [from, to, matchProtocol, matchAlternate] = [...summary.matchAll(expressions.swap)]
 
