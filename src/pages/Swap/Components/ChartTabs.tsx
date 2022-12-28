@@ -2,6 +2,7 @@ import { useTranslation } from 'react-i18next'
 import { Flex } from 'rebass'
 import styled from 'styled-components'
 
+import { MouseoverTooltip } from '../../../components/Tooltip'
 import { useIsDesktop } from '../../../hooks/useIsDesktopByMedia'
 import { useRouter } from '../../../hooks/useRouter'
 import { ChartOptions } from '../../../state/user/reducer'
@@ -9,20 +10,18 @@ import { ChartOptions } from '../../../state/user/reducer'
 export const ChartTabs = ({
   activeChartTab,
   setActiveChartTab,
-  hasBothCurrenciesInput,
 }: {
   activeChartTab: ChartOptions
   setActiveChartTab: (tab: ChartOptions) => void
-  hasBothCurrenciesInput: boolean
 }) => {
   const { navigate } = useRouter()
   const { t } = useTranslation('swap')
   const isDesktop = useIsDesktop()
-  const proOptionsDisabled = !hasBothCurrenciesInput || !isDesktop
 
   return (
-    <Root>
-      <Tab
+    <MouseoverTooltip placement="top" disabled={isDesktop} content="Available only on desktop">
+      <Root>
+        {/* <Tab
         active={activeChartTab === ChartOptions.SIMPLE_CHART}
         onClick={() => {
           if (activeChartTab !== ChartOptions.SIMPLE_CHART) {
@@ -34,36 +33,37 @@ export const ChartTabs = ({
         disabled={!hasBothCurrenciesInput}
       >
         {t('advancedTradingView.chartTabs.simple')}
-      </Tab>
-      <Tab
-        active={activeChartTab === ChartOptions.PRO}
-        onClick={() => {
-          if (activeChartTab !== ChartOptions.PRO) {
-            setActiveChartTab(ChartOptions.PRO)
-            navigate('/swap/pro')
+      </Tab> */}
+        <Tab
+          active={activeChartTab === ChartOptions.PRO}
+          onClick={() => {
+            if (activeChartTab !== ChartOptions.PRO) {
+              setActiveChartTab(ChartOptions.PRO)
+              navigate('/swap/pro')
+            }
+          }}
+          title={
+            // proOptionsDisabled
+            //   ? t('advancedTradingView.chartTabs.proDisabledTitle'):
+            t('advancedTradingView.chartTabs.proTitle')
           }
-        }}
-        title={
-          proOptionsDisabled
-            ? t('advancedTradingView.chartTabs.proDisabledTitle')
-            : t('advancedTradingView.chartTabs.proTitle')
-        }
-        disabled
-      >
-        {t('advancedTradingView.chartTabs.pro')}
-      </Tab>
-      <Tab
-        active={activeChartTab === ChartOptions.OFF}
-        onClick={() => {
-          setActiveChartTab(ChartOptions.OFF)
-          navigate('/swap')
-        }}
-        title={t('advancedTradingView.chartTabs.offTitle')}
-        disabled={!hasBothCurrenciesInput}
-      >
-        {t('advancedTradingView.chartTabs.off')}
-      </Tab>
-    </Root>
+          disabled={!isDesktop}
+        >
+          {t('advancedTradingView.chartTabs.pro')}
+        </Tab>
+        <Tab
+          active={activeChartTab === ChartOptions.OFF}
+          onClick={() => {
+            setActiveChartTab(ChartOptions.OFF)
+            navigate('/swap')
+          }}
+          title={t('advancedTradingView.chartTabs.offTitle')}
+          disabled={!isDesktop}
+        >
+          {t('advancedTradingView.chartTabs.off')}
+        </Tab>
+      </Root>
+    </MouseoverTooltip>
   )
 }
 
