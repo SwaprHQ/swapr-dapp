@@ -1,6 +1,6 @@
 import { Web3Provider } from '@ethersproject/providers'
 import { formatUnits, parseUnits } from '@ethersproject/units'
-import { ChainId, Currency, JSBI, Token, TokenAmount } from '@swapr/sdk'
+import { ChainId, Currency, CurrencyAmount, JSBI, Token, TokenAmount } from '@swapr/sdk'
 
 import dayjs from 'dayjs'
 import dayjsUTCPlugin from 'dayjs/plugin/utc'
@@ -397,6 +397,15 @@ export function LimitOrderForm({ account, provider, chainId }: LimitOrderFormPro
       handleCurrencyAmountChange({ currency, amountWei, amountFormatted })
     }
 
+  const handleOnMax = (amount: CurrencyAmount | undefined, hanldeCurrencyAmountChange: Function) => () => {
+    if (!amount) return
+    hanldeCurrencyAmountChange({
+      currency: amount?.currency as Token,
+      amountWei: amount?.raw.toString(),
+      amountFormatted: amount.toSignificant(6),
+    })
+  }
+
   const [marketPrices, setMarketPrices] = useState<MarketPrices>({ buy: 0, sell: 0 })
 
   const getMarketPrices = useCallback(async () => {
@@ -491,14 +500,7 @@ export function LimitOrderForm({ account, provider, chainId }: LimitOrderFormPro
                 )}
                 value={formattedSellAmount}
                 onUserInput={handleInputOnChange(sellTokenAmount.currency as Token, handleSellCurrencyAmountChange)}
-                onMax={() => {
-                  if (!sellCurrencyMaxAmount) return
-                  handleSellCurrencyAmountChange({
-                    currency: sellCurrencyMaxAmount?.currency as Token,
-                    amountWei: sellCurrencyMaxAmount?.raw.toString(),
-                    amountFormatted: sellCurrencyMaxAmount.toSignificant(6),
-                  })
-                }}
+                onMax={handleOnMax(sellCurrencyMaxAmount, handleSellCurrencyAmountChange)}
                 maxAmount={sellCurrencyMaxAmount}
                 fiatValue={fiatValueInput}
                 isFallbackFiatValue={isFallbackFiatValueInput}
@@ -517,14 +519,7 @@ export function LimitOrderForm({ account, provider, chainId }: LimitOrderFormPro
                 )}
                 value={formattedBuyAmount}
                 onUserInput={handleInputOnChange(buyTokenAmount.currency as Token, handleBuyCurrencyAmountChange)}
-                onMax={() => {
-                  if (!buyCurrencyMaxAmount) return
-                  handleBuyCurrencyAmountChange({
-                    currency: buyCurrencyMaxAmount?.currency as Token,
-                    amountWei: buyCurrencyMaxAmount?.raw.toString(),
-                    amountFormatted: buyCurrencyMaxAmount.toSignificant(6),
-                  })
-                }}
+                onMax={handleOnMax(buyCurrencyMaxAmount, handleBuyCurrencyAmountChange)}
                 maxAmount={buyCurrencyMaxAmount}
                 fiatValue={fiatValueOutput}
                 isFallbackFiatValue={isFallbackFiatValueOutput}
