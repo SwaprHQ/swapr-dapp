@@ -1,4 +1,4 @@
-import { useCallback, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import styled from 'styled-components'
 
 import Popover, { PopoverProps } from '../Popover'
@@ -15,25 +15,38 @@ const CursorPointerDiv = styled.div`
 
 interface TooltipProps extends PopoverProps {
   text?: string
+  disabled?: boolean
 }
 
 export default function Tooltip({ text, ...rest }: Omit<TooltipProps, 'content'>) {
   return <Popover content={<TooltipContainer>{text}</TooltipContainer>} {...rest} />
 }
 
-export function CustomTooltip({ content, ...rest }: PopoverProps) {
-  return <Popover offsetY={3} placement={'bottom'} content={content} {...rest} />
+export function CustomTooltip({ content, placement, ...rest }: PopoverProps) {
+  return <Popover offsetY={3} placement={placement ?? 'bottom'} content={content} {...rest} />
 }
 
-export function MouseoverTooltip({ children, content, ...rest }: Omit<TooltipProps, 'show'>) {
+export function MouseoverTooltip({ children, disabled, content, ...rest }: Omit<TooltipProps, 'show'>) {
   const [show, setShow] = useState(false)
-  const open = useCallback(() => setShow(true), [setShow])
-  const close = useCallback(() => setShow(false), [setShow])
+
+  // Sometimes onMouseLeave is not triggered so this is a fallback to remove tooltip
+  useEffect(() => {
+    const id = setTimeout(() => {
+      setShow(false)
+    }, 2000)
+    return () => {
+      clearTimeout(id)
+    }
+  }, [show])
+
+  const open = useCallback(() => setShow(disabled ? false : true), [disabled])
+  const close = useCallback(() => setShow(false), [])
+
   return (
-    <CustomTooltip content={content} {...rest} show={show}>
-      <CursorPointerDiv onMouseEnter={open} onMouseLeave={close}>
+    <CursorPointerDiv onClick={open} onMouseEnter={open} onMouseLeave={close}>
+      <CustomTooltip content={content} {...rest} show={show}>
         {children}
-      </CursorPointerDiv>
-    </CustomTooltip>
+      </CustomTooltip>
+    </CursorPointerDiv>
   )
 }

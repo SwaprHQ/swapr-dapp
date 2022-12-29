@@ -168,7 +168,7 @@ export function TransactionErrorContent({ message, onDismiss }: { message: strin
 interface ConfirmationModalProps {
   isOpen: boolean
   onDismiss: () => void
-  hash: string | undefined
+  hash?: string
   content: () => React.ReactNode
   attemptingTxn: boolean
   pendingText: string
