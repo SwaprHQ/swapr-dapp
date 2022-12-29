@@ -1,11 +1,11 @@
 import { AddressZero } from '@ethersproject/constants'
-import { formatUnits } from '@ethersproject/units'
-import { ChainId, Price, Token, TokenAmount, USDC } from '@swapr/sdk'
+import { formatUnits, parseUnits } from '@ethersproject/units'
+import { ChainId, Token, TokenAmount, USDC } from '@swapr/sdk'
 
 import createDebugger from 'debug'
 
 import { isAddress } from '../../../../utils'
-import { LimitOrderKind, MarketPrices, SerializableLimitOrder } from '../interfaces'
+import { IComputeNewAmount, InputFocus, LimitOrderKind, MarketPrices, SerializableLimitOrder } from '../interfaces'
 import { TokenAmount as ITokenAmount } from '../interfaces/token.interface'
 
 /**
@@ -20,7 +20,6 @@ export const debug = createDebugger('limit-orders')
 interface InitialState {
   sellTokenAmount: TokenAmount
   buyTokenAmount: TokenAmount
-  price: Price
   limitOrder: SerializableLimitOrder
 }
 
@@ -31,12 +30,6 @@ interface InitialState {
 export function getInitialState(chainId: ChainId, account: string): InitialState {
   const sellTokenAmount = new TokenAmount(Token.getNativeWrapper(chainId), '1000000000000000000')
   const buyTokenAmount = new TokenAmount(USDC[chainId], '0')
-  const price = new Price({
-    baseCurrency: sellTokenAmount.currency,
-    quoteCurrency: buyTokenAmount.currency,
-    denominator: sellTokenAmount.raw.toString(),
-    numerator: buyTokenAmount.raw.toString(),
-  })
 
   const limitOrder: SerializableLimitOrder = {
     sellAmount: '1000000000000000000',
@@ -55,7 +48,6 @@ export function getInitialState(chainId: ChainId, account: string): InitialState
   return {
     sellTokenAmount,
     buyTokenAmount,
-    price,
     limitOrder,
   }
 }
@@ -88,4 +80,51 @@ export function calculateMarketPriceDiffPercentage(
 
   marketPriceDiffPercentage = Math.min(marketPriceDiffPercentage, 999)
   return { marketPriceDiffPercentage, isDiffPositive }
+}
+
+const multiplyPrice = (tokenAmount: number, limitPrice: number) => tokenAmount * limitPrice
+const dividePrice = (tokenAmount: number, limitPrice: number) => (limitPrice === 0 ? 0 : tokenAmount / limitPrice)
+
+const newAmountCalculationSellLimitOrder: Record<string, Function> = {
+  [LimitOrderKind.SELL]: multiplyPrice,
+  [LimitOrderKind.BUY]: dividePrice,
+}
+const newAmountCalculationBuyLimitOrder: Record<string, Function> = {
+  [LimitOrderKind.SELL]: dividePrice,
+  [LimitOrderKind.BUY]: multiplyPrice,
+}
+
+export const computeNewAmount = (
+  buyTokenAmount: TokenAmount,
+  sellTokenAmount: TokenAmount,
+  limitPrice: number,
+  limitOrderKind: string,
+  inputFocus: InputFocus
+): IComputeNewAmount => {
+  const buyAmountFloat = parseFloat(formatUnits(buyTokenAmount.raw.toString(), buyTokenAmount.currency.decimals))
+  const sellAmountFloat = parseFloat(formatUnits(sellTokenAmount.raw.toString(), sellTokenAmount.currency.decimals))
+
+  let amount = 0
+  let newBuyTokenAmount = buyTokenAmount
+  let newSellTokenAmount = sellTokenAmount
+  let buyAmountWei = '0'
+  let sellAmountWei = '0'
+
+  if (inputFocus === InputFocus.SELL) {
+    amount = newAmountCalculationSellLimitOrder[limitOrderKind](sellAmountFloat, limitPrice)
+    buyAmountWei = parseUnits(amount.toFixed(6), buyTokenAmount?.currency?.decimals).toString()
+    newBuyTokenAmount = new TokenAmount(buyTokenAmount.currency as Token, buyAmountWei)
+  } else {
+    amount = newAmountCalculationBuyLimitOrder[limitOrderKind](buyAmountFloat, limitPrice)
+    sellAmountWei = parseUnits(amount.toFixed(6), sellTokenAmount?.currency?.decimals).toString()
+    newSellTokenAmount = new TokenAmount(sellTokenAmount.currency as Token, sellAmountWei)
+  }
+
+  return {
+    amount,
+    buyAmountWei,
+    sellAmountWei,
+    newBuyTokenAmount,
+    newSellTokenAmount,
+  }
 }
