@@ -75,46 +75,4 @@ describe('AdvancedTradingView - adapter', () => {
         }
       `)
   })
-
-  it('updateActiveChainId function resets state of store', () => {
-    store.dispatch(actions.setPairData(fakeData))
-
-    expect(store.getState().advancedTradingView).toMatchInlineSnapshot(`
-      Object {
-        "adapters": Object {
-          "honeyswap": Object {},
-          "sushiswap": Object {},
-          "swapr": Object {
-            "0x123456789": Object {
-              "swaps": Object {
-                "data": Array [],
-                "hasMore": false,
-              },
-            },
-          },
-          "uniswapV2": Object {},
-          "uniswapV3": Object {},
-        },
-        "pair": Object {
-          "inputToken": undefined,
-          "outputToken": undefined,
-        },
-      }
-    `)
-
-    advancedTradingViewAdapter.updateActiveChainId(ChainId.GNOSIS)
-
-    expect(store.getState().advancedTradingView).toMatchInlineSnapshot(`
-      Object {
-        "adapters": Object {
-          "honeyswap": Object {},
-          "sushiswap": Object {},
-          "swapr": Object {},
-          "uniswapV2": Object {},
-          "uniswapV3": Object {},
-        },
-        "pair": Object {},
-      }
-    `)
-  })
 })
