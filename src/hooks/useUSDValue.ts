@@ -16,6 +16,7 @@ import {
 
 import { useEffect, useMemo, useRef, useState } from 'react'
 
+import { REFETCH_DATA_INTERVAL } from '../constants'
 import { tryParseAmount } from '../state/swap/hooks'
 import { getUSDPriceCurrencyQuote, getUSDPriceTokenQuote, toPriceInformation } from '../utils/coingecko'
 import { currencyId } from '../utils/currencyId'
@@ -34,8 +35,6 @@ const STABLECOIN_AND_PLATFOM_BY_CHAIN: Record<number, { stablecoin: Token; platf
     platform: UniswapV2RoutablePlatform.UNISWAP,
   },
 }
-
-const FETCH_PRICE_INTERVAL = 15000
 
 const convertToTokenAmount = (currencyAmount: CurrencyAmount | undefined, chainId: ChainId) => {
   if (!currencyAmount) return
@@ -185,7 +184,7 @@ export function useCoingeckoUSDPrice(token?: Token, isNativeCurrency = false) {
 
     const refetchPrice = setInterval(() => {
       fetchPrice()
-    }, FETCH_PRICE_INTERVAL)
+    }, REFETCH_DATA_INTERVAL)
 
     return () => {
       clearInterval(refetchPrice)
