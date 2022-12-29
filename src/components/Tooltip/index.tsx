@@ -15,6 +15,7 @@ const CursorPointerDiv = styled.div`
 
 interface TooltipProps extends PopoverProps {
   text?: string
+  disabled?: boolean
 }
 
 export default function Tooltip({ text, ...rest }: Omit<TooltipProps, 'content'>) {
@@ -25,7 +26,7 @@ export function CustomTooltip({ content, placement, ...rest }: PopoverProps) {
   return <Popover offsetY={3} placement={placement ?? 'bottom'} content={content} {...rest} />
 }
 
-export function MouseoverTooltip({ children, content, ...rest }: Omit<TooltipProps, 'show'>) {
+export function MouseoverTooltip({ children, disabled, content, ...rest }: Omit<TooltipProps, 'show'>) {
   const [show, setShow] = useState(false)
 
   // Sometimes onMouseLeave is not triggered so this is a fallback to remove tooltip
@@ -38,11 +39,11 @@ export function MouseoverTooltip({ children, content, ...rest }: Omit<TooltipPro
     }
   }, [show])
 
-  const open = useCallback(() => setShow(true), [])
+  const open = useCallback(() => setShow(disabled ? false : true), [disabled])
   const close = useCallback(() => setShow(false), [])
 
   return (
-    <CursorPointerDiv onMouseEnter={open} onMouseLeave={close}>
+    <CursorPointerDiv onClick={open} onMouseEnter={open} onMouseLeave={close}>
       <CustomTooltip content={content} {...rest} show={show}>
         {children}
       </CustomTooltip>

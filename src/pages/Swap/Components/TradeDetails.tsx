@@ -1,4 +1,4 @@
-import { CoWTrade, Trade, UniswapV2RoutablePlatform } from '@swapr/sdk'
+import { CoWTrade, CurveTrade, Trade, UniswapV2RoutablePlatform, ZeroXTrade } from '@swapr/sdk'
 
 import { useState } from 'react'
 import { Trans } from 'react-i18next'
@@ -94,7 +94,9 @@ export function TradeDetails({
             </RowFixed>
           </RowBetween>
         </AutoColumn>
-        {showAddRecipient && <RecipientField recipient={recipient} />}
+        {showAddRecipient && (!(trade instanceof ZeroXTrade) || !(trade instanceof CurveTrade)) && (
+          <RecipientField recipient={recipient} />
+        )}
       </>
     )
   }
