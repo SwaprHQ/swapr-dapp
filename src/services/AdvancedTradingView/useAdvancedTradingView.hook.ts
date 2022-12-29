@@ -128,7 +128,6 @@ export const useAdvancedTradingView = () => {
         previousTokens.current.inputTokenAddress !== outputToken.address.toLowerCase() ||
         previousTokens.current.outputTokenAddress !== inputToken.address.toLowerCase()
       ) {
-        setSymbol(`${inputToken.symbol}${outputToken.symbol}`)
         setIsFetched(false)
 
         try {
