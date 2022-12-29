@@ -176,7 +176,7 @@
     "mochawesome-merge": "^4.2.1",
     "mochawesome-report-generator": "^6.1.1",
     "net": "^1.0.2",
-    "node-fetch": "^2.6.7",
+    "node-fetch": "^3.3.0",
     "os-browserify": "^0.3.0",
     "path-browserify": "^1.0.1",
     "prettier": "^2.7.1",
