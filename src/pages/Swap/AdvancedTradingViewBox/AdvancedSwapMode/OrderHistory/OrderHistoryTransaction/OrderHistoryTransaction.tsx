@@ -63,11 +63,14 @@ export const OrderHistoryTransaction = ({ tx }: { tx: Transaction }) => {
     // Fix the token amounts
     sellTokenAmount = utils.formatUnits(tx.sellToken?.value, formattedSellToken?.decimals)
     buyTokenAmount = utils.formatUnits(tx.buyToken?.value, formattedBuyToken?.decimals)
+  }
 
-    console.log({
-      sellTokenAmount,
-      buyTokenAmount,
-    })
+  // Compute the explorer link
+  let explorerURL = null
+  if (isSwapTransaction) {
+    explorerURL = chainId && getExplorerLink(chainId, tx.hash, EXPLORER_LINK_TYPE.transaction, tx.swapProtocol)
+  } else if (protocol === 'COW') {
+    explorerURL = chainId && getExplorerLink(chainId, tx.hash, EXPLORER_LINK_TYPE.transaction, 'COW')
   }
 
   return (
@@ -96,12 +99,8 @@ export const OrderHistoryTransaction = ({ tx }: { tx: Transaction }) => {
         <Status status={tx.status.toUpperCase()}>{tx.status}</Status>
       </div>
       <div>
-        {isSwapTransaction ? (
-          <a
-            href={chainId && getExplorerLink(chainId, tx.hash, EXPLORER_LINK_TYPE.transaction, tx.swapProtocol)}
-            rel="noopener noreferrer"
-            target="_blank"
-          >
+        {explorerURL ? (
+          <a href={explorerURL} rel="noopener noreferrer" target="_blank">
             <ExternalLink size="15" color={theme.text4} />
           </a>
         ) : (
