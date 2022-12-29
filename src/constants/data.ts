@@ -1,0 +1,1 @@
+export const REFETCH_DATA_INTERVAL = 15000

@@ -3,7 +3,7 @@ import { ChainId, Currency, Token, WETH, WMATIC, WXDAI } from '@swapr/sdk'
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { useDispatch } from 'react-redux'
 
-import { REFETCH_DATA_INTERVAL } from '../../constants'
+import { REFETCH_DATA_INTERVAL } from '../../constants/data'
 import { useActiveWeb3React } from '../../hooks'
 import { useToken } from '../../hooks/Tokens'
 import { useRouter } from '../../hooks/useRouter'
