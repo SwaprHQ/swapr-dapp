@@ -3,7 +3,9 @@ import { formatUnits, parseUnits } from '@ethersproject/units'
 import { useCallback, useContext, useEffect, useState } from 'react'
 import { RefreshCw } from 'react-feather'
 import { useTranslation } from 'react-i18next'
+import styled from 'styled-components'
 
+import { ReactComponent as ProgressCircle } from '../../../../../assets/images/progress-circle.svg'
 import { invalidChars } from '../../constants'
 import { LimitOrderFormContext } from '../../contexts/LimitOrderFormContext'
 import { InputFocus, LimitOrderKind } from '../../interfaces'
@@ -11,6 +13,7 @@ import { calculateMarketPriceDiffPercentage, computeNewAmount } from '../../util
 import { InputGroup } from '../InputGroup'
 import {
   LimitLabel,
+  MarketPrice,
   MarketPriceDiff,
   SetToMarket,
   SwapTokenIconWrapper,
@@ -38,6 +41,8 @@ export function OrderLimitPriceField({ id }: OrderLimitPriceFieldProps) {
     setToMarket,
     marketPrices,
     inputFocus,
+    fetchMarketPrice,
+    setFetchMarketPrice,
   } = useContext(LimitOrderFormContext)
 
   const [baseTokenAmount, quoteTokenAmount] =
@@ -139,14 +144,35 @@ export function OrderLimitPriceField({ id }: OrderLimitPriceFieldProps) {
           sellAmount: sellAmountWei,
         })
       }
+
+      setFetchMarketPrice(false)
     }
   }
-  console.log('toggle out', {
-    limitOrderKind: limitOrder.kind,
-    formattedLimitPrice,
-    baseTokenAmount,
-    quoteTokenAmount,
-  })
+
+  const onClickGetMarketPrice = () => {
+    setToMarket()
+    setFetchMarketPrice(true)
+  }
+
+  const StyledProgressCircle = styled(ProgressCircle)`
+    width: 12px;
+    height: 12px;
+    margin-left: 4px;
+    transform: rotate(-90deg);
+
+    .move {
+      stroke-dasharray: 100;
+      stroke-dashoffset: 100;
+      animation: dash 15s 0s infinite linear forwards;
+
+      @keyframes dash {
+        to {
+          stroke-dashoffset: 0;
+        }
+      }
+    }
+  `
+
   return (
     <InputGroup>
       <LimitLabel htmlFor={id}>
@@ -156,7 +182,17 @@ export function OrderLimitPriceField({ id }: OrderLimitPriceFieldProps) {
             <MarketPriceDiff isPositive={isDiffPositive}> ({marketPriceDiffPercentage.toFixed(2)}%)</MarketPriceDiff>
           )}
         </span>
-        <SetToMarket onClick={setToMarket}>{t('limitOrder.setToMarket')}</SetToMarket>
+        {fetchMarketPrice ? (
+          <MarketPrice>
+            Market price
+            <StyledProgressCircle />
+          </MarketPrice>
+        ) : (
+          <SetToMarket onClick={onClickGetMarketPrice}>
+            {/* {t('limitOrder.setToMarket')} */}
+            Get market price
+          </SetToMarket>
+        )}
       </LimitLabel>
       <InputGroup.InnerWrapper>
         <InputGroup.Input

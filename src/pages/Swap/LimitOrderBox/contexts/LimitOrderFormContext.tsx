@@ -48,6 +48,8 @@ interface ILimitOrderFormContext {
 
   marketPrices: MarketPrices
   inputFocus: InputFocus
+  fetchMarketPrice: boolean
+  setFetchMarketPrice: Dispatch<SetStateAction<boolean>>
 }
 
 export const LimitOrderFormContext = createContext<ILimitOrderFormContext>({} as ILimitOrderFormContext)
