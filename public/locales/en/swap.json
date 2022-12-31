@@ -61,5 +61,6 @@
   "advancedTradingView.orderHistory.tx": "Tx",
   "limitOrder.expiresIn": "Expires In",
   "limitOrder.maxExpiryTime": "Max 180 min",
-  "limitOrder.setToMarket": "Set to Market"
+  "limitOrder.getMarketPrice": "Get market price",
+  "limitOrder.marketPrice": "Market price"
 }

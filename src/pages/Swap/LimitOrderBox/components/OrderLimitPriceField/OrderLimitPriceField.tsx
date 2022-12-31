@@ -3,17 +3,15 @@ import { formatUnits, parseUnits } from '@ethersproject/units'
 import { useCallback, useContext, useEffect, useState } from 'react'
 import { RefreshCw } from 'react-feather'
 import { useTranslation } from 'react-i18next'
-import styled from 'styled-components'
 
-import { ReactComponent as ProgressCircle } from '../../../../../assets/images/progress-circle.svg'
 import { invalidChars } from '../../constants'
 import { LimitOrderFormContext } from '../../contexts/LimitOrderFormContext'
 import { InputFocus, LimitOrderKind } from '../../interfaces'
 import { calculateMarketPriceDiffPercentage, computeNewAmount } from '../../utils'
 import { InputGroup } from '../InputGroup'
+import { MarketPriceButton } from './MarketPriceButton'
 import {
   LimitLabel,
-  MarketPrice,
   MarketPriceDiff,
   SetToMarket,
   SwapTokenIconWrapper,
@@ -150,28 +148,8 @@ export function OrderLimitPriceField({ id }: OrderLimitPriceFieldProps) {
   }
 
   const onClickGetMarketPrice = () => {
-    setToMarket()
     setFetchMarketPrice(true)
   }
-
-  const StyledProgressCircle = styled(ProgressCircle)`
-    width: 12px;
-    height: 12px;
-    margin-left: 4px;
-    transform: rotate(-90deg);
-
-    .move {
-      stroke-dasharray: 100;
-      stroke-dashoffset: 100;
-      animation: dash 15s 0s infinite linear forwards;
-
-      @keyframes dash {
-        to {
-          stroke-dashoffset: 0;
-        }
-      }
-    }
-  `
 
   return (
     <InputGroup>
@@ -183,15 +161,12 @@ export function OrderLimitPriceField({ id }: OrderLimitPriceFieldProps) {
           )}
         </span>
         {fetchMarketPrice ? (
-          <MarketPrice>
-            Market price
-            <StyledProgressCircle />
-          </MarketPrice>
+          <MarketPriceButton
+            buyTokenAmountCurrency={buyTokenAmount.currency}
+            sellTokenAmountCurrency={sellTokenAmount.currency}
+          />
         ) : (
-          <SetToMarket onClick={onClickGetMarketPrice}>
-            {/* {t('limitOrder.setToMarket')} */}
-            Get market price
-          </SetToMarket>
+          <SetToMarket onClick={onClickGetMarketPrice}>{t('limitOrder.getMarketPrice')}</SetToMarket>
         )}
       </LimitLabel>
       <InputGroup.InnerWrapper>
