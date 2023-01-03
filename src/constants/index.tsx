@@ -43,6 +43,7 @@ import VelodromeLogo from '../assets/images/velodrome-logo.svg'
 import WalletConnect from '../assets/images/wallet-connect.svg'
 import { injected, walletConnect, walletLink } from '../connectors'
 
+export const REFETCH_DATA_INTERVAL = 15000
 export const ZERO_ADDRESS = '0x0000000000000000000000000000000000000000'
 export const SOCKET_NATIVE_TOKEN_ADDRESS = '0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee'
 

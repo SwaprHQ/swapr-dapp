@@ -78,6 +78,7 @@ const selectAllCurrentPairs = createSelector(
     pairs.reduce<AllTradesAndLiquidityFromAdapters>(
       (dataFromAllAdapters, adapterPair) => {
         if (adapterPair?.pair?.swaps) {
+          // @ts-ignore
           dataFromAllAdapters.swaps = [
             ...dataFromAllAdapters.swaps,
             ...adapterPair.pair.swaps.data.map(tx => ({ ...tx, logoKey: adapterPair.logoKey })),

@@ -1,5 +1,5 @@
 import { useEffect } from 'react'
-import { useSearchParams } from 'react-router-dom'
+import { useLocation, useSearchParams } from 'react-router-dom'
 
 import { useActiveWeb3React } from '../../hooks'
 import { useIsSwitchingToCorrectChain, useIsSwitchingToCorrectChainUpdater } from './hooks'
@@ -7,6 +7,7 @@ import { useIsSwitchingToCorrectChain, useIsSwitchingToCorrectChainUpdater } fro
 export default function Updater(): null {
   const { chainId, connector } = useActiveWeb3React()
   const [searchParams, setSearchParams] = useSearchParams()
+  const { pathname } = useLocation()
   const switchingToCorrectChain = useIsSwitchingToCorrectChain()
   const updateSwitchingToCorrectChain = useIsSwitchingToCorrectChainUpdater()
 
@@ -31,6 +32,10 @@ export default function Updater(): null {
       connector.supportedChainIds &&
       connector.supportedChainIds.indexOf(parseInt(requiredChainId)) >= 0
 
+    if (!pathname.includes('/account') && searchParams.get('filter')) {
+      searchParams.delete('filter')
+      setSearchParams(searchParams, { replace: true })
+    }
     if (!requiredChainId) updateSwitchingToCorrectChain(false)
     if (requiredChainId && requiredChainIdSupported && switchingToCorrectChain) {
       if (requiredChainId !== stringChainId) return
@@ -40,7 +45,15 @@ export default function Updater(): null {
     if (requiredChainId !== stringChainId && !switchingToCorrectChain) {
       setSearchParams({ chainId: stringChainId }, { replace: true })
     }
-  }, [chainId, connector, switchingToCorrectChain, updateSwitchingToCorrectChain, searchParams, setSearchParams])
+  }, [
+    chainId,
+    connector,
+    switchingToCorrectChain,
+    updateSwitchingToCorrectChain,
+    searchParams,
+    setSearchParams,
+    pathname,
+  ])
 
   return null
 }
