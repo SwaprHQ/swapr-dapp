@@ -397,7 +397,7 @@ export function LimitOrderForm({ account, provider, chainId }: LimitOrderFormPro
     () => {
       if (!amount) return
       let amountWithoutFee = amount
-      if (isSell && limitOrder.feeAmount) {
+      if (isSell && limitOrder.feeAmount !== '0' && amountWithoutFee.raw.toString() !== '0') {
         const feeAmount = new TokenAmount(amount.currency as Token, limitOrder.feeAmount)
         const tokenAMount = new TokenAmount(amount.currency as Token, amount.raw.toString())
         amountWithoutFee = tokenAMount.subtract(feeAmount)
