@@ -392,14 +392,22 @@ export function LimitOrderForm({ account, provider, chainId }: LimitOrderFormPro
       handleCurrencyAmountChange({ currency, amountWei, amountFormatted })
     }
 
-  const handleOnMax = (amount: CurrencyAmount | undefined, hanldeCurrencyAmountChange: Function) => () => {
-    if (!amount) return
-    hanldeCurrencyAmountChange({
-      currency: amount?.currency as Token,
-      amountWei: amount?.raw.toString(),
-      amountFormatted: amount.toSignificant(6),
-    })
-  }
+  const handleOnMax =
+    (amount: CurrencyAmount | undefined, hanldeCurrencyAmountChange: Function, isSell = false) =>
+    () => {
+      if (!amount) return
+      let amountWithoutFee = amount
+      if (isSell && limitOrder.feeAmount) {
+        const feeAmount = new TokenAmount(amount.currency as Token, limitOrder.feeAmount)
+        const tokenAMount = new TokenAmount(amount.currency as Token, amount.raw.toString())
+        amountWithoutFee = tokenAMount.subtract(feeAmount)
+      }
+      hanldeCurrencyAmountChange({
+        currency: amountWithoutFee?.currency as Token,
+        amountWei: amountWithoutFee?.raw.toString(),
+        amountFormatted: amountWithoutFee.toSignificant(6),
+      })
+    }
 
   const [marketPrices, setMarketPrices] = useState<MarketPrices>({ buy: 0, sell: 0 })
 
@@ -495,7 +503,7 @@ export function LimitOrderForm({ account, provider, chainId }: LimitOrderFormPro
                 )}
                 value={formattedSellAmount}
                 onUserInput={handleInputOnChange(sellTokenAmount.currency as Token, handleSellCurrencyAmountChange)}
-                onMax={handleOnMax(sellCurrencyMaxAmount, handleSellCurrencyAmountChange)}
+                onMax={handleOnMax(sellCurrencyMaxAmount, handleSellCurrencyAmountChange, true)}
                 maxAmount={sellCurrencyMaxAmount}
                 fiatValue={fiatValueInput}
                 isFallbackFiatValue={isFallbackFiatValueInput}
