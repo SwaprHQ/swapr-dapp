@@ -56,9 +56,8 @@ export function LimitOrderForm({ account, provider, chainId }: LimitOrderFormPro
   // Get the initial values and set the state
   let initialState = useRef(getInitialState(chainId, account)).current
   // Local state
-  const [expiresInUnit, setExpiresInUnit] = useState(OrderExpiresInUnit.Minutes)
-  // Default expiry time set to 20 minutes
-  const [expiresIn, setExpiresIn] = useState(20)
+  const [expiresInUnit, setExpiresInUnit] = useState(OrderExpiresInUnit.Days)
+  const [expiresIn, setExpiresIn] = useState(3)
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [errorMessage, setErrorMessage] = useState('')
   // IsPossibleToOrder
