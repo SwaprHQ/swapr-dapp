@@ -1,4 +1,4 @@
-import { ChainId, Currency, Token, WETH, WMATIC, WXDAI } from '@swapr/sdk'
+import { ChainId, Currency, Pair, Token, WETH, WMATIC, WXDAI } from '@swapr/sdk'
 
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { useDispatch } from 'react-redux'
@@ -55,7 +55,7 @@ export const useAdvancedTradingView = () => {
 
   const [advancedTradingViewAdapter, setAdvancedTradingViewAdapter] = useState<AdvancedTradingViewAdapter<AppState>>()
 
-  const [symbol, setSymbol] = useState<string>()
+  const [pairAddress, setPairAddress] = useState<string>()
 
   const [pairTradesAmountToFetch, pairActivityAmountToFetch] = useMemo(
     () => [
@@ -126,13 +126,12 @@ export const useAdvancedTradingView = () => {
 
       advancedTradingViewAdapter.setPairTokens(inputToken, outputToken)
 
-      setSymbol(`${inputToken.symbol}${outputToken.symbol}`)
+      setPairAddress(Pair.getAddress(inputToken, outputToken))
 
       if (
         previousTokens.current.inputTokenAddress !== outputToken.address.toLowerCase() ||
         previousTokens.current.outputTokenAddress !== inputToken.address.toLowerCase()
       ) {
-        setSymbol(`${inputToken.symbol}${outputToken.symbol}`)
         setIsFetched(false)
 
         try {
@@ -226,7 +225,7 @@ export const useAdvancedTradingView = () => {
   }
 
   return {
-    symbol,
+    pairAddress,
     pairTokens,
     showTrades: Boolean(inputToken && outputToken),
     chainId,
