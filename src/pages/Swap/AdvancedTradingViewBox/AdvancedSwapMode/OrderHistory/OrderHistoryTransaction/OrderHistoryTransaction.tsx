@@ -1,5 +1,5 @@
+import dayjs from 'dayjs'
 import { utils } from 'ethers'
-import { DateTime } from 'luxon'
 import { ExternalLink } from 'react-feather'
 import { Text } from 'rebass'
 import styled, { useTheme } from 'styled-components'
@@ -53,6 +53,14 @@ export const OrderHistoryTransaction = ({ tx }: { tx: Transaction }) => {
   // Transaction type can be an AMM order or a COW order which is can also be a market, limit or stop limit order
   let transactionType: string = tx.type
 
+  // Transaction timestamp
+  let formattedTimestamp: string | null = null
+
+  if (tx.confirmedTime) {
+    console.log('tx.confirmedTime', tx.confirmedTime)
+    formattedTimestamp = dayjs(tx.confirmedTime).format('DD/MM/YYYY HH:mm')
+  }
+
   let sellTokenAmount = tx.sellToken?.value
   let buyTokenAmount = tx.buyToken?.value
 
@@ -63,6 +71,11 @@ export const OrderHistoryTransaction = ({ tx }: { tx: Transaction }) => {
     // Fix the token amounts
     sellTokenAmount = utils.formatUnits(tx.sellToken?.value, formattedSellToken?.decimals)
     buyTokenAmount = utils.formatUnits(tx.buyToken?.value, formattedBuyToken?.decimals)
+
+    // Fix the timestamp
+    if (tx.creationDate) {
+      formattedTimestamp = dayjs(tx.creationDate).format('DD/MM/YYYY HH:mm')
+    }
   }
 
   // Compute the explorer link
@@ -85,16 +98,7 @@ export const OrderHistoryTransaction = ({ tx }: { tx: Transaction }) => {
       </div>
       <div>{protocol}</div>
       <div>{transactionType.toUpperCase()}</div>
-      <div>
-        {tx.confirmedTime ? (
-          <>
-            {DateTime.fromMillis(tx.confirmedTime).toFormat('dd/MM/yyyy')}{' '}
-            {DateTime.fromMillis(tx.confirmedTime).toFormat('HH:mm')}
-          </>
-        ) : (
-          '-'
-        )}
-      </div>
+      <div>{formattedTimestamp !== null ? <>{formattedTimestamp}</> : '-'}</div>
       <div>
         <Status status={tx.status.toUpperCase()}>{tx.status}</Status>
       </div>
