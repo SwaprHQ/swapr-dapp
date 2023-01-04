@@ -36,7 +36,6 @@ export function OrderLimitPriceField({ id }: OrderLimitPriceFieldProps) {
     setFormattedBuyAmount,
     setSellTokenAmount,
     setFormattedSellAmount,
-    setToMarket,
     marketPrices,
     inputFocus,
     fetchMarketPrice,

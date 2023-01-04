@@ -13,6 +13,7 @@ import { ButtonPrimary } from '../../../../../components/Button'
 import { AutoColumn } from '../../../../../components/Column'
 import { CurrencyInputPanel } from '../../../../../components/CurrencyInputPanel'
 import { PageMetaData } from '../../../../../components/PageMetaData'
+import { REFETCH_DATA_INTERVAL } from '../../../../../constants/index'
 import { ApprovalState, useApproveCallback } from '../../../../../hooks/useApproveCallback'
 import { useHigherUSDValue } from '../../../../../hooks/useUSDValue'
 import { useNotificationPopup } from '../../../../../state/application/hooks'
@@ -20,6 +21,7 @@ import { useCurrencyBalances } from '../../../../../state/wallet/hooks'
 import { maxAmountSpend } from '../../../../../utils/maxAmountSpend'
 import AppBody from '../../../../AppBody'
 import { createCoWLimitOrder, getQuote, getVaultRelayerAddress } from '../../api/cow'
+import { GET_QUOTE_EXPIRY_MINUTES } from '../../constants'
 import { LimitOrderFormContext } from '../../contexts/LimitOrderFormContext'
 import { InputFocus, LimitOrderKind, MarketPrices, OrderExpiresInUnit, SerializableLimitOrder } from '../../interfaces'
 import { computeNewAmount, getInitialState } from '../../utils'
@@ -57,7 +59,7 @@ export function LimitOrderForm({ account, provider, chainId }: LimitOrderFormPro
   let initialState = useRef(getInitialState(chainId, account)).current
   // Local state
   const [expiresInUnit, setExpiresInUnit] = useState(OrderExpiresInUnit.Days)
-  // Default expiry time set to 20 minutes
+  // Default expiry time set to 7 days
   const [expiresIn, setExpiresIn] = useState(7)
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [errorMessage, setErrorMessage] = useState('')
@@ -114,7 +116,7 @@ export function LimitOrderForm({ account, provider, chainId }: LimitOrderFormPro
     const cowQuote = await getQuote({
       chainId,
       signer,
-      order: { ...order, expiresAt: dayjs().add(20, OrderExpiresInUnit.Minutes).unix() },
+      order: { ...order, expiresAt: dayjs().add(GET_QUOTE_EXPIRY_MINUTES, OrderExpiresInUnit.Minutes).unix() },
     })
 
     if (cowQuote !== undefined) {
@@ -187,7 +189,7 @@ export function LimitOrderForm({ account, provider, chainId }: LimitOrderFormPro
 
       refetchMarketPrice = setInterval(() => {
         getMarketPrice()
-      }, 15000)
+      }, REFETCH_DATA_INTERVAL)
 
       setMarketPriceInterval(refetchMarketPrice)
     } else {
@@ -292,7 +294,7 @@ export function LimitOrderForm({ account, provider, chainId }: LimitOrderFormPro
         parseFloat(formattedSellAmount).toFixed(6),
         sellTokenAmount?.currency?.decimals
       ).toString()
-      const expiresAt = dayjs().add(20, OrderExpiresInUnit.Minutes).unix()
+      const expiresAt = dayjs().add(GET_QUOTE_EXPIRY_MINUTES, OrderExpiresInUnit.Minutes).unix()
       const sellCurrencyMaxAmount = maxAmountSpend(sellCurrencyBalance, chainId)
 
       checkMaxOrderAmount(
@@ -451,7 +453,7 @@ export function LimitOrderForm({ account, provider, chainId }: LimitOrderFormPro
       const cowQuote = await getQuote({
         chainId,
         signer,
-        order: { ...order, expiresAt: dayjs().add(20, OrderExpiresInUnit.Minutes).unix() },
+        order: { ...order, expiresAt: dayjs().add(GET_QUOTE_EXPIRY_MINUTES, OrderExpiresInUnit.Minutes).unix() },
       })
 
       if (cowQuote) {
