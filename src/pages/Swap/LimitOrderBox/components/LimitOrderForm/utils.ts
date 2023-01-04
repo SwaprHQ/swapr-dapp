@@ -2,7 +2,7 @@ import { Web3Provider } from '@ethersproject/providers'
 import { formatUnits } from '@ethersproject/units'
 import { CurrencyAmount, TokenAmount } from '@swapr/sdk'
 
-import { SetStateAction } from 'react'
+import { Dispatch, SetStateAction } from 'react'
 
 import { getQuote } from '../../api/cow'
 import { SerializableLimitOrder } from '../../interfaces'
@@ -10,7 +10,7 @@ import { SerializableLimitOrder } from '../../interfaces'
 export const checkMaxOrderAmount = async (
   limitOrder: SerializableLimitOrder,
   setIsPossibleToOrder: (value: SetStateAction<{ status: boolean; value: number }>) => void,
-  setLimitOrder: (value: SetStateAction<SerializableLimitOrder>) => void,
+  setLimitOrder: Dispatch<SetStateAction<SerializableLimitOrder>>,
   amountWei: string,
   expiresAt: number,
   sellTokenAmount: TokenAmount,
@@ -45,7 +45,7 @@ export const checkMaxOrderAmount = async (
   // Since fee amount is recalculated again before order
   // for safe side checking 2x of current feeAmount returned by quote
   const totalSellAmount = sellAmountFormatted + feeAmountFormatted * 2
-  setLimitOrder({ ...limitOrder, feeAmount: Number(feeAmount).toString() })
+  setLimitOrder(oldLimitOrder => ({ ...oldLimitOrder, feeAmount: Number(feeAmount).toString() }))
   if (totalSellAmount > maxAmount) {
     const maxSellAmountPossibleWithFee = maxAmount - feeAmountFormatted * 2 < 0 ? 0 : maxAmount - feeAmountFormatted * 2
 

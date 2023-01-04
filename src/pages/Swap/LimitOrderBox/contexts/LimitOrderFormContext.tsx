@@ -1,57 +1,53 @@
-import { Price, TokenAmount } from '@swapr/sdk'
+import { TokenAmount } from '@swapr/sdk'
 
-import { createContext } from 'react'
+import { createContext, Dispatch, SetStateAction } from 'react'
 
 import { OrderExpiresInUnit, SerializableLimitOrder } from '../interfaces'
-import { MarketPrices } from '../interfaces/order.interface'
+import { InputFocus, MarketPrices } from '../interfaces/order.interface'
 
 interface ILimitOrderFormContext {
   /**
    * The serializable limit order that is being edited.
    */
   limitOrder: SerializableLimitOrder
-  setLimitOrder: (limitOrder: SerializableLimitOrder) => void
-
-  /**
-   * @todo remove
-   */
-  price: Price
-  setPrice: (price: Price) => void
+  setLimitOrder: Dispatch<SetStateAction<SerializableLimitOrder>>
 
   /**
    * Sell token amount
    */
   sellTokenAmount: TokenAmount
-  setSellTokenAmount: (sellCurrencyAmount: TokenAmount) => void
+  setSellTokenAmount: Dispatch<SetStateAction<TokenAmount>>
 
   /**
    * Buy Token Amount
    */
   buyTokenAmount: TokenAmount
-  setBuyTokenAmount: (buyTokenAmount: TokenAmount) => void
+  setBuyTokenAmount: Dispatch<SetStateAction<TokenAmount>>
 
   /**
    * display limit price
    */
   formattedLimitPrice: string
-  setFormattedLimitPrice: (formattedLimitPrice: string) => void
+  setFormattedLimitPrice: Dispatch<SetStateAction<string>>
 
   /**
    * Display buy token
    */
   formattedBuyAmount: string
-  setFormattedBuyAmount: (formattedBuyAmount: string) => void
+  setFormattedBuyAmount: Dispatch<SetStateAction<string>>
 
+  setFormattedSellAmount: Dispatch<SetStateAction<string>>
   /**
    * order expiry
    */
   expiresIn: number
-  setExpiresIn: (expiresIn: number) => void
+  setExpiresIn: Dispatch<SetStateAction<number>>
   expiresInUnit: OrderExpiresInUnit
-  setExpiresInUnit: (expiresInUnit: OrderExpiresInUnit) => void
+  setExpiresInUnit: Dispatch<SetStateAction<OrderExpiresInUnit>>
   setToMarket: () => void
 
   marketPrices: MarketPrices
+  inputFocus: InputFocus
 }
 
 export const LimitOrderFormContext = createContext<ILimitOrderFormContext>({} as ILimitOrderFormContext)

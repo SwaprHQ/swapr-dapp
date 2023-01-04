@@ -54,7 +54,7 @@ export const walletConnect = new CustomWalletConnectConnector({
   },
   bridge: 'https://bridge.walletconnect.org',
   qrcode: true,
-  pollingInterval: REFETCH_DATA_INTERVAL,
+  pollingInterval: 15000,
 })
 
 let networkLibrary: providers.Web3Provider | undefined

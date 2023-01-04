@@ -1,3 +1,5 @@
+import { TokenAmount } from '@swapr/sdk'
+
 import { SigningResult } from '@cowprotocol/cow-sdk/dist/utils/sign'
 /**
  * @description An EVM-compatible address
@@ -20,6 +22,16 @@ export enum LimitOrderKind {
   BUY = 'Buy',
 }
 
+export enum InputFocus {
+  /**
+   * A sell input focus.
+   */
+  SELL = 'sell',
+  /**
+   * A buy input focus.
+   */
+  BUY = 'buy',
+}
 /**
  * Serializable Limit Order interface.
  */
@@ -90,4 +102,12 @@ export enum OrderExpiresInUnit {
 export interface MarketPrices {
   buy: number
   sell: number
+}
+
+export interface IComputeNewAmount {
+  amount: number
+  buyAmountWei: string
+  sellAmountWei: string
+  newBuyTokenAmount: TokenAmount
+  newSellTokenAmount: TokenAmount
 }
