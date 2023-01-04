@@ -65,6 +65,10 @@ export const useAdvancedTradingView = () => {
     [chainId]
   )
 
+  useEffect(() => {
+    setIsLoadingTrades(true)
+  }, [chainId])
+
   const previousTokens = useRef<{ inputTokenAddress?: string; outputTokenAddress?: string }>({
     inputTokenAddress: undefined,
     outputTokenAddress: undefined,
