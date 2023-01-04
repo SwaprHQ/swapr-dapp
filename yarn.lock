@@ -23271,11 +23271,6 @@ react-toastify@9.0.8:
   dependencies:
     clsx "^1.1.1"
 
-react-ts-tradingview-widgets@^1.0.11:
-  version "1.0.14"
-  resolved "https://registry.yarnpkg.com/react-ts-tradingview-widgets/-/react-ts-tradingview-widgets-1.0.14.tgz#bb82be565e721e0f535821f1095dfdaa72a0d3d8"
-  integrity sha512-gnpW/p2pi428nm5JshCjT69pJETT0eNJC7pI1juRwwNGNT67x8ZETTszK6vHgMnye3LUGiMJNXQSllzSbxTx/Q==
-
 react-universal-interface@^0.6.2:
   version "0.6.2"
   resolved "https://registry.yarnpkg.com/react-universal-interface/-/react-universal-interface-0.6.2.tgz#5e8d438a01729a4dbbcbeeceb0b86be146fe2b3b"

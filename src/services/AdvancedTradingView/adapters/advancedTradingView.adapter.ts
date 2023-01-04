@@ -130,7 +130,7 @@ export class AdvancedTradingViewAdapter<AppState> {
     const response = await Promise.allSettled(promises)
 
     const sucessfulResults: SetSwapsBurnsAndMintsActionPayload[] = response
-      .filter(el => el.status === 'fulfilled')
+      .filter(el => el.status === 'fulfilled' && el.value)
       .map(el => (el as PromiseFulfilledResult<SetSwapsBurnsAndMintsActionPayload>).value)
 
     this.store.dispatch(
