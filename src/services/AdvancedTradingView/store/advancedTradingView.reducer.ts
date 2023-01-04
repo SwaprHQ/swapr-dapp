@@ -56,6 +56,10 @@ const advancedTradingViewSlice = createSlice({
       }
 
       action.payload.forEach(adapter => {
+        if (!adapter) {
+          return
+        }
+
         const { key, pairId, data, hasMore } = adapter
 
         const nextPairSwapData = state.adapters[key][pairId]?.[AdapterPayloadType.SWAPS]?.data ?? []
