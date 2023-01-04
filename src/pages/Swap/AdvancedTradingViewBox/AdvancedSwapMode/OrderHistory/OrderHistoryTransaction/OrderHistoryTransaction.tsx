@@ -68,11 +68,9 @@ export const OrderHistoryTransaction = ({ tx }: { tx: Transaction }) => {
   if ('creationDate' in tx && 'signature' in tx) {
     transactionType = tx.class.toString()
 
-    // Fix the token amounts
     sellTokenAmount = utils.formatUnits(tx.sellToken?.value, formattedSellToken?.decimals)
     buyTokenAmount = utils.formatUnits(tx.buyToken?.value, formattedBuyToken?.decimals)
 
-    // Fix the timestamp
     if (tx.creationDate) {
       formattedTimestamp = dayjs(tx.creationDate).format('DD/MM/YYYY HH:mm')
     }

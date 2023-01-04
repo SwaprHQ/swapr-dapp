@@ -3,7 +3,6 @@ import { useTranslation } from 'react-i18next'
 import { Flex, Text } from 'rebass'
 
 import { ButtonDark } from '../../../../components/Button'
-import { useAllTokens } from '../../../../hooks/Tokens'
 import { useAdvancedTradingView } from '../../../../services/AdvancedTradingView/useAdvancedTradingView.hook'
 import { useAllTrades } from '../../../../services/AdvancedTradingView/useAllTrades.hook'
 import {
@@ -68,13 +67,6 @@ export const AdvancedSwapMode = ({ children }: PropsWithChildren) => {
   const transactionsWrapperMaxHeight = tradesWrapper?.current?.clientHeight
     ? tradesWrapper?.current?.clientHeight - TradesWrapperHeight.PADDING
     : TradesWrapperHeight.MIN
-
-  const allTokens = useAllTokens()
-
-  console.log({
-    allTokens,
-    transactions,
-  })
 
   return (
     <AdvancedSwapModeWrapper>

@@ -60,7 +60,7 @@ export const useAllTrades = (): {
             transaction.status.toUpperCase() !== TransactionStatus.REDEEM
         )
         .splice(0, 5 - pendingTransactions.length)
-        // Sort by conirmation time
+        // Sort by confirmation time
         .sort((a, b) => {
           return Number(b.confirmedTime) - Number(a.confirmedTime)
         })
