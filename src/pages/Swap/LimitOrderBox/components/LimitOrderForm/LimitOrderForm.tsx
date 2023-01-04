@@ -88,10 +88,12 @@ export function LimitOrderForm({ account, provider, chainId }: LimitOrderFormPro
     sellTokenAmount,
     getVaultRelayerAddress(chainId)
   )
+
   const onModalDismiss = () => {
     setIsModalOpen(false)
     setErrorMessage('')
   }
+
   const setToMarket = async () => {
     const signer = provider.getSigner()
     if (!limitOrder.buyToken || !limitOrder.sellToken) {
@@ -140,19 +142,21 @@ export function LimitOrderForm({ account, provider, chainId }: LimitOrderFormPro
       if (inputFocus === InputFocus.SELL) {
         setBuyTokenAmount(newBuyTokenAmount)
         setFormattedBuyAmount(toFixedSix(amount))
-        setLimitOrder({
-          ...limitOrder,
+        setLimitOrder(oldLimitOrder => ({
+          ...oldLimitOrder,
+          kind: limitOrder.kind,
           limitPrice: limitPrice,
           buyAmount: buyAmountWei,
-        })
+        }))
       } else {
         setSellTokenAmount(newSellTokenAmount)
         setFormattedSellAmount(toFixedSix(amount))
-        setLimitOrder({
-          ...limitOrder,
+        setLimitOrder(oldLimitOrder => ({
+          ...oldLimitOrder,
+          kind: limitOrder.kind,
           limitPrice: limitPrice,
           sellAmount: sellAmountWei,
-        })
+        }))
       }
     }
   }
@@ -284,7 +288,6 @@ export function LimitOrderForm({ account, provider, chainId }: LimitOrderFormPro
     amountWei,
     currency,
     amountFormatted,
-    updatedLimitOrder = limitOrder,
   }: HandleCurrencyAmountChangeParams) => {
     if (Number(amountWei ?? 0) === 0) {
       setIsPossibleToOrder({ value: 0, status: true })
@@ -292,11 +295,6 @@ export function LimitOrderForm({ account, provider, chainId }: LimitOrderFormPro
 
     const limitPriceFloat = parseFloat(formattedLimitPrice)
     // Construct a new token amount and format it
-    const newLimitOrder = {
-      ...updatedLimitOrder,
-      sellAmount: amountWei,
-      sellToken: currency.address as string,
-    }
     // Update the buy currency amount if the user has selected a token
     // Update relevant state variables
     const nextSellTokenAmount = new TokenAmount(currency as Token, amountWei)
@@ -317,7 +315,11 @@ export function LimitOrderForm({ account, provider, chainId }: LimitOrderFormPro
     setFormattedBuyAmount(nextBuyAmountFloat ? toFixedSix(nextBuyAmountFloat) : '') // update the token amount input
     setSellTokenAmount(nextSellTokenAmount)
     // Re-compute the limit order buy
-    setLimitOrder(newLimitOrder)
+    setLimitOrder(oldLimitOrder => ({
+      ...oldLimitOrder,
+      sellAmount: amountWei,
+      sellToken: currency.address as string,
+    }))
 
     setInputFocus(InputFocus.SELL)
   }
@@ -329,7 +331,6 @@ export function LimitOrderForm({ account, provider, chainId }: LimitOrderFormPro
     amountWei,
     currency,
     amountFormatted,
-    updatedLimitOrder = limitOrder,
   }: HandleCurrencyAmountChangeParams) => {
     if (Number(amountWei ?? 0) === 0) {
       setIsPossibleToOrder({ value: 0, status: true })
@@ -337,12 +338,6 @@ export function LimitOrderForm({ account, provider, chainId }: LimitOrderFormPro
 
     // Construct a new token amount and format it
     const limitPriceFloat = parseFloat(formattedLimitPrice)
-
-    const newLimitOrder = {
-      ...updatedLimitOrder,
-      buyAmount: amountWei,
-      buyToken: currency.address as string,
-    }
 
     const newBuyTokenAmount = new TokenAmount(currency as Token, amountWei)
 
@@ -362,7 +357,11 @@ export function LimitOrderForm({ account, provider, chainId }: LimitOrderFormPro
     setFormattedSellAmount(nextSellAmountFloat ? toFixedSix(nextSellAmountFloat) : '') // update the token amount input
     setBuyTokenAmount(newBuyTokenAmount)
     // Re-compute the limit order buy
-    setLimitOrder(newLimitOrder)
+    setLimitOrder(oldLimitOrder => ({
+      ...oldLimitOrder,
+      buyAmount: amountWei,
+      buyToken: currency.address as string,
+    }))
 
     setInputFocus(InputFocus.BUY)
   }

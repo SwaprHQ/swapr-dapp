@@ -52,7 +52,6 @@ export const AdvancedSwapMode = ({ children }: PropsWithChildren) => {
     chainId,
     inputToken,
     outputToken,
-    symbol,
     showTrades,
     isLoadingTrades,
     isLoadingActivity,
@@ -63,6 +62,7 @@ export const AdvancedSwapMode = ({ children }: PropsWithChildren) => {
     handleAddLiquidity,
     handleSwitchCurrency,
     isFetched,
+    pairAddress,
   } = useAdvancedTradingView()
 
   const transactionsWrapperMaxHeight = tradesWrapper?.current?.clientHeight
@@ -77,7 +77,7 @@ export const AdvancedSwapMode = ({ children }: PropsWithChildren) => {
         <PairDetails token0={token0} token1={token1} activeCurrencyOption={inputToken} />
       </PairDetailsWrapper>
       <ChartWrapper>
-        <Chart symbol={symbol} />
+        <Chart pairAddress={pairAddress} />
       </ChartWrapper>
       <TradesWrapper ref={tradesWrapper}>
         <AdvancedModeHeader>
