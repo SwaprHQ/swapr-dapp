@@ -331,7 +331,7 @@ const socketBridgeDetails = createSelectBridgingDetails('socket')
 const arbitrumMainnetBridgeDetails = createSelectBridgingDetails('arbitrum:mainnet')
 const arbitrumTestnetBridgeDetails = createSelectBridgingDetails('arbitrum:testnet')
 const omnibridgeBridgeDetails = createSelectBridgingDetails('omnibridge:eth-xdai')
-const xdaiBridgeDetails = createSelectBridgingDetails('omnibridge:eth-xdai')
+const xdaiBridgeDetails = createSelectBridgingDetails('xdai')
 
 export const selectSupportedBridgesForUI = createSelector(
   [

@@ -15,6 +15,7 @@ export interface CurrencySearchModalProps {
   showNativeCurrency?: boolean
   otherSelectedCurrency?: Currency[] | null
   isOutputPanel?: boolean
+  currencyOmitList?: string[]
 }
 
 export enum CurrencyModalView {
