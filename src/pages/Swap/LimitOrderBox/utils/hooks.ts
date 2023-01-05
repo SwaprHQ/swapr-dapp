@@ -4,6 +4,7 @@ import { ChainId } from '@swapr/sdk'
 import { OrderMetaData } from '@cowprotocol/cow-sdk'
 import { useEffect, useState } from 'react'
 
+import { TransactionType } from '../../../Account/Account.types'
 import { deleteOpenOrders, getOwnerOrders } from '../api'
 
 const appDataHashes = {
@@ -19,7 +20,7 @@ interface Token {
 }
 
 export interface LimitOrderTransaction extends Omit<OrderMetaData, 'status' | 'sellToken' | 'buyToken'> {
-  type: 'Limit Order'
+  type: TransactionType.LimitOrder
   hash: string
   network: ChainId
   sellToken: Token
@@ -36,13 +37,11 @@ export const useLimitOrderTransactions = (chainId?: ChainId, account?: string | 
     const getLimitOrderTransactions = async (chainId: ChainId, account: string) => {
       const orders = await getOrders(account, allNetworks, chainId)
       if (orders && orders.length > 0) {
-        //@ts-expect-error  chainId here wont have other networks since its filtered in upper scope
-        const appData = allNetworks ? Object.values(appDataHashes) : [appDataHashes[chainId]]
-        const filteredOrders = orders.filter(order => appData.includes(order.appData.toString()))
+        const filteredOrders = orders.filter(order => order.class === 'limit')
         const formattedLimitOrders = filteredOrders.map(order => {
           return {
             ...order,
-            type: 'Limit Order' as const,
+            type: TransactionType.LimitOrder as TransactionType.LimitOrder,
             hash: order.uid,
             network: getNetworkId(order.appData.toString()),
             sellToken: {

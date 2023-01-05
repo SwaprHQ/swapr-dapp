@@ -16,7 +16,7 @@ import {
 
 import { useEffect, useMemo, useRef, useState } from 'react'
 
-import { REFETCH_DATA_INTERVAL } from '../constants'
+import { REFETCH_DATA_INTERVAL } from '../constants/data'
 import { tryParseAmount } from '../state/swap/hooks'
 import { getUSDPriceCurrencyQuote, getUSDPriceTokenQuote, toPriceInformation } from '../utils/coingecko'
 import { currencyId } from '../utils/currencyId'
