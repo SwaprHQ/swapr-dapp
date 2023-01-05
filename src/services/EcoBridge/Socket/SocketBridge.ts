@@ -24,7 +24,7 @@ import {
 } from './api/generated'
 import { socketActions } from './Socket.reducer'
 import { socketSelectors } from './Socket.selectors'
-import { SocketTokenMap, SocketTxStatus } from './Socket.types'
+import { SocketTokenMap, SocketTx, SocketTxStatus } from './Socket.types'
 import { getBestRoute, getStatusOfResponse, overrideTokensAddresses, SOCKET_LISTS_URL, VERSION } from './Socket.utils'
 
 export class SocketBridge extends EcoBridgeChildBase {
@@ -59,6 +59,9 @@ export class SocketBridge extends EcoBridgeChildBase {
     this.setSignerData({ account, activeChainId, activeProvider })
 
     this.ecoBridgeUtils.listeners.start([{ listener: this.pendingTxListener }])
+
+    const failedTransactions = this.selectors.selectFailedTransactions(this.store.getState(), this._account)
+    await this.checkBridgingStatus(failedTransactions)
   }
 
   public onSignerChange = async ({ ...signerData }: EcoBridgeChangeHandler) => {
@@ -537,9 +540,13 @@ export class SocketBridge extends EcoBridgeChildBase {
   private pendingTxListener = async () => {
     const pendingTransactions = this.selectors.selectPendingTransactions(this.store.getState(), this._account)
 
-    if (!pendingTransactions.length) return
+    await this.checkBridgingStatus(pendingTransactions)
+  }
 
-    const promises = pendingTransactions.map(async tx => {
+  private checkBridgingStatus = async (socketTransactions: SocketTx[]) => {
+    if (!socketTransactions.length) return
+
+    const promises = socketTransactions.map(async tx => {
       try {
         const status = await ServerAPI.appControllerGetBridgingStatus({
           fromChainId: tx.fromChainId.toString(),
@@ -562,20 +569,10 @@ export class SocketBridge extends EcoBridgeChildBase {
             })
           )
         } else {
-          this.store.dispatch(
-            this.actions.updateTx({
-              txHash: tx.txHash,
-              status: SocketTxStatus.ERROR,
-            })
-          )
+          console.error(`Socket bridge: failed to get bridging status of ${tx.txHash}`)
         }
       } catch (e) {
-        this.store.dispatch(
-          this.actions.updateTx({
-            txHash: tx.txHash,
-            status: SocketTxStatus.ERROR,
-          })
-        )
+        console.error(`Socket bridge: failed to get bridging status of ${tx.txHash}`)
       }
     })
 
