@@ -39,6 +39,7 @@ import Metamask from '../assets/images/metamask.png'
 import QuickswapLogo from '../assets/images/quickswap-logo.png'
 import SushiswapNewLogo from '../assets/images/sushiswap-new-logo.svg'
 import UniswapLogo from '../assets/images/uniswap-logo.svg'
+import VelodromeLogo from '../assets/images/velodrome-logo.svg'
 import WalletConnect from '../assets/images/wallet-connect.svg'
 import { injected, walletConnect, walletLink } from '../connectors'
 
@@ -451,7 +452,7 @@ export const NETWORK_DETAIL: { [chainId: number]: NetworkDetails } = {
       symbol: Currency.ETHER.symbol || 'ETH',
       decimals: Currency.ETHER.decimals || 18,
     },
-    rpcUrls: ['https://mainnet.optimism.io'],
+    rpcUrls: ['https://opt-mainnet.g.alchemy.com/v2/6cRVjVO2uOTC9gWFCsBnquUwOM9zuWQZ'],
     blockExplorerUrls: ['https://optimistic.etherscan.io/'],
   },
   [ChainId.OPTIMISM_GOERLI]: {
@@ -583,6 +584,12 @@ export const RoutablePlatformKeysByNetwork = {
   [ChainId.ARBITRUM_GOERLI]: [],
   [ChainId.GOERLI]: [],
   [ChainId.OPTIMISM_GOERLI]: [],
+  [ChainId.OPTIMISM_MAINNET]: [
+    RoutablePlatform.UNISWAP.name,
+    UniswapV2RoutablePlatform.SUSHISWAP.name,
+    RoutablePlatform.CURVE.name,
+    RoutablePlatform.VELODROME.name,
+  ],
   [ChainId.BSC_TESTNET]: [],
 }
 
@@ -672,6 +679,12 @@ export const ROUTABLE_PLATFORM_STYLE: {
     gradientColor: '#FB52A1',
     name: RoutablePlatform.UNISWAP.name,
   },
+  [RoutablePlatform.VELODROME.name]: {
+    logo: VelodromeLogo,
+    alt: RoutablePlatform.VELODROME.name,
+    gradientColor: '#FB52A1',
+    name: RoutablePlatform.VELODROME.name,
+  },
 }
 
 export const ROUTABLE_PLATFORM_LOGO: {
@@ -689,6 +702,7 @@ export const ROUTABLE_PLATFORM_LOGO: {
   [RoutablePlatform.CURVE.name]: <img width={16} height={16} src={CurveLogo} alt="Curve" />,
   [RoutablePlatform.ZEROX.name]: <img width={16} height={16} src={ZeroXLogo} alt="ZeroX" />,
   [RoutablePlatform.GNOSIS_PROTOCOL.name]: <img width={16} height={16} src={CoWLogo} alt="CoW" />,
+  [RoutablePlatform.VELODROME.name]: <img width={16} height={16} src={VelodromeLogo} alt="Velodrome" />,
   [RoutablePlatform.UNISWAP.name]: <img width={16} height={16} src={UniswapLogo} alt="Uniswap Unicorn" />,
 }
 

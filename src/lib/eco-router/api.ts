@@ -11,6 +11,7 @@ import {
   TradeType,
   UniswapTrade,
   UniswapV2Trade,
+  VelodromeTrade,
   ZeroXTrade,
 } from '@swapr/sdk'
 // Low-level API for Uniswap V2
@@ -122,6 +123,26 @@ export async function getExactIn(
       })
   })
 
+  const velodromeTrade = new Promise<any | undefined>(resolve => {
+    if (!RoutablePlatform.VELODROME.supportsChain(chainId)) {
+      return resolve(undefined)
+    }
+
+    VelodromeTrade.getQuote({
+      quoteCurrency: currencyOut,
+      amount: currencyAmountIn,
+      maximumSlippage,
+      recipient: receiver,
+      tradeType: TradeType.EXACT_INPUT,
+    })
+      .then(res => resolve(res ? res : undefined))
+      .catch(error => {
+        console.error(error)
+        errors.push(error)
+        resolve(undefined)
+      })
+  })
+
   // Curve
   const curveTrade = new Promise<CurveTrade | undefined>(async resolve => {
     if (!RoutablePlatform.CURVE.supportsChain(chainId)) {
@@ -180,6 +201,7 @@ export async function getExactIn(
   // remove undefined values
   const unsortedTradesWithUndefined = await Promise.all<Trade | undefined>([
     ...uniswapV2TradesList,
+    velodromeTrade,
     curveTrade,
     gnosisProtocolTrade,
     uniswapTrade,
@@ -269,6 +291,27 @@ export async function getExactOut(
       })
   })
 
+  const velodromeTrade = new Promise<any | undefined>(resolve => {
+    if (!RoutablePlatform.VELODROME.supportsChain(chainId)) {
+      return resolve(undefined)
+    }
+
+    VelodromeTrade.getQuote({
+      quoteCurrency: currencyIn,
+      amount: currencyAmountOut,
+      maximumSlippage,
+      recipient: receiver,
+      tradeType: TradeType.EXACT_OUTPUT,
+    })
+      .then(res => resolve(res ? res : undefined))
+      .catch(error => {
+        console.log('velError')
+        console.error(error)
+        errors.push(error)
+        resolve(undefined)
+      })
+  })
+
   // Curve
   const curveTrade = new Promise<CurveTrade | undefined>(async resolve => {
     if (!RoutablePlatform.CURVE.supportsChain(chainId)) {
@@ -330,6 +373,7 @@ export async function getExactOut(
     curveTrade,
     gnosisProtocolTrade,
     uniswapTrade,
+    velodromeTrade,
     zeroXTrade,
   ])
   const unsortedTrades = unsortedTradesWithUndefined.filter((trade): trade is Trade => !!trade)
