@@ -4,7 +4,6 @@ import { InjectedConnector } from '@web3-react/injected-connector'
 import { providers } from 'ethers'
 
 import swprLogo from '../assets/images/swpr-logo.png'
-import { REFETCH_DATA_INTERVAL } from '../constants'
 import getLibrary from '../utils/getLibrary'
 import { CustomNetworkConnector } from './CustomNetworkConnector'
 import { CustomWalletConnectConnector } from './CustomWalletConnectConnector'
@@ -54,7 +53,7 @@ export const walletConnect = new CustomWalletConnectConnector({
   },
   bridge: 'https://bridge.walletconnect.org',
   qrcode: true,
-  pollingInterval: REFETCH_DATA_INTERVAL,
+  pollingInterval: 15000,
 })
 
 let networkLibrary: providers.Web3Provider | undefined

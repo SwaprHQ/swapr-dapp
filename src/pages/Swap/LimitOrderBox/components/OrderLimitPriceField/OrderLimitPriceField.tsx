@@ -1,14 +1,15 @@
 import { formatUnits, parseUnits } from '@ethersproject/units'
 
-import { useContext, useEffect, useState } from 'react'
+import { useCallback, useContext, useEffect, useState } from 'react'
 import { RefreshCw } from 'react-feather'
 import { useTranslation } from 'react-i18next'
 
 import { invalidChars } from '../../constants'
 import { LimitOrderFormContext } from '../../contexts/LimitOrderFormContext'
-import { InputFocus, LimitOrderKind, MarketPrices } from '../../interfaces'
-import { computeNewAmount } from '../../utils'
+import { InputFocus, LimitOrderKind } from '../../interfaces'
+import { calculateMarketPriceDiffPercentage, computeNewAmount } from '../../utils'
 import { InputGroup } from '../InputGroup'
+import { MarketPriceButton } from './MarketPriceButton'
 import {
   LimitLabel,
   MarketPriceDiff,
@@ -35,9 +36,10 @@ export function OrderLimitPriceField({ id }: OrderLimitPriceFieldProps) {
     setFormattedBuyAmount,
     setSellTokenAmount,
     setFormattedSellAmount,
-    setToMarket,
     marketPrices,
     inputFocus,
+    fetchMarketPrice,
+    setFetchMarketPrice,
   } = useContext(LimitOrderFormContext)
 
   const [baseTokenAmount, quoteTokenAmount] =
@@ -46,7 +48,7 @@ export function OrderLimitPriceField({ id }: OrderLimitPriceFieldProps) {
   const toggleCurrencyButtonLabel = `${quoteTokenAmount?.currency?.symbol}`
   const [inputLimitPrice, setInputLimitPrice] = useState<string | number>(formattedLimitPrice)
 
-  let { marketPriceDiffPercentage, isDiffPositive } = calculateMarketPriceDiffPercentage(
+  const { marketPriceDiffPercentage, isDiffPositive } = calculateMarketPriceDiffPercentage(
     limitOrder.kind,
     marketPrices,
     formattedLimitPrice
@@ -62,7 +64,7 @@ export function OrderLimitPriceField({ id }: OrderLimitPriceFieldProps) {
   /**
    * Handle the base currency change.
    */
-  const toggleBaseCurrency = () => {
+  const toggleBaseCurrency = useCallback(() => {
     // Toggle between buy and sell currency
     const kind = limitOrder.kind === LimitOrderKind.SELL ? LimitOrderKind.BUY : LimitOrderKind.SELL
     const [baseTokenAmount, quoteTokenAmount] =
@@ -79,14 +81,14 @@ export function OrderLimitPriceField({ id }: OrderLimitPriceFieldProps) {
     const nextLimitPriceFormatted = nextLimitPriceFloat.toFixed(6) // 6 is the lowest precision we support due to tokens like USDC
     const nextLimitPriceWei = parseUnits(nextLimitPriceFormatted, quoteTokenAmount?.currency?.decimals).toString()
 
-    setLimitOrder({
-      ...limitOrder,
+    setLimitOrder(oldLimitOrder => ({
+      ...oldLimitOrder,
       kind,
       limitPrice: nextLimitPriceWei,
-    })
+    }))
     // update the formatted limit price
     setFormattedLimitPrice(nextLimitPriceFormatted)
-  }
+  }, [buyTokenAmount, limitOrder, sellTokenAmount, setFormattedLimitPrice, setLimitOrder])
 
   /**
    * Handle the limit price input change. Compute the buy amount and update the state.
@@ -139,7 +141,13 @@ export function OrderLimitPriceField({ id }: OrderLimitPriceFieldProps) {
           sellAmount: sellAmountWei,
         })
       }
+
+      setFetchMarketPrice(false)
     }
+  }
+
+  const onClickGetMarketPrice = () => {
+    setFetchMarketPrice(true)
   }
 
   return (
@@ -151,7 +159,14 @@ export function OrderLimitPriceField({ id }: OrderLimitPriceFieldProps) {
             <MarketPriceDiff isPositive={isDiffPositive}> ({marketPriceDiffPercentage.toFixed(2)}%)</MarketPriceDiff>
           )}
         </span>
-        <SetToMarket onClick={setToMarket}>{t('limitOrder.setToMarket')}</SetToMarket>
+        {fetchMarketPrice ? (
+          <MarketPriceButton
+            buyTokenAmountCurrency={buyTokenAmount.currency}
+            sellTokenAmountCurrency={sellTokenAmount.currency}
+          />
+        ) : (
+          <SetToMarket onClick={onClickGetMarketPrice}>{t('limitOrder.getMarketPrice')}</SetToMarket>
+        )}
       </LimitLabel>
       <InputGroup.InnerWrapper>
         <InputGroup.Input
@@ -183,34 +198,4 @@ export function OrderLimitPriceField({ id }: OrderLimitPriceFieldProps) {
       </InputGroup.InnerWrapper>
     </InputGroup>
   )
-}
-
-export function calculateMarketPriceDiffPercentage(
-  limitOrderKind: LimitOrderKind,
-  marketPrices: MarketPrices,
-  formattedLimitPrice: string
-) {
-  const nextLimitPriceFloat = limitOrderKind === LimitOrderKind.SELL ? marketPrices.buy : marketPrices.sell
-  let marketPriceDiffPercentage = 0
-  let isDiffPositive = false
-
-  if (Boolean(Number(nextLimitPriceFloat))) {
-    if (limitOrderKind === LimitOrderKind.SELL) {
-      marketPriceDiffPercentage = (Number(formattedLimitPrice) / Number(nextLimitPriceFloat.toFixed(6)) - 1) * 100
-      isDiffPositive = Math.sign(Number(marketPriceDiffPercentage)) > 0
-    } else {
-      marketPriceDiffPercentage = (Number(nextLimitPriceFloat.toFixed(6)) / Number(formattedLimitPrice) - 1) * 100
-
-      if (marketPriceDiffPercentage < 0) {
-        marketPriceDiffPercentage = Math.abs(marketPriceDiffPercentage)
-      } else {
-        marketPriceDiffPercentage = Math.min(marketPriceDiffPercentage, 999)
-        marketPriceDiffPercentage = marketPriceDiffPercentage * -1
-      }
-      isDiffPositive = Math.sign(Number(marketPriceDiffPercentage)) < 0
-    }
-  }
-
-  marketPriceDiffPercentage = Math.min(marketPriceDiffPercentage, 999)
-  return { marketPriceDiffPercentage, isDiffPositive }
 }

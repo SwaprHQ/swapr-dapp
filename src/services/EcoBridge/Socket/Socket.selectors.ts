@@ -44,6 +44,13 @@ const createSelectPendingTransactions = (selectOwnedTxs: ReturnType<typeof creat
     return pendingTxs
   })
 
+const createSelectFailedTransactions = (selectOwnedTxs: ReturnType<typeof createSelectOwnedTransactions>) =>
+  createSelector(selectOwnedTxs, ownedTxs => {
+    const failedTxs = ownedTxs.filter(tx => tx.status === SocketTxStatus.ERROR && !tx.partnerTxHash)
+
+    return failedTxs
+  })
+
 const createSelectBridgeTransactionsSummary = (
   bridgeId: SocketList,
   selectOwnedTxs: ReturnType<typeof createSelectOwnedTransactions>
@@ -104,6 +111,7 @@ export interface SocketBridgeSelectors {
   selectTxBridgingData: ReturnType<typeof createSelectTxBridgingData>
   selectOwnedTransactions: ReturnType<typeof createSelectOwnedTransactions>
   selectPendingTransactions: ReturnType<typeof createSelectPendingTransactions>
+  selectFailedTransactions: ReturnType<typeof createSelectFailedTransactions>
   selectBridgeTransactionsSummary: ReturnType<typeof createSelectBridgeTransactionsSummary>
 }
 export const socketSelectorsFactory = (socketBridges: SocketList[]) => {
@@ -113,6 +121,7 @@ export const socketSelectorsFactory = (socketBridges: SocketList[]) => {
     const selectApprovalData = createSelectApprovalData(bridgeId)
     const selectTxBridgingData = createSelectTxBridgingData(bridgeId)
     const selectPendingTransactions = createSelectPendingTransactions(selectOwnedTransactions)
+    const selectFailedTransactions = createSelectFailedTransactions(selectOwnedTransactions)
     const selectBridgeTransactionsSummary = createSelectBridgeTransactionsSummary(bridgeId, selectOwnedTransactions)
 
     const selectors = {
@@ -120,6 +129,7 @@ export const socketSelectorsFactory = (socketBridges: SocketList[]) => {
       selectApprovalData,
       selectTxBridgingData,
       selectOwnedTransactions,
+      selectFailedTransactions,
       selectPendingTransactions,
       selectBridgeTransactionsSummary,
     }

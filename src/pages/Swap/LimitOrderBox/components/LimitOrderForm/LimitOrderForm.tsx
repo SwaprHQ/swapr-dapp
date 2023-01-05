@@ -13,6 +13,7 @@ import { ButtonPrimary } from '../../../../../components/Button'
 import { AutoColumn } from '../../../../../components/Column'
 import { CurrencyInputPanel } from '../../../../../components/CurrencyInputPanel'
 import { PageMetaData } from '../../../../../components/PageMetaData'
+import { REFETCH_DATA_INTERVAL } from '../../../../../constants/index'
 import { ApprovalState, useApproveCallback } from '../../../../../hooks/useApproveCallback'
 import { useHigherUSDValue } from '../../../../../hooks/useUSDValue'
 import { useNotificationPopup } from '../../../../../state/application/hooks'
@@ -20,6 +21,7 @@ import { useCurrencyBalances } from '../../../../../state/wallet/hooks'
 import { maxAmountSpend } from '../../../../../utils/maxAmountSpend'
 import AppBody from '../../../../AppBody'
 import { createCoWLimitOrder, getQuote, getVaultRelayerAddress } from '../../api/cow'
+import { GET_QUOTE_EXPIRY_MINUTES } from '../../constants'
 import { LimitOrderFormContext } from '../../contexts/LimitOrderFormContext'
 import { InputFocus, LimitOrderKind, MarketPrices, OrderExpiresInUnit, SerializableLimitOrder } from '../../interfaces'
 import { computeNewAmount, getInitialState } from '../../utils'
@@ -38,7 +40,7 @@ interface HandleCurrencyAmountChangeParams {
   currency: Currency
   amountWei: string
   amountFormatted: string
-  updatedLimitOrder?: SerializableLimitOrder
+  inputFocus?: InputFocus
 }
 
 export interface LimitOrderFormProps {
@@ -55,10 +57,9 @@ export function LimitOrderForm({ account, provider, chainId }: LimitOrderFormPro
   const notify = useNotificationPopup()
   // Get the initial values and set the state
   let initialState = useRef(getInitialState(chainId, account)).current
-  // Local state
-  const [expiresInUnit, setExpiresInUnit] = useState(OrderExpiresInUnit.Minutes)
-  // Default expiry time set to 20 minutes
-  const [expiresIn, setExpiresIn] = useState(20)
+  // Default expiry time set to 3 days
+  const [expiresInUnit, setExpiresInUnit] = useState(OrderExpiresInUnit.Days)
+  const [expiresIn, setExpiresIn] = useState(3)
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [errorMessage, setErrorMessage] = useState('')
   // IsPossibleToOrder
@@ -76,6 +77,9 @@ export function LimitOrderForm({ account, provider, chainId }: LimitOrderFormPro
 
   const [inputFocus, setInputFocus] = useState<InputFocus>(InputFocus.SELL)
 
+  const [fetchMarketPrice, setFetchMarketPrice] = useState<boolean>(true)
+  const [marketPriceInterval, setMarketPriceInterval] = useState<NodeJS.Timer | undefined>()
+
   useLayoutEffect(() => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
     initialState = getInitialState(chainId, account)
@@ -88,11 +92,13 @@ export function LimitOrderForm({ account, provider, chainId }: LimitOrderFormPro
     sellTokenAmount,
     getVaultRelayerAddress(chainId)
   )
+
   const onModalDismiss = () => {
     setIsModalOpen(false)
     setErrorMessage('')
   }
-  const setToMarket = async () => {
+
+  const setToMarket = useCallback(async () => {
     const signer = provider.getSigner()
     if (!limitOrder.buyToken || !limitOrder.sellToken) {
       return
@@ -109,7 +115,7 @@ export function LimitOrderForm({ account, provider, chainId }: LimitOrderFormPro
     const cowQuote = await getQuote({
       chainId,
       signer,
-      order: { ...order, expiresAt: dayjs().add(expiresIn, expiresInUnit).unix() },
+      order: { ...order, expiresAt: dayjs().add(GET_QUOTE_EXPIRY_MINUTES, OrderExpiresInUnit.Minutes).unix() },
     })
 
     if (cowQuote !== undefined) {
@@ -140,33 +146,62 @@ export function LimitOrderForm({ account, provider, chainId }: LimitOrderFormPro
       if (inputFocus === InputFocus.SELL) {
         setBuyTokenAmount(newBuyTokenAmount)
         setFormattedBuyAmount(toFixedSix(amount))
-        setLimitOrder({
-          ...limitOrder,
+        setLimitOrder(oldLimitOrder => ({
+          ...oldLimitOrder,
+          kind: limitOrder.kind,
           limitPrice: limitPrice,
           buyAmount: buyAmountWei,
-        })
+        }))
       } else {
         setSellTokenAmount(newSellTokenAmount)
         setFormattedSellAmount(toFixedSix(amount))
-        setLimitOrder({
-          ...limitOrder,
+        setLimitOrder(oldLimitOrder => ({
+          ...oldLimitOrder,
+          kind: limitOrder.kind,
           limitPrice: limitPrice,
           sellAmount: sellAmountWei,
-        })
+        }))
       }
     }
-  }
+  }, [buyTokenAmount, chainId, inputFocus, limitOrder, provider, sellTokenAmount])
+
+  const setToMarketRef = useRef(setToMarket)
 
   useEffect(() => {
-    setToMarket().catch(e => {
-      console.error(e)
-      setIsPossibleToOrder({
-        status: true,
-        value: 0,
+    setToMarketRef.current = setToMarket
+  }, [setToMarket])
+
+  useEffect(() => {
+    const getMarketPrice = () => {
+      setToMarketRef.current().catch(e => {
+        console.error(e)
+        setIsPossibleToOrder({
+          status: true,
+          value: 0,
+        })
       })
-    })
+    }
+
+    let refetchMarketPrice: NodeJS.Timeout | undefined
+    if (fetchMarketPrice) {
+      getMarketPrice()
+
+      refetchMarketPrice = setInterval(() => {
+        getMarketPrice()
+      }, REFETCH_DATA_INTERVAL)
+
+      setMarketPriceInterval(refetchMarketPrice)
+    } else {
+      clearInterval(marketPriceInterval)
+      setMarketPriceInterval(undefined)
+    }
+
+    return () => {
+      setMarketPriceInterval(undefined)
+      clearInterval(refetchMarketPrice)
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [buyTokenAmount.currency, sellTokenAmount.currency])
+  }, [buyTokenAmount.currency, sellTokenAmount.currency, chainId, fetchMarketPrice])
 
   const [sellCurrencyBalance, buyCurrencyBalance] = useCurrencyBalances(account, [
     sellTokenAmount.currency,
@@ -258,7 +293,7 @@ export function LimitOrderForm({ account, provider, chainId }: LimitOrderFormPro
         parseFloat(formattedSellAmount).toFixed(6),
         sellTokenAmount?.currency?.decimals
       ).toString()
-      const expiresAt = dayjs().add(expiresIn, expiresInUnit).unix()
+      const expiresAt = dayjs().add(GET_QUOTE_EXPIRY_MINUTES, OrderExpiresInUnit.Minutes).unix()
       const sellCurrencyMaxAmount = maxAmountSpend(sellCurrencyBalance, chainId)
 
       checkMaxOrderAmount(
@@ -284,7 +319,7 @@ export function LimitOrderForm({ account, provider, chainId }: LimitOrderFormPro
     amountWei,
     currency,
     amountFormatted,
-    updatedLimitOrder = limitOrder,
+    inputFocus,
   }: HandleCurrencyAmountChangeParams) => {
     if (Number(amountWei ?? 0) === 0) {
       setIsPossibleToOrder({ value: 0, status: true })
@@ -292,11 +327,6 @@ export function LimitOrderForm({ account, provider, chainId }: LimitOrderFormPro
 
     const limitPriceFloat = parseFloat(formattedLimitPrice)
     // Construct a new token amount and format it
-    const newLimitOrder = {
-      ...updatedLimitOrder,
-      sellAmount: amountWei,
-      sellToken: currency.address as string,
-    }
     // Update the buy currency amount if the user has selected a token
     // Update relevant state variables
     const nextSellTokenAmount = new TokenAmount(currency as Token, amountWei)
@@ -317,9 +347,13 @@ export function LimitOrderForm({ account, provider, chainId }: LimitOrderFormPro
     setFormattedBuyAmount(nextBuyAmountFloat ? toFixedSix(nextBuyAmountFloat) : '') // update the token amount input
     setSellTokenAmount(nextSellTokenAmount)
     // Re-compute the limit order buy
-    setLimitOrder(newLimitOrder)
+    setLimitOrder(oldLimitOrder => ({
+      ...oldLimitOrder,
+      sellAmount: amountWei,
+      sellToken: currency.address as string,
+    }))
 
-    setInputFocus(InputFocus.SELL)
+    if (inputFocus) setInputFocus(inputFocus)
   }
 
   /**
@@ -329,7 +363,7 @@ export function LimitOrderForm({ account, provider, chainId }: LimitOrderFormPro
     amountWei,
     currency,
     amountFormatted,
-    updatedLimitOrder = limitOrder,
+    inputFocus,
   }: HandleCurrencyAmountChangeParams) => {
     if (Number(amountWei ?? 0) === 0) {
       setIsPossibleToOrder({ value: 0, status: true })
@@ -337,12 +371,6 @@ export function LimitOrderForm({ account, provider, chainId }: LimitOrderFormPro
 
     // Construct a new token amount and format it
     const limitPriceFloat = parseFloat(formattedLimitPrice)
-
-    const newLimitOrder = {
-      ...updatedLimitOrder,
-      buyAmount: amountWei,
-      buyToken: currency.address as string,
-    }
 
     const newBuyTokenAmount = new TokenAmount(currency as Token, amountWei)
 
@@ -362,20 +390,26 @@ export function LimitOrderForm({ account, provider, chainId }: LimitOrderFormPro
     setFormattedSellAmount(nextSellAmountFloat ? toFixedSix(nextSellAmountFloat) : '') // update the token amount input
     setBuyTokenAmount(newBuyTokenAmount)
     // Re-compute the limit order buy
-    setLimitOrder(newLimitOrder)
+    setLimitOrder(oldLimitOrder => ({
+      ...oldLimitOrder,
+      buyAmount: amountWei,
+      buyToken: currency.address as string,
+    }))
 
-    setInputFocus(InputFocus.BUY)
+    if (inputFocus) setInputFocus(inputFocus)
   }
 
-  const handleInputOnChange = (token: Token, handleAmountChange: Function) => (formattedValue: string) => {
-    const amountFormatted = formattedValue.trim() === '' ? '0' : formattedValue
-    const amountWei = parseUnits(formattedValue, token.decimals).toString()
-    handleAmountChange({
-      currency: token as Token,
-      amountWei,
-      amountFormatted,
-    })
-  }
+  const handleInputOnChange =
+    (token: Token, inputFocus: InputFocus, handleAmountChange: Function) => (formattedValue: string) => {
+      const amountFormatted = formattedValue.trim() === '' ? '0' : formattedValue
+      const amountWei = parseUnits(formattedValue, token.decimals).toString()
+      handleAmountChange({
+        currency: token as Token,
+        amountWei,
+        amountFormatted,
+        inputFocus,
+      })
+    }
 
   const handleCurrencySelect =
     (prevTokenAmount: TokenAmount, handleCurrencyAmountChange: Function, amountFormatted: string) =>
@@ -418,7 +452,7 @@ export function LimitOrderForm({ account, provider, chainId }: LimitOrderFormPro
       const cowQuote = await getQuote({
         chainId,
         signer,
-        order: { ...order, expiresAt: dayjs().add(expiresIn, expiresInUnit).unix() },
+        order: { ...order, expiresAt: dayjs().add(GET_QUOTE_EXPIRY_MINUTES, OrderExpiresInUnit.Minutes).unix() },
       })
 
       if (cowQuote) {
@@ -439,7 +473,7 @@ export function LimitOrderForm({ account, provider, chainId }: LimitOrderFormPro
         }
       }
     }
-  }, [buyTokenAmount, chainId, expiresIn, expiresInUnit, limitOrder, provider, sellTokenAmount])
+  }, [buyTokenAmount, chainId, limitOrder, provider, sellTokenAmount])
 
   useEffect(() => {
     getMarketPrices()
@@ -473,6 +507,8 @@ export function LimitOrderForm({ account, provider, chainId }: LimitOrderFormPro
             setToMarket,
             marketPrices,
             inputFocus,
+            fetchMarketPrice,
+            setFetchMarketPrice,
           }}
         >
           <ConfirmLimitOrderModal
@@ -495,7 +531,11 @@ export function LimitOrderForm({ account, provider, chainId }: LimitOrderFormPro
                   formattedSellAmount
                 )}
                 value={formattedSellAmount}
-                onUserInput={handleInputOnChange(sellTokenAmount.currency as Token, handleSellCurrencyAmountChange)}
+                onUserInput={handleInputOnChange(
+                  sellTokenAmount.currency as Token,
+                  InputFocus.SELL,
+                  handleSellCurrencyAmountChange
+                )}
                 onMax={handleOnMax(sellCurrencyMaxAmount, handleSellCurrencyAmountChange)}
                 maxAmount={sellCurrencyMaxAmount}
                 fiatValue={fiatValueInput}
@@ -514,7 +554,11 @@ export function LimitOrderForm({ account, provider, chainId }: LimitOrderFormPro
                   formattedBuyAmount
                 )}
                 value={formattedBuyAmount}
-                onUserInput={handleInputOnChange(buyTokenAmount.currency as Token, handleBuyCurrencyAmountChange)}
+                onUserInput={handleInputOnChange(
+                  buyTokenAmount.currency as Token,
+                  InputFocus.BUY,
+                  handleBuyCurrencyAmountChange
+                )}
                 onMax={handleOnMax(buyCurrencyMaxAmount, handleBuyCurrencyAmountChange)}
                 maxAmount={buyCurrencyMaxAmount}
                 fiatValue={fiatValueOutput}

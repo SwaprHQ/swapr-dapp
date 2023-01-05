@@ -15,3 +15,19 @@ export const AbsoluteWrapper = styled.div`
   z-index: 1;
   background: ${({ theme }) => theme.bg9};
 `
+
+export const DexScreenerIframe = styled.div`
+  position: relative;
+  width: 100%;
+  height: 106.5%;
+  user-select: none;
+
+  iframe {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    border: 0;
+  }
+`
