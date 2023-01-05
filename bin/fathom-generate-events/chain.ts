@@ -11,5 +11,6 @@ export function getChainNameByChainId(chainId: ChainId): string {
     [ChainId.POLYGON]: 'polygon',
     [ChainId.ARBITRUM_GOERLI]: 'arbitrum-goerli',
     [ChainId.ARBITRUM_RINKEBY]: 'arbitrum-rinkeby',
+    [ChainId.BSC_MAINNET]: 'bsc',
   }[chainId]
 }
