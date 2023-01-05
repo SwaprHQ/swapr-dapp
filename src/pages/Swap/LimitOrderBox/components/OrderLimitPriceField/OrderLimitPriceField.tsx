@@ -9,6 +9,7 @@ import { LimitOrderFormContext } from '../../contexts/LimitOrderFormContext'
 import { InputFocus, LimitOrderKind } from '../../interfaces'
 import { calculateMarketPriceDiffPercentage, computeNewAmount } from '../../utils'
 import { InputGroup } from '../InputGroup'
+import { MarketPriceButton } from './MarketPriceButton'
 import {
   LimitLabel,
   MarketPriceDiff,
@@ -35,9 +36,10 @@ export function OrderLimitPriceField({ id }: OrderLimitPriceFieldProps) {
     setFormattedBuyAmount,
     setSellTokenAmount,
     setFormattedSellAmount,
-    setToMarket,
     marketPrices,
     inputFocus,
+    fetchMarketPrice,
+    setFetchMarketPrice,
   } = useContext(LimitOrderFormContext)
 
   const [baseTokenAmount, quoteTokenAmount] =
@@ -139,14 +141,15 @@ export function OrderLimitPriceField({ id }: OrderLimitPriceFieldProps) {
           sellAmount: sellAmountWei,
         })
       }
+
+      setFetchMarketPrice(false)
     }
   }
-  console.log('toggle out', {
-    limitOrderKind: limitOrder.kind,
-    formattedLimitPrice,
-    baseTokenAmount,
-    quoteTokenAmount,
-  })
+
+  const onClickGetMarketPrice = () => {
+    setFetchMarketPrice(true)
+  }
+
   return (
     <InputGroup>
       <LimitLabel htmlFor={id}>
@@ -156,7 +159,14 @@ export function OrderLimitPriceField({ id }: OrderLimitPriceFieldProps) {
             <MarketPriceDiff isPositive={isDiffPositive}> ({marketPriceDiffPercentage.toFixed(2)}%)</MarketPriceDiff>
           )}
         </span>
-        <SetToMarket onClick={setToMarket}>{t('limitOrder.setToMarket')}</SetToMarket>
+        {fetchMarketPrice ? (
+          <MarketPriceButton
+            buyTokenAmountCurrency={buyTokenAmount.currency}
+            sellTokenAmountCurrency={sellTokenAmount.currency}
+          />
+        ) : (
+          <SetToMarket onClick={onClickGetMarketPrice}>{t('limitOrder.getMarketPrice')}</SetToMarket>
+        )}
       </LimitLabel>
       <InputGroup.InnerWrapper>
         <InputGroup.Input

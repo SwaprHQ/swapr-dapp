@@ -5,16 +5,16 @@ import { AbsoluteWrapper } from './Chart.styles'
 
 const THREE_SECONDS = 3000
 
-export function ChartLoader({ symbol }: { symbol?: string }) {
+export function ChartLoader({ pairAddress }: { pairAddress?: string }) {
   const [isLoading, setIsLoading] = useState(true)
 
   useEffect(() => {
     setIsLoading(true)
     const timeout = setTimeout(() => setIsLoading(false), THREE_SECONDS)
     return () => clearTimeout(timeout)
-  }, [symbol])
+  }, [pairAddress])
 
-  return symbol && isLoading ? (
+  return !pairAddress || isLoading ? (
     <AbsoluteWrapper>
       <FallbackLoader />
     </AbsoluteWrapper>
