@@ -11,15 +11,33 @@ export const LimitLabel = styled(InputGroup.Label)`
 
 export const SetToMarket = styled.button`
   font-size: 11px;
-  color: #8780bf;
+  color: #8c83c0;
   border: none;
   cursor: pointer;
-  background-color: #2d3145;
+  background-color: #686e9410;
   border-radius: 5px;
   text-transform: uppercase;
   padding: 3px 8px;
   &:hover {
     color: #736f96;
+  }
+`
+
+export const MarketPrice = styled.button`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 11px;
+  color: ${({ theme }) => theme.green2};
+  border: 1px solid ${({ theme }) => theme.green2};
+  cursor: pointer;
+  background-color: transparent;
+  border-radius: 5px;
+  text-transform: uppercase;
+  padding: 3px 8px;
+  &:hover {
+    border: 1px solid ${({ theme }) => theme.green2};
+    color: ${({ theme }) => theme.green1};
   }
 `
 

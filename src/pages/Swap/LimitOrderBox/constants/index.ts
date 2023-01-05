@@ -6,3 +6,5 @@ import { ChainId } from '@swapr/sdk'
 export const supportedChainIdList = [ChainId.MAINNET, ChainId.GNOSIS]
 
 export const invalidChars = ['-', '+', 'e']
+
+export const GET_QUOTE_EXPIRY_MINUTES = 20
