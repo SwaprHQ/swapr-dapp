@@ -15,6 +15,7 @@ import {
   Trade,
   UniswapTrade,
   UniswapV2Trade,
+  VelodromeTrade,
   ZERO,
   ZeroXTrade,
 } from '@swapr/sdk'
@@ -70,10 +71,11 @@ export function computeTradePriceBreakdown(trade?: Trade): TradePriceBreakdown {
       return ONE_HUNDRED_PERCENT.subtract(totalRoutesFee)
     } else if (trade instanceof CoWTrade || trade instanceof UniswapTrade || trade instanceof ZeroXTrade) {
       return trade.fee
-    } else if (trade instanceof CurveTrade) {
+    } else if (trade instanceof CurveTrade || trade instanceof VelodromeTrade) {
       return ONE_HUNDRED_PERCENT.subtract(ONE_HUNDRED_PERCENT.subtract(trade.fee))
     } else return undefined
   }
+
   // remove lp fees from price impact
   const priceImpactWithoutFeeFraction = trade && realizedLPFee ? trade.priceImpact.subtract(realizedLPFee) : undefined
 
