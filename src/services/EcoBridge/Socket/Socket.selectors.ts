@@ -46,9 +46,9 @@ const createSelectPendingTransactions = (selectOwnedTxs: ReturnType<typeof creat
 
 const createSelectFailedTransactions = (selectOwnedTxs: ReturnType<typeof createSelectOwnedTransactions>) =>
   createSelector(selectOwnedTxs, ownedTxs => {
-    const pendingTxs = ownedTxs.filter(tx => tx.status === SocketTxStatus.ERROR && !tx.partnerTxHash)
+    const failedTxs = ownedTxs.filter(tx => tx.status === SocketTxStatus.ERROR && !tx.partnerTxHash)
 
-    return pendingTxs
+    return failedTxs
   })
 
 const createSelectBridgeTransactionsSummary = (
