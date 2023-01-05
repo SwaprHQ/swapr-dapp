@@ -30,11 +30,15 @@ export type FathomRegisteredEventName =
   | 'gnosis-100/ecoRouter/honeyswap/volumeUSD'
   | 'polygon-137/ecoRouter/dfyn/volumeUSD'
   | 'gnosis-100/ecoRouter/baoswap/volumeUSD'
+  | 'optimism-10/ecoRouter/velodrome/volumeUSD'
+  | 'bsc-56/ecoRouter/sushiswap/volumeUSD'
+  | 'bsc-56/ecoRouter/pancakeswap/volumeUSD'
 export type FathomRegisteredNetworkName =
   | 'ethereum'
   | 'rinkeby'
   | 'goerli'
   | 'optimism'
+  | 'bsc'
   | 'gnosis'
   | 'polygon'
   | 'arbitrum'
@@ -257,8 +261,29 @@ export const siteEvents: FathomSiteInformation = {
       currency: null,
       created_at: '2022-09-20 10:11:43',
     },
+    {
+      id: 'R0M0D8UN',
+      object: 'event',
+      name: 'optimism-10/ecoRouter/velodrome/volumeUSD',
+      currency: 'dollar',
+      created_at: '2023-01-05 14:50:44',
+    },
+    {
+      id: 'QQKSHIK7',
+      object: 'event',
+      name: 'bsc-56/ecoRouter/sushiswap/volumeUSD',
+      currency: 'dollar',
+      created_at: '2023-01-05 14:50:45',
+    },
+    {
+      id: 'K3LNQ6P1',
+      object: 'event',
+      name: 'bsc-56/ecoRouter/pancakeswap/volumeUSD',
+      currency: 'dollar',
+      created_at: '2023-01-05 14:50:46',
+    },
   ],
-  timestamp: '2022-09-20T10:15:19.011Z',
+  timestamp: '2023-01-05T14:50:46.003Z',
 }
 
 /**
@@ -276,6 +301,7 @@ export const networkIdToNameMap: Record<number, string> = {
   '4': 'rinkeby',
   '5': 'goerli',
   '10': 'optimism',
+  '56': 'bsc',
   '100': 'gnosis',
   '137': 'polygon',
   '42161': 'arbitrum',
