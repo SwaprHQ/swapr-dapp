@@ -110,54 +110,58 @@ const Hero = props => {
             </ul>
           </div>
         )}
-        <div className="routing-through desktop" data-aos="fade-up">
-          <div className="routing-through-header">
-            <div className="left-line"></div>
-            <div className="label">{RoutingThroughContent.title}</div>
-            <div className="right-line"></div>
-          </div>
-          <div className="routing-through-body">
-            <Marquee speed={30} gradientColor={[12, 11, 18]}>
-              <div className="marquee-inner">
-                {[...Array(3)].map((_, index) => (
-                  <Fragment key={index}>
-                    {RoutingThroughContent.companies.map((company, key) => (
-                      <RoutingThroughImage
-                        key={`${key}-${company.title}`}
-                        src={company.img}
-                        alt={`Routing through...`}
-                      />
+        {props.showMarquee && (
+          <>
+            <div className="routing-through desktop" data-aos="fade-up">
+              <div className="routing-through-header">
+                <div className="left-line"></div>
+                <div className="label">{RoutingThroughContent.title}</div>
+                <div className="right-line"></div>
+              </div>
+              <div className="routing-through-body">
+                <Marquee speed={30} gradientColor={[12, 11, 18]}>
+                  <div className="marquee-inner">
+                    {[...Array(3)].map((_, index) => (
+                      <Fragment key={index}>
+                        {RoutingThroughContent.companies.map((company, key) => (
+                          <RoutingThroughImage
+                            key={`${key}-${company.title}`}
+                            src={company.img}
+                            alt={`Routing through...`}
+                          />
+                        ))}
+                      </Fragment>
                     ))}
-                  </Fragment>
-                ))}
+                  </div>
+                </Marquee>
               </div>
-            </Marquee>
-          </div>
-        </div>
-        <ArrowIndicator>
-          <div className="arrow" />
-          <div className="arrow" />
-          <div className="arrow" />
-        </ArrowIndicator>
-        <div className="routing-through mobile" data-aos="fade-up">
-          <div className="routing-through-header">
-            <div className="left-line"></div>
-            <div className="label">{RoutingThroughContent.title}</div>
-            <div className="right-line"></div>
-          </div>
-          <div className="routing-through-body">
-            <Marquee speed={50} gradientColor={[12, 11, 18]}>
-              <div className="marquee-inner">
-                {RoutingThroughContent.companies.map((company, key) => (
-                  <RoutingThroughImage key={key} src={company.img} alt="Routing through..." />
-                ))}
-                {RoutingThroughContent.companies.map((company, key) => (
-                  <RoutingThroughImage key={key + '-copy'} src={company.img} alt="Routing through..." />
-                ))}
+            </div>
+            <ArrowIndicator>
+              <div className="arrow" />
+              <div className="arrow" />
+              <div className="arrow" />
+            </ArrowIndicator>
+            <div className="routing-through mobile" data-aos="fade-up">
+              <div className="routing-through-header">
+                <div className="left-line"></div>
+                <div className="label">{RoutingThroughContent.title}</div>
+                <div className="right-line"></div>
               </div>
-            </Marquee>
-          </div>
-        </div>
+              <div className="routing-through-body">
+                <Marquee speed={50} gradientColor={[12, 11, 18]}>
+                  <div className="marquee-inner">
+                    {RoutingThroughContent.companies.map((company, key) => (
+                      <RoutingThroughImage key={key} src={company.img} alt="Routing through..." />
+                    ))}
+                    {RoutingThroughContent.companies.map((company, key) => (
+                      <RoutingThroughImage key={key + '-copy'} src={company.img} alt="Routing through..." />
+                    ))}
+                  </div>
+                </Marquee>
+              </div>
+            </div>
+          </>
+        )}
       </Layout>
     </StyledHero>
   )

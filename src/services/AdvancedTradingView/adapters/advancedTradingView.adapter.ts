@@ -4,12 +4,15 @@ import { Store } from '@reduxjs/toolkit'
 
 import {
   AdapterFetchDetails,
+  AdapterFetchDetailsExtended,
   AdapterInitialArguments,
   AdapterKey,
+  AdapterPayloadType,
   Adapters,
   AdvancedTradingViewAdapterConstructorParams,
 } from '../advancedTradingView.types'
 import { actions } from '../store/advancedTradingView.reducer'
+import { BaseActionPayload, SetSwapsBurnsAndMintsActionPayload } from './baseAdapter/base.types'
 
 // each adapter should extend this class
 export abstract class AbstractAdvancedTradingViewAdapter<AppState> {
@@ -23,9 +26,11 @@ export abstract class AbstractAdvancedTradingViewAdapter<AppState> {
     this._adapterSupportedChains = adapterSupportedChains
   }
 
-  abstract getPairTrades(fetchDetails: AdapterFetchDetails): Promise<void>
+  abstract getPairTradingAndActivityData(
+    fetchDetails: AdapterFetchDetails
+  ): Promise<SetSwapsBurnsAndMintsActionPayload | void>
 
-  abstract getPairActivity(fetchDetails: AdapterFetchDetails): Promise<void>
+  abstract getPairData(fetchDetails: AdapterFetchDetailsExtended): Promise<BaseActionPayload | void>
 
   public updateActiveChainId(chainId: ChainId) {
     this._chainId = chainId
@@ -53,6 +58,11 @@ export abstract class AbstractAdvancedTradingViewAdapter<AppState> {
 
     return this._adapterSupportedChains.includes(chainId)
   }
+}
+
+interface PromiseFulfilledResult<T> {
+  status: 'fulfilled'
+  value: T
 }
 
 export class AdvancedTradingViewAdapter<AppState> {
@@ -109,19 +119,54 @@ export class AdvancedTradingViewAdapter<AppState> {
     }
   }
 
-  public async fetchPairTrades(fetchDetails: Omit<AdapterFetchDetails, 'abortController'>) {
+  public async fetchPairTradesAndActivityBulkUpdate(fetchDetails: Omit<AdapterFetchDetails, 'abortController'>) {
     const promises = Object.values(this._adapters).map(adapter =>
-      adapter.getPairTrades({ ...fetchDetails, abortController: this.renewAbortController })
+      adapter.getPairTradingAndActivityData({
+        ...fetchDetails,
+        abortController: this.renewAbortController,
+      })
     )
 
-    return await Promise.allSettled(promises)
+    const response = await Promise.allSettled(promises)
+
+    const sucessfulResults: SetSwapsBurnsAndMintsActionPayload[] = response
+      .filter(el => el.status === 'fulfilled' && el.value)
+      .map(el => (el as PromiseFulfilledResult<SetSwapsBurnsAndMintsActionPayload>).value)
+
+    this.store.dispatch(
+      this.actions.setSwapsBurnsAndMintsDataForAllPairs(sucessfulResults as SetSwapsBurnsAndMintsActionPayload[])
+    )
   }
 
-  public async fetchPairActivity(fetchDetails: Omit<AdapterFetchDetails, 'abortController'>) {
+  public async fetchPairTradesBulkUpdate(fetchDetails: Omit<AdapterFetchDetails, 'abortController'>) {
     const promises = Object.values(this._adapters).map(adapter =>
-      adapter.getPairActivity({ ...fetchDetails, abortController: this.renewAbortController })
+      adapter.getPairData({
+        ...fetchDetails,
+        abortController: this.renewAbortController,
+        payloadType: AdapterPayloadType.SWAPS,
+      })
     )
 
-    return await Promise.allSettled(promises)
+    const response = await Promise.allSettled(promises).then(res =>
+      res.filter(el => el.status === 'fulfilled' && el.value).map(el => el.status === 'fulfilled' && el.value)
+    )
+
+    this.store.dispatch(this.actions.setDataTypeForAllPairs(response as BaseActionPayload[]))
+  }
+
+  public async fetchPairActivityBulkUpdate(fetchDetails: Omit<AdapterFetchDetails, 'abortController'>) {
+    const promises = Object.values(this._adapters).map(adapter =>
+      adapter.getPairData({
+        ...fetchDetails,
+        abortController: this.renewAbortController,
+        payloadType: AdapterPayloadType.BURNS_AND_MINTS,
+      })
+    )
+
+    const response = await Promise.allSettled(promises).then(res =>
+      res.filter(el => el.status === 'fulfilled' && el.value).map(el => el.status === 'fulfilled' && el.value)
+    )
+
+    this.store.dispatch(this.actions.setDataTypeForAllPairs(response as BaseActionPayload[]))
   }
 }

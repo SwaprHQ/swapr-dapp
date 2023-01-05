@@ -3,7 +3,8 @@ import { useSelector } from 'react-redux'
 
 import { useActiveWeb3React } from '../../hooks'
 import { Transaction, TransactionStatus } from '../../pages/Account/Account.types'
-import { formattedTransactions as formatTransactions } from '../../pages/Account/accountUtils'
+import { formatTransactions } from '../../pages/Account/utils/accountUtils'
+import { useLimitOrderTransactions } from '../../pages/Swap/LimitOrderBox/utils/hooks'
 import { useAllBridgeTransactions, useAllSwapTransactions } from '../../state/transactions/hooks'
 import { sortByTimeStamp } from '../../utils/sortByTimestamp'
 import { AdvancedViewTransaction } from './advancedTradingView.types'
@@ -19,20 +20,28 @@ export const useAllTrades = (): {
   liquidityHistory: AdvancedViewTransaction[]
   hasMore: { hasMoreActivity: boolean; hasMoreTrades: boolean }
 } => {
-  const { account } = useActiveWeb3React()
+  const { account, chainId } = useActiveWeb3React()
   const hasMore = useSelector(selectHasMoreData)
   const { uniswapV3LiquidityHistory, uniswapV3TradeHistory } = useSelector(selectUniswapV3AllData)
   const { baseAdapterTradeHistory, baseAdapterLiquidityHistory } = useSelector(selectAllDataFromAdapters)
 
   const allSwapTransactions = useAllSwapTransactions()
+  const allLimitOrderTransactions = useLimitOrderTransactions(chainId, account)
 
   const allSwapBridgeTransactions = useAllBridgeTransactions(true).filter(
-    transaction => transaction.bridgeId === 'socket' && transaction.from.token !== transaction.to.token
+    transaction => transaction.bridgeId === 'socket' && transaction.sellToken.symbol !== transaction.buyToken.symbol
   )
 
   const transactions = useMemo(() => {
     if (account) {
-      const formattedTransactions = formatTransactions(allSwapTransactions, allSwapBridgeTransactions, false, account)
+      const formattedTransactions = formatTransactions(
+        allSwapTransactions,
+        allSwapBridgeTransactions,
+        allLimitOrderTransactions,
+        false,
+        account,
+        null
+      )
 
       const pendingTransactions = formattedTransactions
         .filter(
@@ -51,19 +60,25 @@ export const useAllTrades = (): {
             transaction.status.toUpperCase() !== TransactionStatus.REDEEM
         )
         .splice(0, 5 - pendingTransactions.length)
+        // Sort by confirmation time
+        .sort((a, b) => {
+          return Number(b.confirmedTime) - Number(a.confirmedTime)
+        })
 
       return [...pendingTransactions, ...formattedTransactionsWithoutPending]
     }
 
     return []
-  }, [account, allSwapBridgeTransactions, allSwapTransactions])
+  }, [account, allLimitOrderTransactions, allSwapBridgeTransactions, allSwapTransactions])
 
   const tradeHistory = [...baseAdapterTradeHistory, ...uniswapV3TradeHistory].sort((firstTrade, secondTrade) =>
     sortByTimeStamp(firstTrade.timestamp, secondTrade.timestamp)
   )
 
   const liquidityHistory = [...baseAdapterLiquidityHistory, ...uniswapV3LiquidityHistory].sort(
-    (firstTrade, secondTrade) => sortByTimeStamp(firstTrade.timestamp, secondTrade.timestamp)
+    (firstTrade, secondTrade) => {
+      return sortByTimeStamp(firstTrade.timestamp, secondTrade.timestamp)
+    }
   )
 
   return {

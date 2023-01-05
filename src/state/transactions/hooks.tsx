@@ -5,7 +5,7 @@ import { useCallback, useMemo } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 
 import { useActiveWeb3React } from '../../hooks'
-import { type BridgeTransaction, TransactionTypes } from '../../pages/Account/Account.types'
+import { type BridgeTransaction, TransactionType } from '../../pages/Account/Account.types'
 import { selectBridgeTransactions } from '../../services/EcoBridge/store/EcoBridge.selectors'
 import { AppDispatch, AppState } from '../index'
 import { useListsByAddress } from '../lists/hooks'
@@ -94,7 +94,7 @@ export function useAllBridgeTransactions(allNetwork = false): BridgeTransaction[
   const listByAddress = useListsByAddress()
 
   const allBridgeTransactions = useSelector((state: AppState) => selectBridgeTransactions(state, account ?? undefined))
-  const allBridgeTransactionsFormatted = useMemo<BridgeTransaction[]>(
+  const allBridgeTransactionsFormatted = useMemo(
     () =>
       allBridgeTransactions.map(transaction => {
         const {
@@ -114,16 +114,16 @@ export function useAllBridgeTransactions(allNetwork = false): BridgeTransaction[
         } = transaction
 
         return {
-          type: TransactionTypes.Bridge,
-          from: {
+          type: TransactionType.Bridge as const,
+          sellToken: {
             value: Number(fromValue),
-            token: listByAddress.get(fromChainId)?.get(`${assetAddressL1}`)?.symbol ?? assetName,
+            symbol: listByAddress.get(fromChainId)?.get(`${assetAddressL1}`)?.symbol ?? assetName,
             chainId: fromChainId,
             tokenAddress: assetAddressL1,
           },
-          to: {
+          buyToken: {
             value: Number(toValue ?? 0),
-            token: listByAddress.get(toChainId)?.get(`${assetAddressL2}`)?.symbol ?? assetName,
+            symbol: listByAddress.get(toChainId)?.get(`${assetAddressL2}`)?.symbol ?? assetName,
             chainId: toChainId,
             tokenAddress: assetAddressL2,
           },

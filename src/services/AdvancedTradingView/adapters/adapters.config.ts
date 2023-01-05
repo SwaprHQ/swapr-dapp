@@ -3,12 +3,16 @@ import { ChainId, UniswapV2RoutablePlatform } from '@swapr/sdk'
 import { AppState } from '../../../state'
 import { AdapterKey, Adapters } from '../advancedTradingView.types'
 import { BaseAdapter } from './baseAdapter/base.adapter'
-import { PairBurnsAndMints, PairSwaps } from './baseAdapter/base.types'
+import { PairBurnsAndMints, PairSwaps, PairSwapsBurnsAndMints } from './baseAdapter/base.types'
 import { UniswapV3Adapter } from './uniswapV3/uniswapV3.adapter'
-import { UniswapV3PairBurnsAndMints, UniswapV3PairSwaps } from './uniswapV3/uniswapV3.types'
+import {
+  UniswapV3PairBurnsAndMints,
+  UniswapV3PairSwaps,
+  UniswapV3SwapsBurnsAndMints,
+} from './uniswapV3/uniswapV3.types'
 
 export const adapters: Adapters<AppState> = {
-  swapr: new BaseAdapter<AppState, PairSwaps, PairBurnsAndMints>({
+  swapr: new BaseAdapter<AppState, PairSwapsBurnsAndMints, PairSwaps, PairBurnsAndMints>({
     key: AdapterKey.SWAPR,
     adapterSupportedChains: [ChainId.MAINNET, ChainId.ARBITRUM_ONE, ChainId.GNOSIS],
     platform: UniswapV2RoutablePlatform.SWAPR,
@@ -20,7 +24,7 @@ export const adapters: Adapters<AppState> = {
       [ChainId.OPTIMISM_MAINNET]: '',
     },
   }),
-  sushiswap: new BaseAdapter<AppState, PairSwaps, PairBurnsAndMints>({
+  sushiswap: new BaseAdapter<AppState, PairSwapsBurnsAndMints, PairSwaps, PairBurnsAndMints>({
     key: AdapterKey.SUSHISWAP,
     adapterSupportedChains: [ChainId.MAINNET, ChainId.ARBITRUM_ONE, ChainId.GNOSIS],
     platform: UniswapV2RoutablePlatform.SUSHISWAP,
@@ -32,7 +36,7 @@ export const adapters: Adapters<AppState> = {
       [ChainId.OPTIMISM_MAINNET]: '',
     },
   }),
-  uniswapV2: new BaseAdapter<AppState, PairSwaps, PairBurnsAndMints>({
+  uniswapV2: new BaseAdapter<AppState, PairSwapsBurnsAndMints, PairSwaps, PairBurnsAndMints>({
     key: AdapterKey.UNISWAPV2,
     adapterSupportedChains: [ChainId.MAINNET],
     platform: UniswapV2RoutablePlatform.UNISWAP,
@@ -44,7 +48,7 @@ export const adapters: Adapters<AppState> = {
       [ChainId.OPTIMISM_MAINNET]: '',
     },
   }),
-  honeyswap: new BaseAdapter<AppState, PairSwaps, PairBurnsAndMints>({
+  honeyswap: new BaseAdapter<AppState, PairSwapsBurnsAndMints, PairSwaps, PairBurnsAndMints>({
     key: AdapterKey.HONEYSWAP,
     adapterSupportedChains: [ChainId.GNOSIS],
     platform: UniswapV2RoutablePlatform.HONEYSWAP,
@@ -56,7 +60,12 @@ export const adapters: Adapters<AppState> = {
       [ChainId.OPTIMISM_MAINNET]: '',
     },
   }),
-  uniswapV3: new UniswapV3Adapter<AppState, UniswapV3PairSwaps, UniswapV3PairBurnsAndMints>({
+  uniswapV3: new UniswapV3Adapter<
+    AppState,
+    UniswapV3SwapsBurnsAndMints,
+    UniswapV3PairSwaps,
+    UniswapV3PairBurnsAndMints
+  >({
     key: AdapterKey.UNISWAPV3,
     adapterSupportedChains: [ChainId.MAINNET, ChainId.ARBITRUM_ONE, ChainId.POLYGON, ChainId.OPTIMISM_MAINNET],
     subgraphUrls: {

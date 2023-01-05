@@ -21,6 +21,7 @@ export function CurrencySearchModalComponent({
   showCommonBases = false,
   showNativeCurrency = true,
   isOutputPanel,
+  currencyOmitList,
 }: CurrencySearchModalProps) {
   const lastOpen = useLast(isOpen)
   const { modalView, setModalView, importList, listURL, importToken } = useContext(CurrencySearchModalContext)
@@ -63,6 +64,7 @@ export function CurrencySearchModalComponent({
           showManageView={() => setModalView(CurrencyModalView.MANAGE)}
           showNativeCurrency={showNativeCurrency}
           isOutputPanel={isOutputPanel}
+          currencyOmitList={currencyOmitList}
         />
       ) : modalView === CurrencyModalView.IMPORT_TOKEN && importToken ? (
         <ImportToken

@@ -1,4 +1,5 @@
 import { useTranslation } from 'react-i18next'
+import { Flex } from 'rebass'
 
 import { TableHeader } from '../../../ui/StyledElements/TableHeader'
 import { TableHeaderText } from '../../../ui/StyledElements/TableHeaderText'
@@ -20,6 +21,7 @@ export function TransactionHeaders() {
           <TransactionDetails>{t('type')}</TransactionDetails>
           <TransactionDetails>{t('status')}</TransactionDetails>
           <TransactionDetails>{t('confirmedTime')}</TransactionDetails>
+          <Flex width="35px">{t('actions')}</Flex>
         </TableHeader>
       </TableHeaderText>
     </HeaderRow>
