@@ -111,6 +111,14 @@ export function SwapButtons({
     }
   }, [isExpertMode, handleSwap, setSwapState, trade])
 
+  const getWrapButtonLabel = () => {
+    if (wrapState === WrapState.PENDING) {
+      return wrapType === WrapType.WRAP ? 'Wrapping' : 'Unwrapping'
+    } else {
+      return wrapType === WrapType.WRAP ? 'Wrap' : 'Unwrap'
+    }
+  }
+
   if (loading) {
     return <SwapLoadingButton />
   }
@@ -126,14 +134,7 @@ export function SwapButtons({
         onClick={onWrap}
         data-testid="wrap-button"
       >
-        {wrapInputError ??
-          (wrapState === WrapState.PENDING
-            ? 'Wrapping'
-            : wrapType === WrapType.WRAP
-            ? 'Wrap'
-            : wrapType === WrapType.UNWRAP
-            ? 'Unwrap'
-            : null)}
+        {wrapInputError ?? getWrapButtonLabel()}
       </ButtonPrimary>
     )
   }
