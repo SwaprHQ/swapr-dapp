@@ -1,6 +1,7 @@
 import { createReducer } from '@reduxjs/toolkit'
 
 import { DEFAULT_DEADLINE_FROM_NOW, DEFAULT_USER_MULTIHOP_ENABLED, INITIAL_ALLOWED_SLIPPAGE } from '../../constants'
+import { ChartOptions, SwapTab } from '../../pages/Swap/SwapContext'
 import { MainnetGasPrice } from '../application/actions'
 import { updateVersion } from '../global/actions'
 import {
@@ -25,18 +26,6 @@ import {
 
 const currentTimestamp = () => new Date().getTime()
 
-export enum ChartOptions {
-  OFF,
-  SIMPLE_CHART,
-  PRO,
-}
-
-export enum SwapTabs {
-  SWAP,
-  LIMIT_ORDER,
-  BRIDGE_SWAP,
-}
-
 export interface UserState {
   // the timestamp of the last updateVersion action
   lastUpdateVersionTimestamp?: number
@@ -45,7 +34,7 @@ export interface UserState {
   matchesDarkMode: boolean // whether the dark mode media query matches
 
   userExpertMode: boolean
-  selectedSwapTab: SwapTabs
+  selectedSwapTab: SwapTab
 
   // user defined slippage tolerance in bips, used in all txns
   userSlippageTolerance: number
@@ -88,8 +77,8 @@ export const initialState: UserState = {
   userDarkMode: true,
   matchesDarkMode: false,
   userExpertMode: false,
-  selectedSwapTab: 0,
-  selectedChartOption: 0,
+  selectedSwapTab: SwapTab.Swap,
+  selectedChartOption: ChartOptions.OFF,
   userSlippageTolerance: INITIAL_ALLOWED_SLIPPAGE,
   userDeadline: DEFAULT_DEADLINE_FROM_NOW,
   userMultihop: DEFAULT_USER_MULTIHOP_ENABLED,

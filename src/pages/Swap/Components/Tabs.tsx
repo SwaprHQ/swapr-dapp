@@ -78,16 +78,16 @@ export function Tabs() {
   const { activeTab, setActiveTab, setActiveChartTab, activeChartTab } = useContext(SwapContext)
   const dispatch = useDispatch()
 
-  const { navigate, pathname } = useRouter()
+  const { navigate } = useRouter()
 
   return (
     <TabsColumn>
       <TabsRow>
         <Button
           onClick={() => {
-            setActiveTab(pathname.includes('pro') ? SwapTab.AdvancedTradingView : SwapTab.Swap)
+            setActiveTab(SwapTab.Swap)
           }}
-          className={activeTab === SwapTab.Swap || activeTab === SwapTab.AdvancedTradingView ? 'active' : ''}
+          className={activeTab === SwapTab.Swap ? 'active' : ''}
         >
           <StyledEcoRouter />
           Swap

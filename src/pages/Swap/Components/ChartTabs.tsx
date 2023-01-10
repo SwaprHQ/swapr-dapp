@@ -5,7 +5,7 @@ import styled from 'styled-components'
 import { MouseoverTooltip } from '../../../components/Tooltip'
 import { useIsDesktop } from '../../../hooks/useIsDesktopByMedia'
 import { useRouter } from '../../../hooks/useRouter'
-import { ChartOptions } from '../../../state/user/reducer'
+import { ChartOptions } from '../SwapContext'
 
 export const ChartTabs = ({
   activeChartTab,
