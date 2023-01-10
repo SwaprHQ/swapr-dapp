@@ -141,7 +141,7 @@ export function SwapButtons({
   if ((noRoute && userHasSpecifiedInputOutput) || !trade) {
     return (
       <ButtonPrimary style={{ textAlign: 'center' }} disabled>
-        Insufficient liquidity
+        {!userHasSpecifiedInputOutput ? 'Enter Amount' : 'Insufficient liquidity'}
       </ButtonPrimary>
     )
   }
