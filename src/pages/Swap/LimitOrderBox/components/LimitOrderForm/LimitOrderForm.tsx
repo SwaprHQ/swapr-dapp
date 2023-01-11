@@ -21,7 +21,7 @@ import { useCurrencyBalances } from '../../../../../state/wallet/hooks'
 import { maxAmountSpend } from '../../../../../utils/maxAmountSpend'
 import AppBody from '../../../../AppBody'
 import { createCoWLimitOrder, getQuote, getVaultRelayerAddress } from '../../api/cow'
-import { GET_QUOTE_EXPIRY_MINUTES } from '../../constants'
+import { BUY_LIMIT_PRICE_PERCENTAGE, GET_QUOTE_EXPIRY_MINUTES, SELL_LIMIT_PRICE_PERCENTAGE } from '../../constants'
 import { LimitOrderFormContext } from '../../contexts/LimitOrderFormContext'
 import { InputFocus, LimitOrderKind, MarketPrices, OrderExpiresInUnit, SerializableLimitOrder } from '../../interfaces'
 import { computeNewAmount, getInitialState } from '../../utils'
@@ -125,8 +125,8 @@ export function LimitOrderForm({ account, provider, chainId }: LimitOrderFormPro
 
       const nextLimitPriceFloat =
         limitOrder.kind === LimitOrderKind.SELL
-          ? formatMarketPrice(buyAmount, buyTokenAmount.currency.decimals, tokenAmount)
-          : formatMarketPrice(sellAmount, sellTokenAmount.currency.decimals, tokenAmount)
+          ? formatMarketPrice(buyAmount, buyTokenAmount.currency.decimals, tokenAmount) * SELL_LIMIT_PRICE_PERCENTAGE
+          : formatMarketPrice(sellAmount, sellTokenAmount.currency.decimals, tokenAmount) * BUY_LIMIT_PRICE_PERCENTAGE
 
       const limitPrice = parseUnits(
         nextLimitPriceFloat.toFixed(6),
