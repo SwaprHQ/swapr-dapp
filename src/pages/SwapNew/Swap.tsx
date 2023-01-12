@@ -1,6 +1,7 @@
 import styled from 'styled-components'
 
 import { ReactComponent as EtherLogoSVG } from '../../assets/swapbox/currency-logo-eth.svg'
+import { ReactComponent as CowSVG } from '../../assets/swapbox/dex-logo-cow.svg'
 import { ReactComponent as DownArrowSVG } from '../../assets/swapbox/down-arrow.svg'
 import { ReactComponent as EtherSVG } from '../../assets/swapbox/ether.svg'
 
@@ -9,7 +10,11 @@ export function Swapbox2() {
     <Container>
       <CurrencyItem />
       <CurrencyItem />
-      <SwapButton></SwapButton>
+      <SwapButton>
+        <ButtonLabel>Swap With</ButtonLabel>
+        <CowSVG />
+        <ButtonLabel>Cow</ButtonLabel>
+      </SwapButton>
     </Container>
   )
 }
@@ -146,4 +151,15 @@ const SwapButton = styled.button`
   border-radius: 12px;
   background: linear-gradient(93.39deg, #2b00a4 -8.9%, #d67b5a 114.08%);
   box-shadow: 0px 0px 42px rgba(129, 62, 127, 0.32);
+`
+
+const ButtonLabel = styled.p`
+  display: inline-block;
+  line-height: 16px;
+  font-size: 13px;
+  font-family: 'Inter';
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #ffffff;
 `
