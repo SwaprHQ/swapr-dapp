@@ -9,6 +9,7 @@ export function Swapbox2() {
     <Container>
       <CurrencyItem />
       <CurrencyItem />
+      <SwapButton></SwapButton>
     </Container>
   )
 }
@@ -132,4 +133,17 @@ const Blockchain = styled.a`
   border: 1.5px solid #1b1b2a;
   filter: drop-shadow(0px 4px 42px rgba(0, 0, 0, 0.16));
   backdrop-filter: blur(11px);
+`
+
+const SwapButton = styled.button`
+  width: 100%;
+  height: 70px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+  border: none;
+  border-radius: 12px;
+  background: linear-gradient(93.39deg, #2b00a4 -8.9%, #d67b5a 114.08%);
+  box-shadow: 0px 0px 42px rgba(129, 62, 127, 0.32);
 `
