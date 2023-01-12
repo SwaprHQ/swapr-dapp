@@ -1,5 +1,7 @@
 import styled from 'styled-components'
 
+import { ReactComponent as EtherLogoSVG } from '../../assets/swapbox/currency-logo-eth.svg'
+import { ReactComponent as DownArrowSVG } from '../../assets/swapbox/down-arrow.svg'
 import { ReactComponent as EtherSVG } from '../../assets/swapbox/ether.svg'
 
 export function Swapbox2() {
@@ -22,9 +24,13 @@ function CurrencyItem() {
 
         <CurrencyInfoContainer>
           <CurrencyTypeContainer>
+            <EtherLogoSVG />
             <CurrencySymbol>ETH</CurrencySymbol>
+            <DownArrowSVG />
           </CurrencyTypeContainer>
-          <CurrencyBalance>Balance: 1.488</CurrencyBalance>
+          <CurrencyBalance>
+            Balance: <span>1.488</span>
+          </CurrencyBalance>
         </CurrencyInfoContainer>
       </ValueContainer>
       <Blockchain>
@@ -87,6 +93,7 @@ const CurrencyTypeContainer = styled.div`
   height: 24px;
   display: flex;
   justify-content: flex-end;
+  align-items: center;
   margin-bottom: 17px;
 `
 
@@ -109,6 +116,10 @@ const CurrencyBalance = styled.p`
   letter-spacing: 0.08em;
   text-transform: uppercase;
   color: #8780bf;
+
+  & span {
+    text-decoration: underline;
+  }
 `
 
 const Blockchain = styled.a`
