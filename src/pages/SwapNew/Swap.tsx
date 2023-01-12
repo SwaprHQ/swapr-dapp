@@ -15,8 +15,14 @@ function CurrencyItem() {
   return (
     <CurrencyContainer>
       <ValueContainer>
-        <CurrencyAmount>1.488</CurrencyAmount>
-        <CurrencyAmountWorth>$4000</CurrencyAmountWorth>
+        <CurrencyAmountContainer>
+          <CurrencyAmount>1.488</CurrencyAmount>
+          <CurrencyAmountWorth>$4000</CurrencyAmountWorth>
+        </CurrencyAmountContainer>
+
+        <CurrencyTypeContainer>
+          <CurrencyBalance>Balance: 1.488</CurrencyBalance>
+        </CurrencyTypeContainer>
       </ValueContainer>
       <Blockchain>
         <EtherSVG />
@@ -43,7 +49,14 @@ const CurrencyContainer = styled.div`
   margin-bottom: 6px;
 `
 
-const ValueContainer = styled.div``
+const ValueContainer = styled.div`
+  width: calc(100% - 44px);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+`
+
+const CurrencyAmountContainer = styled.div``
 
 const CurrencyAmount = styled.p`
   line-height: 34px;
@@ -62,6 +75,18 @@ const CurrencyAmountWorth = styled.p`
   font-family: 'Inter';
   font-weight: 600;
   letter-spacing: 0.08em;
+  color: #8780bf;
+`
+
+const CurrencyTypeContainer = styled.div``
+
+const CurrencyBalance = styled.p`
+  line-height: 12px;
+  font-size: 10px;
+  font-family: 'Inter';
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
   color: #8780bf;
 `
 
