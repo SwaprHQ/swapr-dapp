@@ -14,6 +14,7 @@ function CurrencyItem() {
     <CurrencyContainer>
       <ValueContainer>
         <CurrencyAmount>1.488</CurrencyAmount>
+        <CurrencyAmountWorth>$4000</CurrencyAmountWorth>
       </ValueContainer>
     </CurrencyContainer>
   )
@@ -48,4 +49,13 @@ const CurrencyAmount = styled.p`
   text-shadow: 0px 0px 12px rgba(255, 255, 255, 0.14);
   color: #ffffff;
   margin-bottom: 5px;
+`
+
+const CurrencyAmountWorth = styled.p`
+  line-height: 12px;
+  font-size: 10px;
+  font-family: 'Inter';
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  color: #8780bf;
 `
