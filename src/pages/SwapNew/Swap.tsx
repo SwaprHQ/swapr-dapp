@@ -16,6 +16,7 @@ function CurrencyItem() {
         <CurrencyAmount>1.488</CurrencyAmount>
         <CurrencyAmountWorth>$4000</CurrencyAmountWorth>
       </ValueContainer>
+      <Blockchain />
     </CurrencyContainer>
   )
 }
@@ -58,4 +59,16 @@ const CurrencyAmountWorth = styled.p`
   font-weight: 600;
   letter-spacing: 0.08em;
   color: #8780bf;
+`
+
+const Blockchain = styled.a`
+  width: 44px;
+  height: 84px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 12px;
+  border: 1.5px solid #1b1b2a;
+  filter: drop-shadow(0px 4px 42px rgba(0, 0, 0, 0.16));
+  backdrop-filter: blur(11px);
 `
