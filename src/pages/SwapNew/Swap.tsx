@@ -10,10 +10,11 @@ export function Swapbox2() {
     <Container>
       <CurrencyItem />
       <CurrencyItem />
+      <SwapInfoContainer />
       <SwapButton>
-        <ButtonLabel>Swap With</ButtonLabel>
+        <SwapButtonLabel>Swap With</SwapButtonLabel>
         <CowSVG />
-        <ButtonLabel>Cow</ButtonLabel>
+        <SwapButtonLabel>Cow</SwapButtonLabel>
       </SwapButton>
     </Container>
   )
@@ -140,6 +141,21 @@ const Blockchain = styled.a`
   backdrop-filter: blur(11px);
 `
 
+const SwapInfoContainer = styled.div`
+  width: 100%;
+  height: 41px;
+  display: flex;
+  justify-content: space-between;
+  padding: 10px 12px;
+  border-radius: 12px;
+  border: 1.5px solid #1b1b2a;
+  background: radial-gradient(160.32% 118.69% at 50.64% 100%, rgba(170, 162, 255, 0.06) 0%, rgba(0, 0, 0, 0) 100%),
+    rgba(19, 19, 32, 0.5);
+  box-shadow: 0px 4px 42px rgba(0, 0, 0, 0.16);
+  backdrop-filter: blur(11px);
+  margin-bottom: 6px;
+`
+
 const SwapButton = styled.button`
   width: 100%;
   height: 70px;
@@ -153,7 +169,7 @@ const SwapButton = styled.button`
   box-shadow: 0px 0px 42px rgba(129, 62, 127, 0.32);
 `
 
-const ButtonLabel = styled.p`
+const SwapButtonLabel = styled.p`
   display: inline-block;
   line-height: 16px;
   font-size: 13px;
