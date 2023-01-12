@@ -21,7 +21,9 @@ function CurrencyItem() {
         </CurrencyAmountContainer>
 
         <CurrencyInfoContainer>
-          <CurrencyTypeContainer></CurrencyTypeContainer>
+          <CurrencyTypeContainer>
+            <CurrencySymbol>ETH</CurrencySymbol>
+          </CurrencyTypeContainer>
           <CurrencyBalance>Balance: 1.488</CurrencyBalance>
         </CurrencyInfoContainer>
       </ValueContainer>
@@ -83,7 +85,20 @@ const CurrencyInfoContainer = styled.div``
 
 const CurrencyTypeContainer = styled.div`
   height: 24px;
+  display: flex;
+  justify-content: flex-end;
   margin-bottom: 17px;
+`
+
+const CurrencySymbol = styled.p`
+  display: inline-block;
+  line-height: 24px;
+  font-size: 20px;
+  font-family: 'Inter';
+  font-weight: 600;
+  text-transform: uppercase;
+  color: #ffffff;
+  margin: 0 6px;
 `
 
 const CurrencyBalance = styled.p`
