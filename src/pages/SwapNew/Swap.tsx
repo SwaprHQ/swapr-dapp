@@ -1,5 +1,7 @@
 import styled from 'styled-components'
 
+import { ReactComponent as EtherSVG } from '../../assets/swapbox/ether.svg'
+
 export function Swapbox2() {
   return (
     <Container>
@@ -16,7 +18,9 @@ function CurrencyItem() {
         <CurrencyAmount>1.488</CurrencyAmount>
         <CurrencyAmountWorth>$4000</CurrencyAmountWorth>
       </ValueContainer>
-      <Blockchain />
+      <Blockchain>
+        <EtherSVG />
+      </Blockchain>
     </CurrencyContainer>
   )
 }
