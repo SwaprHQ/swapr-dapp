@@ -1,5 +1,7 @@
+import { useEffect, useRef } from 'react'
 import styled from 'styled-components'
 
+import { useAnalytics } from '../../analytics'
 import { AdvancedDetailsFooter } from '../../components/AdvancedDetailsFooter'
 import { BridgeTransactionStatus, BridgeTransactionSummary } from '../../state/bridgeTransactions/types'
 import { getExplorerLink } from '../../utils'
@@ -162,7 +164,9 @@ interface BridgeTransactionsSummaryRowProps {
 }
 
 const BridgeTransactionsSummaryRow = ({ tx, handleTriggerCollect }: BridgeTransactionsSummaryRowProps) => {
+  const analytics = useAnalytics()
   const { assetName, fromChainId, status, toChainId, fromValue, pendingReason, log, bridgeId } = tx
+  const initialStatus = useRef(status)
   const fromChainName = getNetworkInfo(fromChainId).name
   const toChainName = getNetworkInfo(toChainId).name
 
@@ -170,6 +174,15 @@ const BridgeTransactionsSummaryRow = ({ tx, handleTriggerCollect }: BridgeTransa
     bridgeId === 'socket'
       ? log[0] && log[1] && getExplorerLink(log[0].chainId, log[0].txHash, 'transaction', bridgeId)
       : log[1] && getExplorerLink(log[1].chainId, log[1].txHash, 'transaction', bridgeId)
+
+  // track trade volume on first confirmation
+  useEffect(() => {
+    const isConfirmed = status === BridgeTransactionStatus.CONFIRMED || status === BridgeTransactionStatus.CLAIMED
+    if (initialStatus.current !== status && isConfirmed) {
+      analytics.trackEcoBridgeTradeVolume(tx)
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [initialStatus, status])
 
   return (
     <Row>
