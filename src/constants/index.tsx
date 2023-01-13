@@ -684,6 +684,12 @@ export const ROUTABLE_PLATFORM_STYLE: {
     gradientColor: '#FB52A1',
     name: RoutablePlatform.VELODROME.name,
   },
+  [RoutablePlatform.ONE_INCH.name]: {
+    logo: VelodromeLogo,
+    alt: RoutablePlatform.ONE_INCH.name,
+    gradientColor: '#FB52A1',
+    name: RoutablePlatform.ONE_INCH.name,
+  },
 }
 
 export const ROUTABLE_PLATFORM_LOGO: {
@@ -703,6 +709,7 @@ export const ROUTABLE_PLATFORM_LOGO: {
   [RoutablePlatform.GNOSIS_PROTOCOL.name]: <img width={16} height={16} src={CoWLogo} alt="CoW" />,
   [RoutablePlatform.VELODROME.name]: <img width={16} height={16} src={VelodromeLogo} alt="Velodrome" />,
   [RoutablePlatform.UNISWAP.name]: <img width={16} height={16} src={UniswapLogo} alt="Uniswap Unicorn" />,
+  [RoutablePlatform.ONE_INCH.name]: <img width={16} height={16} src={VelodromeLogo} alt="One Inch" />,
 }
 
 export const ChainLabel: any = {

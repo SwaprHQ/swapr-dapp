@@ -5,6 +5,7 @@ import {
   CoWTrade,
   CurveTrade,
   getAllCommonUniswapV2Pairs,
+  OneInchTrade,
   RoutablePlatform,
   Token,
   Trade,
@@ -123,7 +124,7 @@ export async function getExactIn(
       })
   })
 
-  const velodromeTrade = new Promise<any | undefined>(resolve => {
+  const velodromeTrade = new Promise<VelodromeTrade | undefined>(resolve => {
     if (!RoutablePlatform.VELODROME.supportsChain(chainId)) {
       return resolve(undefined)
     }
@@ -142,6 +143,28 @@ export async function getExactIn(
         resolve(undefined)
       })
   })
+
+  const OneInch = new Promise<any | undefined>(resolve => {
+    if (!RoutablePlatform.ONE_INCH.supportsChain(chainId)) {
+      console.log('NOT GOOD')
+      return resolve(undefined)
+    }
+    console.log('inside')
+    OneInchTrade.getQuote({
+      quoteCurrency: currencyOut,
+      amount: currencyAmountIn,
+      maximumSlippage,
+      recipient: receiver,
+      tradeType: TradeType.EXACT_INPUT,
+    })
+      .then(res => resolve(res ? res : undefined))
+      .catch(error => {
+        console.error(error)
+        errors.push(error)
+        resolve(undefined)
+      })
+  })
+  console.log('ONEINCH', OneInch)
 
   // Curve
   const curveTrade = new Promise<CurveTrade | undefined>(async resolve => {
@@ -206,6 +229,7 @@ export async function getExactIn(
     gnosisProtocolTrade,
     uniswapTrade,
     zeroXTrade,
+    OneInch,
   ])
   const unsortedTrades = unsortedTradesWithUndefined.filter((trade): trade is Trade => !!trade)
 
