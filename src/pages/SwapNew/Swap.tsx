@@ -1,10 +1,14 @@
 import styled from 'styled-components'
 
+import { ReactComponent as BananaSVG } from '../../assets/swapbox/banana.svg'
 import { ReactComponent as EtherLogoSVG } from '../../assets/swapbox/currency-logo-eth.svg'
 import { ReactComponent as CowSVG } from '../../assets/swapbox/dex-logo-cow.svg'
+import { ReactComponent as DexesSVG } from '../../assets/swapbox/dexes.svg'
 import { ReactComponent as DownArrowLargeSVG } from '../../assets/swapbox/down-arrow-large.svg'
 import { ReactComponent as DownArrowSmallSVG } from '../../assets/swapbox/down-arrow-small.svg'
 import { ReactComponent as EtherSVG } from '../../assets/swapbox/ether.svg'
+import { ReactComponent as GasSVG } from '../../assets/swapbox/gas.svg'
+import { ReactComponent as ShieldSVG } from '../../assets/swapbox/shield.svg'
 
 export function Swapbox2() {
   return (
@@ -13,7 +17,18 @@ export function Swapbox2() {
       <CurrencyItem />
       <SwapInfoContainer>
         <SwapCostInfo>
-          <SwapInfoButton>12</SwapInfoButton>
+          <SwapInfoButton>
+            <DexesSVG />
+          </SwapInfoButton>
+          <SwapInfoButton>
+            <GasSVG />
+          </SwapInfoButton>
+          <SwapInfoButton>
+            <BananaSVG />
+          </SwapInfoButton>
+          <SwapInfoButton>
+            <ShieldSVG />
+          </SwapInfoButton>
         </SwapCostInfo>
         <DownArrowSmallSVG />
       </SwapInfoContainer>
@@ -167,13 +182,14 @@ const SwapCostInfo = styled.div``
 
 const SwapInfoButton = styled.button`
   height: 20px;
-  display: flex;
+  display: inline-flex;
   align-items: center;
   padding: 5px;
   background: rgba(14, 159, 110, 0.08);
   border-radius: 4px;
   border: 1px solid rgba(14, 159, 110, 0.65);
   box-shadow: 0px 0px 8px rgba(16, 158, 110, 0.15);
+  margin-right: 4px;
 `
 
 const SwapButton = styled.button`
