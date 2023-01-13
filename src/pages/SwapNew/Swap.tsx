@@ -9,12 +9,16 @@ import { ReactComponent as DownArrowSmallSVG } from '../../assets/swapbox/down-a
 import { ReactComponent as EtherSVG } from '../../assets/swapbox/ether.svg'
 import { ReactComponent as GasSVG } from '../../assets/swapbox/gas.svg'
 import { ReactComponent as ShieldSVG } from '../../assets/swapbox/shield.svg'
+import { ReactComponent as SwapArrowSVG } from '../../assets/swapbox/swap-arrow.svg'
 
 export function Swapbox2() {
   return (
     <Container>
       <CurrencyItem />
       <CurrencyItem />
+      <SwapIndicatorButton>
+        <SwapArrowSVG />
+      </SwapIndicatorButton>
       <SwapInfoContainer>
         <SwapCostInfo>
           <SwapInfoButton>
@@ -162,6 +166,23 @@ const Blockchain = styled.a`
   border-radius: 12px;
   border: 1.5px solid #1b1b2a;
   filter: drop-shadow(0px 4px 42px rgba(0, 0, 0, 0.16));
+  backdrop-filter: blur(11px);
+`
+
+const SwapIndicatorButton = styled.button`
+  width: 36px;
+  height: 36px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: absolute;
+  left: 50%;
+  top: 84px;
+  transform: translateX(-50%);
+  background: #06060a;
+  border-radius: 12px;
+  border: 1px solid #0c0c14;
+  box-shadow: 0px 0px 42px rgba(0, 0, 0, 0.42);
   backdrop-filter: blur(11px);
 `
 
