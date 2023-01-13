@@ -2,7 +2,8 @@ import styled from 'styled-components'
 
 import { ReactComponent as EtherLogoSVG } from '../../assets/swapbox/currency-logo-eth.svg'
 import { ReactComponent as CowSVG } from '../../assets/swapbox/dex-logo-cow.svg'
-import { ReactComponent as DownArrowSVG } from '../../assets/swapbox/down-arrow.svg'
+import { ReactComponent as DownArrowLargeSVG } from '../../assets/swapbox/down-arrow-large.svg'
+import { ReactComponent as DownArrowSmallSVG } from '../../assets/swapbox/down-arrow-small.svg'
 import { ReactComponent as EtherSVG } from '../../assets/swapbox/ether.svg'
 
 export function Swapbox2() {
@@ -10,7 +11,12 @@ export function Swapbox2() {
     <Container>
       <CurrencyItem />
       <CurrencyItem />
-      <SwapInfoContainer />
+      <SwapInfoContainer>
+        <SwapCostInfo>
+          <SwapInfoButton>12</SwapInfoButton>
+        </SwapCostInfo>
+        <DownArrowSmallSVG />
+      </SwapInfoContainer>
       <SwapButton>
         <SwapButtonLabel>Swap With</SwapButtonLabel>
         <CowSVG />
@@ -33,7 +39,7 @@ function CurrencyItem() {
           <CurrencyTypeContainer>
             <EtherLogoSVG />
             <CurrencySymbol>ETH</CurrencySymbol>
-            <DownArrowSVG />
+            <DownArrowLargeSVG />
           </CurrencyTypeContainer>
           <CurrencyBalance>
             Balance: <span>1.488</span>
@@ -146,7 +152,8 @@ const SwapInfoContainer = styled.div`
   height: 41px;
   display: flex;
   justify-content: space-between;
-  padding: 10px 12px;
+  align-items: center;
+  padding: 9px 12px;
   border-radius: 12px;
   border: 1.5px solid #1b1b2a;
   background: radial-gradient(160.32% 118.69% at 50.64% 100%, rgba(170, 162, 255, 0.06) 0%, rgba(0, 0, 0, 0) 100%),
@@ -154,6 +161,19 @@ const SwapInfoContainer = styled.div`
   box-shadow: 0px 4px 42px rgba(0, 0, 0, 0.16);
   backdrop-filter: blur(11px);
   margin-bottom: 6px;
+`
+
+const SwapCostInfo = styled.div``
+
+const SwapInfoButton = styled.button`
+  height: 20px;
+  display: flex;
+  align-items: center;
+  padding: 5px;
+  background: rgba(14, 159, 110, 0.08);
+  border-radius: 4px;
+  border: 1px solid rgba(14, 159, 110, 0.65);
+  box-shadow: 0px 0px 8px rgba(16, 158, 110, 0.15);
 `
 
 const SwapButton = styled.button`
