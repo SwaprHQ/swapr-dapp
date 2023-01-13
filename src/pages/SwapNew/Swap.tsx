@@ -29,6 +29,9 @@ export function Swapbox2() {
           <SwapInfoButton>
             <ShieldSVG />
           </SwapInfoButton>
+          <CurrencyCourseInfo>
+            <span>1</span> ETH = <span>3007</span> USDT
+          </CurrencyCourseInfo>
         </SwapCostInfo>
         <DownArrowSmallSVG />
       </SwapInfoContainer>
@@ -190,6 +193,28 @@ const SwapInfoButton = styled.button`
   border: 1px solid rgba(14, 159, 110, 0.65);
   box-shadow: 0px 0px 8px rgba(16, 158, 110, 0.15);
   margin-right: 4px;
+`
+
+const CurrencyCourseInfo = styled.p`
+  height: 20px;
+  line-height: 20px;
+  display: inline-block;
+  vertical-align: top;
+  padding: 5px 6px;
+  border-radius: 4px;
+  line-height: 10px;
+  font-size: 10px;
+  font-family: 'Inter';
+  font-weight: 500;
+  text-transform: uppercase;
+  opacity: 0.8;
+  color: #ffffff;
+  background: rgba(104, 110, 148, 0.1);
+
+  & span {
+    opacity: 1;
+    font-weight: 700;
+  }
 `
 
 const SwapButton = styled.button`
