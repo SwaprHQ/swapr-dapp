@@ -19,28 +19,32 @@ export function Swapbox2() {
       <SwapIndicatorButton>
         <SwapArrowSVG />
       </SwapIndicatorButton>
-      <SwapInfoContainer>
-        <SwapCostInfo>
-          <SwapInfoButton>
-            <DexesSVG />
-          </SwapInfoButton>
-          <SwapInfoButton>
-            <GasSVG />
-          </SwapInfoButton>
-          <SwapInfoButton>
-            <BananaSVG />
-          </SwapInfoButton>
-          <SwapInfoButton>
-            <ShieldSVG />
-          </SwapInfoButton>
-          <CurrencyCourseInfo>
-            <span>1</span> ETH = <span>3007</span> USDT
-          </CurrencyCourseInfo>
-        </SwapCostInfo>
-        <ExpandButton>
-          <DownArrowSmallSVG />
-        </ExpandButton>
-      </SwapInfoContainer>
+      <SwapInfo>
+        <SwapInfoBasics>
+          <SwapCostInfo>
+            <SwapInfoButton>
+              <DexesSVG />
+            </SwapInfoButton>
+            <SwapInfoButton>
+              <GasSVG />
+            </SwapInfoButton>
+            <SwapInfoButton>
+              <BananaSVG />
+            </SwapInfoButton>
+            <SwapInfoButton>
+              <ShieldSVG />
+            </SwapInfoButton>
+            <CurrencyCourseInfo>
+              <span>1</span> ETH = <span>3007</span> USDT
+            </CurrencyCourseInfo>
+          </SwapCostInfo>
+          <ExpandButton>
+            <DownArrowSmallSVG />
+          </ExpandButton>
+        </SwapInfoBasics>
+
+        <SwapInfoDetailed></SwapInfoDetailed>
+      </SwapInfo>
       <SwapButton>
         <SwapButtonLabel>Swap With</SwapButtonLabel>
         <CowSVG />
@@ -193,12 +197,7 @@ const SwapIndicatorButton = styled.button`
   backdrop-filter: blur(11px);
 `
 
-const SwapInfoContainer = styled.div`
-  width: 100%;
-  height: 41px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
+const SwapInfo = styled.div`
   padding: 9px 12px;
   border-radius: 12px;
   border: 1.5px solid #1b1b2a;
@@ -207,6 +206,18 @@ const SwapInfoContainer = styled.div`
   box-shadow: 0px 4px 42px rgba(0, 0, 0, 0.16);
   backdrop-filter: blur(11px);
   margin-bottom: 6px;
+`
+
+const SwapInfoBasics = styled.div`
+  width: 100%;
+  height: 41px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+`
+
+const SwapInfoDetailed = styled.div`
+  height: 300px;
 `
 
 const SwapCostInfo = styled.div``
