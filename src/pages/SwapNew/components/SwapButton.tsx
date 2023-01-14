@@ -1,7 +1,7 @@
 import styled from 'styled-components'
 
 import { ReactComponent as CowSVG } from '../../../assets/swapbox/dex-logo-cow.svg'
-import { SharedStyles } from './styles'
+import { FontFamily } from './styles'
 
 export function SwapButton() {
   return (
@@ -35,7 +35,7 @@ const SwapButtonLabel = styled.p`
   display: inline-block;
   line-height: 16px;
   font-size: 13px;
-  ${SharedStyles}
+  ${FontFamily}
   font-weight: 600;
   letter-spacing: 0.08em;
   text-transform: uppercase;

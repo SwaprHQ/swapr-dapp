@@ -6,7 +6,7 @@ import { ReactComponent as DexesSVG } from '../../../assets/swapbox/dexes.svg'
 import { ReactComponent as DownArrowSmallSVG } from '../../../assets/swapbox/down-arrow-small.svg'
 import { ReactComponent as GasSVG } from '../../../assets/swapbox/gas.svg'
 import { ReactComponent as ShieldSVG } from '../../../assets/swapbox/shield.svg'
-import { FontFamily } from './styles'
+import { BorderStyle, FontFamily } from './styles'
 
 export function SwapInfo() {
   const [showSwapInfoDetails, setShowSwapInfoDetails] = useState(false)
@@ -51,8 +51,7 @@ export function SwapInfo() {
 
 const SwapInfoContainer = styled.div`
   padding: 9px 12px;
-  border-radius: 12px;
-  border: 1.5px solid #1b1b2a;
+  ${BorderStyle}
   background: radial-gradient(160.32% 118.69% at 50.64% 100%, rgba(170, 162, 255, 0.06) 0%, rgba(0, 0, 0, 0) 100%),
     rgba(19, 19, 32, 0.5);
   box-shadow: 0px 4px 42px rgba(0, 0, 0, 0.16);
@@ -76,8 +75,7 @@ const SwapInfoDetailed = styled.div<{ showSwapInfoDetails: boolean }>`
 
 const SwapDexInfoItem = styled.div`
   padding: 16px;
-  border-radius: 12px;
-  border: 1.5px solid #1b1b2a;
+  ${BorderStyle}
   background: linear-gradient(180deg, rgba(68, 65, 99, 0.1) -16.91%, rgba(68, 65, 99, 0) 116.18%),
     linear-gradient(113.18deg, rgba(255, 255, 255, 0.2) -0.1%, rgba(0, 0, 0, 0) 98.9%), #171621;
   background-blend-mode: normal, overlay, normal;

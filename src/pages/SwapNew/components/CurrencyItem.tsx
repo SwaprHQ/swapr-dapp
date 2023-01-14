@@ -3,7 +3,7 @@ import styled from 'styled-components'
 import { ReactComponent as EtherLogoSVG } from '../../../assets/swapbox/currency-logo-eth.svg'
 import { ReactComponent as DownArrowLargeSVG } from '../../../assets/swapbox/down-arrow-large.svg'
 import { ReactComponent as EtherSVG } from '../../../assets/swapbox/ether.svg'
-import { FontFamily } from './styles'
+import { BorderStyle, FontFamily } from './styles'
 
 export function CurrencyItem() {
   return (
@@ -41,8 +41,7 @@ const CurrencyContainer = styled.div`
   padding: 8px 8px 8px 22px;
   background: radial-gradient(173.28% 128.28% at 50.64% 0%, rgba(170, 162, 255, 0.06) 0%, rgba(0, 0, 0, 0) 100%),
     rgba(19, 19, 32, 0.5);
-  border-radius: 12px;
-  border: 1.5px solid #1b1b2a;
+  ${BorderStyle}
   margin-bottom: 6px;
 `
 
@@ -116,8 +115,7 @@ const Blockchain = styled.a`
   display: flex;
   justify-content: center;
   align-items: center;
-  border-radius: 12px;
-  border: 1.5px solid #1b1b2a;
+  ${BorderStyle}
   filter: drop-shadow(0px 4px 42px rgba(0, 0, 0, 0.16));
   backdrop-filter: blur(11px);
 `

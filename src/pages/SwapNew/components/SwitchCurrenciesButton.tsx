@@ -1,11 +1,11 @@
 import styled from 'styled-components'
 
-import { ReactComponent as SwapArrowSVG } from '../../../assets/swapbox/swap-arrow.svg'
+import { ReactComponent as DownArrowSVG } from '../../../assets/swapbox/swap-arrow.svg'
 
 export function SwitchCurrenciesButton() {
   return (
     <StyledButton>
-      <SwapArrowSVG />
+      <DownArrowSVG />
     </StyledButton>
   )
 }
