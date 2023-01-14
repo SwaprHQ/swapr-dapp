@@ -1,9 +1,8 @@
 import { useState } from 'react'
-import styled, { css } from 'styled-components'
+import styled from 'styled-components'
 
 import { ReactComponent as BananaSVG } from '../../assets/swapbox/banana.svg'
 import { ReactComponent as EtherLogoSVG } from '../../assets/swapbox/currency-logo-eth.svg'
-import { ReactComponent as CowSVG } from '../../assets/swapbox/dex-logo-cow.svg'
 import { ReactComponent as DexesSVG } from '../../assets/swapbox/dexes.svg'
 import { ReactComponent as DownArrowLargeSVG } from '../../assets/swapbox/down-arrow-large.svg'
 import { ReactComponent as DownArrowSmallSVG } from '../../assets/swapbox/down-arrow-small.svg'
@@ -11,6 +10,8 @@ import { ReactComponent as EtherSVG } from '../../assets/swapbox/ether.svg'
 import { ReactComponent as GasSVG } from '../../assets/swapbox/gas.svg'
 import { ReactComponent as ShieldSVG } from '../../assets/swapbox/shield.svg'
 import { ReactComponent as SwapArrowSVG } from '../../assets/swapbox/swap-arrow.svg'
+import { SwapButton } from './components'
+import { SharedStyles } from './components/styles'
 
 export function Swapbox2() {
   const [showSwapInfoDetails, setShowSwapInfoDetails] = useState(false)
@@ -57,12 +58,7 @@ export function Swapbox2() {
           )}
         </SwapInfoDetailed>
       </SwapInfoContainer>
-
-      <SwapButton>
-        <SwapButtonLabel>Swap With</SwapButtonLabel>
-        <CowSVG />
-        <SwapButtonLabel>Cow</SwapButtonLabel>
-      </SwapButton>
+      <SwapButton />
     </Container>
   )
 }
@@ -93,10 +89,6 @@ function CurrencyItem() {
     </CurrencyContainer>
   )
 }
-
-const SharedStyles = css`
-  font-family: Inter;
-`
 
 const Container = styled.div`
   width: 467px;
@@ -295,33 +287,4 @@ const CurrencyCourseInfo = styled.p`
     opacity: 1;
     font-weight: 700;
   }
-`
-
-const SwapButton = styled.button`
-  width: 100%;
-  height: 70px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: 10px;
-  border: none;
-  border-radius: 12px;
-  background: linear-gradient(93.39deg, #2b00a4 -8.9%, #d67b5a 114.08%);
-  box-shadow: 0px 0px 42px rgba(129, 62, 127, 0.32);
-  cursor: pointer;
-
-  &:hover {
-    opacity: 0.9;
-  }
-`
-
-const SwapButtonLabel = styled.p`
-  display: inline-block;
-  line-height: 16px;
-  font-size: 13px;
-  ${SharedStyles}
-  font-weight: 600;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  color: #ffffff;
 `
