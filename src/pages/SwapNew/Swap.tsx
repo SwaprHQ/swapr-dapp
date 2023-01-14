@@ -1,3 +1,4 @@
+import { useState } from 'react'
 import styled, { css } from 'styled-components'
 
 import { ReactComponent as BananaSVG } from '../../assets/swapbox/banana.svg'
@@ -12,6 +13,8 @@ import { ReactComponent as ShieldSVG } from '../../assets/swapbox/shield.svg'
 import { ReactComponent as SwapArrowSVG } from '../../assets/swapbox/swap-arrow.svg'
 
 export function Swapbox2() {
+  const [showSwapInfoDetails, setShowSwapInfoDetails] = useState(false)
+
   return (
     <Container>
       <CurrencyItem />
@@ -38,12 +41,12 @@ export function Swapbox2() {
               <span>1</span> ETH = <span>3007</span> USDT
             </CurrencyCourseInfo>
           </SwapCostInfo>
-          <ExpandButton>
+          <ExpandButton onClick={() => setShowSwapInfoDetails(value => !value)}>
             <DownArrowSmallSVG />
           </ExpandButton>
         </SwapInfoBasics>
 
-        <SwapInfoDetailed></SwapInfoDetailed>
+        {showSwapInfoDetails && <SwapInfoDetailed></SwapInfoDetailed>}
       </SwapInfo>
       <SwapButton>
         <SwapButtonLabel>Swap With</SwapButtonLabel>
@@ -217,7 +220,7 @@ const SwapInfoBasics = styled.div`
 `
 
 const SwapInfoDetailed = styled.div`
-  height: 300px;
+  height: 100px;
 `
 
 const SwapCostInfo = styled.div``
