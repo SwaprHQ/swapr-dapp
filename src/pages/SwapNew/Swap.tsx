@@ -1,4 +1,4 @@
-import styled from 'styled-components'
+import styled, { css } from 'styled-components'
 
 import { ReactComponent as BananaSVG } from '../../assets/swapbox/banana.svg'
 import { ReactComponent as EtherLogoSVG } from '../../assets/swapbox/currency-logo-eth.svg'
@@ -75,8 +75,13 @@ function CurrencyItem() {
   )
 }
 
+const SharedStyles = css`
+  font-family: Inter;
+`
+
 const Container = styled.div`
   width: 467px;
+  position: relative;
 `
 
 const CurrencyContainer = styled.div`
@@ -105,7 +110,7 @@ const CurrencyAmountContainer = styled.div``
 const CurrencyAmount = styled.p`
   line-height: 34px;
   font-size: 28px;
-  font-family: Inter;
+  ${SharedStyles}
   font-weight: 600;
   letter-spacing: 0.02em;
   text-shadow: 0px 0px 12px rgba(255, 255, 255, 0.14);
@@ -116,7 +121,7 @@ const CurrencyAmount = styled.p`
 const CurrencyAmountWorth = styled.p`
   line-height: 12px;
   font-size: 10px;
-  font-family: 'Inter';
+  ${SharedStyles}
   font-weight: 600;
   letter-spacing: 0.08em;
   color: #8780bf;
@@ -136,7 +141,7 @@ const CurrencySymbol = styled.p`
   display: inline-block;
   line-height: 24px;
   font-size: 20px;
-  font-family: 'Inter';
+  ${SharedStyles}
   font-weight: 600;
   text-transform: uppercase;
   color: #ffffff;
@@ -146,7 +151,7 @@ const CurrencySymbol = styled.p`
 const CurrencyBalance = styled.p`
   line-height: 12px;
   font-size: 10px;
-  font-family: 'Inter';
+  ${SharedStyles}
   font-weight: 600;
   letter-spacing: 0.08em;
   text-transform: uppercase;
@@ -225,7 +230,7 @@ const CurrencyCourseInfo = styled.p`
   border-radius: 4px;
   line-height: 10px;
   font-size: 10px;
-  font-family: 'Inter';
+  ${SharedStyles}
   font-weight: 500;
   text-transform: uppercase;
   opacity: 0.8;
@@ -255,7 +260,7 @@ const SwapButtonLabel = styled.p`
   display: inline-block;
   line-height: 16px;
   font-size: 13px;
-  font-family: 'Inter';
+  ${SharedStyles}
   font-weight: 600;
   letter-spacing: 0.08em;
   text-transform: uppercase;
