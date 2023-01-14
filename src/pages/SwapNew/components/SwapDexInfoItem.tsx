@@ -10,6 +10,7 @@ export function SwapDexInfoItem() {
         <SushiSVG />
         <TextLabel>Sushi</TextLabel>
       </DexInfo>
+      <TransactionCost>3989 USDT</TransactionCost>
     </Container>
   )
 }
@@ -43,4 +44,15 @@ const TextLabel = styled.p`
   font-feature-settings: 'zero' on;
   color: #ffffff;
   margin-left: 8px;
+`
+
+const TransactionCost = styled.p`
+  height: 28px;
+  line-height: 20px;
+  display: inline-block;
+  padding: 4px;
+  font-size: 14px;
+  ${FontFamily}
+  background: rgba(104, 110, 148, 0.1);
+  border-radius: 4px;
 `
