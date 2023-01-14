@@ -6,8 +6,7 @@ import { ReactComponent as DexesSVG } from '../../assets/swapbox/dexes.svg'
 import { ReactComponent as DownArrowSmallSVG } from '../../assets/swapbox/down-arrow-small.svg'
 import { ReactComponent as GasSVG } from '../../assets/swapbox/gas.svg'
 import { ReactComponent as ShieldSVG } from '../../assets/swapbox/shield.svg'
-import { ReactComponent as SwapArrowSVG } from '../../assets/swapbox/swap-arrow.svg'
-import { CurrencyItem, SwapButton } from './components'
+import { CurrencyItem, SwapButton, SwitchCurrenciesButton } from './components'
 import { SharedStyles } from './components/styles'
 
 export function Swapbox2() {
@@ -17,9 +16,7 @@ export function Swapbox2() {
     <Container>
       <CurrencyItem />
       <CurrencyItem />
-      <SwapIndicatorButton>
-        <SwapArrowSVG />
-      </SwapIndicatorButton>
+      <SwitchCurrenciesButton />
 
       <SwapInfoContainer>
         <SwapInfoBasics>
@@ -63,23 +60,6 @@ export function Swapbox2() {
 const Container = styled.div`
   width: 467px;
   position: relative;
-`
-
-const SwapIndicatorButton = styled.button`
-  width: 36px;
-  height: 36px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  position: absolute;
-  left: 50%;
-  top: 84px;
-  transform: translateX(-50%);
-  background: #06060a;
-  border-radius: 12px;
-  border: 1px solid #0c0c14;
-  box-shadow: 0px 0px 42px rgba(0, 0, 0, 0.42);
-  backdrop-filter: blur(11px);
 `
 
 const SwapInfoContainer = styled.div`
