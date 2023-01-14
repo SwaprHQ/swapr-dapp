@@ -286,6 +286,11 @@ const SwapButton = styled.button`
   border-radius: 12px;
   background: linear-gradient(93.39deg, #2b00a4 -8.9%, #d67b5a 114.08%);
   box-shadow: 0px 0px 42px rgba(129, 62, 127, 0.32);
+  cursor: pointer;
+
+  &:hover {
+    opacity: 0.9;
+  }
 `
 
 const SwapButtonLabel = styled.p`
