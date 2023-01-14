@@ -7,6 +7,7 @@ import { ReactComponent as DownArrowSmallSVG } from '../../../assets/swapbox/dow
 import { ReactComponent as GasSVG } from '../../../assets/swapbox/gas.svg'
 import { ReactComponent as ShieldSVG } from '../../../assets/swapbox/shield.svg'
 import { BorderStyle, FontFamily } from './styles'
+import { SwapDexInfoItem } from './SwapDexInfoItem'
 
 export function SwapInfo() {
   const [showSwapInfoDetails, setShowSwapInfoDetails] = useState(false)
@@ -69,20 +70,8 @@ const SwapInfoBasics = styled.div`
 `
 
 const SwapInfoDetailed = styled.div<{ showSwapInfoDetails: boolean }>`
-  height: ${({ showSwapInfoDetails }) => (showSwapInfoDetails ? '100px' : '0px')};
+  height: ${({ showSwapInfoDetails }) => (showSwapInfoDetails ? 'auto' : '0px')};
   transition: height 0.15s ease-out;
-`
-
-const SwapDexInfoItem = styled.div`
-  padding: 16px;
-  ${BorderStyle}
-  background: linear-gradient(180deg, rgba(68, 65, 99, 0.1) -16.91%, rgba(68, 65, 99, 0) 116.18%),
-    linear-gradient(113.18deg, rgba(255, 255, 255, 0.2) -0.1%, rgba(0, 0, 0, 0) 98.9%), #171621;
-  background-blend-mode: normal, overlay, normal;
-  opacity: 0.8;
-  box-shadow: 0px 4px 42px rgba(0, 0, 0, 0.16);
-  backdrop-filter: blur(11px);
-  margin-bottom: 8px;
 `
 
 const SwapCostInfo = styled.div``
