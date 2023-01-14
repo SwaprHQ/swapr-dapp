@@ -23,7 +23,7 @@ export function Swapbox2() {
         <SwapArrowSVG />
       </SwapIndicatorButton>
 
-      <SwapInfo>
+      <SwapInfoContainer>
         <SwapInfoBasics>
           <SwapCostInfo>
             <SwapInfoButton>
@@ -47,8 +47,16 @@ export function Swapbox2() {
           </ExpandButton>
         </SwapInfoBasics>
 
-        <SwapInfoDetailed showSwapInfoDetails={showSwapInfoDetails}></SwapInfoDetailed>
-      </SwapInfo>
+        <SwapInfoDetailed showSwapInfoDetails={showSwapInfoDetails}>
+          {showSwapInfoDetails && (
+            <>
+              <SwapDexInfoItem />
+              <SwapDexInfoItem />
+              <SwapDexInfoItem />
+            </>
+          )}
+        </SwapInfoDetailed>
+      </SwapInfoContainer>
 
       <SwapButton>
         <SwapButtonLabel>Swap With</SwapButtonLabel>
@@ -202,7 +210,7 @@ const SwapIndicatorButton = styled.button`
   backdrop-filter: blur(11px);
 `
 
-const SwapInfo = styled.div`
+const SwapInfoContainer = styled.div`
   padding: 9px 12px;
   border-radius: 12px;
   border: 1.5px solid #1b1b2a;
@@ -210,6 +218,7 @@ const SwapInfo = styled.div`
     rgba(19, 19, 32, 0.5);
   box-shadow: 0px 4px 42px rgba(0, 0, 0, 0.16);
   backdrop-filter: blur(11px);
+  overflow: hidden;
   margin-bottom: 6px;
 `
 
@@ -224,6 +233,19 @@ const SwapInfoBasics = styled.div`
 const SwapInfoDetailed = styled.div<{ showSwapInfoDetails: boolean }>`
   height: ${({ showSwapInfoDetails }) => (showSwapInfoDetails ? '100px' : '0px')};
   transition: height 0.15s ease-out;
+`
+
+const SwapDexInfoItem = styled.div`
+  padding: 16px;
+  border-radius: 12px;
+  border: 1.5px solid #1b1b2a;
+  background: linear-gradient(180deg, rgba(68, 65, 99, 0.1) -16.91%, rgba(68, 65, 99, 0) 116.18%),
+    linear-gradient(113.18deg, rgba(255, 255, 255, 0.2) -0.1%, rgba(0, 0, 0, 0) 98.9%), #171621;
+  background-blend-mode: normal, overlay, normal;
+  opacity: 0.8;
+  box-shadow: 0px 4px 42px rgba(0, 0, 0, 0.16);
+  backdrop-filter: blur(11px);
+  margin-bottom: 8px;
 `
 
 const SwapCostInfo = styled.div``
