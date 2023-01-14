@@ -22,6 +22,7 @@ export function Swapbox2() {
       <SwapIndicatorButton>
         <SwapArrowSVG />
       </SwapIndicatorButton>
+
       <SwapInfo>
         <SwapInfoBasics>
           <SwapCostInfo>
@@ -46,8 +47,9 @@ export function Swapbox2() {
           </ExpandButton>
         </SwapInfoBasics>
 
-        {showSwapInfoDetails && <SwapInfoDetailed></SwapInfoDetailed>}
+        <SwapInfoDetailed showSwapInfoDetails={showSwapInfoDetails}></SwapInfoDetailed>
       </SwapInfo>
+
       <SwapButton>
         <SwapButtonLabel>Swap With</SwapButtonLabel>
         <CowSVG />
@@ -219,8 +221,9 @@ const SwapInfoBasics = styled.div`
   align-items: center;
 `
 
-const SwapInfoDetailed = styled.div`
-  height: 100px;
+const SwapInfoDetailed = styled.div<{ showSwapInfoDetails: boolean }>`
+  height: ${({ showSwapInfoDetails }) => (showSwapInfoDetails ? '100px' : '0px')};
+  transition: height 0.15s ease-out;
 `
 
 const SwapCostInfo = styled.div``
