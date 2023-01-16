@@ -16,8 +16,6 @@ import { PageMetaData } from '../../../../../components/PageMetaData'
 import { REFETCH_DATA_INTERVAL } from '../../../../../constants/data'
 import { ApprovalState, useApproveCallback } from '../../../../../hooks/useApproveCallback'
 import { useNotificationPopup } from '../../../../../state/application/hooks'
-import { useSwapActionHandlers } from '../../../../../state/swap/hooks'
-import { Field } from '../../../../../state/swap/types'
 import { useCurrencyBalances } from '../../../../../state/wallet/hooks'
 import { maxAmountSpend } from '../../../../../utils/maxAmountSpend'
 import AppBody from '../../../../AppBody'
@@ -89,10 +87,6 @@ export function LimitOrderForm({ account, provider, chainId }: LimitOrderFormPro
 
   const [fetchMarketPrice, setFetchMarketPrice] = useState<boolean>(true)
   const [marketPriceInterval, setMarketPriceInterval] = useState<NodeJS.Timer | undefined>()
-
-  const { onCurrencySelection } = useSwapActionHandlers()
-  onCurrencySelection(Field.INPUT, sellTokenAmount.currency)
-  onCurrencySelection(Field.OUTPUT, buyTokenAmount.currency)
 
   const [tokenInApproval, tokenInApprovalCallback] = useApproveCallback(
     sellTokenAmount,
@@ -334,8 +328,6 @@ export function LimitOrderForm({ account, provider, chainId }: LimitOrderFormPro
       InputFocus.SELL
     )
 
-    onCurrencySelection(Field.INPUT, currency)
-
     // Format the buy amount
     // Update buy amount state variables
     setBuyTokenAmount(newBuyTokenAmount)
@@ -378,8 +370,6 @@ export function LimitOrderForm({ account, provider, chainId }: LimitOrderFormPro
       limitOrder.kind,
       InputFocus.BUY
     )
-
-    onCurrencySelection(Field.OUTPUT, currency)
 
     // Format the sell amount
     // Update sell amount state variables
