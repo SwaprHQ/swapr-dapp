@@ -24,6 +24,7 @@ import { AbstractConnector } from '@web3-react/abstract-connector'
 import { providers } from 'ethers'
 import { ReactNode } from 'react'
 
+import OneInchLogo from '../assets/images/1inch-logo.svg'
 import RightArrow from '../assets/images/arrow-right.svg'
 import BaoswapLogo from '../assets/images/baoswap-logo.png'
 import PancakeSwapLogo from '../assets/images/bunny-mono.png'
@@ -685,7 +686,7 @@ export const ROUTABLE_PLATFORM_STYLE: {
     name: RoutablePlatform.VELODROME.name,
   },
   [RoutablePlatform.ONE_INCH.name]: {
-    logo: VelodromeLogo,
+    logo: OneInchLogo,
     alt: RoutablePlatform.ONE_INCH.name,
     gradientColor: '#FB52A1',
     name: RoutablePlatform.ONE_INCH.name,
@@ -709,7 +710,7 @@ export const ROUTABLE_PLATFORM_LOGO: {
   [RoutablePlatform.GNOSIS_PROTOCOL.name]: <img width={16} height={16} src={CoWLogo} alt="CoW" />,
   [RoutablePlatform.VELODROME.name]: <img width={16} height={16} src={VelodromeLogo} alt="Velodrome" />,
   [RoutablePlatform.UNISWAP.name]: <img width={16} height={16} src={UniswapLogo} alt="Uniswap Unicorn" />,
-  [RoutablePlatform.ONE_INCH.name]: <img width={16} height={16} src={VelodromeLogo} alt="One Inch" />,
+  [RoutablePlatform.ONE_INCH.name]: <img width={16} height={16} src={OneInchLogo} alt="One Inch" />,
 }
 
 export const ChainLabel: any = {
