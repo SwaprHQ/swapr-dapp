@@ -1,8 +1,9 @@
-import { ChainId, Currency, Token, WETH, WMATIC, WXDAI } from '@swapr/sdk'
+import { ChainId, Currency, Pair, Token, WETH, WMATIC, WXDAI } from '@swapr/sdk'
 
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { useDispatch } from 'react-redux'
 
+import { REFETCH_DATA_INTERVAL } from '../../constants/data'
 import { useActiveWeb3React } from '../../hooks'
 import { useToken } from '../../hooks/Tokens'
 import { useRouter } from '../../hooks/useRouter'
@@ -54,7 +55,7 @@ export const useAdvancedTradingView = () => {
 
   const [advancedTradingViewAdapter, setAdvancedTradingViewAdapter] = useState<AdvancedTradingViewAdapter<AppState>>()
 
-  const [symbol, setSymbol] = useState<string>()
+  const [pairAddress, setPairAddress] = useState<string>()
 
   const [pairTradesAmountToFetch, pairActivityAmountToFetch] = useMemo(
     () => [
@@ -64,13 +65,17 @@ export const useAdvancedTradingView = () => {
     [chainId]
   )
 
+  useEffect(() => {
+    setIsLoadingTrades(true)
+  }, [chainId])
+
   const previousTokens = useRef<{ inputTokenAddress?: string; outputTokenAddress?: string }>({
     inputTokenAddress: undefined,
     outputTokenAddress: undefined,
   })
 
-  const [isLoadingTrades, setIsLoadingTrades] = useState(false)
-  const [isLoadingActivity, setIsLoadingActivity] = useState(false)
+  const [isLoadingTrades, setIsLoadingTrades] = useState(true)
+  const [isLoadingActivity, setIsLoadingActivity] = useState(true)
   const [isFetched, setIsFetched] = useState(false)
 
   const dispatch = useDispatch()
@@ -121,32 +126,20 @@ export const useAdvancedTradingView = () => {
 
       advancedTradingViewAdapter.setPairTokens(inputToken, outputToken)
 
-      setSymbol(`${inputToken.symbol}${outputToken.symbol}`)
+      setPairAddress(Pair.getAddress(inputToken, outputToken))
 
       if (
-        // do not fetch data if user reversed pair
         previousTokens.current.inputTokenAddress !== outputToken.address.toLowerCase() ||
         previousTokens.current.outputTokenAddress !== inputToken.address.toLowerCase()
       ) {
-        setIsLoadingTrades(true)
-        setIsLoadingActivity(true)
         setIsFetched(false)
 
         try {
-          await Promise.allSettled([
-            advancedTradingViewAdapter.fetchPairTrades({
-              inputToken,
-              outputToken,
-              amountToFetch: pairTradesAmountToFetch,
-              isFirstFetch: true,
-            }),
-            advancedTradingViewAdapter.fetchPairActivity({
-              inputToken,
-              outputToken,
-              amountToFetch: pairActivityAmountToFetch,
-              isFirstFetch: true,
-            }),
-          ])
+          await advancedTradingViewAdapter.fetchPairTradesAndActivityBulkUpdate({
+            inputToken,
+            outputToken,
+            amountToFetch: pairTradesAmountToFetch,
+          })
         } catch (e) {
           console.error(e)
         } finally {
@@ -166,6 +159,13 @@ export const useAdvancedTradingView = () => {
     }
 
     fetchTrades()
+
+    const interval = setInterval(() => {
+      fetchTrades()
+    }, REFETCH_DATA_INTERVAL)
+
+    return () => clearInterval(interval)
+
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [
     dispatch,
@@ -193,7 +193,7 @@ export const useAdvancedTradingView = () => {
 
     setIsLoadingTrades(true)
     try {
-      await advancedTradingViewAdapter.fetchPairTrades({
+      await advancedTradingViewAdapter.fetchPairTradesBulkUpdate({
         inputToken,
         outputToken,
         amountToFetch: AdapterAmountToFetch.PAIR_TRADES,
@@ -211,7 +211,7 @@ export const useAdvancedTradingView = () => {
 
     setIsLoadingActivity(true)
     try {
-      await advancedTradingViewAdapter.fetchPairActivity({
+      await advancedTradingViewAdapter.fetchPairActivityBulkUpdate({
         inputToken,
         outputToken,
         amountToFetch: AdapterAmountToFetch.PAIR_ACTIVITY,
@@ -225,7 +225,7 @@ export const useAdvancedTradingView = () => {
   }
 
   return {
-    symbol,
+    pairAddress,
     pairTokens,
     showTrades: Boolean(inputToken && outputToken),
     chainId,

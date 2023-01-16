@@ -5,6 +5,7 @@ export interface Fathom {
   setSite(siteId: string): void
   trackGoal(goalId: string, data: any): void
   trackEvent(eventId: string, payload: Record<string, any>): void
+  trackPageview(params?: Record<string, any>): void
 }
 
 declare global {

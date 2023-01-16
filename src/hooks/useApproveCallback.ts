@@ -5,13 +5,10 @@ import {
   CoWTrade,
   Currency,
   CurrencyAmount,
-  CurveTrade,
   TokenAmount,
   Trade,
-  UniswapTrade,
   UniswapV2RoutablePlatform,
   UniswapV2Trade,
-  ZeroXTrade,
 } from '@swapr/sdk'
 import { wrappedAmount } from '@swapr/sdk/dist/entities/trades/utils'
 
@@ -134,19 +131,15 @@ export function useApproveCallbackFromTrade(trade?: Trade /* allowedSlippage = 0
 
   // Find the approve address for the trade
   let approveAddress = AddressZero
-  if (
-    trade instanceof CurveTrade ||
-    trade instanceof CoWTrade ||
-    trade instanceof UniswapTrade ||
-    trade instanceof ZeroXTrade
-  ) {
-    approveAddress = trade.approveAddress
-  } else if (trade instanceof UniswapV2Trade) {
+
+  if (trade instanceof UniswapV2Trade) {
     /**
      * @todo use approveAddress property in next version
      */
     const routerAddressList = trade.platform as UniswapV2RoutablePlatform
     approveAddress = routerAddressList.routerAddress[chainId as ChainId] as string
+  } else if (trade) {
+    approveAddress = trade.approveAddress
   }
 
   return useApproveCallback(amountToApprove, approveAddress)

@@ -17,7 +17,6 @@ import { PageMetaData } from '../../../components/PageMetaData'
 import { PoolLiquidityHeader } from '../../../components/Pool/PoolLiquidityHeader'
 import { MinimalPositionCard } from '../../../components/PositionCard'
 import Row, { RowBetween, RowFlat } from '../../../components/Row'
-import TradePrice from '../../../components/Swap/TradePrice'
 import TransactionConfirmationModal, {
   ConfirmationModalContent,
 } from '../../../components/TransactionConfirmationModal'
@@ -41,6 +40,7 @@ import { maxAmountSpend } from '../../../utils/maxAmountSpend'
 import { calculateProtocolFee } from '../../../utils/prices'
 import { wrappedCurrency } from '../../../utils/wrappedCurrency'
 import AppBody from '../../AppBody'
+import TradePrice from '../../Swap/Components/TradePrice'
 import { Dots, Wrapper } from '../styleds'
 import { ConfirmAddModalBottom } from './ConfirmAddModalBottom'
 

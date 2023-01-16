@@ -58,5 +58,9 @@
   "advancedTradingView.orderHistory.protocol": "Protocol",
   "advancedTradingView.orderHistory.date": "Date",
   "advancedTradingView.orderHistory.status": "Status",
-  "advancedTradingView.orderHistory.tx": "Tx"
+  "advancedTradingView.orderHistory.tx": "Tx",
+  "limitOrder.expiresIn": "Expires In",
+  "limitOrder.maxExpiryTime": "Max 180 min",
+  "limitOrder.getMarketPrice": "Get market price",
+  "limitOrder.marketPrice": "Market price"
 }

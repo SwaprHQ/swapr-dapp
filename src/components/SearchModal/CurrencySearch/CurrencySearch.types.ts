@@ -24,4 +24,5 @@ export interface CurrencySearchProps {
   showNativeCurrency?: boolean
   otherSelectedCurrency?: Currency[] | null
   isOutputPanel?: boolean
+  currencyOmitList?: string[]
 }

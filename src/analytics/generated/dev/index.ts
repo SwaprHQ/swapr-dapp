@@ -60,11 +60,17 @@ export type FathomRegisteredEventName =
   | 'gnosis-100/ecoRouter/honeyswap/volumeUSD'
   | 'polygon-137/ecoRouter/dfyn/volumeUSD'
   | 'gnosis-100/ecoRouter/levinswap/volumeUSD'
+  | 'optimism-10/ecoRouter/velodrome/volumeUSD'
+  | 'undefined-56/ecoRouter/pancakeswap/volumeUSD'
+  | 'undefined-56/ecoRouter/sushiswap/volumeUSD'
+  | 'bsc-56/ecoRouter/sushiswap/volumeUSD'
+  | 'bsc-56/ecoRouter/pancakeswap/volumeUSD'
 export type FathomRegisteredNetworkName =
   | 'ethereum'
   | 'rinkeby'
   | 'goerli'
   | 'optimism'
+  | 'bsc'
   | 'gnosis'
   | 'polygon'
   | 'arbitrum'
@@ -497,8 +503,43 @@ export const siteEvents: FathomSiteInformation = {
       currency: null,
       created_at: '2022-09-15 10:35:45',
     },
+    {
+      id: 'KYJERVTC',
+      object: 'event',
+      name: 'optimism-10/ecoRouter/velodrome/volumeUSD',
+      currency: null,
+      created_at: '2023-01-05 14:43:57',
+    },
+    {
+      id: '6X9HFRU5',
+      object: 'event',
+      name: 'undefined-56/ecoRouter/pancakeswap/volumeUSD',
+      currency: null,
+      created_at: '2023-01-05 14:43:58',
+    },
+    {
+      id: 'KBXZOOSF',
+      object: 'event',
+      name: 'undefined-56/ecoRouter/sushiswap/volumeUSD',
+      currency: null,
+      created_at: '2023-01-05 14:43:58',
+    },
+    {
+      id: 'JGFS8R74',
+      object: 'event',
+      name: 'bsc-56/ecoRouter/sushiswap/volumeUSD',
+      currency: 'dollar',
+      created_at: '2023-01-05 14:44:49',
+    },
+    {
+      id: 'AWWCLPCG',
+      object: 'event',
+      name: 'bsc-56/ecoRouter/pancakeswap/volumeUSD',
+      currency: 'dollar',
+      created_at: '2023-01-05 14:44:49',
+    },
   ],
-  timestamp: '2022-09-20T10:20:02.257Z',
+  timestamp: '2023-01-05T14:44:49.929Z',
 }
 
 /**
@@ -516,6 +557,7 @@ export const networkIdToNameMap: Record<number, string> = {
   '4': 'rinkeby',
   '5': 'goerli',
   '10': 'optimism',
+  '56': 'bsc',
   '100': 'gnosis',
   '137': 'polygon',
   '42161': 'arbitrum',

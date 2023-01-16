@@ -40,5 +40,6 @@ mochawesome-report
 
 **/generated/**/*
 !src/analytics/generated/**/*
-
+!src/pages/Swap/LimitOrderBox/generated/**/*
 storybook-static
+

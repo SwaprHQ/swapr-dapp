@@ -1,0 +1,114 @@
+import { Web3Provider } from '@ethersproject/providers'
+import { ChainId } from '@swapr/sdk'
+
+import { OrderMetaData } from '@cowprotocol/cow-sdk'
+import { useEffect, useState } from 'react'
+
+import { TransactionType } from '../../../Account/Account.types'
+import { deleteOpenOrders, getOwnerOrders } from '../api'
+
+const appDataHashes = {
+  [ChainId.GNOSIS]: '0x6c240279a61e99270495394a46ace74065b511f8d3e6899f8ce87bbaefab21de',
+  [ChainId.MAINNET]: '0x7bb480cf9d89cd9fa5ac557f573fa3cee96ca57ec0b9a0de783a29391967c4ab',
+}
+
+interface Token {
+  value: number | string
+  symbol?: string
+  chainId?: ChainId
+  tokenAddress: string
+}
+
+export interface LimitOrderTransaction extends Omit<OrderMetaData, 'status' | 'sellToken' | 'buyToken'> {
+  type: TransactionType.LimitOrder
+  hash: string
+  network: ChainId
+  sellToken: Token
+  buyToken: Token
+  confirmedTime: number
+  status: OrderMetaData['status']
+  cancelOrder: ((uid: string, provider: Web3Provider) => Promise<boolean>) | undefined
+}
+
+export const useLimitOrderTransactions = (chainId?: ChainId, account?: string | null, allNetworks = false) => {
+  const [orders, setOrders] = useState<LimitOrderTransaction[]>([])
+
+  useEffect(() => {
+    const getLimitOrderTransactions = async (chainId: ChainId, account: string) => {
+      const orders = await getOrders(account, allNetworks, chainId)
+      if (orders && orders.length > 0) {
+        const filteredOrders = orders.filter(order => order.class === 'limit')
+        const formattedLimitOrders = filteredOrders.map(order => {
+          return {
+            ...order,
+            type: TransactionType.LimitOrder as TransactionType.LimitOrder,
+            hash: order.uid,
+            network: getNetworkId(order.appData.toString()),
+            sellToken: {
+              value: order.sellAmount,
+              symbol: '',
+              tokenAddress: order.sellToken,
+              chainId: getNetworkId(order.appData.toString()),
+            },
+            buyToken: {
+              value: order.buyAmount,
+              symbol: '',
+              tokenAddress: order.buyToken,
+              chainId: getNetworkId(order.appData.toString()),
+            },
+            confirmedTime: order.validTo * 1000,
+            status: order.status,
+            cancelOrder: cancelOpenOrder(order.status, chainId, () => getLimitOrderTransactions(chainId, account)),
+          }
+        })
+        setOrders(formattedLimitOrders)
+      }
+    }
+    if (account != null && chainId !== undefined) {
+      getLimitOrderTransactions(chainId, account)
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [account, chainId, allNetworks])
+
+  return orders
+}
+
+function cancelOpenOrder(status: OrderMetaData['status'], chainId: ChainId, updateLimitOrderTransactions: () => void) {
+  if (status === 'open') {
+    return async (uid: string, provider: Web3Provider) => {
+      const signer = provider.getSigner()
+      // Cancel an open order
+      const response = await deleteOpenOrders(chainId, uid, signer)
+      if (response === 'Cancelled') {
+        // Refetch orders
+        await updateLimitOrderTransactions()
+        return true
+      } else {
+        return false
+      }
+    }
+  }
+}
+
+function getNetworkId(appData: string) {
+  return Object.keys(appDataHashes)
+    .map(Number)
+    .find((key: keyof typeof appDataHashes) => appDataHashes[key] === appData) as number
+}
+
+async function getOrders(account: string, allNetworks: boolean, chainId: ChainId) {
+  if (allNetworks) {
+    const allOrders = await Promise.all([
+      getOwnerOrders(ChainId.GNOSIS, account),
+      getOwnerOrders(ChainId.MAINNET, account),
+    ]).catch(error => {
+      console.error({ error, message: 'All limit order fetch failed' })
+      return [[]]
+    })
+    return allOrders.flat()
+  }
+  if (chainId === ChainId.GNOSIS || chainId === ChainId.MAINNET) {
+    return await getOwnerOrders(chainId, account)
+  }
+  return [] as OrderMetaData[]
+}

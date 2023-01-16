@@ -14,28 +14,30 @@ export enum AdapterKey {
   UNISWAPV3 = 'uniswapV3',
 }
 
+export type AdapterType = {
+  [AdapterKey.SWAPR]: {
+    [pairId: string]: BasePair | undefined
+  }
+  [AdapterKey.SUSHISWAP]: {
+    [pairId: string]: BasePair | undefined
+  }
+  [AdapterKey.UNISWAPV2]: {
+    [pairId: string]: BasePair | undefined
+  }
+  [AdapterKey.HONEYSWAP]: {
+    [pairId: string]: BasePair | undefined
+  }
+  [AdapterKey.UNISWAPV3]: {
+    [pairId: string]: UniswapV3Pair | undefined
+  }
+}
+
 export type InitialState = {
   pair: {
     inputToken?: Token
     outputToken?: Token
   }
-  adapters: {
-    [AdapterKey.SWAPR]: {
-      [pairId: string]: BasePair | undefined
-    }
-    [AdapterKey.SUSHISWAP]: {
-      [pairId: string]: BasePair | undefined
-    }
-    [AdapterKey.UNISWAPV2]: {
-      [pairId: string]: BasePair | undefined
-    }
-    [AdapterKey.HONEYSWAP]: {
-      [pairId: string]: BasePair | undefined
-    }
-    [AdapterKey.UNISWAPV3]: {
-      [pairId: string]: UniswapV3Pair | undefined
-    }
-  }
+  adapters: AdapterType
 }
 
 export type AdvancedViewTransaction = {
@@ -71,9 +73,12 @@ export type AdapterFetchDetails = {
   inputToken: Token
   outputToken: Token
   amountToFetch: number
-  isFirstFetch: boolean
+  isFirstFetch?: boolean
   abortController: (id: string) => AbortSignal
+  refreshing?: boolean
 }
+
+export type AdapterFetchDetailsExtended = AdapterFetchDetails & { payloadType: AdapterPayloadType }
 
 export enum AdapterAmountToFetch {
   PAIR_TRADES = 10,
@@ -83,8 +88,9 @@ export enum AdapterAmountToFetch {
 
 export type AdapterFetchMethodArguments = Pick<AdapterFetchDetails, 'abortController' | 'amountToFetch'> & {
   pairId: string
-  pair: BasePair | UniswapV3Pair | undefined
+  pair?: BasePair | UniswapV3Pair
   chainId: ChainId.MAINNET | ChainId.ARBITRUM_ONE | ChainId.GNOSIS | ChainId.POLYGON | ChainId.OPTIMISM_MAINNET
   inputTokenAddress: string
   outputTokenAddress: string
+  refreshing?: boolean
 }
