@@ -37,15 +37,13 @@ export function SwapInfo() {
         </ExpandButton>
       </SwapInfoBasics>
 
-      <SwapInfoDetailed showSwapInfoDetails={showSwapInfoDetails}>
-        {showSwapInfoDetails && (
-          <>
-            <SwapDexInfoItem />
-            <SwapDexInfoItem />
-            <SwapDexInfoItem />
-          </>
-        )}
-      </SwapInfoDetailed>
+      {showSwapInfoDetails && (
+        <SwapInfoDetailed showSwapInfoDetails={showSwapInfoDetails}>
+          <SwapDexInfoItem />
+          <SwapDexInfoItem />
+          <SwapDexInfoItem />
+        </SwapInfoDetailed>
+      )}
     </SwapInfoContainer>
   )
 }
@@ -69,10 +67,7 @@ const SwapInfoBasics = styled.div`
   align-items: center;
 `
 
-const SwapInfoDetailed = styled.div<{ showSwapInfoDetails: boolean }>`
-  height: ${({ showSwapInfoDetails }) => (showSwapInfoDetails ? 'auto' : '0px')};
-  transition: height 0.15s ease-out;
-`
+const SwapInfoDetailed = styled.div<{ showSwapInfoDetails: boolean }>``
 
 const SwapCostInfo = styled.div``
 
