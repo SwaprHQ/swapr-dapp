@@ -1,6 +1,9 @@
 {
   "compilerOptions": {
     "module": "commonjs",
-    "esModuleInterop": true
-  }
+    "esModuleInterop": true,
+    "jsx": "preserve",
+    "resolveJsonModule": true
+  },
+  "include": ["../src"]
 }
