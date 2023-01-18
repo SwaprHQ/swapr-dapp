@@ -1,12 +1,9 @@
 import { useState } from 'react'
 import styled from 'styled-components'
 
-import { ReactComponent as BananaSVG } from '../../../assets/swapbox/banana.svg'
-import { ReactComponent as DexesSVG } from '../../../assets/swapbox/dexes.svg'
 import { ReactComponent as DownArrowSmallSVG } from '../../../assets/swapbox/down-arrow-small.svg'
-import { ReactComponent as GasSVG } from '../../../assets/swapbox/gas.svg'
-import { ReactComponent as ShieldSVG } from '../../../assets/swapbox/shield.svg'
 import { ELEMENTS_BACKGROUND_SECONDARY, ELEMENTS_SPACING, TEXT_COLOR_PRIMARY } from '../constants'
+import { Indicator } from './Indicator'
 import { BorderStyle, FontFamily } from './styles'
 import { SwapDexInfoItem } from './SwapDexInfoItem'
 
@@ -17,18 +14,10 @@ export function SwapInfo() {
     <SwapInfoContainer>
       <SwapInfoBasics>
         <SwapCostInfo>
-          <SwapInfoButton>
-            <DexesSVG />
-          </SwapInfoButton>
-          <SwapInfoButton>
-            <GasSVG />
-          </SwapInfoButton>
-          <SwapInfoButton>
-            <BananaSVG />
-          </SwapInfoButton>
-          <SwapInfoButton>
-            <ShieldSVG />
-          </SwapInfoButton>
+          <Indicator variant="positive" icon="dexes" />
+          <Indicator variant="positive" icon="gas" />
+          <Indicator variant="positive" icon="banana" />
+          <Indicator variant="positive" icon="shield" />
           <CurrencyCourseInfo>
             <span>1</span> ETH = <span>3007</span> USDT
           </CurrencyCourseInfo>
@@ -74,18 +63,6 @@ const SwapInfoDetailed = styled.div<{ showSwapInfoDetails: boolean }>`
 `
 
 const SwapCostInfo = styled.div``
-
-const SwapInfoButton = styled.button`
-  height: 20px;
-  display: inline-flex;
-  align-items: center;
-  padding: 5px;
-  background: rgba(14, 159, 110, 0.08);
-  border-radius: 4px;
-  border: 1px solid rgba(14, 159, 110, 0.65);
-  box-shadow: 0px 0px 8px rgba(16, 158, 110, 0.15);
-  margin-right: 4px;
-`
 
 const ExpandButton = styled.button`
   height: 20px;
