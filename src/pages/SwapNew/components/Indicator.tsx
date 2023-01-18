@@ -4,7 +4,7 @@ import { ReactComponent as BananaSVG } from '../../../assets/swapbox/banana.svg'
 import { ReactComponent as DexesSVG } from '../../../assets/swapbox/dexes.svg'
 import { ReactComponent as GasSVG } from '../../../assets/swapbox/gas.svg'
 import { ReactComponent as ShieldSVG } from '../../../assets/swapbox/shield.svg'
-import { INDICATOR_COLOR, IndicatorColorVariant, IndicatorIconVariant } from '../constants'
+import { INDICATOR_BACKGROUND_COLOR, INDICATOR_COLOR, IndicatorColorVariant, IndicatorIconVariant } from '../constants'
 
 export const INDICATOR_ICON = {
   [IndicatorIconVariant.DEXES]: <DexesSVG />,
@@ -27,7 +27,7 @@ const Container = styled.div<{ color: IndicatorColorVariant }>`
   display: inline-flex;
   align-items: center;
   padding: 5px;
-  background: rgba(14, 159, 110, 0.08);
+  background: ${({ color }) => INDICATOR_BACKGROUND_COLOR[color]};
   border-radius: 4px;
   border: 1px solid ${({ color }) => INDICATOR_COLOR[color]};
   box-shadow: 0px 0px 8px rgba(16, 158, 110, 0.15);
