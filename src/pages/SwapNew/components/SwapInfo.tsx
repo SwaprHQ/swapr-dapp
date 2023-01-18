@@ -2,8 +2,14 @@ import { useState } from 'react'
 import styled from 'styled-components'
 
 import { ReactComponent as DownArrowSmallSVG } from '../../../assets/swapbox/down-arrow-small.svg'
-import { ELEMENTS_BACKGROUND_SECONDARY, ELEMENTS_SPACING, TEXT_COLOR_PRIMARY } from '../constants'
-import { Indicator, IndicatorVariant } from './Indicator'
+import {
+  ELEMENTS_BACKGROUND_SECONDARY,
+  ELEMENTS_SPACING,
+  IndicatorColorVariant,
+  IndicatorIconVariant,
+  TEXT_COLOR_PRIMARY,
+} from '../constants'
+import { Indicator } from './Indicator'
 import { BorderStyle, FontFamily } from './styles'
 import { SwapDexInfoItem } from './SwapDexInfoItem'
 
@@ -14,10 +20,10 @@ export function SwapInfo() {
     <SwapInfoContainer>
       <SwapInfoBasics>
         <SwapCostInfo>
-          <Indicator variant={IndicatorVariant.WARNING} icon="dexes" />
-          <Indicator variant={IndicatorVariant.WARNING} icon="gas" />
-          <Indicator variant={IndicatorVariant.WARNING} icon="banana" />
-          <Indicator variant={IndicatorVariant.WARNING} icon="shield" />
+          <Indicator color={IndicatorColorVariant.POSITIVE} icon={IndicatorIconVariant.DEXES} />
+          <Indicator color={IndicatorColorVariant.WARNING} icon={IndicatorIconVariant.GAS} />
+          <Indicator color={IndicatorColorVariant.WARNING} icon={IndicatorIconVariant.BANANA} />
+          <Indicator color={IndicatorColorVariant.WARNING} icon={IndicatorIconVariant.SHIELD} />
           <CurrencyCourseInfo>
             <span>1</span> ETH = <span>3007</span> USDT
           </CurrencyCourseInfo>
