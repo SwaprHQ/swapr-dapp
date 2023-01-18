@@ -28,6 +28,13 @@ export const INDICATOR_COLOR = {
   [IndicatorColorVariant.UNDEFINED]: '#8780BF',
 }
 
+export const INDICATOR_BACKGROUND_COLOR = {
+  [IndicatorColorVariant.POSITIVE]: '#0e9f6e14',
+  [IndicatorColorVariant.WARNING]: '#f2994a14',
+  [IndicatorColorVariant.NEGATIVE]: '#f02e5114',
+  [IndicatorColorVariant.UNDEFINED]: '#8780bf14',
+}
+
 export const INDICATOR_COLOR_POSITIVE = '#0E9F6E'
 export const INDICATOR_COLOR_WARNING = '#F2994A'
 export const INDICATOR_COLOR_NEGATIVE = '#F02E51'
