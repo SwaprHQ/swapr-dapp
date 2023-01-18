@@ -6,7 +6,7 @@ import { ReactComponent as DexesSVG } from '../../../assets/swapbox/dexes.svg'
 import { ReactComponent as DownArrowSmallSVG } from '../../../assets/swapbox/down-arrow-small.svg'
 import { ReactComponent as GasSVG } from '../../../assets/swapbox/gas.svg'
 import { ReactComponent as ShieldSVG } from '../../../assets/swapbox/shield.svg'
-import { ELEMENTS_SPACING, TEXT_COLOR_PRIMARY } from '../constants'
+import { ELEMENTS_BACKGROUND_SECONDARY, ELEMENTS_SPACING, TEXT_COLOR_PRIMARY } from '../constants'
 import { BorderStyle, FontFamily } from './styles'
 import { SwapDexInfoItem } from './SwapDexInfoItem'
 
@@ -54,8 +54,7 @@ export function SwapInfo() {
 const SwapInfoContainer = styled.div`
   padding: 9px 12px;
   ${BorderStyle}
-  background: radial-gradient(160.32% 118.69% at 50.64% 100%, rgba(170, 162, 255, 0.06) 0%, rgba(0, 0, 0, 0) 100%),
-    rgba(19, 19, 32, 0.5);
+  background: ${ELEMENTS_BACKGROUND_SECONDARY};
   box-shadow: 0px 4px 42px rgba(0, 0, 0, 0.16);
   backdrop-filter: blur(11px);
   overflow: hidden;
@@ -64,13 +63,15 @@ const SwapInfoContainer = styled.div`
 
 const SwapInfoBasics = styled.div`
   width: 100%;
-  height: 41px;
+  height: 20px;
   display: flex;
   justify-content: space-between;
   align-items: center;
 `
 
-const SwapInfoDetailed = styled.div<{ showSwapInfoDetails: boolean }>``
+const SwapInfoDetailed = styled.div<{ showSwapInfoDetails: boolean }>`
+  margin-top: 9px;
+`
 
 const SwapCostInfo = styled.div``
 

@@ -11,12 +11,12 @@ export function SwapDexInfoItem() {
         <SushiSVG />
         <TextLabel>Sushi</TextLabel>
       </DexInfo>
-      <TransactionCost>3989 USDT</TransactionCost>
+      <TransactionInfo>
+        <TransactionCost>3989 USDT</TransactionCost>
+      </TransactionInfo>
     </Container>
   )
 }
-
-// TODO: PULL OUT THE CONSTANTS
 
 const Container = styled.div`
   display: flex;
@@ -48,6 +48,8 @@ const TextLabel = styled.p`
   color: ${TEXT_COLOR_PRIMARY};
   margin-left: 8px;
 `
+
+const TransactionInfo = styled.div``
 
 const TransactionCost = styled.p`
   height: 28px;
