@@ -1,8 +1,10 @@
 import styled from 'styled-components'
 
 import { ReactComponent as CowSVG } from '../../../assets/swapbox/dex-logo-cow.svg'
-import { TEXT_COLOR_PRIMARY } from '../constants'
+import { getSwapButtonActiveColor, getSwapButtonHoverColor, TEXT_COLOR_PRIMARY } from '../constants'
 import { FontFamily } from './styles'
+
+const COW_SWAP_COLOR = 'linear-gradient(93.39deg, #2b00a4 -8.9%, #d67b5a 114.08%)'
 
 export function SwapButton() {
   return (
@@ -23,12 +25,16 @@ const StyledButton = styled.button`
   gap: 10px;
   border: none;
   border-radius: 12px;
-  background: linear-gradient(93.39deg, #2b00a4 -8.9%, #d67b5a 114.08%);
+  background: ${COW_SWAP_COLOR};
   box-shadow: 0px 0px 42px rgba(129, 62, 127, 0.32);
   cursor: pointer;
 
   &:hover {
-    opacity: 0.9;
+    background: ${getSwapButtonHoverColor(COW_SWAP_COLOR)};
+  }
+
+  &:active {
+    background: ${getSwapButtonActiveColor(COW_SWAP_COLOR)};
   }
 `
 

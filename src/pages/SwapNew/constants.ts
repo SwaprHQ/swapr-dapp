@@ -4,3 +4,7 @@ export const ELEMENTS_BACKGROUND =
 export const ELEMENTS_SPACING = '6px'
 export const TEXT_COLOR_PRIMARY = '#fff'
 export const TEXT_COLOR_SECONDARY = '#8780bf'
+export const getSwapButtonHoverColor = (color: string) =>
+  `linear-gradient(0deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.05)), ${color}`
+export const getSwapButtonActiveColor = (color: string) =>
+  `linear-gradient(0deg, rgba(0, 0, 0, 0.1), rgba(0, 0, 0, 0.1)), ${color}`
