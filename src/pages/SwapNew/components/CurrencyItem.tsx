@@ -3,7 +3,7 @@ import styled from 'styled-components'
 import { ReactComponent as EtherLogoSVG } from '../../../assets/swapbox/currency-logo-eth.svg'
 import { ReactComponent as DownArrowLargeSVG } from '../../../assets/swapbox/down-arrow-large.svg'
 import { ReactComponent as EtherSVG } from '../../../assets/swapbox/ether.svg'
-import { SWAPBOX_ELEMENTS_BACKGROUND, SWAPBOX_ELEMENTS_SPACING } from '../constants'
+import { ELEMENTS_BACKGROUND, ELEMENTS_SPACING, TEXT_COLOR_PRIMARY, TEXT_COLOR_SECONDARY } from '../constants'
 import { BorderStyle, FontFamily } from './styles'
 
 export function CurrencyItem() {
@@ -40,9 +40,9 @@ const CurrencyContainer = styled.div`
   justify-content: space-between;
   align-items: center;
   padding: 8px 8px 8px 22px;
-  background: ${SWAPBOX_ELEMENTS_BACKGROUND};
+  background: ${ELEMENTS_BACKGROUND};
   ${BorderStyle}
-  margin-bottom: ${SWAPBOX_ELEMENTS_SPACING};
+  margin-bottom: ${ELEMENTS_SPACING};
 `
 
 const ValueContainer = styled.div`
@@ -61,7 +61,7 @@ const CurrencyAmount = styled.p`
   font-weight: 600;
   letter-spacing: 0.02em;
   text-shadow: 0px 0px 12px rgba(255, 255, 255, 0.14);
-  color: #ffffff;
+  color: ${TEXT_COLOR_PRIMARY};
   margin-bottom: 5px;
 `
 
@@ -71,7 +71,7 @@ const CurrencyAmountWorth = styled.p`
   ${FontFamily}
   font-weight: 600;
   letter-spacing: 0.08em;
-  color: #8780bf;
+  color: ${TEXT_COLOR_SECONDARY};
 `
 
 const CurrencyInfoContainer = styled.div``
@@ -91,7 +91,7 @@ const CurrencySymbol = styled.p`
   ${FontFamily}
   font-weight: 600;
   text-transform: uppercase;
-  color: #ffffff;
+  color: ${TEXT_COLOR_PRIMARY};
   margin: 0 6px;
 `
 
@@ -102,7 +102,7 @@ const CurrencyBalance = styled.p`
   font-weight: 600;
   letter-spacing: 0.08em;
   text-transform: uppercase;
-  color: #8780bf;
+  color: ${TEXT_COLOR_SECONDARY};
 
   & span {
     text-decoration: underline;

@@ -1,6 +1,7 @@
 import styled from 'styled-components'
 
 import { ReactComponent as CowSVG } from '../../../assets/swapbox/dex-logo-cow.svg'
+import { TEXT_COLOR_PRIMARY } from '../constants'
 import { FontFamily } from './styles'
 
 export function SwapButton() {
@@ -39,5 +40,5 @@ const SwapButtonLabel = styled.p`
   font-weight: 600;
   letter-spacing: 0.08em;
   text-transform: uppercase;
-  color: #ffffff;
+  color: ${TEXT_COLOR_PRIMARY};
 `

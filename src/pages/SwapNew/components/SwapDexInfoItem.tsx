@@ -1,6 +1,7 @@
 import styled from 'styled-components'
 
 import { ReactComponent as SushiSVG } from '../../../assets/swapbox/dex-logo-sushi.svg'
+import { TEXT_COLOR_PRIMARY } from '../constants'
 import { BorderStyle, FontFamily } from './styles'
 
 export function SwapDexInfoItem() {
@@ -42,7 +43,7 @@ const TextLabel = styled.p`
   ${FontFamily}
   font-weight: 600;
   font-feature-settings: 'zero' on;
-  color: #ffffff;
+  color: ${TEXT_COLOR_PRIMARY};
   margin-left: 8px;
 `
 
