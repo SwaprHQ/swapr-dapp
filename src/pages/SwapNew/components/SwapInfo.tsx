@@ -20,7 +20,7 @@ export function SwapInfo() {
     <SwapInfoContainer>
       <SwapInfoBasics>
         <SwapCostInfo>
-          <Indicator color={IndicatorColorVariant.POSITIVE} icon={IndicatorIconVariant.DEXES} />
+          <Indicator color={IndicatorColorVariant.POSITIVE} icon={IndicatorIconVariant.DEXES} text="92/92" />
           <Indicator color={IndicatorColorVariant.WARNING} icon={IndicatorIconVariant.GAS} />
           <Indicator color={IndicatorColorVariant.NEGATIVE} icon={IndicatorIconVariant.BANANA} />
           <Indicator color={IndicatorColorVariant.UNDEFINED} icon={IndicatorIconVariant.SHIELD} />
