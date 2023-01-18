@@ -31,9 +31,7 @@ export default createReducer<MintState>(initialState, builder =>
         else {
           return {
             ...state,
-            independentField: field,
-            typedValue,
-            otherTypedValue: state.typedValue,
+            otherTypedValue: typedValue,
           }
         }
       } else {
