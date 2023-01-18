@@ -22,8 +22,8 @@ export function SwapInfo() {
         <SwapCostInfo>
           <Indicator color={IndicatorColorVariant.POSITIVE} icon={IndicatorIconVariant.DEXES} />
           <Indicator color={IndicatorColorVariant.WARNING} icon={IndicatorIconVariant.GAS} />
-          <Indicator color={IndicatorColorVariant.WARNING} icon={IndicatorIconVariant.BANANA} />
-          <Indicator color={IndicatorColorVariant.WARNING} icon={IndicatorIconVariant.SHIELD} />
+          <Indicator color={IndicatorColorVariant.NEGATIVE} icon={IndicatorIconVariant.BANANA} />
+          <Indicator color={IndicatorColorVariant.UNDEFINED} icon={IndicatorIconVariant.SHIELD} />
           <CurrencyCourseInfo>
             <span>1</span> ETH = <span>3007</span> USDT
           </CurrencyCourseInfo>

@@ -32,4 +32,8 @@ const Container = styled.div<{ color: IndicatorColorVariant }>`
   border: 1px solid ${({ color }) => INDICATOR_COLOR[color]};
   box-shadow: 0px 0px 8px rgba(16, 158, 110, 0.15);
   margin-right: 4px;
+
+  & .svg-path {
+    fill: ${({ color }) => INDICATOR_COLOR[color]};
+  }
 `
