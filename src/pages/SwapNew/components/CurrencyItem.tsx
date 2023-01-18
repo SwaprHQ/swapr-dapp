@@ -3,12 +3,22 @@ import styled from 'styled-components'
 import { ReactComponent as EtherLogoSVG } from '../../../assets/swapbox/currency-logo-eth.svg'
 import { ReactComponent as DownArrowLargeSVG } from '../../../assets/swapbox/down-arrow-large.svg'
 import { ReactComponent as EtherSVG } from '../../../assets/swapbox/ether.svg'
-import { ELEMENTS_BACKGROUND, ELEMENTS_SPACING, TEXT_COLOR_PRIMARY, TEXT_COLOR_SECONDARY } from '../constants'
+import {
+  ELEMENTS_BACKGROUND_PRIMARY,
+  ELEMENTS_BACKGROUND_SECONDARY,
+  ELEMENTS_SPACING,
+  TEXT_COLOR_PRIMARY,
+  TEXT_COLOR_SECONDARY,
+} from '../constants'
 import { BorderStyle, FontFamily } from './styles'
 
-export function CurrencyItem() {
+type CurrencyItemProps = {
+  lowerItem?: boolean
+}
+
+export function CurrencyItem({ lowerItem }: CurrencyItemProps) {
   return (
-    <CurrencyContainer>
+    <CurrencyContainer lowerItem={lowerItem}>
       <ValueContainer>
         <CurrencyAmountContainer>
           <CurrencyAmount>1.488</CurrencyAmount>
@@ -33,14 +43,14 @@ export function CurrencyItem() {
   )
 }
 
-const CurrencyContainer = styled.div`
+const CurrencyContainer = styled.div<{ lowerItem?: boolean }>`
   width: 100%;
   height: 100px;
   display: flex;
   justify-content: space-between;
   align-items: center;
   padding: 8px 8px 8px 22px;
-  background: ${ELEMENTS_BACKGROUND};
+  background: ${({ lowerItem }) => (lowerItem ? ELEMENTS_BACKGROUND_SECONDARY : ELEMENTS_BACKGROUND_PRIMARY)};
   ${BorderStyle}
   margin-bottom: ${ELEMENTS_SPACING};
 `

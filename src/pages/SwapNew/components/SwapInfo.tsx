@@ -49,6 +49,8 @@ export function SwapInfo() {
   )
 }
 
+// TODO: PULL OUT THE CONSTANTS
+
 const SwapInfoContainer = styled.div`
   padding: 9px 12px;
   ${BorderStyle}

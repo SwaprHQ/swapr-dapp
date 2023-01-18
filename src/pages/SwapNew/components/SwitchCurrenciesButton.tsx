@@ -10,6 +10,8 @@ export function SwitchCurrenciesButton() {
   )
 }
 
+// TODO: PULL OUT THE CONSTANTS
+
 const StyledButton = styled.button`
   width: 36px;
   height: 36px;

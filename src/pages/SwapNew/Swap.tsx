@@ -7,7 +7,7 @@ export function Swapbox2() {
   return (
     <Container>
       <CurrencyItem />
-      <CurrencyItem />
+      <CurrencyItem lowerItem />
       <SwitchCurrenciesButton />
       <SwapInfo />
       <SwapButton />
