@@ -6,6 +6,7 @@ import { ReactComponent as DexesSVG } from '../../../assets/swapbox/dexes.svg'
 import { ReactComponent as DownArrowSmallSVG } from '../../../assets/swapbox/down-arrow-small.svg'
 import { ReactComponent as GasSVG } from '../../../assets/swapbox/gas.svg'
 import { ReactComponent as ShieldSVG } from '../../../assets/swapbox/shield.svg'
+import { SWAPBOX_ELEMENTS_SPACING } from '../constants'
 import { BorderStyle, FontFamily } from './styles'
 import { SwapDexInfoItem } from './SwapDexInfoItem'
 
@@ -56,7 +57,7 @@ const SwapInfoContainer = styled.div`
   box-shadow: 0px 4px 42px rgba(0, 0, 0, 0.16);
   backdrop-filter: blur(11px);
   overflow: hidden;
-  margin-bottom: 6px;
+  margin-bottom: ${SWAPBOX_ELEMENTS_SPACING};
 `
 
 const SwapInfoBasics = styled.div`

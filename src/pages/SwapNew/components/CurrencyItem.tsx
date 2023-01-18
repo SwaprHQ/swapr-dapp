@@ -3,6 +3,7 @@ import styled from 'styled-components'
 import { ReactComponent as EtherLogoSVG } from '../../../assets/swapbox/currency-logo-eth.svg'
 import { ReactComponent as DownArrowLargeSVG } from '../../../assets/swapbox/down-arrow-large.svg'
 import { ReactComponent as EtherSVG } from '../../../assets/swapbox/ether.svg'
+import { SWAPBOX_ELEMENTS_BACKGROUND, SWAPBOX_ELEMENTS_SPACING } from '../constants'
 import { BorderStyle, FontFamily } from './styles'
 
 export function CurrencyItem() {
@@ -39,10 +40,9 @@ const CurrencyContainer = styled.div`
   justify-content: space-between;
   align-items: center;
   padding: 8px 8px 8px 22px;
-  background: radial-gradient(173.28% 128.28% at 50.64% 0%, rgba(170, 162, 255, 0.06) 0%, rgba(0, 0, 0, 0) 100%),
-    rgba(19, 19, 32, 0.5);
+  background: ${SWAPBOX_ELEMENTS_BACKGROUND};
   ${BorderStyle}
-  margin-bottom: 6px;
+  margin-bottom: ${SWAPBOX_ELEMENTS_SPACING};
 `
 
 const ValueContainer = styled.div`

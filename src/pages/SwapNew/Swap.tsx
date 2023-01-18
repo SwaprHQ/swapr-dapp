@@ -1,6 +1,7 @@
 import styled from 'styled-components'
 
 import { CurrencyItem, SwapButton, SwapInfo, SwitchCurrenciesButton } from './components'
+import { SWAPBOX_WIDTH } from './constants'
 
 export function Swapbox2() {
   return (
@@ -15,6 +16,6 @@ export function Swapbox2() {
 }
 
 const Container = styled.div`
-  width: 467px;
+  width: ${SWAPBOX_WIDTH};
   position: relative;
 `
