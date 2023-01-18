@@ -1,7 +1,17 @@
 import { AddressZero } from '@ethersproject/constants'
 import { StaticJsonRpcProvider } from '@ethersproject/providers'
 import { parseUnits } from '@ethersproject/units'
-import { Currency, CurrencyAmount, JSBI, Percent, RoutablePlatform, Token, TokenAmount, Trade } from '@swapr/sdk'
+import {
+  ChainId,
+  Currency,
+  CurrencyAmount,
+  JSBI,
+  Percent,
+  RoutablePlatform,
+  Token,
+  TokenAmount,
+  Trade,
+} from '@swapr/sdk'
 
 import { createSelector } from '@reduxjs/toolkit'
 import { useWhatChanged } from '@simbathesailor/use-what-changed'
@@ -435,27 +445,53 @@ export function useDefaultsFromURLSearch():
     { inputCurrencyId: string | undefined; outputCurrencyId: string | undefined } | undefined
   >()
 
+  const [prevChainId, setPrevChainId] = useState<ChainId | undefined>(chainId)
+
+  const {
+    independentField,
+    typedValue,
+    recipient,
+    [Field.INPUT]: { currencyId: prevInputCurrencyId },
+    [Field.OUTPUT]: { currencyId: prevOutputCurrencyId },
+  } = useSwapState()
+
   useEffect(() => {
     if (!chainId) return
     const parsed = queryParametersToSwapState(parsedQs, currencyId(nativeCurrency))
 
-    const outputCurrencyId = !!parsed[Field.OUTPUT].currencyId?.length
-      ? parsed[Field.OUTPUT].currencyId
-      : PRE_SELECT_OUTPUT_CURRENCY_ID[chainId]
+    let inputCurrencyId, outputCurrencyId
+
+    if (prevChainId && prevChainId !== chainId) {
+      inputCurrencyId = parsed[Field.INPUT].currencyId
+
+      outputCurrencyId = PRE_SELECT_OUTPUT_CURRENCY_ID[chainId]
+    } else {
+      inputCurrencyId =
+        prevInputCurrencyId && prevInputCurrencyId !== currencyId(nativeCurrency) && !isAddress(parsedQs.inputCurrency)
+          ? prevInputCurrencyId
+          : parsed[Field.INPUT].currencyId
+
+      outputCurrencyId = !!parsed[Field.OUTPUT].currencyId?.length
+        ? parsed[Field.OUTPUT].currencyId
+        : prevOutputCurrencyId && prevOutputCurrencyId !== currencyId(nativeCurrency)
+        ? prevOutputCurrencyId
+        : PRE_SELECT_OUTPUT_CURRENCY_ID[chainId]
+    }
 
     dispatch(
       replaceSwapState({
-        typedValue: parsed.typedValue,
-        field: parsed.independentField,
-        inputCurrencyId: parsed[Field.INPUT].currencyId,
+        typedValue: parsedQs.typedValue ? parsed.typedValue : typedValue,
+        field: parsedQs.independentField ? parsed.independentField : independentField,
+        inputCurrencyId,
         outputCurrencyId,
-        recipient: parsed.recipient,
+        recipient: parsedQs.recipient ? parsed.recipient : recipient,
       })
     )
 
+    setPrevChainId(chainId)
     setResult({ inputCurrencyId: parsed[Field.INPUT].currencyId, outputCurrencyId: parsed[Field.OUTPUT].currencyId })
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [dispatch, chainId])
+  }, [dispatch, chainId, prevInputCurrencyId, prevOutputCurrencyId])
 
   return result
 }

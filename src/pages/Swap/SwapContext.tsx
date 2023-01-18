@@ -11,14 +11,14 @@ export enum ChartOptions {
   SIMPLE_CHART = 'SIMPLE_CHART',
   PRO = 'PRO',
 }
-export interface ISwapContext {
+export interface ISwapTabContext {
   activeTab: SwapTab
   setActiveTab: (tab: SwapTab) => void
   activeChartTab: ChartOptions
   setActiveChartTab: (tab: ChartOptions) => void
 }
 
-export const SwapContext = createContext<ISwapContext>({
+export const SwapTabContext = createContext<ISwapTabContext>({
   activeTab: SwapTab.Swap,
   setActiveTab: () => {},
   activeChartTab: ChartOptions.OFF,

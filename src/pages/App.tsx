@@ -17,6 +17,7 @@ import { useActiveWeb3React } from '../hooks'
 import { SWPRSupportedChains } from '../utils/chainSupportsSWPR'
 import { Routes } from './Routes'
 import { LimitOrderFromProvider } from './Swap/LimitOrderBox/contexts/LimitOrderFormProvider'
+import { SwapProvider } from './Swap/SwapBox/SwapProvider'
 
 import 'react-loading-skeleton/dist/skeleton.css'
 import 'aos/dist/aos.css'
@@ -101,16 +102,18 @@ export default function App() {
                 <HeaderWrapper>
                   <Header />
                 </HeaderWrapper>
-                <LimitOrderFromProvider>
-                  <BodyWrapper isAdvancedTradeMode={isSwapPageAdvancedTradeMode}>
-                    <SpaceBg isAdvancedTradeMode={isSwapPageAdvancedTradeMode}>
-                      <Suspense fallback={<FallbackLoader />}>
-                        <Routes />
-                      </Suspense>
-                    </SpaceBg>
-                    <Marginer />
-                  </BodyWrapper>
-                </LimitOrderFromProvider>
+                <SwapProvider>
+                  <LimitOrderFromProvider>
+                    <BodyWrapper isAdvancedTradeMode={isSwapPageAdvancedTradeMode}>
+                      <SpaceBg isAdvancedTradeMode={isSwapPageAdvancedTradeMode}>
+                        <Suspense fallback={<FallbackLoader />}>
+                          <Routes />
+                        </Suspense>
+                      </SpaceBg>
+                      <Marginer />
+                    </BodyWrapper>
+                  </LimitOrderFromProvider>
+                </SwapProvider>
               </AppWrapper>
             </Web3ReactManager>
             <ToastContainer

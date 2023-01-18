@@ -8,7 +8,7 @@ import { useActiveWeb3React } from '../../hooks'
 import { useToken } from '../../hooks/Tokens'
 import { useRouter } from '../../hooks/useRouter'
 import { LimitOrderFormContext } from '../../pages/Swap/LimitOrderBox/contexts'
-import { SwapContext, SwapTab } from '../../pages/Swap/SwapContext'
+import { SwapTab, SwapTabContext } from '../../pages/Swap/SwapContext'
 import store, { AppState } from '../../state'
 import { useSwapState } from '../../state/swap/hooks'
 import { adapters } from './adapters/adapters.config'
@@ -48,7 +48,7 @@ const calculateAmountToFetch = (chainId: ChainId | undefined, amountToFetch: num
 
 export const useAdvancedTradingView = () => {
   const { buyTokenAmount, sellTokenAmount } = useContext(LimitOrderFormContext)
-  const { activeTab } = useContext(SwapContext)
+  const { activeTab } = useContext(SwapTabContext)
 
   const { chainId } = useActiveWeb3React()
 
