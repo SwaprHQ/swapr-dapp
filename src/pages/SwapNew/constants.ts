@@ -7,6 +7,27 @@ export const ELEMENTS_SPACING = '6px'
 export const TEXT_COLOR_PRIMARY = '#fff'
 export const TEXT_COLOR_SECONDARY = '#8780bf'
 
+export enum IndicatorColorVariant {
+  POSITIVE = 'POSITIVE',
+  WARNING = 'WARNING',
+  NEGATIVE = 'NEGATIVE',
+  UNDEFINED = 'UNDEFINED',
+}
+
+export enum IndicatorIconVariant {
+  DEXES = 'DEXES',
+  GAS = 'GAS',
+  BANANA = 'BANANA',
+  SHIELD = 'SHIELD',
+}
+
+export const INDICATOR_COLOR = {
+  [IndicatorColorVariant.POSITIVE]: '#0E9F6E',
+  [IndicatorColorVariant.WARNING]: '#F2994A',
+  [IndicatorColorVariant.NEGATIVE]: '#F02E51',
+  [IndicatorColorVariant.UNDEFINED]: '#8780BF',
+}
+
 export const INDICATOR_COLOR_POSITIVE = '#0E9F6E'
 export const INDICATOR_COLOR_WARNING = '#F2994A'
 export const INDICATOR_COLOR_NEGATIVE = '#F02E51'
