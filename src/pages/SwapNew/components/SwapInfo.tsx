@@ -3,7 +3,7 @@ import styled from 'styled-components'
 
 import { ReactComponent as DownArrowSmallSVG } from '../../../assets/swapbox/down-arrow-small.svg'
 import { ELEMENTS_BACKGROUND_SECONDARY, ELEMENTS_SPACING, TEXT_COLOR_PRIMARY } from '../constants'
-import { Indicator } from './Indicator'
+import { Indicator, IndicatorVariant } from './Indicator'
 import { BorderStyle, FontFamily } from './styles'
 import { SwapDexInfoItem } from './SwapDexInfoItem'
 
@@ -14,10 +14,10 @@ export function SwapInfo() {
     <SwapInfoContainer>
       <SwapInfoBasics>
         <SwapCostInfo>
-          <Indicator variant="positive" icon="dexes" />
-          <Indicator variant="positive" icon="gas" />
-          <Indicator variant="positive" icon="banana" />
-          <Indicator variant="positive" icon="shield" />
+          <Indicator variant={IndicatorVariant.WARNING} icon="dexes" />
+          <Indicator variant={IndicatorVariant.WARNING} icon="gas" />
+          <Indicator variant={IndicatorVariant.WARNING} icon="banana" />
+          <Indicator variant={IndicatorVariant.WARNING} icon="shield" />
           <CurrencyCourseInfo>
             <span>1</span> ETH = <span>3007</span> USDT
           </CurrencyCourseInfo>
