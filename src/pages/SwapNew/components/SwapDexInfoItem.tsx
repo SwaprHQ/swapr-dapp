@@ -34,7 +34,8 @@ const Container = styled.div<{ isSelected: boolean }>`
   justify-content: space-between;
   align-items: center;
   padding: 14px;
-  ${BorderStyle}
+  border-radius: 12px;
+  border: 1.5px solid ${({ isSelected }) => (isSelected ? '#0e9f6e4d' : '#4441634d')};
   background: ${({ isSelected }) =>
     isSelected
       ? 'linear-gradient(180deg, rgba(15, 152, 106, 0.2) -16.91%, rgba(15, 152, 106, 0) 116.18%), linear-gradient(113.18deg, rgba(255, 255, 255, 0.15) -0.1%, rgba(0, 0, 0, 0) 98.9%), rgba(23, 22, 33, 0.6);'

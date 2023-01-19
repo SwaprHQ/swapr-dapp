@@ -6,7 +6,7 @@ export const FontFamily = css`
 
 export const BorderStyle = css`
   border-radius: 12px;
-  border: 1.5px solid #fff;
+  border: 1.5px solid #1b1b2a;
 `
 
 export const backgroundColor = '#123412'
