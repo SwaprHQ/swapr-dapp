@@ -12,8 +12,10 @@ export function SwapDexInfoItem({ isSelected = false }: SwapDexInfoItemProps) {
   return (
     <Container isSelected={isSelected}>
       <DexInfo isSelected={isSelected}>
-        <SushiSVG />
-        <TextLabel>Sushi</TextLabel>
+        <Dex>
+          <SushiSVG />
+          <TextLabel>Sushi</TextLabel>
+        </Dex>
         {isSelected && <BestRouteLabel>Best Route Selected</BestRouteLabel>}
       </DexInfo>
       <TransactionInfo isSelected={isSelected}>
@@ -27,7 +29,12 @@ const Container = styled.div<{ isSelected: boolean }>`
   display: flex;
   justify-content: space-between;
   align-items: center;
-  ${({ isSelected }) => isSelected && 'flex-direction: column;'}
+  ${({ isSelected }) =>
+    isSelected &&
+    `
+    flex-direction: column;
+    gap: 18px;  
+  `}
   padding: 14px;
   ${BorderStyle}
   background: linear-gradient(180deg, rgba(68, 65, 99, 0.1) -16.91%, rgba(68, 65, 99, 0) 116.18%),
@@ -37,15 +44,22 @@ const Container = styled.div<{ isSelected: boolean }>`
   box-shadow: 0px 4px 42px rgba(0, 0, 0, 0.16);
   backdrop-filter: blur(11px);
   margin-bottom: 8px;
+  cursor: pointer;
 `
 
 const DexInfo = styled.div<{ isSelected: boolean }>`
+  height: 20px;
+  display: flex;
+  align-items: center;
   ${({ isSelected }) =>
     isSelected &&
     `
     width: 100%;
+    justify-content: space-between;
   `}
-  height: 20px;
+`
+
+const Dex = styled.div`
   display: flex;
   align-items: center;
 `
@@ -87,7 +101,7 @@ const TransactionInfo = styled.div<{ isSelected: boolean }>`
 
 const TransactionCost = styled.p`
   height: 20px;
-  line-height: 20px;
+  line-height: 12px;
   display: inline-block;
   padding: 4px;
   font-size: 14px;
