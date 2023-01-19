@@ -2,6 +2,7 @@ import { Trade } from '@swapr/sdk'
 
 import { createContext } from 'react'
 
+import { BridgeTransactionSummary } from '../../state/bridgeTransactions/types'
 import { Fathom } from '../fathom'
 import { FathomSiteInformation } from '../generated/prod'
 
@@ -17,7 +18,11 @@ export interface IAnalyticsContext {
   /**
    * Track the volume of a trade in USD and send it to Fathom
    */
-  trackEcoEcoRouterTradeVolume(trade: Trade): void
+  trackEcoRouterTradeVolume(trade: Trade): void
+  /**
+   * Track the volume of a trade in USD and send it to Fathom
+   */
+  trackEcoBridgeTradeVolume(transactionSummary: BridgeTransactionSummary): void
 }
 
 export const AnalyticsContext = createContext({} as IAnalyticsContext)
