@@ -1,7 +1,8 @@
 import styled from 'styled-components'
 
 import { ReactComponent as SushiSVG } from '../../../assets/swapbox/dex-logo-sushi.svg'
-import { TEXT_COLOR_PRIMARY } from '../constants'
+import { IndicatorColorVariant, IndicatorIconVariant, TEXT_COLOR_PRIMARY } from '../constants'
+import { Indicator } from './Indicator'
 import { BorderStyle, FontFamily } from './styles'
 
 type SwapDexInfoItemProps = {
@@ -19,6 +20,9 @@ export function SwapDexInfoItem({ isSelected = false }: SwapDexInfoItemProps) {
         {isSelected && <BestRouteLabel>Best Route Selected</BestRouteLabel>}
       </DexInfo>
       <TransactionInfo isSelected={isSelected}>
+        <IndicatorsContainer>
+          <Indicator color={IndicatorColorVariant.WARNING} icon={IndicatorIconVariant.GAS} />
+        </IndicatorsContainer>
         <TransactionCost>3989 USDT</TransactionCost>
       </TransactionInfo>
     </Container>
@@ -29,22 +33,25 @@ const Container = styled.div<{ isSelected: boolean }>`
   display: flex;
   justify-content: space-between;
   align-items: center;
-  ${({ isSelected }) =>
-    isSelected &&
-    `
-    flex-direction: column;
-    gap: 18px;  
-  `}
   padding: 14px;
   ${BorderStyle}
-  background: linear-gradient(180deg, rgba(68, 65, 99, 0.1) -16.91%, rgba(68, 65, 99, 0) 116.18%),
-    linear-gradient(113.18deg, rgba(255, 255, 255, 0.2) -0.1%, rgba(0, 0, 0, 0) 98.9%), #171621;
+  background: ${({ isSelected }) =>
+    isSelected
+      ? 'linear-gradient(180deg, rgba(15, 152, 106, 0.2) -16.91%, rgba(15, 152, 106, 0) 116.18%), linear-gradient(113.18deg, rgba(255, 255, 255, 0.15) -0.1%, rgba(0, 0, 0, 0) 98.9%), rgba(23, 22, 33, 0.6);'
+      : 'linear-gradient(180deg, rgba(68, 65, 99, 0.1) -16.91%, rgba(68, 65, 99, 0) 116.18%), linear-gradient(113.18deg, rgba(255, 255, 255, 0.2) -0.1%, rgba(0, 0, 0, 0) 98.9%), #171621'};
   background-blend-mode: normal, overlay, normal;
   opacity: 0.8;
   box-shadow: 0px 4px 42px rgba(0, 0, 0, 0.16);
   backdrop-filter: blur(11px);
   margin-bottom: 8px;
   cursor: pointer;
+
+  ${({ isSelected }) =>
+    isSelected &&
+    `
+    flex-direction: column;
+    gap: 18px;
+  `}
 `
 
 const DexInfo = styled.div<{ isSelected: boolean }>`
@@ -91,13 +98,17 @@ const TextLabel = styled.p`
 `
 
 const TransactionInfo = styled.div<{ isSelected: boolean }>`
+  height: 20px;
+  display: flex;
   ${({ isSelected }) =>
     isSelected &&
     `
     width: 100%;
-  `}
-  height: 20px; ;
+    justify-content: space-between;
+  `};
 `
+
+const IndicatorsContainer = styled.div``
 
 const TransactionCost = styled.p`
   height: 20px;
