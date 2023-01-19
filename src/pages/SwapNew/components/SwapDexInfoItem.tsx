@@ -4,9 +4,13 @@ import { ReactComponent as SushiSVG } from '../../../assets/swapbox/dex-logo-sus
 import { TEXT_COLOR_PRIMARY } from '../constants'
 import { BorderStyle, FontFamily } from './styles'
 
-export function SwapDexInfoItem() {
+type SwapDexInfoItemProps = {
+  isSelected?: boolean
+}
+
+export function SwapDexInfoItem({ isSelected = false }: SwapDexInfoItemProps) {
   return (
-    <Container>
+    <Container isSelected={isSelected}>
       <DexInfo>
         <SushiSVG />
         <TextLabel>Sushi</TextLabel>
@@ -18,11 +22,11 @@ export function SwapDexInfoItem() {
   )
 }
 
-const Container = styled.div`
+const Container = styled.div<{ isSelected: boolean }>`
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 16px;
+  padding: 14px;
   ${BorderStyle}
   background: linear-gradient(180deg, rgba(68, 65, 99, 0.1) -16.91%, rgba(68, 65, 99, 0) 116.18%),
     linear-gradient(113.18deg, rgba(255, 255, 255, 0.2) -0.1%, rgba(0, 0, 0, 0) 98.9%), #171621;
@@ -34,6 +38,7 @@ const Container = styled.div`
 `
 
 const DexInfo = styled.div`
+  height: 20px;
   display: flex;
   align-items: center;
 `
@@ -49,10 +54,12 @@ const TextLabel = styled.p`
   margin-left: 8px;
 `
 
-const TransactionInfo = styled.div``
+const TransactionInfo = styled.div`
+  height: 20px; ;
+`
 
 const TransactionCost = styled.p`
-  height: 28px;
+  height: 20px;
   line-height: 20px;
   display: inline-block;
   padding: 4px;
