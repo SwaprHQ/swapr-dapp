@@ -7,6 +7,7 @@ export const ELEMENTS_BORDER_PRIMARY =
   'linear-gradient(0deg, rgba(68, 65, 99, 0.05), rgba(68, 65, 99, 0.05)) border-box, radial-gradient(40.58% 91.41% at 50.11% -12.63%, rgba(167, 162, 223, 0.1) 0%, rgba(37, 35, 57, 0.02) 100%) border-box'
 export const ELEMENTS_BORDER_SECONDARY =
   'linear-gradient(0deg, rgba(68, 65, 99, 0.05), rgba(68, 65, 99, 0.05)) border-box, radial-gradient(30.27% 68.18% at 50.11% 100%, rgba(167, 162, 223, 0.1) 0%, rgba(37, 35, 57, 0.02) 100%) border-box'
+
 export const ELEMENTS_SPACING = '6px'
 export const TEXT_COLOR_PRIMARY = '#fff'
 export const TEXT_COLOR_SECONDARY = '#8780bf'

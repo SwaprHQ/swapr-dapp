@@ -4,6 +4,7 @@ import styled from 'styled-components'
 import { ReactComponent as DownArrowSmallSVG } from '../../../assets/swapbox/down-arrow-small.svg'
 import {
   ELEMENTS_BACKGROUND_SECONDARY,
+  ELEMENTS_BORDER_SECONDARY,
   ELEMENTS_SPACING,
   IndicatorColorVariant,
   IndicatorIconVariant,
@@ -54,6 +55,22 @@ const SwapInfoContainer = styled.div`
   backdrop-filter: blur(11px);
   overflow: hidden;
   margin-bottom: ${ELEMENTS_SPACING};
+
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    border-radius: 12px;
+    border: 1.5px solid transparent;
+    background: ${ELEMENTS_BORDER_SECONDARY};
+    mask: linear-gradient(#fff 0 0) padding-box, linear-gradient(#fff 0 0);
+    -webkit-mask: linear-gradient(#fff 0 0) padding-box, linear-gradient(#fff 0 0);
+    -webkit-mask-composite: destination-out;
+    mask-composite: exclude;
+  }
 `
 
 const SwapInfoBasics = styled.div`
