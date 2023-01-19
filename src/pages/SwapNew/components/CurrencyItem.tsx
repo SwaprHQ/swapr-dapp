@@ -145,6 +145,8 @@ const Blockchain = styled.a`
   justify-content: center;
   align-items: center;
   ${BorderStyle}
+  border: 1px solid #1B1B2A;
   filter: drop-shadow(0px 4px 42px rgba(0, 0, 0, 0.16));
   backdrop-filter: blur(11px);
+  cursor: pointer;
 `
