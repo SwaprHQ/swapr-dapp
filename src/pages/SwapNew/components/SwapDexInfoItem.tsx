@@ -3,7 +3,7 @@ import styled from 'styled-components'
 import { ReactComponent as SushiSVG } from '../../../assets/swapbox/dex-logo-sushi.svg'
 import { IndicatorColorVariant, IndicatorIconVariant, TEXT_COLOR_PRIMARY } from '../constants'
 import { Indicator } from './Indicator'
-import { BorderStyle, FontFamily } from './styles'
+import { FontFamily } from './styles'
 
 type SwapDexInfoItemProps = {
   isSelected?: boolean
