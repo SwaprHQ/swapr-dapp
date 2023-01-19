@@ -63,8 +63,76 @@ export type FathomRegisteredEventName =
   | 'optimism-10/ecoRouter/velodrome/volumeUSD'
   | 'undefined-56/ecoRouter/pancakeswap/volumeUSD'
   | 'undefined-56/ecoRouter/sushiswap/volumeUSD'
-  | 'bsc-56/ecoRouter/sushiswap/volumeUSD'
   | 'bsc-56/ecoRouter/pancakeswap/volumeUSD'
+  | 'bsc-56/ecoRouter/sushiswap/volumeUSD'
+  | 'arbitrum-rinkeby-421611/ecoBridge/arbitrum-testnet/rinkeby-4/volumeUSD'
+  | 'rinkeby-4/ecoBridge/arbitrum-testnet/arbitrum-rinkeby-421611/volumeUSD'
+  | 'arbitrum-42161/ecoBridge/arbitrum-mainnet/ethereum-1/volumeUSD'
+  | 'ethereum-1/ecoBridge/arbitrum-mainnet/arbitrum-42161/volumeUSD'
+  | 'ethereum-1/ecoBridge/socket/arbitrum-42161/volumeUSD'
+  | 'arbitrum-42161/ecoBridge/socket/ethereum-1/volumeUSD'
+  | 'arbitrum-42161/ecoBridge/socket/polygon-137/volumeUSD'
+  | 'polygon-137/ecoBridge/socket/arbitrum-42161/volumeUSD'
+  | 'arbitrum-42161/ecoBridge/socket/optimism-10/volumeUSD'
+  | 'arbitrum-42161/ecoBridge/socket/gnosis-100/volumeUSD'
+  | 'gnosis-100/ecoBridge/socket/arbitrum-42161/volumeUSD'
+  | 'ethereum-1/ecoBridge/socket/polygon-137/volumeUSD'
+  | 'optimism-10/ecoBridge/socket/arbitrum-42161/volumeUSD'
+  | 'arbitrum-42161/ecoBridge/socket/bsc-56/volumeUSD'
+  | 'bsc-56/ecoBridge/socket/arbitrum-42161/volumeUSD'
+  | 'ethereum-1/ecoBridge/socket/gnosis-100/volumeUSD'
+  | 'gnosis-100/ecoBridge/socket/ethereum-1/volumeUSD'
+  | 'polygon-137/ecoBridge/socket/ethereum-1/volumeUSD'
+  | 'optimism-10/ecoBridge/socket/ethereum-1/volumeUSD'
+  | 'ethereum-1/ecoBridge/socket/optimism-10/volumeUSD'
+  | 'polygon-137/ecoBridge/socket/optimism-10/volumeUSD'
+  | 'ethereum-1/ecoBridge/socket/bsc-56/volumeUSD'
+  | 'bsc-56/ecoBridge/socket/ethereum-1/volumeUSD'
+  | 'gnosis-100/ecoBridge/socket/polygon-137/volumeUSD'
+  | 'polygon-137/ecoBridge/socket/gnosis-100/volumeUSD'
+  | 'polygon-137/ecoBridge/socket/bsc-56/volumeUSD'
+  | 'optimism-10/ecoBridge/socket/polygon-137/volumeUSD'
+  | 'bsc-56/ecoBridge/socket/polygon-137/volumeUSD'
+  | 'gnosis-100/ecoBridge/socket/optimism-10/volumeUSD'
+  | 'bsc-56/ecoBridge/socket/gnosis-100/volumeUSD'
+  | 'optimism-10/ecoBridge/socket/gnosis-100/volumeUSD'
+  | 'optimism-10/ecoBridge/socket/bsc-56/volumeUSD'
+  | 'gnosis-100/ecoBridge/socket/bsc-56/volumeUSD'
+  | 'bsc-56/ecoBridge/socket/optimism-10/volumeUSD'
+  | 'gnosis-100/ecoBridge/xdai/ethereum-1/volumeUSD'
+  | 'ethereum-1/ecoBridge/xdai/gnosis-100/volumeUSD'
+  | 'arbitrum-42161/ecoBridge/connext/ethereum-1/volumeUSD'
+  | 'arbitrum-42161/ecoBridge/connext/polygon-137/volumeUSD'
+  | 'gnosis-100/ecoBridge/connext/arbitrum-42161/volumeUSD'
+  | 'polygon-137/ecoBridge/connext/arbitrum-42161/volumeUSD'
+  | 'arbitrum-42161/ecoBridge/connext/gnosis-100/volumeUSD'
+  | 'ethereum-1/ecoBridge/connext/arbitrum-42161/volumeUSD'
+  | 'optimism-10/ecoBridge/connext/arbitrum-42161/volumeUSD'
+  | 'arbitrum-42161/ecoBridge/connext/optimism-10/volumeUSD'
+  | 'arbitrum-42161/ecoBridge/connext/bsc-56/volumeUSD'
+  | 'ethereum-1/ecoBridge/connext/polygon-137/volumeUSD'
+  | 'bsc-56/ecoBridge/connext/arbitrum-42161/volumeUSD'
+  | 'polygon-137/ecoBridge/connext/ethereum-1/volumeUSD'
+  | 'ethereum-1/ecoBridge/connext/gnosis-100/volumeUSD'
+  | 'optimism-10/ecoBridge/connext/ethereum-1/volumeUSD'
+  | 'ethereum-1/ecoBridge/connext/optimism-10/volumeUSD'
+  | 'gnosis-100/ecoBridge/connext/ethereum-1/volumeUSD'
+  | 'bsc-56/ecoBridge/connext/ethereum-1/volumeUSD'
+  | 'polygon-137/ecoBridge/connext/optimism-10/volumeUSD'
+  | 'gnosis-100/ecoBridge/connext/polygon-137/volumeUSD'
+  | 'ethereum-1/ecoBridge/connext/bsc-56/volumeUSD'
+  | 'polygon-137/ecoBridge/connext/gnosis-100/volumeUSD'
+  | 'gnosis-100/ecoBridge/connext/optimism-10/volumeUSD'
+  | 'polygon-137/ecoBridge/connext/bsc-56/volumeUSD'
+  | 'bsc-56/ecoBridge/connext/polygon-137/volumeUSD'
+  | 'optimism-10/ecoBridge/connext/gnosis-100/volumeUSD'
+  | 'optimism-10/ecoBridge/connext/polygon-137/volumeUSD'
+  | 'gnosis-100/ecoBridge/omnibridge-eth-xdai/ethereum-1/volumeUSD'
+  | 'bsc-56/ecoBridge/connext/optimism-10/volumeUSD'
+  | 'gnosis-100/ecoBridge/connext/bsc-56/volumeUSD'
+  | 'optimism-10/ecoBridge/connext/bsc-56/volumeUSD'
+  | 'bsc-56/ecoBridge/connext/gnosis-100/volumeUSD'
+  | 'ethereum-1/ecoBridge/omnibridge-eth-xdai/gnosis-100/volumeUSD'
 export type FathomRegisteredNetworkName =
   | 'ethereum'
   | 'rinkeby'
@@ -525,21 +593,497 @@ export const siteEvents: FathomSiteInformation = {
       created_at: '2023-01-05 14:43:58',
     },
     {
-      id: 'JGFS8R74',
-      object: 'event',
-      name: 'bsc-56/ecoRouter/sushiswap/volumeUSD',
-      currency: 'dollar',
-      created_at: '2023-01-05 14:44:49',
-    },
-    {
       id: 'AWWCLPCG',
       object: 'event',
       name: 'bsc-56/ecoRouter/pancakeswap/volumeUSD',
-      currency: 'dollar',
+      currency: null,
       created_at: '2023-01-05 14:44:49',
     },
+    {
+      id: 'JGFS8R74',
+      object: 'event',
+      name: 'bsc-56/ecoRouter/sushiswap/volumeUSD',
+      currency: null,
+      created_at: '2023-01-05 14:44:49',
+    },
+    {
+      id: 'EIZQGTFD',
+      object: 'event',
+      name: 'arbitrum-rinkeby-421611/ecoBridge/arbitrum-testnet/rinkeby-4/volumeUSD',
+      currency: null,
+      created_at: '2023-01-12 10:01:14',
+    },
+    {
+      id: 'EVYZ2EIU',
+      object: 'event',
+      name: 'rinkeby-4/ecoBridge/arbitrum-testnet/arbitrum-rinkeby-421611/volumeUSD',
+      currency: null,
+      created_at: '2023-01-12 10:01:14',
+    },
+    {
+      id: 'AUI0GZYH',
+      object: 'event',
+      name: 'arbitrum-42161/ecoBridge/arbitrum-mainnet/ethereum-1/volumeUSD',
+      currency: null,
+      created_at: '2023-01-12 10:01:15',
+    },
+    {
+      id: 'UHBHINCN',
+      object: 'event',
+      name: 'ethereum-1/ecoBridge/arbitrum-mainnet/arbitrum-42161/volumeUSD',
+      currency: null,
+      created_at: '2023-01-12 10:01:15',
+    },
+    {
+      id: 'BC2IKEWJ',
+      object: 'event',
+      name: 'ethereum-1/ecoBridge/socket/arbitrum-42161/volumeUSD',
+      currency: null,
+      created_at: '2023-01-12 10:01:16',
+    },
+    {
+      id: 'D2VPT99D',
+      object: 'event',
+      name: 'arbitrum-42161/ecoBridge/socket/ethereum-1/volumeUSD',
+      currency: null,
+      created_at: '2023-01-12 10:01:16',
+    },
+    {
+      id: 'CDYATVTQ',
+      object: 'event',
+      name: 'arbitrum-42161/ecoBridge/socket/polygon-137/volumeUSD',
+      currency: null,
+      created_at: '2023-01-12 10:01:17',
+    },
+    {
+      id: 'SAPTCMZ1',
+      object: 'event',
+      name: 'polygon-137/ecoBridge/socket/arbitrum-42161/volumeUSD',
+      currency: null,
+      created_at: '2023-01-12 10:01:17',
+    },
+    {
+      id: '7JV1XJVJ',
+      object: 'event',
+      name: 'arbitrum-42161/ecoBridge/socket/optimism-10/volumeUSD',
+      currency: null,
+      created_at: '2023-01-12 10:01:18',
+    },
+    {
+      id: 'OCUIUXCM',
+      object: 'event',
+      name: 'arbitrum-42161/ecoBridge/socket/gnosis-100/volumeUSD',
+      currency: null,
+      created_at: '2023-01-12 10:01:18',
+    },
+    {
+      id: 'ZRNHZH6M',
+      object: 'event',
+      name: 'gnosis-100/ecoBridge/socket/arbitrum-42161/volumeUSD',
+      currency: null,
+      created_at: '2023-01-12 10:01:18',
+    },
+    {
+      id: '5QY2H5PX',
+      object: 'event',
+      name: 'ethereum-1/ecoBridge/socket/polygon-137/volumeUSD',
+      currency: null,
+      created_at: '2023-01-12 10:01:19',
+    },
+    {
+      id: 'OBYBBRNR',
+      object: 'event',
+      name: 'optimism-10/ecoBridge/socket/arbitrum-42161/volumeUSD',
+      currency: null,
+      created_at: '2023-01-12 10:01:19',
+    },
+    {
+      id: 'PAFCKP10',
+      object: 'event',
+      name: 'arbitrum-42161/ecoBridge/socket/bsc-56/volumeUSD',
+      currency: null,
+      created_at: '2023-01-12 10:01:19',
+    },
+    {
+      id: 'X4YJGSIQ',
+      object: 'event',
+      name: 'bsc-56/ecoBridge/socket/arbitrum-42161/volumeUSD',
+      currency: null,
+      created_at: '2023-01-12 10:01:19',
+    },
+    {
+      id: 'S0F4FGKA',
+      object: 'event',
+      name: 'ethereum-1/ecoBridge/socket/gnosis-100/volumeUSD',
+      currency: null,
+      created_at: '2023-01-12 10:01:20',
+    },
+    {
+      id: 'UBDHQGIC',
+      object: 'event',
+      name: 'gnosis-100/ecoBridge/socket/ethereum-1/volumeUSD',
+      currency: null,
+      created_at: '2023-01-12 10:01:20',
+    },
+    {
+      id: 'UHG0IDXM',
+      object: 'event',
+      name: 'polygon-137/ecoBridge/socket/ethereum-1/volumeUSD',
+      currency: null,
+      created_at: '2023-01-12 10:01:20',
+    },
+    {
+      id: 'P2CGJIGQ',
+      object: 'event',
+      name: 'optimism-10/ecoBridge/socket/ethereum-1/volumeUSD',
+      currency: null,
+      created_at: '2023-01-12 10:01:21',
+    },
+    {
+      id: 'X1MG21WW',
+      object: 'event',
+      name: 'ethereum-1/ecoBridge/socket/optimism-10/volumeUSD',
+      currency: null,
+      created_at: '2023-01-12 10:01:21',
+    },
+    {
+      id: '42RR8BSH',
+      object: 'event',
+      name: 'polygon-137/ecoBridge/socket/optimism-10/volumeUSD',
+      currency: null,
+      created_at: '2023-01-12 10:01:22',
+    },
+    {
+      id: '5NZBH2SH',
+      object: 'event',
+      name: 'ethereum-1/ecoBridge/socket/bsc-56/volumeUSD',
+      currency: null,
+      created_at: '2023-01-12 10:01:22',
+    },
+    {
+      id: 'SNO3RZES',
+      object: 'event',
+      name: 'bsc-56/ecoBridge/socket/ethereum-1/volumeUSD',
+      currency: null,
+      created_at: '2023-01-12 10:01:22',
+    },
+    {
+      id: 'TMEDPQA9',
+      object: 'event',
+      name: 'gnosis-100/ecoBridge/socket/polygon-137/volumeUSD',
+      currency: null,
+      created_at: '2023-01-12 10:01:22',
+    },
+    {
+      id: 'V0G4MBBC',
+      object: 'event',
+      name: 'polygon-137/ecoBridge/socket/gnosis-100/volumeUSD',
+      currency: null,
+      created_at: '2023-01-12 10:01:22',
+    },
+    {
+      id: '8K0SMB3A',
+      object: 'event',
+      name: 'polygon-137/ecoBridge/socket/bsc-56/volumeUSD',
+      currency: null,
+      created_at: '2023-01-12 10:01:23',
+    },
+    {
+      id: 'CGZHTQNI',
+      object: 'event',
+      name: 'optimism-10/ecoBridge/socket/polygon-137/volumeUSD',
+      currency: null,
+      created_at: '2023-01-12 10:01:23',
+    },
+    {
+      id: 'QJTYB9RJ',
+      object: 'event',
+      name: 'bsc-56/ecoBridge/socket/polygon-137/volumeUSD',
+      currency: null,
+      created_at: '2023-01-12 10:01:23',
+    },
+    {
+      id: 'ZZGTY3UV',
+      object: 'event',
+      name: 'gnosis-100/ecoBridge/socket/optimism-10/volumeUSD',
+      currency: null,
+      created_at: '2023-01-12 10:01:23',
+    },
+    {
+      id: 'BAFSLT8E',
+      object: 'event',
+      name: 'bsc-56/ecoBridge/socket/gnosis-100/volumeUSD',
+      currency: null,
+      created_at: '2023-01-12 10:01:24',
+    },
+    {
+      id: 'KD6LURFV',
+      object: 'event',
+      name: 'optimism-10/ecoBridge/socket/gnosis-100/volumeUSD',
+      currency: null,
+      created_at: '2023-01-12 10:01:24',
+    },
+    {
+      id: 'KOHGHIHI',
+      object: 'event',
+      name: 'optimism-10/ecoBridge/socket/bsc-56/volumeUSD',
+      currency: null,
+      created_at: '2023-01-12 10:01:24',
+    },
+    {
+      id: 'THJG74J1',
+      object: 'event',
+      name: 'gnosis-100/ecoBridge/socket/bsc-56/volumeUSD',
+      currency: null,
+      created_at: '2023-01-12 10:01:24',
+    },
+    {
+      id: 'WMH1LIMU',
+      object: 'event',
+      name: 'bsc-56/ecoBridge/socket/optimism-10/volumeUSD',
+      currency: null,
+      created_at: '2023-01-12 10:01:24',
+    },
+    {
+      id: '3XOMVTNM',
+      object: 'event',
+      name: 'gnosis-100/ecoBridge/xdai/ethereum-1/volumeUSD',
+      currency: null,
+      created_at: '2023-01-12 10:01:25',
+    },
+    {
+      id: 'D6EFTKTX',
+      object: 'event',
+      name: 'ethereum-1/ecoBridge/xdai/gnosis-100/volumeUSD',
+      currency: null,
+      created_at: '2023-01-12 10:01:25',
+    },
+    {
+      id: 'HJQ4SIVZ',
+      object: 'event',
+      name: 'arbitrum-42161/ecoBridge/connext/ethereum-1/volumeUSD',
+      currency: null,
+      created_at: '2023-01-12 10:01:26',
+    },
+    {
+      id: '5JK12YRI',
+      object: 'event',
+      name: 'arbitrum-42161/ecoBridge/connext/polygon-137/volumeUSD',
+      currency: null,
+      created_at: '2023-01-12 10:01:27',
+    },
+    {
+      id: 'CEQWOOZS',
+      object: 'event',
+      name: 'gnosis-100/ecoBridge/connext/arbitrum-42161/volumeUSD',
+      currency: null,
+      created_at: '2023-01-12 10:01:27',
+    },
+    {
+      id: 'LDU94RP0',
+      object: 'event',
+      name: 'polygon-137/ecoBridge/connext/arbitrum-42161/volumeUSD',
+      currency: null,
+      created_at: '2023-01-12 10:01:27',
+    },
+    {
+      id: 'RCTOCBGE',
+      object: 'event',
+      name: 'arbitrum-42161/ecoBridge/connext/gnosis-100/volumeUSD',
+      currency: null,
+      created_at: '2023-01-12 10:01:27',
+    },
+    {
+      id: 'YJHIDEDW',
+      object: 'event',
+      name: 'ethereum-1/ecoBridge/connext/arbitrum-42161/volumeUSD',
+      currency: null,
+      created_at: '2023-01-12 10:01:27',
+    },
+    {
+      id: 'ACDBPNUI',
+      object: 'event',
+      name: 'optimism-10/ecoBridge/connext/arbitrum-42161/volumeUSD',
+      currency: null,
+      created_at: '2023-01-12 10:01:28',
+    },
+    {
+      id: 'AS9O9BRL',
+      object: 'event',
+      name: 'arbitrum-42161/ecoBridge/connext/optimism-10/volumeUSD',
+      currency: null,
+      created_at: '2023-01-12 10:01:28',
+    },
+    {
+      id: 'I42SVD0R',
+      object: 'event',
+      name: 'arbitrum-42161/ecoBridge/connext/bsc-56/volumeUSD',
+      currency: null,
+      created_at: '2023-01-12 10:01:28',
+    },
+    {
+      id: 'PXTUUICC',
+      object: 'event',
+      name: 'ethereum-1/ecoBridge/connext/polygon-137/volumeUSD',
+      currency: null,
+      created_at: '2023-01-12 10:01:28',
+    },
+    {
+      id: 'VJTBNZ4U',
+      object: 'event',
+      name: 'bsc-56/ecoBridge/connext/arbitrum-42161/volumeUSD',
+      currency: null,
+      created_at: '2023-01-12 10:01:28',
+    },
+    {
+      id: 'A02FIFSP',
+      object: 'event',
+      name: 'polygon-137/ecoBridge/connext/ethereum-1/volumeUSD',
+      currency: null,
+      created_at: '2023-01-12 10:01:29',
+    },
+    {
+      id: 'HKDVBITD',
+      object: 'event',
+      name: 'ethereum-1/ecoBridge/connext/gnosis-100/volumeUSD',
+      currency: null,
+      created_at: '2023-01-12 10:01:29',
+    },
+    {
+      id: 'PCRC1AC7',
+      object: 'event',
+      name: 'optimism-10/ecoBridge/connext/ethereum-1/volumeUSD',
+      currency: null,
+      created_at: '2023-01-12 10:01:29',
+    },
+    {
+      id: 'PHIWMOWU',
+      object: 'event',
+      name: 'ethereum-1/ecoBridge/connext/optimism-10/volumeUSD',
+      currency: null,
+      created_at: '2023-01-12 10:01:29',
+    },
+    {
+      id: 'XUJ1DPWS',
+      object: 'event',
+      name: 'gnosis-100/ecoBridge/connext/ethereum-1/volumeUSD',
+      currency: null,
+      created_at: '2023-01-12 10:01:29',
+    },
+    {
+      id: 'DP6CLAXO',
+      object: 'event',
+      name: 'bsc-56/ecoBridge/connext/ethereum-1/volumeUSD',
+      currency: null,
+      created_at: '2023-01-12 10:01:30',
+    },
+    {
+      id: 'GR70ZORQ',
+      object: 'event',
+      name: 'polygon-137/ecoBridge/connext/optimism-10/volumeUSD',
+      currency: null,
+      created_at: '2023-01-12 10:01:30',
+    },
+    {
+      id: 'LQOGPTKI',
+      object: 'event',
+      name: 'gnosis-100/ecoBridge/connext/polygon-137/volumeUSD',
+      currency: null,
+      created_at: '2023-01-12 10:01:30',
+    },
+    {
+      id: 'WWREDQAC',
+      object: 'event',
+      name: 'ethereum-1/ecoBridge/connext/bsc-56/volumeUSD',
+      currency: null,
+      created_at: '2023-01-12 10:01:30',
+    },
+    {
+      id: 'YMKZPCSF',
+      object: 'event',
+      name: 'polygon-137/ecoBridge/connext/gnosis-100/volumeUSD',
+      currency: null,
+      created_at: '2023-01-12 10:01:30',
+    },
+    {
+      id: 'HP7RLOQG',
+      object: 'event',
+      name: 'gnosis-100/ecoBridge/connext/optimism-10/volumeUSD',
+      currency: null,
+      created_at: '2023-01-12 10:01:31',
+    },
+    {
+      id: 'J3Q8KOJY',
+      object: 'event',
+      name: 'polygon-137/ecoBridge/connext/bsc-56/volumeUSD',
+      currency: null,
+      created_at: '2023-01-12 10:01:31',
+    },
+    {
+      id: 'N0FUOWRB',
+      object: 'event',
+      name: 'bsc-56/ecoBridge/connext/polygon-137/volumeUSD',
+      currency: null,
+      created_at: '2023-01-12 10:01:31',
+    },
+    {
+      id: 'QLB4AAI0',
+      object: 'event',
+      name: 'optimism-10/ecoBridge/connext/gnosis-100/volumeUSD',
+      currency: null,
+      created_at: '2023-01-12 10:01:31',
+    },
+    {
+      id: 'RIQGRRF4',
+      object: 'event',
+      name: 'optimism-10/ecoBridge/connext/polygon-137/volumeUSD',
+      currency: null,
+      created_at: '2023-01-12 10:01:31',
+    },
+    {
+      id: 'CIZQUQOZ',
+      object: 'event',
+      name: 'gnosis-100/ecoBridge/omnibridge-eth-xdai/ethereum-1/volumeUSD',
+      currency: null,
+      created_at: '2023-01-12 10:01:32',
+    },
+    {
+      id: 'EOCKVRP0',
+      object: 'event',
+      name: 'bsc-56/ecoBridge/connext/optimism-10/volumeUSD',
+      currency: null,
+      created_at: '2023-01-12 10:01:32',
+    },
+    {
+      id: 'MIQBJZFL',
+      object: 'event',
+      name: 'gnosis-100/ecoBridge/connext/bsc-56/volumeUSD',
+      currency: null,
+      created_at: '2023-01-12 10:01:32',
+    },
+    {
+      id: 'N1QQCQOB',
+      object: 'event',
+      name: 'optimism-10/ecoBridge/connext/bsc-56/volumeUSD',
+      currency: null,
+      created_at: '2023-01-12 10:01:32',
+    },
+    {
+      id: 'WLC9CTAC',
+      object: 'event',
+      name: 'bsc-56/ecoBridge/connext/gnosis-100/volumeUSD',
+      currency: null,
+      created_at: '2023-01-12 10:01:32',
+    },
+    {
+      id: '81WIALW3',
+      object: 'event',
+      name: 'ethereum-1/ecoBridge/omnibridge-eth-xdai/gnosis-100/volumeUSD',
+      currency: null,
+      created_at: '2023-01-12 10:01:33',
+    },
   ],
-  timestamp: '2023-01-05T14:44:49.929Z',
+  timestamp: '2023-01-12T12:09:47.671Z',
 }
 
 /**
@@ -577,4 +1121,18 @@ export function getNetworkNameByChainId(chainId: number): string {
  */
 export function getEcoRouterVolumeUSDEventName(networkName: string, networkId: number, platformName: string): string {
   return `${networkName.toLowerCase()}-${networkId}/ecoRouter/${platformName.toLowerCase()}/volumeUSD`
+}
+
+/**
+ * Constructs EcoBridge volumeUSD event name for a given platform, from network and to network
+ */
+export function getEcoBridgeVolumeUSDEventName(
+  platformName: string,
+  fromNetworkId: number,
+  toNetworkId: number
+): string {
+  const fromNetworkName = getNetworkNameByChainId(fromNetworkId)
+  const toNetworkName = getNetworkNameByChainId(toNetworkId)
+  platformName = platformName.replace(/:/g, '-').toLowerCase()
+  return `${fromNetworkName}-${fromNetworkId}/ecoBridge/${platformName}/${toNetworkName}-${toNetworkId}/volumeUSD`
 }
