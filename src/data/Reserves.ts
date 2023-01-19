@@ -68,7 +68,7 @@ export function usePairs(
       const { reserve0, reserve1 } = reserves
       const [token0, token1] = tokenA.sortsBefore(tokenB) ? [tokenA, tokenB] : [tokenB, tokenA]
       const swapFee = swapFees?.[Pair.getAddress(token0, token1, platform)]?.fee
-      if (!swapFee && platform === UniswapV2RoutablePlatform.SWAPR) return [PairState.LOADING, null]
+
       return [
         PairState.EXISTS,
         new Pair(
