@@ -1,9 +1,15 @@
 import styled from 'styled-components'
 
 import { ReactComponent as SushiSVG } from '../../../assets/swapbox/dex-logo-sushi.svg'
-import { IndicatorColorVariant, IndicatorIconVariant, TEXT_COLOR_PRIMARY } from '../constants'
+import {
+  DEX_SELECTED_BORDER,
+  DEX_UNSELECTED_BORDER,
+  IndicatorColorVariant,
+  IndicatorIconVariant,
+  TEXT_COLOR_PRIMARY,
+} from '../constants'
 import { Indicator } from './Indicator'
-import { FontFamily } from './styles'
+import { BorderStyle, FontFamily } from './styles'
 
 type SwapDexInfoItemProps = {
   isSelected?: boolean
@@ -34,8 +40,7 @@ const Container = styled.div<{ isSelected: boolean }>`
   justify-content: space-between;
   align-items: center;
   padding: 14px;
-  border-radius: 12px;
-  border: 1.5px solid ${({ isSelected }) => (isSelected ? '#0e9f6e4d' : '#4441634d')};
+  ${BorderStyle}
   background: ${({ isSelected }) =>
     isSelected
       ? 'linear-gradient(180deg, rgba(15, 152, 106, 0.2) -16.91%, rgba(15, 152, 106, 0) 116.18%), linear-gradient(113.18deg, rgba(255, 255, 255, 0.15) -0.1%, rgba(0, 0, 0, 0) 98.9%), rgba(23, 22, 33, 0.6);'
@@ -46,6 +51,22 @@ const Container = styled.div<{ isSelected: boolean }>`
   backdrop-filter: blur(11px);
   margin-bottom: 8px;
   cursor: pointer;
+
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    border-radius: 12px;
+    border: 1.5px solid transparent;
+    background: ${({ isSelected }) => (isSelected ? DEX_SELECTED_BORDER : DEX_UNSELECTED_BORDER)};
+    mask: linear-gradient(#fff 0 0) padding-box, linear-gradient(#fff 0 0);
+    -webkit-mask: linear-gradient(#fff 0 0) padding-box, linear-gradient(#fff 0 0);
+    -webkit-mask-composite: destination-out;
+    mask-composite: exclude;
+  }
 
   ${({ isSelected }) =>
     isSelected &&
