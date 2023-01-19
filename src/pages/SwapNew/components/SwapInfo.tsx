@@ -36,7 +36,7 @@ export function SwapInfo() {
       {showSwapInfoDetails && (
         <SwapInfoDetailed showSwapInfoDetails={showSwapInfoDetails}>
           <SwapDexInfoItem />
-          <SwapDexInfoItem />
+          <SwapDexInfoItem isSelected />
           <SwapDexInfoItem />
         </SwapInfoDetailed>
       )}

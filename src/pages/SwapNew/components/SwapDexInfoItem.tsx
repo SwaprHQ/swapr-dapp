@@ -11,11 +11,12 @@ type SwapDexInfoItemProps = {
 export function SwapDexInfoItem({ isSelected = false }: SwapDexInfoItemProps) {
   return (
     <Container isSelected={isSelected}>
-      <DexInfo>
+      <DexInfo isSelected={isSelected}>
         <SushiSVG />
         <TextLabel>Sushi</TextLabel>
+        {isSelected && <BestRouteLabel>Best Route Selected</BestRouteLabel>}
       </DexInfo>
-      <TransactionInfo>
+      <TransactionInfo isSelected={isSelected}>
         <TransactionCost>3989 USDT</TransactionCost>
       </TransactionInfo>
     </Container>
@@ -26,6 +27,7 @@ const Container = styled.div<{ isSelected: boolean }>`
   display: flex;
   justify-content: space-between;
   align-items: center;
+  ${({ isSelected }) => isSelected && 'flex-direction: column;'}
   padding: 14px;
   ${BorderStyle}
   background: linear-gradient(180deg, rgba(68, 65, 99, 0.1) -16.91%, rgba(68, 65, 99, 0) 116.18%),
@@ -37,10 +39,30 @@ const Container = styled.div<{ isSelected: boolean }>`
   margin-bottom: 8px;
 `
 
-const DexInfo = styled.div`
+const DexInfo = styled.div<{ isSelected: boolean }>`
+  ${({ isSelected }) =>
+    isSelected &&
+    `
+    width: 100%;
+  `}
   height: 20px;
   display: flex;
   align-items: center;
+`
+
+const BestRouteLabel = styled.p`
+  height: 17px;
+  display: inline-block;
+  padding: 3px 5px;
+  font-size: 9px;
+  ${FontFamily}
+  font-weight: 600;
+  line-height: 11px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #0e9f6e;
+  background: rgba(14, 159, 110, 0.15);
+  border-radius: 4px;
 `
 
 const TextLabel = styled.p`
@@ -54,7 +76,12 @@ const TextLabel = styled.p`
   margin-left: 8px;
 `
 
-const TransactionInfo = styled.div`
+const TransactionInfo = styled.div<{ isSelected: boolean }>`
+  ${({ isSelected }) =>
+    isSelected &&
+    `
+    width: 100%;
+  `}
   height: 20px; ;
 `
 
