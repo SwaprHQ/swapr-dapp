@@ -5,7 +5,7 @@ import { useCallback, useMemo } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 
 import { useActiveWeb3React } from '../../hooks'
-import { type BridgeTransaction, TransactionTypes } from '../../pages/Account/Account.types'
+import { type BridgeTransaction, TransactionType } from '../../pages/Account/Account.types'
 import { selectBridgeTransactions } from '../../services/EcoBridge/store/EcoBridge.selectors'
 import { AppDispatch, AppState } from '../index'
 import { useListsByAddress } from '../lists/hooks'
@@ -114,7 +114,7 @@ export function useAllBridgeTransactions(allNetwork = false): BridgeTransaction[
         } = transaction
 
         return {
-          type: TransactionTypes.Bridge as const,
+          type: TransactionType.Bridge as const,
           sellToken: {
             value: Number(fromValue),
             symbol: listByAddress.get(fromChainId)?.get(`${assetAddressL1}`)?.symbol ?? assetName,

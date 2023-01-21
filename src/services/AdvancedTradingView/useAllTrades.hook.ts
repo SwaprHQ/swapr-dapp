@@ -60,6 +60,10 @@ export const useAllTrades = (): {
             transaction.status.toUpperCase() !== TransactionStatus.REDEEM
         )
         .splice(0, 5 - pendingTransactions.length)
+        // Sort by confirmation time
+        .sort((a, b) => {
+          return Number(b.confirmedTime) - Number(a.confirmedTime)
+        })
 
       return [...pendingTransactions, ...formattedTransactionsWithoutPending]
     }
@@ -72,7 +76,9 @@ export const useAllTrades = (): {
   )
 
   const liquidityHistory = [...baseAdapterLiquidityHistory, ...uniswapV3LiquidityHistory].sort(
-    (firstTrade, secondTrade) => sortByTimeStamp(firstTrade.timestamp, secondTrade.timestamp)
+    (firstTrade, secondTrade) => {
+      return sortByTimeStamp(firstTrade.timestamp, secondTrade.timestamp)
+    }
   )
 
   return {

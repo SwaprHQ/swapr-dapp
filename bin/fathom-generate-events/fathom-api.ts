@@ -36,6 +36,10 @@ export async function getSiteEvents(siteId: string, token: string): Promise<Site
 
     const responseJson = (await response.json()) as GetSiteEventsResponse
 
+    if (!responseJson.data || (responseJson as any).error) {
+      throw new Error((responseJson as any).error ?? 'Unknown error')
+    }
+
     allEventList = [...allEventList, ...responseJson.data]
     hasMoreItems = responseJson.has_more
 

@@ -1,14 +1,16 @@
-import { DateTime } from 'luxon'
+import dayjs from 'dayjs'
+import { utils } from 'ethers'
 import { ExternalLink } from 'react-feather'
 import { Text } from 'rebass'
 import styled, { useTheme } from 'styled-components'
 
+import { CurrencyLogo } from '../../../../../../components/CurrencyLogo'
 import { useActiveWeb3React } from '../../../../../../hooks'
+import { useToken } from '../../../../../../hooks/Tokens'
 import { EXPLORER_LINK_TYPE, getExplorerLink } from '../../../../../../utils'
 import { formatNumber } from '../../../../../../utils/formatNumber'
 import { Status } from '../../../../../Account/Account.styles'
-import { Transaction, TransactionTypes } from '../../../../../Account/Account.types'
-import { TokenIcon } from '../../../../../Account/TokenIcon'
+import { Transaction, TransactionType } from '../../../../../Account/Account.types'
 
 const Wrapper = styled.div`
   display: flex;
@@ -34,43 +36,73 @@ export const OrderHistoryTransaction = ({ tx }: { tx: Transaction }) => {
   const { chainId } = useActiveWeb3React()
   const theme = useTheme()
 
-  const isSwapTransaction = tx.type === TransactionTypes.Swap
+  const isSwapTransaction = tx.type === TransactionType.Swap
+  const isLimitOrderTransaction = tx.type === TransactionType.LimitOrder
 
-  const protocol = isSwapTransaction ? tx.swapProtocol ?? 'Swapr' : 'Socket'
-  const transactionType = isSwapTransaction ? tx.type : 'Bridge Swap'
+  const formattedSellToken = useToken(tx.sellToken.tokenAddress)
+  const formattedBuyToken = useToken(tx.buyToken.tokenAddress)
+
+  // Find the protocol
+  let protocol = 'Unknown'
+  if (isSwapTransaction) {
+    protocol = tx.swapProtocol ?? 'Unknown'
+  } else if (isLimitOrderTransaction) {
+    protocol = 'COW'
+  }
+
+  // Transaction type can be an AMM order or a COW order which is can also be a market, limit or stop limit order
+  let transactionType: string = tx.type
+
+  // Transaction timestamp
+  let formattedTimestamp: string | null = null
+
+  if (tx.confirmedTime) {
+    console.log('tx.confirmedTime', tx.confirmedTime)
+    formattedTimestamp = dayjs(tx.confirmedTime).format('DD/MM/YYYY HH:mm')
+  }
+
+  let sellTokenAmount = tx.sellToken?.value
+  let buyTokenAmount = tx.buyToken?.value
+
+  // If the transaction has a creation date and a signature, it's a COW order (safe check)
+  if ('creationDate' in tx && 'signature' in tx) {
+    transactionType = tx.class.toString()
+
+    sellTokenAmount = utils.formatUnits(tx.sellToken?.value, formattedSellToken?.decimals)
+    buyTokenAmount = utils.formatUnits(tx.buyToken?.value, formattedBuyToken?.decimals)
+
+    if (tx.creationDate) {
+      formattedTimestamp = dayjs(tx.creationDate).format('DD/MM/YYYY HH:mm')
+    }
+  }
+
+  // Compute the explorer link
+  let explorerURL = null
+  if (isSwapTransaction) {
+    explorerURL = chainId && getExplorerLink(chainId, tx.hash, EXPLORER_LINK_TYPE.transaction, tx.swapProtocol)
+  } else if (protocol === 'COW') {
+    explorerURL = chainId && getExplorerLink(chainId, tx.hash, EXPLORER_LINK_TYPE.transaction, 'COW')
+  }
 
   return (
     <Wrapper>
       <div>
-        <TokenIcon symbol={tx.sellToken?.symbol} width={20} height={20} />
-        <Text>{formatNumber(tx.sellToken?.value)}</Text>
+        <CurrencyLogo currency={formattedSellToken ?? undefined} marginRight={4} />
+        <Text>{formatNumber(sellTokenAmount)}</Text>
       </div>
       <div>
-        <TokenIcon symbol={tx.buyToken?.symbol} width={20} height={20} />
-        <Text>{formatNumber(tx.buyToken?.value)}</Text>
+        <CurrencyLogo currency={formattedBuyToken ?? undefined} marginRight={4} />
+        <Text>{formatNumber(buyTokenAmount)}</Text>
       </div>
       <div>{protocol}</div>
-      <div>{transactionType}</div>
-      <div>
-        {tx.confirmedTime ? (
-          <>
-            {DateTime.fromMillis(tx.confirmedTime).toFormat('dd/MM/yyyy')}{' '}
-            {DateTime.fromMillis(tx.confirmedTime).toFormat('HH:mm')}
-          </>
-        ) : (
-          '-'
-        )}
-      </div>
+      <div>{transactionType.toUpperCase()}</div>
+      <div>{formattedTimestamp !== null ? <>{formattedTimestamp}</> : '-'}</div>
       <div>
         <Status status={tx.status.toUpperCase()}>{tx.status}</Status>
       </div>
       <div>
-        {isSwapTransaction ? (
-          <a
-            href={chainId && getExplorerLink(chainId, tx.hash, EXPLORER_LINK_TYPE.transaction, tx.swapProtocol)}
-            rel="noopener noreferrer"
-            target="_blank"
-          >
+        {explorerURL ? (
+          <a href={explorerURL} rel="noopener noreferrer" target="_blank">
             <ExternalLink size="15" color={theme.text4} />
           </a>
         ) : (

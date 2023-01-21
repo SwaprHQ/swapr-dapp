@@ -5,10 +5,10 @@ import { type BridgeTransactionLog } from '../../state/bridgeTransactions/types'
 import { type TransactionDetails } from '../../state/transactions/reducer'
 import { type LimitOrderTransaction } from '../Swap/LimitOrderBox/utils/hooks'
 
-export enum TransactionTypes {
+export enum TransactionType {
   Swap = 'Swap',
   Bridge = 'Bridge',
-  Limit = 'Limit Order',
+  LimitOrder = 'Limit Order',
 }
 
 export type AllSwapTransactions = { [txHash: string]: TransactionDetails }
@@ -35,7 +35,10 @@ interface Token {
 }
 
 export interface SwapTransaction {
-  type: TransactionTypes.Swap
+  /**
+   * The timestamp of the transaction broadcast to the network. This is used to sort the transactions.
+   */
+  type: TransactionType.Swap
   sellToken: Token
   buyToken: Token
   summary: string
@@ -50,7 +53,7 @@ export interface SwapTransaction {
 
 export interface BridgeTransaction
   extends Omit<SwapTransaction, 'summary' | 'type' | 'addedTime' | 'swapProtocol' | 'alternateReceiver'> {
-  type: TransactionTypes.Bridge
+  type: TransactionType.Bridge
   pendingReason?: string
   bridgeId: BridgeList
   logs: BridgeTransactionLog[]

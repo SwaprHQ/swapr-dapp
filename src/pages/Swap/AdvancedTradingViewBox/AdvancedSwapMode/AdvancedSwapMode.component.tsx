@@ -12,6 +12,7 @@ import {
   BaseWrapper,
   ChartWrapper,
   LiquidityWrapper,
+  NoDataMessage,
   OrderButton,
   OrderHistoryHeader,
   OrdersWrapper,
@@ -67,6 +68,8 @@ export const AdvancedSwapMode = ({ children }: PropsWithChildren) => {
   const transactionsWrapperMaxHeight = tradesWrapper?.current?.clientHeight
     ? tradesWrapper?.current?.clientHeight - TradesWrapperHeight.PADDING
     : TradesWrapperHeight.MIN
+
+  const getFilteredTransactions = () => transactions.filter(tx => (onlyOpen ? tx.status === 'open' : true))
 
   return (
     <AdvancedSwapModeWrapper>
@@ -139,11 +142,11 @@ export const AdvancedSwapMode = ({ children }: PropsWithChildren) => {
               <Text>{t('advancedTradingView.orderHistory.status')}</Text>
               <Text>{t('advancedTradingView.orderHistory.tx')}</Text>
             </OrderHistoryHeader>
-            {transactions
-              .filter(tx => (onlyOpen ? tx.status === 'open' : true))
-              .map((tx, index) => (
-                <OrderHistoryTransaction key={index} tx={tx} />
-              ))}
+            {getFilteredTransactions().length === 0 ? (
+              <NoDataMessage>There are no{onlyOpen && ' open'} orders at this moment.</NoDataMessage>
+            ) : (
+              getFilteredTransactions().map((tx, index) => <OrderHistoryTransaction key={index} tx={tx} />)
+            )}
           </TransactionsWrapper>
         </AdvancedModeHeader>
       </OrdersWrapper>
