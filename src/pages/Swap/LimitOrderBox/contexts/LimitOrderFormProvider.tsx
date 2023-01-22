@@ -1,11 +1,11 @@
-import { ChainId, TokenAmount } from '@swapr/sdk'
+import { ChainId } from '@swapr/sdk'
 
 import { formatUnits } from 'ethers/lib/utils'
-import React, { useLayoutEffect, useRef, useState } from 'react'
+import { ReactNode, useLayoutEffect, useRef, useState } from 'react'
 
 import { useActiveWeb3React } from '../../../../hooks/index'
 import { useHigherUSDValue } from '../../../../hooks/useUSDValue'
-import { InputFocus, OrderExpiresInUnit, SerializableLimitOrder } from '../interfaces'
+import { InputFocus, OrderExpiresInUnit } from '../interfaces'
 import { getInitialState } from '../utils'
 import { LimitOrderFormContext } from './LimitOrderFormContext'
 
@@ -16,7 +16,7 @@ export function LimitOrderFormBaseConditionalProvider({
 }: {
   chainId: ChainId
   account: string
-  children: React.ReactNode
+  children: ReactNode
 }) {
   // Get the initial values and set the state
   let initialState = useRef(getInitialState(chainId, account)).current
@@ -25,23 +25,23 @@ export function LimitOrderFormBaseConditionalProvider({
   const [expiresIn, setExpiresIn] = useState(3)
 
   // State holding the sell and buy currency amounts
-  const [sellTokenAmount, setSellTokenAmount] = useState<TokenAmount>(initialState.sellTokenAmount)
-  const [buyTokenAmount, setBuyTokenAmount] = useState<TokenAmount>(initialState.buyTokenAmount)
+  const [sellTokenAmount, setSellTokenAmount] = useState(initialState.sellTokenAmount)
+  const [buyTokenAmount, setBuyTokenAmount] = useState(initialState.buyTokenAmount)
 
   // Final limit order to be sent to the internal API
-  const [limitOrder, setLimitOrder] = useState<SerializableLimitOrder>(initialState.limitOrder)
+  const [limitOrder, setLimitOrder] = useState(initialState.limitOrder)
 
-  const [inputFocus, setInputFocus] = useState<InputFocus>(InputFocus.SELL)
+  const [inputFocus, setInputFocus] = useState(InputFocus.SELL)
 
   // Display formatted sell/buy amounts
-  const [formattedSellAmount, setFormattedSellAmount] = useState<string>(
+  const [formattedSellAmount, setFormattedSellAmount] = useState(
     parseFloat(formatUnits(initialState.limitOrder.sellAmount, initialState.sellTokenAmount.currency.decimals)).toFixed(
       6
     )
   )
-  const [formattedBuyAmount, setFormattedBuyAmount] = useState<string>('0')
+  const [formattedBuyAmount, setFormattedBuyAmount] = useState('0')
   // Display formatted sell/buy amounts
-  const [formattedLimitPrice, setFormattedLimitPrice] = useState<string>('0')
+  const [formattedLimitPrice, setFormattedLimitPrice] = useState('0')
 
   const { fiatValueInput, fiatValueOutput, isFallbackFiatValueInput, isFallbackFiatValueOutput } = useHigherUSDValue({
     inputCurrencyAmount: sellTokenAmount,
@@ -88,7 +88,7 @@ export function LimitOrderFormBaseConditionalProvider({
   )
 }
 
-export const LimitOrderFromProvider = ({ children }: { children: React.ReactNode }) => {
+export const LimitOrderFromProvider = ({ children }: { children: ReactNode }) => {
   const { chainId, account } = useActiveWeb3React()
 
   if (!chainId || !account) return <>{children}</>

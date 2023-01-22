@@ -13,7 +13,9 @@ import { Tabs } from './Components/Tabs'
 import { LandingSections } from './LandingSections'
 import { LimitOrderBox } from './LimitOrderBox'
 import { supportedChainIdList } from './LimitOrderBox/constants'
+import { LimitOrderFromProvider } from './LimitOrderBox/contexts/LimitOrderFormProvider'
 import { SwapBox } from './SwapBox/SwapBox.component'
+import { SwapProvider } from './SwapBox/SwapProvider'
 import { ChartOptions, SwapTab, SwapTabContext } from './SwapContext'
 
 const AppBodyContainer = styled.section`
@@ -56,24 +58,28 @@ export function Swap() {
   const AdvancedViewWrapper = isPro ? AdvancedTradingViewBox : Fragment
 
   return (
-    <SwapTabContext.Provider
-      value={{
-        activeTab,
-        setActiveTab,
-        activeChartTab,
-        setActiveChartTab,
-      }}
-    >
-      <Hero showMarquee={!isPro}>
-        <AppBodyContainer>
-          <AdvancedViewWrapper>
-            <Tabs />
-            {activeTab === Swap && <SwapBox />}
-            {activeTab === LimitOrder && <LimitOrderBox />}
-          </AdvancedViewWrapper>
-        </AppBodyContainer>
-      </Hero>
-      {!isPro && <LandingSections />}
-    </SwapTabContext.Provider>
+    <SwapProvider>
+      <LimitOrderFromProvider>
+        <SwapTabContext.Provider
+          value={{
+            activeTab,
+            setActiveTab,
+            activeChartTab,
+            setActiveChartTab,
+          }}
+        >
+          <Hero showMarquee={!isPro}>
+            <AppBodyContainer>
+              <AdvancedViewWrapper>
+                <Tabs />
+                {activeTab === Swap && <SwapBox />}
+                {activeTab === LimitOrder && <LimitOrderBox />}
+              </AdvancedViewWrapper>
+            </AppBodyContainer>
+          </Hero>
+          {!isPro && <LandingSections />}
+        </SwapTabContext.Provider>
+      </LimitOrderFromProvider>
+    </SwapProvider>
   )
 }

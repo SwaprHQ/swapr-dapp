@@ -1,10 +1,10 @@
-import { useState } from 'react'
+import { ReactNode, useState } from 'react'
 
 import { useDerivedSwapInfo } from '../../../state/swap/hooks'
-import { PlataformOverride, SwapContext } from './SwapContext'
+import { PlatformOverride, SwapContext } from './SwapContext'
 
-export const SwapProvider = ({ children }: { children: React.ReactNode }) => {
-  const [platformOverride, setPlatformOverride] = useState<PlataformOverride>(null)
+export const SwapProvider = ({ children }: { children: ReactNode }) => {
+  const [platformOverride, setPlatformOverride] = useState<PlatformOverride>(null)
 
   const { trade, allPlatformTrades, currencyBalances, parsedAmount, currencies, inputError, loading } =
     useDerivedSwapInfo(platformOverride || undefined)

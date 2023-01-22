@@ -4,11 +4,11 @@ import { createContext, Dispatch, SetStateAction } from 'react'
 
 import { UseDerivedSwapInfoResult } from '../../../state/swap/hooks'
 
-export type PlataformOverride = RoutablePlatform | null
+export type PlatformOverride = RoutablePlatform | null
 
 export interface ISwapContext extends UseDerivedSwapInfoResult {
-  platformOverride: PlataformOverride
-  setPlatformOverride: Dispatch<SetStateAction<PlataformOverride>>
+  platformOverride: PlatformOverride
+  setPlatformOverride: Dispatch<SetStateAction<PlatformOverride>>
 }
 
 export const SwapContext = createContext<ISwapContext>({} as ISwapContext)
