@@ -202,8 +202,8 @@ export function LimitOrderForm({ account, provider, chainId }: LimitOrderFormPro
 
       setMarketPriceInterval(refetchMarketPrice)
     } else {
-      clearInterval(marketPriceInterval)
       setMarketPriceInterval(undefined)
+      clearInterval(marketPriceInterval)
     }
 
     return () => {

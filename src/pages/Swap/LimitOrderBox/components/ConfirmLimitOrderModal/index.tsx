@@ -12,23 +12,25 @@ import { calculateMarketPriceDiffPercentage } from '../../utils'
 import { ConfirmationFooter } from './ConfirmationFooter'
 import { ConfirmationHeader } from './ConfirmationHeader'
 
-export default function ConfirmLimitOrderModal({
-  onConfirm,
-  onDismiss,
-  errorMessage,
-  isOpen,
-  attemptingTxn,
-  fiatValueInput,
-  fiatValueOutput,
-}: {
+interface ConfirmLimitOrderModalProps {
   isOpen: boolean
   attemptingTxn: boolean
-  onConfirm: () => void
   errorMessage: string | undefined
-  onDismiss: () => void
   fiatValueInput: CurrencyAmount | null
   fiatValueOutput: CurrencyAmount | null
-}) {
+  onDismiss: () => void
+  onConfirm: () => void
+}
+
+export default function ConfirmLimitOrderModal({
+  isOpen,
+  attemptingTxn,
+  errorMessage,
+  fiatValueInput,
+  fiatValueOutput,
+  onDismiss,
+  onConfirm,
+}: ConfirmLimitOrderModalProps) {
   const { expiresIn, expiresInUnit, limitOrder, buyTokenAmount, sellTokenAmount, formattedLimitPrice, marketPrices } =
     useContext(LimitOrderFormContext)
 
