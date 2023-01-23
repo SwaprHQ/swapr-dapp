@@ -175,7 +175,7 @@ export function useSwapCallback({
   const mainnetGasPrices = useMainnetGasPrices()
   const [preferredGasPrice] = useUserPreferredGasPrice()
 
-  const { trackEcoEcoRouterTradeVolume } = useAnalytics()
+  const { trackEcoRouterTradeVolume } = useAnalytics()
 
   const memoizedTrades = useMemo(() => (trade ? [trade] : undefined), [trade])
 
@@ -209,7 +209,7 @@ export function useSwapCallback({
           await trade.signOrder(signer, recipient)
           const orderId = await trade.submitOrder()
 
-          trackEcoEcoRouterTradeVolume(trade)
+          trackEcoRouterTradeVolume(trade)
 
           addTransaction(
             {
@@ -307,7 +307,7 @@ export function useSwapCallback({
             ...((await transactionParameters) as any),
           })
           .then(async response => {
-            trackEcoEcoRouterTradeVolume(trade)
+            trackEcoRouterTradeVolume(trade)
             addTransaction(response, {
               summary: getSwapSummary(trade, recipient),
             })
@@ -338,6 +338,6 @@ export function useSwapCallback({
     recipientAddressOrName,
     recipient,
     addTransaction,
-    trackEcoEcoRouterTradeVolume,
+    trackEcoRouterTradeVolume,
   ])
 }
