@@ -171,6 +171,7 @@ export function OrderLimitPriceField({ id }: OrderLimitPriceFieldProps) {
       <InputGroup.InnerWrapper>
         <InputGroup.Input
           id={id}
+          type="number"
           onKeyDown={e => {
             if (invalidChars.includes(e.key)) {
               e.preventDefault()
