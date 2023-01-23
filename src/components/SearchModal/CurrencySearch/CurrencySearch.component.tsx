@@ -184,7 +184,7 @@ export const CurrencySearch = ({
             fontWeight={500}
           />
         </Row>
-        {showCommonBases && (
+        {showCommonBases && !searchQuery && (
           <CommonTokens chainId={chainId} onCurrencySelect={onCurrencySelect} selectedCurrency={selectedCurrency} />
         )}
       </AutoColumn>
