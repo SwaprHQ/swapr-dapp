@@ -144,7 +144,7 @@ export async function getExactIn(
       })
   })
 
-  const OneInch = new Promise<any | undefined>(resolve => {
+  const OneInch = new Promise<OneInchTrade | undefined>(resolve => {
     if (!RoutablePlatform.ONE_INCH.supportsChain(chainId)) {
       return resolve(undefined)
     }
@@ -312,7 +312,7 @@ export async function getExactOut(
       })
   })
 
-  const velodromeTrade = new Promise<any | undefined>(resolve => {
+  const velodromeTrade = new Promise<VelodromeTrade | undefined>(resolve => {
     if (!RoutablePlatform.VELODROME.supportsChain(chainId)) {
       return resolve(undefined)
     }
@@ -385,7 +385,7 @@ export async function getExactOut(
         console.error(error)
       })
   })
-  const OneInch = new Promise<any | undefined>(resolve => {
+  const OneInch = new Promise<OneInchTrade | undefined>(resolve => {
     if (!RoutablePlatform.ONE_INCH.supportsChain(chainId)) {
       return resolve(undefined)
     }
