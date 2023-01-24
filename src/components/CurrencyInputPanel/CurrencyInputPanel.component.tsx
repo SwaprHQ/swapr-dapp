@@ -121,6 +121,8 @@ export const CurrencyInputPanelComponent = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [value])
 
+  const currencySelectProps = CurrencySelectWrapper === Fragment ? {} : { currency }
+
   return (
     <InputPanel id={id}>
       <Container focused={focused}>
@@ -151,7 +153,7 @@ export const CurrencyInputPanelComponent = ({
                 />
               </>
             )}{' '}
-            <CurrencySelectWrapper currency={currency}>
+            <CurrencySelectWrapper {...currencySelectProps}>
               <CurrencySelect
                 selected={!!(currency || pair)}
                 className="open-currency-select-button"

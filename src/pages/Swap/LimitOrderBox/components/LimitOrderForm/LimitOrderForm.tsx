@@ -22,7 +22,7 @@ import { useCurrencyBalances } from '../../../../../state/wallet/hooks'
 import { maxAmountSpend } from '../../../../../utils/maxAmountSpend'
 import AppBody from '../../../../AppBody'
 import { createCoWLimitOrder, getQuote, getVaultRelayerAddress } from '../../api/cow'
-import { GET_QUOTE_EXPIRY_MINUTES } from '../../constants'
+import { BUY_LIMIT_PRICE_PERCENTAGE, GET_QUOTE_EXPIRY_MINUTES, SELL_LIMIT_PRICE_PERCENTAGE } from '../../constants'
 import { LimitOrderFormContext } from '../../contexts/LimitOrderFormContext'
 import { InputFocus, LimitOrderKind, MarketPrices, OrderExpiresInUnit } from '../../interfaces'
 import { computeNewAmount } from '../../utils'
@@ -101,73 +101,88 @@ export function LimitOrderForm({ account, provider, chainId }: LimitOrderFormPro
     setErrorMessage('')
   }
 
-  const setToMarket = useCallback(async () => {
-    const signer = provider.getSigner()
-    if (!limitOrder.buyToken || !limitOrder.sellToken) {
-      return
-    }
-
-    const order = JSON.parse(JSON.stringify(limitOrder))
-
-    const token = limitOrder.kind === LimitOrderKind.SELL ? sellTokenAmount : buyTokenAmount
-
-    const tokenAmount = Number(token.toExact()) > 1 ? token.toExact() : '1'
-
-    order.sellAmount = parseUnits(tokenAmount, token.currency.decimals).toString()
-
-    const cowQuote = await getQuote({
-      chainId,
-      signer,
-      order: { ...order, expiresAt: dayjs().add(GET_QUOTE_EXPIRY_MINUTES, OrderExpiresInUnit.Minutes).unix() },
-    })
-
-    if (cowQuote !== undefined) {
-      const {
-        quote: { buyAmount, sellAmount },
-      } = cowQuote
-
-      const nextLimitPriceFloat =
-        limitOrder.kind === LimitOrderKind.SELL
-          ? formatMarketPrice(buyAmount, buyTokenAmount.currency.decimals, tokenAmount)
-          : formatMarketPrice(sellAmount, sellTokenAmount.currency.decimals, tokenAmount)
-
-      const limitPrice = parseUnits(
-        nextLimitPriceFloat.toFixed(6),
-        limitOrder.kind === LimitOrderKind.SELL ? sellTokenAmount.currency.decimals : buyTokenAmount.currency.decimals
-      ).toString()
-
-      const { amount, buyAmountWei, sellAmountWei, newBuyTokenAmount, newSellTokenAmount } = computeNewAmount(
-        buyTokenAmount,
-        sellTokenAmount,
-        nextLimitPriceFloat,
-        limitOrder.kind,
-        inputFocus
-      )
-
-      setFormattedLimitPrice(toFixedSix(nextLimitPriceFloat))
-
-      if (inputFocus === InputFocus.SELL) {
-        setBuyTokenAmount(newBuyTokenAmount)
-        setFormattedBuyAmount(toFixedSix(amount))
-        setLimitOrder(oldLimitOrder => ({
-          ...oldLimitOrder,
-          kind: limitOrder.kind,
-          limitPrice: limitPrice,
-          buyAmount: buyAmountWei,
-        }))
-      } else {
-        setSellTokenAmount(newSellTokenAmount)
-        setFormattedSellAmount(toFixedSix(amount))
-        setLimitOrder(oldLimitOrder => ({
-          ...oldLimitOrder,
-          kind: limitOrder.kind,
-          limitPrice: limitPrice,
-          sellAmount: sellAmountWei,
-        }))
+  const setToMarket = useCallback(
+    async (sellPricePercentage = 1, buyPricePercentage = 1) => {
+      const signer = provider.getSigner()
+      if (!limitOrder.buyToken || !limitOrder.sellToken) {
+        return
       }
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [buyTokenAmount, chainId, inputFocus, limitOrder, provider, sellTokenAmount])
+
+      const order = JSON.parse(JSON.stringify(limitOrder))
+
+      const token = limitOrder.kind === LimitOrderKind.SELL ? sellTokenAmount : buyTokenAmount
+
+      const tokenAmount = Number(token.toExact()) > 1 ? token.toExact() : '1'
+
+      order.sellAmount = parseUnits(tokenAmount, token.currency.decimals).toString()
+
+      const cowQuote = await getQuote({
+        chainId,
+        signer,
+        order: { ...order, expiresAt: dayjs().add(GET_QUOTE_EXPIRY_MINUTES, OrderExpiresInUnit.Minutes).unix() },
+      })
+
+      if (cowQuote !== undefined) {
+        const {
+          quote: { buyAmount, sellAmount },
+        } = cowQuote
+
+        const nextLimitPriceFloat =
+          limitOrder.kind === LimitOrderKind.SELL
+            ? formatMarketPrice(buyAmount, buyTokenAmount.currency.decimals, tokenAmount) * sellPricePercentage
+            : formatMarketPrice(sellAmount, sellTokenAmount.currency.decimals, tokenAmount) * buyPricePercentage
+
+        const limitPrice = parseUnits(
+          nextLimitPriceFloat.toFixed(6),
+          limitOrder.kind === LimitOrderKind.SELL ? sellTokenAmount.currency.decimals : buyTokenAmount.currency.decimals
+        ).toString()
+
+        const { amount, buyAmountWei, sellAmountWei, newBuyTokenAmount, newSellTokenAmount } = computeNewAmount(
+          buyTokenAmount,
+          sellTokenAmount,
+          nextLimitPriceFloat,
+          limitOrder.kind,
+          inputFocus
+        )
+
+        setFormattedLimitPrice(toFixedSix(nextLimitPriceFloat))
+
+        if (inputFocus === InputFocus.SELL) {
+          setBuyTokenAmount(newBuyTokenAmount)
+          setFormattedBuyAmount(toFixedSix(amount))
+          setLimitOrder(oldLimitOrder => ({
+            ...oldLimitOrder,
+            kind: limitOrder.kind,
+            limitPrice: limitPrice,
+            buyAmount: buyAmountWei,
+          }))
+        } else {
+          setSellTokenAmount(newSellTokenAmount)
+          setFormattedSellAmount(toFixedSix(amount))
+          setLimitOrder(oldLimitOrder => ({
+            ...oldLimitOrder,
+            kind: limitOrder.kind,
+            limitPrice: limitPrice,
+            sellAmount: sellAmountWei,
+          }))
+        }
+      }
+    },
+    [
+      buyTokenAmount,
+      chainId,
+      inputFocus,
+      limitOrder,
+      provider,
+      sellTokenAmount,
+      setBuyTokenAmount,
+      setFormattedBuyAmount,
+      setFormattedLimitPrice,
+      setFormattedSellAmount,
+      setLimitOrder,
+      setSellTokenAmount,
+    ]
+  )
 
   const setToMarketRef = useRef(setToMarket)
 
@@ -175,17 +190,24 @@ export function LimitOrderForm({ account, provider, chainId }: LimitOrderFormPro
     setToMarketRef.current = setToMarket
   }, [setToMarket])
 
-  useEffect(() => {
-    const getMarketPrice = () => {
-      setToMarketRef.current().catch(e => {
-        console.error(e)
-        setIsPossibleToOrder({
-          status: true,
-          value: 0,
-        })
+  const getMarketPrice = (sellPricePercentage?: number, buyPricePercentage?: number) => {
+    setToMarketRef.current(sellPricePercentage, buyPricePercentage).catch(e => {
+      console.error(e)
+      setIsPossibleToOrder({
+        status: true,
+        value: 0,
       })
-    }
+    })
+  }
 
+  useEffect(() => {
+    if (!fetchMarketPrice) {
+      getMarketPrice(SELL_LIMIT_PRICE_PERCENTAGE, BUY_LIMIT_PRICE_PERCENTAGE)
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [chainId, account, buyTokenAmount.currency, sellTokenAmount.currency])
+
+  useEffect(() => {
     let refetchMarketPrice: NodeJS.Timeout | undefined
     if (fetchMarketPrice) {
       getMarketPrice()
