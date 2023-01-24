@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next'
 import styled from 'styled-components'
 
 import { invalidChars } from '../constants'
-import { LimitOrderFormContext } from '../contexts'
+import { LimitOrderFormContext } from '../contexts/LimitOrderFormContext'
 import { OrderExpiresInUnit } from '../interfaces'
 import { ButtonAddonsWrapper, InnerWrapper, Input, InputGroup, Label } from './InputGroup'
 

@@ -93,7 +93,11 @@ export default function Pair() {
             <ButtonRow>
               <ButtonPurpleDim
                 as={Link}
-                to={token0 && token1 ? `/swap?inputCurrency=${token0.address}&outputCurrency=${token1.address}` : ''}
+                to={
+                  token0 && token1
+                    ? `/swap?inputCurrency=${token0.address}&outputCurrency=${token1.address}&typedValue=''&independentField='input'`
+                    : ''
+                }
               >
                 {t('pair.trade')}
               </ButtonPurpleDim>

@@ -14,7 +14,7 @@ import { LandingSections } from './LandingSections'
 import { LimitOrderBox } from './LimitOrderBox'
 import { supportedChainIdList } from './LimitOrderBox/constants'
 import { SwapBox } from './SwapBox/SwapBox.component'
-import { ChartOptions, SwapContext, SwapTab } from './SwapContext'
+import { ChartOptions, SwapTab, SwapTabContext } from './SwapContext'
 
 const AppBodyContainer = styled.section`
   display: flex;
@@ -56,7 +56,7 @@ export function Swap() {
   const AdvancedViewWrapper = isPro ? AdvancedTradingViewBox : Fragment
 
   return (
-    <SwapContext.Provider
+    <SwapTabContext.Provider
       value={{
         activeTab,
         setActiveTab,
@@ -74,6 +74,6 @@ export function Swap() {
         </AppBodyContainer>
       </Hero>
       {!isPro && <LandingSections />}
-    </SwapContext.Provider>
+    </SwapTabContext.Provider>
   )
 }
