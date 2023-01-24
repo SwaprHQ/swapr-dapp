@@ -146,10 +146,8 @@ export async function getExactIn(
 
   const OneInch = new Promise<any | undefined>(resolve => {
     if (!RoutablePlatform.ONE_INCH.supportsChain(chainId)) {
-      console.log('NOT GOOD')
       return resolve(undefined)
     }
-    console.log('inside')
     OneInchTrade.getQuote({
       quoteCurrency: currencyOut,
       amount: currencyAmountIn,
@@ -164,7 +162,6 @@ export async function getExactIn(
         resolve(undefined)
       })
   })
-  console.log('ONEINCH', OneInch)
 
   // Curve
   const curveTrade = new Promise<CurveTrade | undefined>(async resolve => {
@@ -329,7 +326,6 @@ export async function getExactOut(
     })
       .then(res => resolve(res ? res : undefined))
       .catch(error => {
-        console.log('velError')
         console.error(error)
         errors.push(error)
         resolve(undefined)
@@ -389,7 +385,25 @@ export async function getExactOut(
         console.error(error)
       })
   })
+  const OneInch = new Promise<any | undefined>(resolve => {
+    if (!RoutablePlatform.ONE_INCH.supportsChain(chainId)) {
+      return resolve(undefined)
+    }
 
+    OneInchTrade.getQuote({
+      quoteCurrency: currencyIn,
+      amount: currencyAmountOut,
+      maximumSlippage,
+      recipient: receiver,
+      tradeType: TradeType.EXACT_OUTPUT,
+    })
+      .then(res => resolve(res ? res : undefined))
+      .catch(error => {
+        console.error(error)
+        errors.push(error)
+        resolve(undefined)
+      })
+  })
   // Wait for all promises to resolve, and
   // remove undefined values
   const unsortedTradesWithUndefined = await Promise.all<Trade | undefined>([
@@ -399,6 +413,7 @@ export async function getExactOut(
     uniswapTrade,
     velodromeTrade,
     zeroXTrade,
+    OneInch,
   ])
   const unsortedTrades = unsortedTradesWithUndefined.filter((trade): trade is Trade => !!trade)
 

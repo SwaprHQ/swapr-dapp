@@ -251,7 +251,6 @@ export function useDerivedSwapInfo(platformOverride?: RoutablePlatform): UseDeri
     // Start fetching trades from EcoRouter API
     getTrades
       .then(trades => {
-        console.log('trades', trades)
         setAllPlatformTrades(trades.trades)
         setLoading(false)
         quoteExpiryTimeout.current = setTimeout(() => {
