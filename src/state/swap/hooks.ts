@@ -459,12 +459,15 @@ export function useDefaultsFromURLSearch():
     if (!chainId) return
     const parsed = queryParametersToSwapState(parsedQs, currencyId(nativeCurrency))
 
-    let inputCurrencyId, outputCurrencyId
+    let inputCurrencyId, outputCurrencyId, newTypedValue, newIndependentField, newRecipient
 
     if (prevChainId && prevChainId !== chainId) {
       inputCurrencyId = parsed[Field.INPUT].currencyId
 
       outputCurrencyId = PRE_SELECT_OUTPUT_CURRENCY_ID[chainId]
+      newTypedValue = ''
+      newIndependentField = Field.INPUT
+      newRecipient = null
     } else {
       inputCurrencyId =
         prevInputCurrencyId && prevInputCurrencyId !== currencyId(nativeCurrency) && !isAddress(parsedQs.inputCurrency)
@@ -476,15 +479,19 @@ export function useDefaultsFromURLSearch():
         : prevOutputCurrencyId && prevOutputCurrencyId !== currencyId(nativeCurrency)
         ? prevOutputCurrencyId
         : PRE_SELECT_OUTPUT_CURRENCY_ID[chainId]
+
+      newTypedValue = typedValue
+      newIndependentField = independentField
+      newRecipient = recipient
     }
 
     dispatch(
       replaceSwapState({
-        typedValue: parsedQs.typedValue ? parsed.typedValue : typedValue,
-        field: parsedQs.independentField ? parsed.independentField : independentField,
+        typedValue: parsedQs.typedValue ? parsed.typedValue : newTypedValue,
+        field: parsedQs.independentField ? parsed.independentField : newIndependentField,
         inputCurrencyId,
         outputCurrencyId,
-        recipient: parsedQs.recipient ? parsed.recipient : recipient,
+        recipient: parsedQs.recipient ? parsed.recipient : newRecipient,
       })
     )
 

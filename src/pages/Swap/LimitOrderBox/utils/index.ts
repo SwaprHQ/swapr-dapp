@@ -1,6 +1,6 @@
 import { AddressZero } from '@ethersproject/constants'
 import { formatUnits, parseUnits } from '@ethersproject/units'
-import { ChainId, Token, TokenAmount, USDC } from '@swapr/sdk'
+import { Token, TokenAmount } from '@swapr/sdk'
 
 import createDebugger from 'debug'
 
@@ -23,16 +23,17 @@ interface InitialState {
   limitOrder: SerializableLimitOrder
 }
 
-/**
- *
- * @param chainId The chain id of the network
- */
-export function getInitialState(chainId: ChainId, account: string): InitialState {
-  const sellTokenAmount = new TokenAmount(Token.getNativeWrapper(chainId), '1000000000000000000')
-  const buyTokenAmount = new TokenAmount(USDC[chainId], '0')
+export function getInitialState(
+  account: string,
+  sellToken: Token,
+  buyToken: Token,
+  prevSellTokenAmount?: TokenAmount
+): InitialState {
+  const sellTokenAmount = prevSellTokenAmount || new TokenAmount(sellToken, '1000000000000000000')
+  const buyTokenAmount = new TokenAmount(buyToken, '0')
 
   const limitOrder: SerializableLimitOrder = {
-    sellAmount: '1000000000000000000',
+    sellAmount: prevSellTokenAmount?.raw.toString() || '1000000000000000000',
     buyAmount: '0',
     feeAmount: '0',
     sellToken: isAddress(sellTokenAmount.currency.address) || AddressZero,

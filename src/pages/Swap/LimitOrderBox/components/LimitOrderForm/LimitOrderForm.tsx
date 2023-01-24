@@ -16,6 +16,8 @@ import { PageMetaData } from '../../../../../components/PageMetaData'
 import { REFETCH_DATA_INTERVAL } from '../../../../../constants/data'
 import { ApprovalState, useApproveCallback } from '../../../../../hooks/useApproveCallback'
 import { useNotificationPopup } from '../../../../../state/application/hooks'
+import { useSwapActionHandlers } from '../../../../../state/swap/hooks'
+import { Field } from '../../../../../state/swap/types'
 import { useCurrencyBalances } from '../../../../../state/wallet/hooks'
 import { maxAmountSpend } from '../../../../../utils/maxAmountSpend'
 import AppBody from '../../../../AppBody'
@@ -74,6 +76,7 @@ export function LimitOrderForm({ account, provider, chainId }: LimitOrderFormPro
     isFallbackFiatValueInput,
     isFallbackFiatValueOutput,
   } = useContext(LimitOrderFormContext)
+  const { onCurrencySelection } = useSwapActionHandlers()
 
   const [loading, setLoading] = useState(false)
   const notify = useNotificationPopup()
@@ -231,6 +234,7 @@ export function LimitOrderForm({ account, provider, chainId }: LimitOrderFormPro
         buyToken: sellTokenAmount.currency.address!,
       }))
     }
+
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [buyTokenAmount, sellTokenAmount])
 
@@ -340,6 +344,8 @@ export function LimitOrderForm({ account, provider, chainId }: LimitOrderFormPro
       sellToken: currency.address as string,
     }))
 
+    onCurrencySelection(Field.INPUT, currency)
+
     if (inputFocus) setInputFocus(inputFocus)
   }
 
@@ -382,6 +388,8 @@ export function LimitOrderForm({ account, provider, chainId }: LimitOrderFormPro
       buyAmount: amountWei,
       buyToken: currency.address as string,
     }))
+
+    onCurrencySelection(Field.OUTPUT, currency)
 
     if (inputFocus) setInputFocus(inputFocus)
   }
