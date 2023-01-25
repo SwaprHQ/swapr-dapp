@@ -38,9 +38,9 @@ export function CurrencyItem({ lowerItem }: CurrencyItemProps) {
           </CurrencyBalance>
         </CurrencyInfoContainer>
       </ValueContainer>
-      <Blockchain>
+      {/* <Blockchain>
         <EtherSVG />
-      </Blockchain>
+      </Blockchain> */}
     </CurrencyContainer>
   )
 }
@@ -52,7 +52,7 @@ const CurrencyContainer = styled.div<{ lowerItem?: boolean }>`
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 8px 8px 8px 22px;
+  padding: 8px 22px;
   background: ${({ lowerItem }) => (lowerItem ? ELEMENTS_BACKGROUND_SECONDARY : ELEMENTS_BACKGROUND_PRIMARY)};
   ${BorderStyle}
   margin-bottom: ${ELEMENTS_SPACING};
@@ -75,7 +75,7 @@ const CurrencyContainer = styled.div<{ lowerItem?: boolean }>`
 `
 
 const ValueContainer = styled.div`
-  width: calc(100% - 56px);
+  width: 100%;
   display: flex;
   justify-content: space-between;
   align-items: center;
