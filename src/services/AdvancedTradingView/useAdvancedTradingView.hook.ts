@@ -1,12 +1,14 @@
 import { ChainId, Currency, Pair, Token, WETH, WMATIC, WXDAI } from '@swapr/sdk'
 
-import { useEffect, useMemo, useRef, useState } from 'react'
+import { useContext, useEffect, useMemo, useRef, useState } from 'react'
 import { useDispatch } from 'react-redux'
 
 import { REFETCH_DATA_INTERVAL } from '../../constants/data'
 import { useActiveWeb3React } from '../../hooks'
 import { useToken } from '../../hooks/Tokens'
 import { useRouter } from '../../hooks/useRouter'
+import { LimitOrderFormContext } from '../../pages/Swap/LimitOrderBox/contexts'
+import { SwapTab, SwapTabContext } from '../../pages/Swap/SwapContext'
 import store, { AppState } from '../../state'
 import { useSwapState } from '../../state/swap/hooks'
 import { adapters } from './adapters/adapters.config'
@@ -45,6 +47,9 @@ const calculateAmountToFetch = (chainId: ChainId | undefined, amountToFetch: num
 }
 
 export const useAdvancedTradingView = () => {
+  const { buyTokenAmount, sellTokenAmount } = useContext(LimitOrderFormContext)
+  const { activeTab } = useContext(SwapTabContext)
+
   const { chainId } = useActiveWeb3React()
 
   const { navigate } = useRouter()
@@ -86,8 +91,18 @@ export const useAdvancedTradingView = () => {
   } = useSwapState()
 
   const [inputToken, outputToken] = [
-    useToken(getTokenAddress(chainId as ChainId, inputCurrencyId)),
-    useToken(getTokenAddress(chainId as ChainId, outputCurrencyId)),
+    useToken(
+      getTokenAddress(
+        chainId as ChainId,
+        activeTab === SwapTab.SWAP ? inputCurrencyId : sellTokenAmount.currency.address
+      )
+    ),
+    useToken(
+      getTokenAddress(
+        chainId as ChainId,
+        activeTab === SwapTab.SWAP ? outputCurrencyId : buyTokenAmount.currency.address
+      )
+    ),
   ]
 
   useEffect(() => {

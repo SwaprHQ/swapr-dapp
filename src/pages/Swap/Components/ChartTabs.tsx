@@ -42,6 +42,7 @@ export const ChartTabs = ({
             setActiveChartTab(ChartOptions.PRO)
             setSelectedChartTab(ChartOptions.PRO)
             navigate('/swap/pro')
+            window?.fathom?.trackPageview()
           }}
           title={
             // proOptionsDisabled
@@ -58,6 +59,7 @@ export const ChartTabs = ({
             setActiveChartTab(ChartOptions.OFF)
             setSelectedChartTab(ChartOptions.OFF)
             navigate('/swap')
+            window?.fathom?.trackPageview()
           }}
           title={t('advancedTradingView.chartTabs.offTitle')}
           disabled={!isDesktop}
