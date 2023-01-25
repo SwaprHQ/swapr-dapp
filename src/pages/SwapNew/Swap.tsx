@@ -2,12 +2,29 @@ import styled from 'styled-components'
 
 import { CurrencyItem, SwapButton, SwapInfo, SwitchCurrenciesButton } from './components'
 import { SWAPBOX_WIDTH } from './constants'
+import { Currency } from './models'
+
+type SwapData = {
+  from: Currency
+  to: Currency
+}
+
+const swapData: SwapData = {
+  from: {
+    symbol: 'ETH',
+    balance: 1.488,
+  },
+  to: {
+    symbol: 'USDT',
+    balance: 4009.12,
+  },
+}
 
 export function Swapbox2() {
   return (
     <Container>
-      <CurrencyItem />
-      <CurrencyItem lowerItem />
+      <CurrencyItem currency={swapData.from} />
+      <CurrencyItem currency={swapData.to} lowerItem />
       <SwitchCurrenciesButton />
       <SwapInfo />
       <SwapButton />
