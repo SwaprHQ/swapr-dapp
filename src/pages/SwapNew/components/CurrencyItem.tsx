@@ -1,6 +1,5 @@
 import styled from 'styled-components'
 
-import { ReactComponent as EtherLogoSVG } from '../../../assets/swapbox/currency-logo-eth.svg'
 import { ReactComponent as DownArrowLargeSVG } from '../../../assets/swapbox/down-arrow-large.svg'
 import {
   ELEMENTS_BACKGROUND_PRIMARY,
@@ -29,7 +28,7 @@ export function CurrencyItem({ currency, lowerItem }: CurrencyItemProps) {
 
       <CurrencyInfoContainer>
         <CurrencyTypeContainer>
-          <EtherLogoSVG />
+          {currency.logo}
           <CurrencySymbol>{currency.symbol}</CurrencySymbol>
           <DownArrowLargeSVG />
         </CurrencyTypeContainer>
