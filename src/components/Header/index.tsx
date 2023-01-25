@@ -12,9 +12,10 @@ import { useActiveWeb3React, useUnsupportedChainIdError } from '../../hooks'
 import { useSwaprSinglelSidedStakeCampaigns } from '../../hooks/singleSidedStakeCampaigns/useSwaprSingleSidedStakeCampaigns'
 import { useGasInfo } from '../../hooks/useGasInfo'
 import { useLiquidityMiningCampaignPosition } from '../../hooks/useLiquidityMiningCampaignPosition'
+import { ChartOptions } from '../../pages/Swap/SwapContext'
 import { ApplicationModal } from '../../state/application/actions'
 import { useModalOpen, useToggleShowClaimPopup, useToggleShowExpeditionsPopup } from '../../state/application/hooks'
-import { useDarkModeManager } from '../../state/user/hooks'
+import { useDarkModeManager, useUpdateSelectedChartOption } from '../../state/user/hooks'
 import { useTokenBalance } from '../../state/wallet/hooks'
 import { breakpoints } from '../../utils/theme'
 import ClaimModal from '../Claim/ClaimModal'
@@ -236,6 +237,10 @@ function Header() {
     }
   }, [])
 
+  const [selectedChartTab] = useUpdateSelectedChartOption()
+
+  const isPro = selectedChartTab === ChartOptions.PRO
+
   return (
     <HeaderFrame>
       <ClaimModal
@@ -248,12 +253,12 @@ function Header() {
       />
       <ExpeditionsModal onDismiss={toggleExpeditionsPopup} />
       <HeaderRow isDark={isDark}>
-        <Title to="/swap">
+        <Title to={isPro ? '/swap/pro' : '/swap'}>
           <SwaprVersionLogo />
         </Title>
         <HeaderLinks>
           <Divider />
-          <HeaderLink data-testid="swap-nav-link" id="swap-nav-link" to="/swap">
+          <HeaderLink data-testid="swap-nav-link" id="swap-nav-link" to={isPro ? '/swap/pro' : '/swap'}>
             {t('swap')}
           </HeaderLink>
           <HeaderLink

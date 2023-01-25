@@ -139,7 +139,26 @@ const selectSelectedChartOption = createSelector(
 )
 
 export function useSelectedChartOption() {
-  return useSelector(selectSelectedChartOption)
+  return useSelector<AppState, AppState['user']['selectedChartOption']>(selectSelectedChartOption)
+}
+
+export function useUpdateSelectedChartOption(): [
+  ChartOptions | undefined,
+  (selectedChartOption: ChartOptions) => void
+] {
+  const dispatch = useDispatch<AppDispatch>()
+  const currentSelectedOption = useSelectedChartOption()
+
+  const setSelectedChartOption = useCallback(
+    (selectedChartOption: ChartOptions) => {
+      if (currentSelectedOption !== selectedChartOption || !currentSelectedOption) {
+        dispatch(updateSelectedChartOption({ selectedChartOption: selectedChartOption }))
+      }
+    },
+    [currentSelectedOption, dispatch]
+  )
+
+  return [currentSelectedOption, setSelectedChartOption]
 }
 
 const selectSelectedSwapTab = createSelector(
@@ -173,25 +192,6 @@ const selectUserSlippageTolerance = createSelector(
 )
 export function useUserSlippageTolerance() {
   return useSelector<AppState, AppState['user']['userSlippageTolerance']>(selectUserSlippageTolerance)
-}
-
-export function useUpdateSelectedChartOption(): [
-  ChartOptions | undefined,
-  (selectedChartOption: ChartOptions) => void
-] {
-  const dispatch = useDispatch<AppDispatch>()
-  const currentSelectedOption = useSelectedChartOption()
-
-  const setSelectedChartOption = useCallback(
-    (selectedChartOption: ChartOptions) => {
-      if (currentSelectedOption !== selectedChartOption || !currentSelectedOption) {
-        dispatch(updateSelectedChartOption({ selectedChartOption: selectedChartOption }))
-      }
-    },
-    [currentSelectedOption, dispatch]
-  )
-
-  return [currentSelectedOption, setSelectedChartOption]
 }
 
 export function useUserSlippageToleranceManager(): [number, (slippage: number) => void] {

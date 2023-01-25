@@ -1,9 +1,9 @@
 import { createContext } from 'react'
 
 export enum SwapTab {
-  Swap = 'Swap',
-  LimitOrder = 'LimitOrder',
-  BridgeSwap = 'BridgeSwap',
+  SWAP = 'SWAP',
+  LIMIT_ORDER = 'LIMIT_ORDER',
+  BRIDGE_SWAP = 'BRIDGE_SWAP',
 }
 
 export enum ChartOptions {
@@ -19,7 +19,7 @@ export interface ISwapContext {
 }
 
 export const SwapContext = createContext<ISwapContext>({
-  activeTab: SwapTab.Swap,
+  activeTab: SwapTab.SWAP,
   setActiveTab: () => {},
   activeChartTab: ChartOptions.OFF,
   setActiveChartTab: () => {},

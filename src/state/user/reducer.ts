@@ -77,7 +77,7 @@ export const initialState: UserState = {
   userDarkMode: true,
   matchesDarkMode: false,
   userExpertMode: false,
-  selectedSwapTab: SwapTab.Swap,
+  selectedSwapTab: SwapTab.SWAP,
   selectedChartOption: ChartOptions.OFF,
   userSlippageTolerance: INITIAL_ALLOWED_SLIPPAGE,
   userDeadline: DEFAULT_DEADLINE_FROM_NOW,

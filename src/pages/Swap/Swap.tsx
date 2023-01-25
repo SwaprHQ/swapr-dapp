@@ -7,7 +7,6 @@ import styled from 'styled-components'
 import Hero from '../../components/LandingPageComponents/layout/Hero'
 import { useActiveWeb3React } from '../../hooks'
 import { useRouter } from '../../hooks/useRouter'
-import { useUpdateSelectedSwapTab } from '../../state/user/hooks'
 import { AdvancedTradingViewBox } from './AdvancedTradingViewBox'
 import { Tabs } from './Components/Tabs'
 import { LandingSections } from './LandingSections'
@@ -27,19 +26,19 @@ const AppBodyContainer = styled.section`
  * Swap page component
  */
 export function Swap() {
-  const { Swap, LimitOrder } = SwapTab
+  const { SWAP, LIMIT_ORDER } = SwapTab
   const { account, chainId } = useActiveWeb3React()
 
   // Control the active tab
-  const [activeTab, setActiveTab] = useState(Swap)
+  const [activeTab, setActiveTab] = useState(SWAP)
   const [activeChartTab, setActiveChartTab] = useState(ChartOptions.OFF)
   const { pathname } = useRouter()
-  const [, setAdvancedView] = useUpdateSelectedSwapTab()
+
   const isPro = pathname.includes('/pro')
 
   useEffect(() => {
-    if (activeTab === LimitOrder && (!chainId || (chainId && !supportedChainIdList.includes(chainId)))) {
-      setActiveTab(Swap)
+    if (activeTab === LIMIT_ORDER && (!chainId || (chainId && !supportedChainIdList.includes(chainId)))) {
+      setActiveTab(SWAP)
       redirect('/swap')
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -51,7 +50,7 @@ export function Swap() {
     } else if (pathname.includes('swap')) {
       setActiveChartTab(ChartOptions.OFF)
     }
-  }, [Swap, isPro, setAdvancedView, setActiveChartTab, pathname])
+  }, [isPro, pathname])
 
   const AdvancedViewWrapper = isPro ? AdvancedTradingViewBox : Fragment
 
@@ -68,8 +67,8 @@ export function Swap() {
         <AppBodyContainer>
           <AdvancedViewWrapper>
             <Tabs />
-            {activeTab === Swap && <SwapBox />}
-            {activeTab === LimitOrder && <LimitOrderBox />}
+            {activeTab === SWAP && <SwapBox />}
+            {activeTab === LIMIT_ORDER && <LimitOrderBox />}
           </AdvancedViewWrapper>
         </AppBodyContainer>
       </Hero>

@@ -5,6 +5,7 @@ import styled from 'styled-components'
 import { MouseoverTooltip } from '../../../components/Tooltip'
 import { useIsDesktop } from '../../../hooks/useIsDesktopByMedia'
 import { useRouter } from '../../../hooks/useRouter'
+import { useUpdateSelectedChartOption } from '../../../state/user/hooks'
 import { ChartOptions } from '../SwapContext'
 
 export const ChartTabs = ({
@@ -17,6 +18,7 @@ export const ChartTabs = ({
   const { navigate } = useRouter()
   const { t } = useTranslation('swap')
   const isDesktop = useIsDesktop()
+  const [, setSelectedChartTab] = useUpdateSelectedChartOption()
 
   return (
     <MouseoverTooltip placement="top" disabled={isDesktop} content="Available only on desktop">
@@ -37,10 +39,9 @@ export const ChartTabs = ({
         <Tab
           active={activeChartTab === ChartOptions.PRO}
           onClick={() => {
-            if (activeChartTab !== ChartOptions.PRO) {
-              setActiveChartTab(ChartOptions.PRO)
-              navigate('/swap/pro')
-            }
+            setActiveChartTab(ChartOptions.PRO)
+            setSelectedChartTab(ChartOptions.PRO)
+            navigate('/swap/pro')
           }}
           title={
             // proOptionsDisabled
@@ -55,6 +56,7 @@ export const ChartTabs = ({
           active={activeChartTab === ChartOptions.OFF}
           onClick={() => {
             setActiveChartTab(ChartOptions.OFF)
+            setSelectedChartTab(ChartOptions.OFF)
             navigate('/swap')
           }}
           title={t('advancedTradingView.chartTabs.offTitle')}
