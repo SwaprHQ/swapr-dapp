@@ -2,7 +2,6 @@ import styled from 'styled-components'
 
 import { ReactComponent as EtherLogoSVG } from '../../../assets/swapbox/currency-logo-eth.svg'
 import { ReactComponent as DownArrowLargeSVG } from '../../../assets/swapbox/down-arrow-large.svg'
-import { ReactComponent as EtherSVG } from '../../../assets/swapbox/ether.svg'
 import {
   ELEMENTS_BACKGROUND_PRIMARY,
   ELEMENTS_BACKGROUND_SECONDARY,
@@ -21,26 +20,21 @@ type CurrencyItemProps = {
 export function CurrencyItem({ lowerItem }: CurrencyItemProps) {
   return (
     <CurrencyContainer lowerItem={lowerItem}>
-      <ValueContainer>
-        <CurrencyAmountContainer>
-          <CurrencyAmount>1.488</CurrencyAmount>
-          <CurrencyAmountWorth>$4000</CurrencyAmountWorth>
-        </CurrencyAmountContainer>
+      <CurrencyAmountContainer>
+        <CurrencyAmount>1.488</CurrencyAmount>
+        <CurrencyAmountWorth>$4000</CurrencyAmountWorth>
+      </CurrencyAmountContainer>
 
-        <CurrencyInfoContainer>
-          <CurrencyTypeContainer>
-            <EtherLogoSVG />
-            <CurrencySymbol>ETH</CurrencySymbol>
-            <DownArrowLargeSVG />
-          </CurrencyTypeContainer>
-          <CurrencyBalance>
-            Balance: <span>1.488</span>
-          </CurrencyBalance>
-        </CurrencyInfoContainer>
-      </ValueContainer>
-      {/* <Blockchain>
-        <EtherSVG />
-      </Blockchain> */}
+      <CurrencyInfoContainer>
+        <CurrencyTypeContainer>
+          <EtherLogoSVG />
+          <CurrencySymbol>ETH</CurrencySymbol>
+          <DownArrowLargeSVG />
+        </CurrencyTypeContainer>
+        <CurrencyBalance>
+          Balance: <span>1.488</span>
+        </CurrencyBalance>
+      </CurrencyInfoContainer>
     </CurrencyContainer>
   )
 }
@@ -72,13 +66,6 @@ const CurrencyContainer = styled.div<{ lowerItem?: boolean }>`
     -webkit-mask-composite: destination-out;
     mask-composite: exclude;
   }
-`
-
-const ValueContainer = styled.div`
-  width: 100%;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
 `
 
 const CurrencyAmountContainer = styled.div``
@@ -136,17 +123,4 @@ const CurrencyBalance = styled.p`
   & span {
     text-decoration: underline;
   }
-`
-
-const Blockchain = styled.a`
-  width: 44px;
-  height: 84px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  ${BorderStyle}
-  border: 1px solid #1B1B2A;
-  filter: drop-shadow(0px 4px 42px rgba(0, 0, 0, 0.16));
-  backdrop-filter: blur(11px);
-  cursor: pointer;
 `
