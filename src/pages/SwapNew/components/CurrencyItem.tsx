@@ -11,13 +11,15 @@ import {
   TEXT_COLOR_PRIMARY,
   TEXT_COLOR_SECONDARY,
 } from '../constants'
+import { Currency } from '../models'
 import { BorderStyle, FontFamily } from './styles'
 
 type CurrencyItemProps = {
+  currency: Currency
   lowerItem?: boolean
 }
 
-export function CurrencyItem({ lowerItem }: CurrencyItemProps) {
+export function CurrencyItem({ currency, lowerItem }: CurrencyItemProps) {
   return (
     <CurrencyContainer lowerItem={lowerItem}>
       <CurrencyAmountContainer>
@@ -28,11 +30,11 @@ export function CurrencyItem({ lowerItem }: CurrencyItemProps) {
       <CurrencyInfoContainer>
         <CurrencyTypeContainer>
           <EtherLogoSVG />
-          <CurrencySymbol>ETH</CurrencySymbol>
+          <CurrencySymbol>{currency.symbol}</CurrencySymbol>
           <DownArrowLargeSVG />
         </CurrencyTypeContainer>
         <CurrencyBalance>
-          Balance: <span>1.488</span>
+          Balance: <span>{currency.balance}</span>
         </CurrencyBalance>
       </CurrencyInfoContainer>
     </CurrencyContainer>
