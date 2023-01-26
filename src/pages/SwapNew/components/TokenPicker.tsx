@@ -1,7 +1,20 @@
+import { useEffect, useState } from 'react'
+import { createPortal } from 'react-dom'
 import styled from 'styled-components'
 
 export function TokenPicker() {
-  return <Container></Container>
+  const [tokenPickerContainer] = useState(() => document.createElement('div'))
+
+  useEffect(() => {
+    tokenPickerContainer.classList.add('token-picker-root')
+    document.body.appendChild(tokenPickerContainer)
+
+    return () => {
+      document.body.removeChild(tokenPickerContainer)
+    }
+  }, [tokenPickerContainer])
+
+  return createPortal(<Container></Container>, tokenPickerContainer)
 }
 
 const Container = styled.div`
@@ -10,5 +23,7 @@ const Container = styled.div`
   right: 0;
   bottom: 0;
   left: 0;
-  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 1;
+  background: rgba(255, 255, 255, 0.01);
+  backdrop-filter: blur(7px);
 `
