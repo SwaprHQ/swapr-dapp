@@ -1,3 +1,4 @@
+import { ChangeEvent } from 'react'
 import styled from 'styled-components'
 
 import { ReactComponent as DownArrowLargeSVG } from '../../../assets/swapbox/down-arrow-large.svg'
@@ -15,10 +16,11 @@ import { BorderStyle, FontFamily } from './styles'
 
 type CurrencyItemProps = {
   currency: Currency
+  onChange: (event: ChangeEvent<HTMLInputElement>) => void
   lowerItem?: boolean
 }
 
-export function CurrencyItem({ currency, lowerItem }: CurrencyItemProps) {
+export function CurrencyItem({ currency, onChange, lowerItem }: CurrencyItemProps) {
   return (
     <CurrencyContainer lowerItem={lowerItem}>
       <CurrencyAmountContainer>
