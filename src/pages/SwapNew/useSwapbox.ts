@@ -1,4 +1,4 @@
-import { useReducer } from 'react'
+import { ChangeEvent, useReducer } from 'react'
 
 type SwapBoxState = {
   fromValue: number
@@ -44,5 +44,17 @@ function reducer(state: SwapBoxState, action: Action) {
 export const useSwapbox = () => {
   const [state, dispatch] = useReducer(reducer, initialState)
 
-  return { state, dispatch }
+  const onFromInputChange = (event: ChangeEvent<HTMLInputElement>) =>
+    dispatch({
+      type: ActionTypes.INPUT_FROM_CHANGE,
+      payload: event.target.value,
+    })
+
+  const onToInputChange = (event: ChangeEvent<HTMLInputElement>) =>
+    dispatch({
+      type: ActionTypes.INPUT_TO_CHANGE,
+      payload: event.target.value,
+    })
+
+  return { state, onFromInputChange, onToInputChange }
 }
