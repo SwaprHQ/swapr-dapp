@@ -30,8 +30,8 @@ export function Swapbox2() {
 
   return (
     <Container>
-      <CurrencyItem onChange={onFromInputChange} currency={swapData.from} />
-      <CurrencyItem onChange={onToInputChange} currency={swapData.to} lowerItem />
+      <CurrencyItem value={state.fromValue} onChange={onFromInputChange} currency={swapData.from} />
+      <CurrencyItem value={state.toValue} onChange={onToInputChange} currency={swapData.to} lowerItem />
       <SwitchCurrenciesButton />
       <SwapInfo />
       <SwapButton />
