@@ -5,6 +5,7 @@ import { ReactComponent as USDTLogoSVG } from '../../assets/swapbox/currency-log
 import { CurrencyItem, SwapButton, SwapInfo, SwitchCurrenciesButton } from './components'
 import { SWAPBOX_WIDTH } from './constants'
 import { Currency } from './models'
+import { useSwapbox } from './useSwapbox'
 
 type SwapData = {
   from: Currency
@@ -25,10 +26,12 @@ const swapData: SwapData = {
 }
 
 export function Swapbox2() {
+  const { state, onFromInputChange, onToInputChange } = useSwapbox()
+
   return (
     <Container>
-      <CurrencyItem currency={swapData.from} />
-      <CurrencyItem currency={swapData.to} lowerItem />
+      <CurrencyItem onChange={onFromInputChange} currency={swapData.from} />
+      <CurrencyItem onChange={onToInputChange} currency={swapData.to} lowerItem />
       <SwitchCurrenciesButton />
       <SwapInfo />
       <SwapButton />
