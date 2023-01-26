@@ -2,6 +2,12 @@ import { useEffect, useState } from 'react'
 import { createPortal } from 'react-dom'
 import styled from 'styled-components'
 
+import { ReactComponent as DAILogoSVG } from '../../../assets/swapbox/token-logo-dai.svg'
+import { ReactComponent as DXDLogoSVG } from '../../../assets/swapbox/token-logo-dxd.svg'
+import { ReactComponent as ETHLogoSVG } from '../../../assets/swapbox/token-logo-eth.svg'
+import { ReactComponent as SWPRLogoSVG } from '../../../assets/swapbox/token-logo-swpr.svg'
+import { ReactComponent as USDCLogoSVG } from '../../../assets/swapbox/token-logo-usdc.svg'
+
 export function TokenPicker() {
   const [tokenPickerContainer] = useState(() => document.createElement('div'))
 
@@ -18,10 +24,23 @@ export function TokenPicker() {
     <Container>
       <Input placeholder="Search token by name or paste address" spellCheck={false} />
       <TokenBalanceContainer>
-        <TokenItem>ETH</TokenItem>
-        <TokenItem>USDC</TokenItem>
-        <TokenItem>DXD</TokenItem>
-        <TokenItem>SWPR</TokenItem>
+        <TokenItem>
+          <ETHLogoSVG />
+          ETH
+        </TokenItem>
+        <TokenItem>
+          <USDCLogoSVG />
+          USDC
+        </TokenItem>
+        <TokenItem>
+          <DXDLogoSVG /> DXD
+        </TokenItem>
+        <TokenItem>
+          <DAILogoSVG /> DAI
+        </TokenItem>
+        <TokenItem>
+          <SWPRLogoSVG /> SWPR
+        </TokenItem>
       </TokenBalanceContainer>
     </Container>,
     tokenPickerContainer
