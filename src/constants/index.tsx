@@ -533,11 +533,13 @@ export const RoutablePlatformKeysByNetwork = {
     UniswapV2RoutablePlatform.SUSHISWAP.name,
     RoutablePlatform.ZEROX.name,
     RoutablePlatform.GNOSIS_PROTOCOL.name,
+    RoutablePlatform.ONE_INCH.name,
   ],
   [ChainId.ARBITRUM_ONE]: [
     UniswapV2RoutablePlatform.SWAPR.name,
     RoutablePlatform.UNISWAP.name,
     UniswapV2RoutablePlatform.SUSHISWAP.name,
+    RoutablePlatform.ONE_INCH.name,
   ],
   [ChainId.XDAI]: [
     UniswapV2RoutablePlatform.SWAPR.name,
@@ -548,6 +550,7 @@ export const RoutablePlatformKeysByNetwork = {
     UniswapV2RoutablePlatform.BAOSWAP.name,
     RoutablePlatform.CURVE.name,
     RoutablePlatform.GNOSIS_PROTOCOL.name,
+    RoutablePlatform.ONE_INCH.name,
   ],
   [ChainId.POLYGON]: [
     RoutablePlatform.UNISWAP.name,
@@ -555,13 +558,19 @@ export const RoutablePlatformKeysByNetwork = {
     UniswapV2RoutablePlatform.QUICKSWAP.name,
     UniswapV2RoutablePlatform.DFYN.name,
     RoutablePlatform.ZEROX.name,
+    RoutablePlatform.ONE_INCH.name,
   ],
   [ChainId.OPTIMISM_MAINNET]: [
     RoutablePlatform.UNISWAP.name,
     UniswapV2RoutablePlatform.SUSHISWAP.name,
     RoutablePlatform.CURVE.name,
+    RoutablePlatform.ONE_INCH.name,
   ],
-  [ChainId.BSC_MAINNET]: [UniswapV2RoutablePlatform.SUSHISWAP.name, UniswapV2RoutablePlatform.PANCAKESWAP.name],
+  [ChainId.BSC_MAINNET]: [
+    UniswapV2RoutablePlatform.SUSHISWAP.name,
+    UniswapV2RoutablePlatform.PANCAKESWAP.name,
+    RoutablePlatform.ONE_INCH.name,
+  ],
   // TEST NETS WITH ALL DEXES
   [ChainId.RINKEBY]: [
     UniswapV2RoutablePlatform.SWAPR.name,
@@ -589,6 +598,7 @@ export const RoutablePlatformKeysByNetwork = {
     UniswapV2RoutablePlatform.SUSHISWAP.name,
     RoutablePlatform.CURVE.name,
     RoutablePlatform.VELODROME.name,
+    RoutablePlatform.ONE_INCH.name,
   ],
   [ChainId.BSC_TESTNET]: [],
 }
