@@ -16,15 +16,16 @@ import { BorderStyle, FontFamily } from './styles'
 
 type CurrencyItemProps = {
   currency: Currency
+  value: number
   onChange: (event: ChangeEvent<HTMLInputElement>) => void
   lowerItem?: boolean
 }
 
-export function CurrencyItem({ currency, onChange, lowerItem }: CurrencyItemProps) {
+export function CurrencyItem({ currency, value, onChange, lowerItem }: CurrencyItemProps) {
   return (
     <CurrencyContainer lowerItem={lowerItem}>
       <CurrencyAmountContainer>
-        <CurrencyAmount>1.488</CurrencyAmount>
+        <CurrencyAmount value={value} onChange={onChange} />
         <CurrencyAmountWorth>$4000</CurrencyAmountWorth>
       </CurrencyAmountContainer>
 
@@ -54,13 +55,14 @@ const CurrencyContainer = styled.div<{ lowerItem?: boolean }>`
   ${BorderStyle}
   margin-bottom: ${ELEMENTS_SPACING};
 
-  &::before {
+  &::after {
     content: '';
     position: absolute;
     top: 0;
     left: 0;
     right: 0;
     bottom: 0;
+    z-index: -1;
     border-radius: 12px;
     border: 1.5px solid transparent;
     background: ${({ lowerItem }) => (lowerItem ? ELEMENTS_BORDER_SECONDARY : ELEMENTS_BORDER_PRIMARY)};
@@ -73,7 +75,9 @@ const CurrencyContainer = styled.div<{ lowerItem?: boolean }>`
 
 const CurrencyAmountContainer = styled.div``
 
-const CurrencyAmount = styled.p`
+const CurrencyAmount = styled.input`
+  width: 250px;
+  height: 34px;
   line-height: 34px;
   font-size: 28px;
   ${FontFamily}
@@ -81,6 +85,9 @@ const CurrencyAmount = styled.p`
   letter-spacing: 0.02em;
   text-shadow: 0px 0px 12px rgba(255, 255, 255, 0.14);
   color: ${TEXT_COLOR_PRIMARY};
+  background-color: transparent;
+  border: none;
+  outline: none;
   margin-bottom: 5px;
 `
 
@@ -115,6 +122,7 @@ const CurrencySymbol = styled.p`
 `
 
 const CurrencyBalance = styled.p`
+  width: fit-content;
   line-height: 12px;
   font-size: 10px;
   ${FontFamily}
