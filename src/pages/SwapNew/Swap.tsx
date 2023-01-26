@@ -3,6 +3,7 @@ import styled from 'styled-components'
 import { ReactComponent as EtherLogoSVG } from '../../assets/swapbox/currency-logo-eth.svg'
 import { ReactComponent as USDTLogoSVG } from '../../assets/swapbox/currency-logo-usdt.svg'
 import { CurrencyItem, SwapButton, SwapInfo, SwitchCurrenciesButton } from './components'
+import { TokenPicker } from './components/TokenPicker'
 import { SWAPBOX_WIDTH } from './constants'
 import { Currency } from './models'
 import { useSwapbox } from './useSwapbox'
@@ -29,13 +30,16 @@ export function Swapbox2() {
   const { state, onFromInputChange, onToInputChange } = useSwapbox()
 
   return (
-    <Container>
-      <CurrencyItem value={state.fromValue} onChange={onFromInputChange} currency={swapData.from} />
-      <CurrencyItem value={state.toValue} onChange={onToInputChange} currency={swapData.to} lowerItem />
-      <SwitchCurrenciesButton />
-      <SwapInfo />
-      <SwapButton />
-    </Container>
+    <>
+      <Container>
+        <CurrencyItem value={state.fromValue} onChange={onFromInputChange} currency={swapData.from} />
+        <CurrencyItem value={state.toValue} onChange={onToInputChange} currency={swapData.to} lowerItem />
+        <SwitchCurrenciesButton />
+        <SwapInfo />
+        <SwapButton />
+      </Container>
+      <TokenPicker />
+    </>
   )
 }
 
