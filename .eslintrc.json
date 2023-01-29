@@ -57,16 +57,16 @@
           "order": "asc"
         }
       }
-    ],
-    "sort-imports": [
-      "error",
-      {
-        "allowSeparatedGroups": true,
-        "ignoreCase": true,
-        "ignoreDeclarationSort": true,
-        "ignoreMemberSort": false,
-        "memberSyntaxSortOrder": ["none", "all", "multiple", "single"]
-      }
     ]
+    // "sort-imports": [
+    //   "error",
+    //   {
+    //     "allowSeparatedGroups": true,
+    //     "ignoreCase": true,
+    //     "ignoreDeclarationSort": true,
+    //     "ignoreMemberSort": false,
+    //     "memberSyntaxSortOrder": ["none", "all", "multiple", "single"]
+    //   }
+    // ]
   }
 }
