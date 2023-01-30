@@ -775,7 +775,7 @@
           "toAssetAddress": {
             "type": "string",
             "description": "Token address on destination chain.",
-            "example": "0x1af3f329e8be154074d8769d1ffa4ee058b1dbc3"
+            "example": "0x1AF3F329e8BE154074D8769D1FFa4eE058B1DBc3"
           },
           "includeFirstTxDetails": {
             "type": "boolean",
@@ -875,7 +875,7 @@
           "toAssetAddress": {
             "type": "string",
             "description": "Address of token on destination chain.",
-            "example": "0x1af3f329e8be154074d8769d1ffa4ee058b1dbc3"
+            "example": "0x1AF3F329e8BE154074D8769D1FFa4eE058B1DBc3"
           },
           "fromAmount": {
             "type": "string",
@@ -1608,7 +1608,7 @@
             "required": true,
             "in": "query",
             "description": "Token address on destination chain.",
-            "example": "0x1af3f329e8be154074d8769d1ffa4ee058b1dbc3",
+            "example": "0x1AF3F329e8BE154074D8769D1FFa4eE058B1DBc3",
             "schema": {
               "type": "string"
             }
@@ -2047,7 +2047,7 @@
             "required": false,
             "in": "query",
             "description": "Token address on destination chain.",
-            "example": "0x1af3f329e8be154074d8769d1ffa4ee058b1dbc3",
+            "example": "0x1AF3F329e8BE154074D8769D1FFa4eE058B1DBc3",
             "schema": {
               "type": "string"
             }
