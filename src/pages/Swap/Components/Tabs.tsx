@@ -12,7 +12,7 @@ import { useActiveWeb3React } from '../../../hooks'
 import { useRouter } from '../../../hooks/useRouter'
 import { ecoBridgeUIActions } from '../../../services/EcoBridge/store/UI.reducer'
 import { supportedChainIdList } from '../LimitOrderBox/constants'
-import { SwapContext, SwapTab } from '../SwapContext'
+import { SwapTab, SwapTabContext } from '../SwapContext'
 import { ChartTabs } from './ChartTabs'
 
 const TabsColumn = styled.div`
@@ -75,19 +75,19 @@ const StyledBridge = styled(Bridge)`
 
 export function Tabs() {
   const { t } = useTranslation('swap')
-  const { activeTab, setActiveTab, setActiveChartTab, activeChartTab } = useContext(SwapContext)
+  const { activeTab, setActiveTab, setActiveChartTab, activeChartTab } = useContext(SwapTabContext)
   const dispatch = useDispatch()
 
-  const { navigate, pathname } = useRouter()
+  const { navigate } = useRouter()
 
   return (
     <TabsColumn>
       <TabsRow>
         <Button
           onClick={() => {
-            setActiveTab(pathname.includes('pro') ? SwapTab.AdvancedTradingView : SwapTab.Swap)
+            setActiveTab(SwapTab.Swap)
           }}
-          className={activeTab === SwapTab.Swap || activeTab === SwapTab.AdvancedTradingView ? 'active' : ''}
+          className={activeTab === SwapTab.Swap ? 'active' : ''}
         >
           <StyledEcoRouter />
           Swap

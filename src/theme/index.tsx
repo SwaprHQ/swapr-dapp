@@ -632,7 +632,7 @@ body {
   }
 }
 
-// rotating trade plataforms logos loading
+// rotating trade platform logos loading
 .loading-rotation-1>div {
   animation-name: loading-rotations-1;
   animation-timing-function: ease-in-out;
