@@ -5,7 +5,7 @@ import { ChartOptions } from '../../state/user/reducer'
 
 export const chartOptionToString = {
   [ChartOptions.OFF]: '',
-  [ChartOptions.SIMPLE_CHART]: '/simple',
+  [ChartOptions.SIMPLE_CHART]: '',
   [ChartOptions.PRO]: '/pro',
 }
 
