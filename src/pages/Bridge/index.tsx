@@ -309,7 +309,7 @@ export default function Bridge() {
         onNetworkChange: onToNetworkChange,
         selectedNetworkChainId: isCollecting && collectableTx ? collectableTx.toChainId : toChainId,
         activeChainId: account ? chainId : -1,
-        showTestnets: false,
+        showTestnets: true,
       }),
     [account, chainId, collectableTx, isCollecting, onToNetworkChange, toChainId]
   )

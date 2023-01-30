@@ -15,7 +15,7 @@ export const ecoBridgeConfig: EcoBridgeChildBase[] = [
   new ArbitrumBridge({
     bridgeId: 'arbitrum:testnet',
     displayName: 'Arbitrum',
-    supportedChains: [{ from: ChainId.RINKEBY, to: ChainId.ARBITRUM_RINKEBY }],
+    supportedChains: [{ from: ChainId.GOERLI, to: ChainId.ARBITRUM_GOERLI }],
   }),
   new ArbitrumBridge({
     bridgeId: 'arbitrum:mainnet',
