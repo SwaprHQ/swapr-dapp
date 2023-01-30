@@ -78,7 +78,7 @@ export function LimitOrderForm({ account, provider, chainId }: LimitOrderFormPro
   } = useContext(LimitOrderFormContext)
   const { onCurrencySelection } = useSwapActionHandlers()
 
-  const [loading, setLoading] = useState(false)
+  const [loading, setLoading] = useState(true)
   const notify = useNotificationPopup()
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [errorMessage, setErrorMessage] = useState('')
@@ -218,8 +218,8 @@ export function LimitOrderForm({ account, provider, chainId }: LimitOrderFormPro
 
       setMarketPriceInterval(refetchMarketPrice)
     } else {
-      clearInterval(marketPriceInterval)
       setMarketPriceInterval(undefined)
+      clearInterval(marketPriceInterval)
     }
 
     return () => {
@@ -234,6 +234,11 @@ export function LimitOrderForm({ account, provider, chainId }: LimitOrderFormPro
     buyTokenAmount?.currency,
   ])
 
+  const isLoading = () => {
+    setLoading(true)
+    setIsPossibleToOrder({ status: true, value: 0 })
+  }
+
   // Fetch the maximum amount of tokens that can be bought or sold
   const sellCurrencyMaxAmount = maxAmountSpend(sellCurrencyBalance, chainId)
   const buyCurrencyMaxAmount = maxAmountSpend(buyCurrencyBalance, chainId, false)
@@ -242,11 +247,11 @@ export function LimitOrderForm({ account, provider, chainId }: LimitOrderFormPro
   const showApproveFlow = tokenInApproval === ApprovalState.NOT_APPROVED || tokenInApproval === ApprovalState.PENDING
 
   const handleSwapTokens = useCallback(() => {
+    isLoading()
     setSellTokenAmount(buyTokenAmount)
     setBuyTokenAmount(sellTokenAmount)
     setFormattedSellAmount(formattedBuyAmount)
     setFormattedBuyAmount(formattedSellAmount)
-    setIsPossibleToOrder({ status: false, value: 0 })
     if (buyTokenAmount.currency.address && sellTokenAmount.currency.address) {
       setLimitOrder(limitOrder => ({
         ...limitOrder,
@@ -301,7 +306,7 @@ export function LimitOrderForm({ account, provider, chainId }: LimitOrderFormPro
   const newSellAmount = previousSellAmount?.raw.toString() !== sellCurrencyBalance?.raw.toString()
 
   useEffect(() => {
-    const timeoutId = setTimeout(() => {
+    const timeoutId = setTimeout(async () => {
       const amountWei = parseUnits(
         parseFloat(formattedSellAmount).toFixed(6),
         sellTokenAmount?.currency?.decimals
@@ -309,7 +314,7 @@ export function LimitOrderForm({ account, provider, chainId }: LimitOrderFormPro
       const expiresAt = dayjs().add(GET_QUOTE_EXPIRY_MINUTES, OrderExpiresInUnit.Minutes).unix()
       const sellCurrencyMaxAmount = maxAmountSpend(sellCurrencyBalance, chainId)
 
-      checkMaxOrderAmount(
+      await checkMaxOrderAmount(
         limitOrder,
         setIsPossibleToOrder,
         setLimitOrder,
@@ -320,6 +325,7 @@ export function LimitOrderForm({ account, provider, chainId }: LimitOrderFormPro
         chainId,
         provider
       )
+      setLoading(false)
     }, 500)
     return () => clearTimeout(timeoutId)
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -418,6 +424,7 @@ export function LimitOrderForm({ account, provider, chainId }: LimitOrderFormPro
 
   const handleInputOnChange =
     (token: Token, inputFocus: InputFocus, handleAmountChange: Function) => (formattedValue: string) => {
+      isLoading()
       const amountFormatted = formattedValue.trim() === '' ? '0' : formattedValue
       const amountWei = parseUnits(formattedValue, token.decimals).toString()
       handleAmountChange({
@@ -431,6 +438,7 @@ export function LimitOrderForm({ account, provider, chainId }: LimitOrderFormPro
   const handleCurrencySelect =
     (prevTokenAmount: TokenAmount, handleCurrencyAmountChange: Function, amountFormatted: string) =>
     (currency: Currency) => {
+      isLoading()
       let amountWei
       if (amountFormatted) amountWei = parseUnits(amountFormatted, currency?.decimals).toString()
       else if (prevTokenAmount?.raw) {

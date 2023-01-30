@@ -38,20 +38,17 @@ export const checkMaxOrderAmount = async (
     return
   }
 
-  const { sellAmount, feeAmount } = quote
-  const sellAmountFormatted = Number(formatUnits(sellAmount, sellTokenAmount.currency.decimals) ?? 0)
-  const feeAmountFormatted = Number(formatUnits(feeAmount, sellTokenAmount.currency.decimals) ?? 0)
-  const maxAmount = Number(formatUnits(sellCurrencyMaxAmount.raw.toString(), sellTokenAmount.currency.decimals) ?? 0)
+  const { sellAmount } = quote
+  const totalSellAmount = Number(formatUnits(sellAmount, sellTokenAmount.currency.decimals) ?? 0)
+  const maxAmountAvailable = Number(
+    formatUnits(sellCurrencyMaxAmount.raw.toString(), sellTokenAmount.currency.decimals) ?? 0
+  )
   // Since fee amount is recalculated again before order
-  // for safe side checking 2x of current feeAmount returned by quote
-  const totalSellAmount = sellAmountFormatted + feeAmountFormatted * 2
-  setLimitOrder(oldLimitOrder => ({ ...oldLimitOrder, feeAmount: Number(feeAmount).toString() }))
-  if (totalSellAmount > maxAmount) {
-    const maxSellAmountPossibleWithFee = maxAmount - feeAmountFormatted * 2 < 0 ? 0 : maxAmount - feeAmountFormatted * 2
-
+  if (totalSellAmount > maxAmountAvailable) {
+    const maxSellAmountPossible = maxAmountAvailable < 0 ? 0 : maxAmountAvailable
     setIsPossibleToOrder({
       status: true,
-      value: maxSellAmountPossibleWithFee,
+      value: maxSellAmountPossible,
     })
   } else {
     setIsPossibleToOrder({
