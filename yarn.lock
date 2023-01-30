@@ -5502,10 +5502,9 @@
   dependencies:
     "@swapr/core" "^0.3.17"
 
-"@swapr/sdk@1.8.0-rc.4":
+"@swapr/sdk@ImpeccableHQ/swapr-sdk#0x-trade-chain-pr-build":
   version "1.8.0-rc.4"
-  resolved "https://registry.yarnpkg.com/@swapr/sdk/-/sdk-1.8.0-rc.4.tgz#3444fa1ee094edbcb0b8965f7933500e3eb9fc08"
-  integrity sha512-Iw30RZvhuIwdYjWsMibbYqNwa8m6AoPw2wIHu/0Ia/CWfAj331RBtRrrJK0RFvnDj4WhEVIvYSTMbCJo3knaVA==
+  resolved "https://codeload.github.com/ImpeccableHQ/swapr-sdk/tar.gz/e3b11e5b6130dc47686e727e79325529e211dee0"
   dependencies:
     "@cowprotocol/cow-sdk" "^1.0.2-RC.0"
     "@ethersproject/abi" "^5.6.4"
