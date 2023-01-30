@@ -14,7 +14,7 @@ const socketBridgeId = 'socket'
 export const ecoBridgeConfig: EcoBridgeChildBase[] = [
   new ArbitrumBridge({
     bridgeId: 'arbitrum:testnet',
-    displayName: 'Arbitrum',
+    displayName: 'Arbitrum Test',
     supportedChains: [{ from: ChainId.GOERLI, to: ChainId.ARBITRUM_GOERLI }],
   }),
   new ArbitrumBridge({
