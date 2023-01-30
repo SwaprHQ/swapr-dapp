@@ -1703,12 +1703,21 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@babel/runtime@npm:^7.0.0, @babel/runtime@npm:^7.1.2, @babel/runtime@npm:^7.10.1, @babel/runtime@npm:^7.10.2, @babel/runtime@npm:^7.11.2, @babel/runtime@npm:^7.12.1, @babel/runtime@npm:^7.12.13, @babel/runtime@npm:^7.12.5, @babel/runtime@npm:^7.14.5, @babel/runtime@npm:^7.14.6, @babel/runtime@npm:^7.16.3, @babel/runtime@npm:^7.17.2, @babel/runtime@npm:^7.17.8, @babel/runtime@npm:^7.18.9, @babel/runtime@npm:^7.19.0, @babel/runtime@npm:^7.4.4, @babel/runtime@npm:^7.5.0, @babel/runtime@npm:^7.5.5, @babel/runtime@npm:^7.7.2, @babel/runtime@npm:^7.7.6, @babel/runtime@npm:^7.8.4, @babel/runtime@npm:^7.9.2":
+"@babel/runtime@npm:^7.0.0, @babel/runtime@npm:^7.1.2, @babel/runtime@npm:^7.10.1, @babel/runtime@npm:^7.10.2, @babel/runtime@npm:^7.11.2, @babel/runtime@npm:^7.12.1, @babel/runtime@npm:^7.12.13, @babel/runtime@npm:^7.12.5, @babel/runtime@npm:^7.14.5, @babel/runtime@npm:^7.14.6, @babel/runtime@npm:^7.16.3, @babel/runtime@npm:^7.17.2, @babel/runtime@npm:^7.17.8, @babel/runtime@npm:^7.18.9, @babel/runtime@npm:^7.4.4, @babel/runtime@npm:^7.5.0, @babel/runtime@npm:^7.5.5, @babel/runtime@npm:^7.7.2, @babel/runtime@npm:^7.7.6, @babel/runtime@npm:^7.8.4, @babel/runtime@npm:^7.9.2":
   version: 7.20.7
   resolution: "@babel/runtime@npm:7.20.7"
   dependencies:
     regenerator-runtime: ^0.13.11
   checksum: 4629ce5c46f06cca9cfb9b7fc00d48003335a809888e2b91ec2069a2dcfbfef738480cff32ba81e0b7c290f8918e5c22ddcf2b710001464ee84ba62c7e32a3a3
+  languageName: node
+  linkType: hard
+
+"@babel/runtime@npm:^7.19.4":
+  version: 7.20.13
+  resolution: "@babel/runtime@npm:7.20.13"
+  dependencies:
+    regenerator-runtime: ^0.13.11
+  checksum: 09b7a97a05c80540db6c9e4ddf8c5d2ebb06cae5caf3a87e33c33f27f8c4d49d9c67a2d72f1570e796045288fad569f98a26ceba0c4f5fad2af84b6ad855c4fb
   languageName: node
   linkType: hard
 
@@ -7649,7 +7658,7 @@ __metadata:
     https-browserify: ^1.0.0
     husky: ^8.0.3
     i18next: ^21.9.2
-    i18next-browser-languagedetector: ^6.1.4
+    i18next-browser-languagedetector: ^7.0.1
     i18next-http-backend: ^1.4.4
     lightweight-charts: ^3.8.0
     lint-staged: ^13.0.2
@@ -22306,12 +22315,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"i18next-browser-languagedetector@npm:^6.1.4":
-  version: 6.1.8
-  resolution: "i18next-browser-languagedetector@npm:6.1.8"
+"i18next-browser-languagedetector@npm:^7.0.1":
+  version: 7.0.1
+  resolution: "i18next-browser-languagedetector@npm:7.0.1"
   dependencies:
-    "@babel/runtime": ^7.19.0
-  checksum: dd84d3c9cb693a70662436b06f5554898815df33b7641249a64876c74c38960f11ef17b4d7f49ee2da7262abe0f3ae73abe7f3a3b435a344d0d07e4ca7cb24c6
+    "@babel/runtime": ^7.19.4
+  checksum: 03129614be8761988df59b630359ded4f7c989eec4553781b5968139fd898de1eb09128c4c69c1365b547649ad829ff9abe1f60161658f8789668bcc623adcf0
   languageName: node
   linkType: hard
 
