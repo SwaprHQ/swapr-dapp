@@ -27,7 +27,9 @@ export async function trackEcoRouterTradeVolume(
   site: FathomSiteInformation,
   chartOption = ChartOptions.OFF
 ) {
-  debug('tracking EcoRouter trade USD volume', { trade, site })
+  console.log('eventx hello: ', { trade, site, chartOption })
+
+  debug('tracking EcoRouter trade USD volume', { trade, chartOption, site })
   // Get use value for input amount
   const tradeUSDValue = await getTradeUSDValue(trade)
 
@@ -46,7 +48,7 @@ export async function trackEcoRouterTradeVolume(
   if (!eventId) {
     throw new Error(`Event ID for (${eventName}) not found in site (${site.siteId})`)
   }
-
+  console.log('eventx triggered: ', { eventId, tradeUSDValueInCents })
   window.fathom.trackGoal(eventId, tradeUSDValueInCents)
 }
 
