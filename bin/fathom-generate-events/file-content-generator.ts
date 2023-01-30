@@ -59,8 +59,13 @@ export function getNetworkNameByChainId(chainId: number): string {
 /**
  * Constructs EcoRouter volumeUSD event name
  */
-export function getEcoRouterVolumeUSDEventName(networkName: string, networkId: number, platformName: string): string {
-    return \`\${networkName.toLowerCase()}-\${networkId}/ecoRouter/\${platformName.toLowerCase()}/volumeUSD\`;
+export function getEcoRouterVolumeUSDEventName(
+  networkName: string,
+  networkId: number,
+  platformName: string,
+  chartOptions: string
+): string {
+  return \`\${networkName.toLowerCase()}-\${networkId}/ecoRouter/\${platformName.toLowerCase()}/volumeUSD\${chartOptions.toLowerCase()}\`;
 }
 
 /**
