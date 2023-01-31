@@ -25,7 +25,7 @@ jobs:
           check-latest: true
           cache: 'yarn'
       - name: Start Deployment
-        uses: bobheadxi/deployments@v1.3.0
+        uses: bobheadxi/deployments@v1.4.0
         id: deployment
         with:
           step: start
@@ -44,7 +44,7 @@ jobs:
           web3_token: ${{secrets.WEB3_STORAGE_TOKEN}}
           path_to_add: 'build'
       - name: Update Deployment Status
-        uses: bobheadxi/deployments@v1.3.0
+        uses: bobheadxi/deployments@v1.4.0
         if: always()
         with:
           step: finish
