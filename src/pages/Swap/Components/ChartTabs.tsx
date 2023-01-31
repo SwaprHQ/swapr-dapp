@@ -41,6 +41,7 @@ export const ChartTabs = ({
           onClick={() => {
             if (activeChartTab !== ChartOption.PRO) {
               setActiveChartTab(ChartOption.PRO)
+              setSelectedChartTab(ChartOption.PRO)
               navigate('/swap/pro')
               window?.fathom?.trackPageview()
             }
