@@ -7654,7 +7654,7 @@ __metadata:
     etherscan-api: 10.2.0
     git-revision-webpack-plugin: ^5.0.0
     graphql: ^16.5.0
-    graphql-request: ^4.3.0
+    graphql-request: ^5.1.0
     https-browserify: ^1.0.0
     husky: ^8.0.3
     i18next: ^21.9.2
@@ -21340,7 +21340,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"graphql-request@npm:^5.0.0":
+"graphql-request@npm:^5.0.0, graphql-request@npm:^5.1.0":
   version: 5.1.0
   resolution: "graphql-request@npm:5.1.0"
   dependencies:
