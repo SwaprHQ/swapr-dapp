@@ -109,12 +109,14 @@ jobs:
       - name: ⎔・Setup node
         uses: actions/setup-node@v3
         with:
-          node-version: '16'
+          node-version: lts/hydrogen
           check-latest: true
           cache: 'yarn'
 
       - name: Install dependencies
-        run: yarn install --frozen-lockfile --cache-folder $(yarn cache dir)
+        run: yarn install --immutable
+        env:
+          HUSKY: '0'
 
       - name: Generate open-api
         run: yarn codegen:socket
