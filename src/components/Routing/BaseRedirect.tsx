@@ -1,7 +1,7 @@
 import { Navigate, useParams, useSearchParams } from 'react-router-dom'
 
-import { ChartOptions } from '../../pages/Swap/SwapContext'
 import { useUpdateSelectedChartOption } from '../../state/user/hooks'
+import { ChartOption } from '../../state/user/reducer'
 
 // Redirects from the /swap/:outputCurrency path to the /swap?outputCurrency=:outputCurrency format
 export function BaseRedirect({ pathname = '/swap' }) {
@@ -9,7 +9,7 @@ export function BaseRedirect({ pathname = '/swap' }) {
   const { outputCurrency } = useParams<{ outputCurrency: string }>()
   const [selectedChartTab] = useUpdateSelectedChartOption()
 
-  if (selectedChartTab === ChartOptions.PRO) {
+  if (selectedChartTab === ChartOption.PRO) {
     pathname = '/swap/pro'
   }
 
