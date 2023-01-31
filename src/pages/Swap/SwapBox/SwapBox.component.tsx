@@ -1,6 +1,6 @@
-import { CoWTrade, Currency, CurrencyAmount, JSBI, RoutablePlatform, Token } from '@swapr/sdk'
+import { CoWTrade, Currency, CurrencyAmount, JSBI, Token } from '@swapr/sdk'
 
-import { useCallback, useEffect, useMemo, useState } from 'react'
+import { useCallback, useContext, useEffect, useMemo, useState } from 'react'
 import styled from 'styled-components'
 
 import { ReactComponent as SwapIcon } from '../../../assets/images/swap-icon.svg'
@@ -15,12 +15,7 @@ import { useSwapCallback } from '../../../hooks/useSwapCallback'
 import { useTargetedChainIdFromUrl } from '../../../hooks/useTargetedChainIdFromUrl'
 import { useHigherUSDValue } from '../../../hooks/useUSDValue'
 import { useWrapCallback, WrapState, WrapType } from '../../../hooks/useWrapCallback'
-import {
-  useDefaultsFromURLSearch,
-  useDerivedSwapInfo,
-  useSwapActionHandlers,
-  useSwapState,
-} from '../../../state/swap/hooks'
+import { useDefaultsFromURLSearch, useSwapActionHandlers, useSwapState } from '../../../state/swap/hooks'
 import { Field } from '../../../state/swap/types'
 import { useAdvancedSwapDetails, useIsExpertMode, useUserSlippageTolerance } from '../../../state/user/hooks'
 import { computeFiatValuePriceImpact } from '../../../utils/computeFiatValuePriceImpact'
@@ -34,6 +29,7 @@ import { ArrowWrapper, SwitchTokensAmountsContainer, Wrapper } from '../Componen
 import SwapButtons from '../Components/SwapButtons'
 import { TradeDetails } from '../Components/TradeDetails'
 import { CoWTradeState, SwapData } from './SwapBox.types'
+import { SwapContext } from './SwapContext'
 
 const SwitchIconContainer = styled.div`
   height: 0;
@@ -43,9 +39,20 @@ const SwitchIconContainer = styled.div`
 
 export function SwapBox() {
   const loadedUrlParams = useDefaultsFromURLSearch()
-  const [platformOverride, setPlatformOverride] = useState<RoutablePlatform | null>(null)
   const allTokens = useAllTokens()
   const [showAdvancedSwapDetails, setShowAdvancedSwapDetails] = useAdvancedSwapDetails()
+
+  const {
+    trade: potentialTrade,
+    allPlatformTrades,
+    currencyBalances,
+    parsedAmount,
+    currencies,
+    inputError: swapInputError,
+    loading,
+    platformOverride,
+    setPlatformOverride,
+  } = useContext(SwapContext)
 
   // token warning stuff
   const [loadedInputCurrency, loadedOutputCurrency] = [
@@ -77,16 +84,6 @@ export function SwapBox() {
 
   // swap state
   const { independentField, typedValue, recipient } = useSwapState()
-
-  const {
-    trade: potentialTrade,
-    allPlatformTrades,
-    currencyBalances,
-    parsedAmount,
-    currencies,
-    inputError: swapInputError,
-    loading,
-  } = useDerivedSwapInfo(platformOverride || undefined)
 
   // For GPv2 trades, have a state which holds: approval status (handled by useApproveCallback), and
   // wrap status(use useWrapCallback and a state variable)
@@ -289,7 +286,7 @@ export function SwapBox() {
       setApprovalsSubmitted([]) // reset 2 step UI for approvals
       onCurrencySelection(Field.INPUT, inputCurrency)
     },
-    [onCurrencySelection]
+    [onCurrencySelection, setPlatformOverride]
   )
 
   const handleMaxInput = useCallback(
@@ -305,7 +302,7 @@ export function SwapBox() {
       setPlatformOverride(null) // reset platform override, since best prices might be on a different platform
       onCurrencySelection(Field.OUTPUT, outputCurrency)
     },
-    [onCurrencySelection]
+    [onCurrencySelection, setPlatformOverride]
   )
 
   const { fiatValueInput, fiatValueOutput, isFallbackFiatValueInput, isFallbackFiatValueOutput } = useHigherUSDValue({

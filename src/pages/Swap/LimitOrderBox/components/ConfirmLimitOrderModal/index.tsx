@@ -1,16 +1,22 @@
-import { CurrencyAmount } from '@swapr/sdk'
-
 import { useCallback, useContext } from 'react'
 
 import TransactionConfirmationModal, {
   ConfirmationModalContent,
   TransactionErrorContent,
 } from '../../../../../components/TransactionConfirmationModal'
-import { LimitOrderFormContext } from '../../contexts'
-import { LimitOrderKind } from '../../interfaces'
+import { LimitOrderFormContext } from '../../contexts/LimitOrderFormContext'
+import { LimitOrderKind, MarketPrices } from '../../interfaces'
 import { calculateMarketPriceDiffPercentage } from '../../utils'
 import { ConfirmationFooter } from './ConfirmationFooter'
 import { ConfirmationHeader } from './ConfirmationHeader'
+interface ConfirmLimitOrderModalProps {
+  isOpen: boolean
+  attemptingTxn: boolean
+  errorMessage: string | undefined
+  onDismiss: () => void
+  onConfirm: () => void
+  marketPrices: MarketPrices
+}
 
 export default function ConfirmLimitOrderModal({
   onConfirm,
@@ -18,19 +24,18 @@ export default function ConfirmLimitOrderModal({
   errorMessage,
   isOpen,
   attemptingTxn,
-  fiatValueInput,
-  fiatValueOutput,
-}: {
-  isOpen: boolean
-  attemptingTxn: boolean
-  onConfirm: () => void
-  errorMessage: string | undefined
-  onDismiss: () => void
-  fiatValueInput: CurrencyAmount | null
-  fiatValueOutput: CurrencyAmount | null
-}) {
-  const { expiresIn, expiresInUnit, limitOrder, buyTokenAmount, sellTokenAmount, formattedLimitPrice, marketPrices } =
-    useContext(LimitOrderFormContext)
+  marketPrices,
+}: ConfirmLimitOrderModalProps) {
+  const {
+    limitOrder,
+    buyTokenAmount,
+    sellTokenAmount,
+    formattedLimitPrice,
+    fiatValueInput,
+    fiatValueOutput,
+    expiresIn,
+    expiresInUnit,
+  } = useContext(LimitOrderFormContext)
 
   const [baseTokenAmount, quoteTokenAmount] =
     limitOrder.kind === LimitOrderKind.SELL ? [sellTokenAmount, buyTokenAmount] : [buyTokenAmount, sellTokenAmount]

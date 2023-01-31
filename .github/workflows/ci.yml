@@ -43,14 +43,14 @@ jobs:
       - name: Generate unique ID 💎
         id: uuid
         run: |
-          echo "::set-output name=value::sha-$GITHUB_SHA-time-$(date +"%s")"
+          echo "value=sha-$GITHUB_SHA-time-$(date +"%s")" >> $GITHUB_OUTPUT
           echo "sha-$GITHUB_SHA-time-$(date +"%s")"
 
       - name: Get Commit Message
         id: commit-message
         run: |
           MSG=$(git log --format=%B -n 1 ${{github.event.after}})
-          echo "::set-output name=value::$(printf "$MSG" | xargs)"
+          echo "value=$(printf "$MSG" | xargs)" >> $GITHUB_OUTPUT
 
       - name: Echo commit message
         run: echo "${{ steps.commit-message.outputs.value }}"
@@ -74,28 +74,28 @@ jobs:
         id: cypress-label-present
         run: |
           echo "Label present"
-          echo "::set-output name=value::true"
+          echo "value=true" >> $GITHUB_OUTPUT
 
       - name: Check if synpress label is present
         if: steps.check-if-synpress-tests-should-run.outcome == 'success'
         id: synpress-label-present
         run: |
           echo "Label present"
-          echo "::set-output name=value::true"
+          echo "value=true" >> $GITHUB_OUTPUT
 
       - name: Check if cypress tests should be executed
         id: cypress
         if: ${{ ((github.event_name == 'push') || ((steps.cypress-label-present.outputs.value == 'true')&& !(github.actor == 'dependabot[bot]'))) }}
         run: |
           echo "Cypress tests should be executed"
-          echo "::set-output name=value::true"
+          echo "value=true" >> $GITHUB_OUTPUT
 
       - name: Check if synpress tests should be executed
         id: synpress
         if: ${{ contains(steps.commit-message.outputs.value,'trigger-synpress') || github.event_name == 'push' || (steps.synpress-label-present.outputs.value == 'true') }}
         run: |
           echo "Synpress tests should be executed"
-          echo "::set-output name=value::true"
+          echo "value=true" >> $GITHUB_OUTPUT
 
   install:
     name: Install
@@ -109,12 +109,14 @@ jobs:
       - name: ⎔・Setup node
         uses: actions/setup-node@v3
         with:
-          node-version: '16'
+          node-version: lts/hydrogen
           check-latest: true
           cache: 'yarn'
 
       - name: Install dependencies
-        run: yarn install --frozen-lockfile --cache-folder $(yarn cache dir)
+        run: yarn install --immutable
+        env:
+          HUSKY: '0'
 
       - name: Generate open-api
         run: yarn codegen:socket
@@ -250,7 +252,7 @@ jobs:
         with:
           node-version: '16'
       - name: Start Deployment
-        uses: bobheadxi/deployments@v1.3.0
+        uses: bobheadxi/deployments@v1.4.0
         id: deployment
         with:
           step: start
@@ -266,7 +268,7 @@ jobs:
           path_to_add: 'build'
 
       - name: Update Deployment Status
-        uses: bobheadxi/deployments@v1.3.0
+        uses: bobheadxi/deployments@v1.4.0
         if: always()
         with:
           step: finish
@@ -280,7 +282,7 @@ jobs:
   synpress:
     name: 👘 ・Synpress
     runs-on: ubuntu-22.04
-    needs: [prepare]
+    needs: prepare
     if: ${{ needs.prepare.outputs.synpress }}
     env:
       PRIVATE_KEY: ${{ secrets.TEST_WALLET_PRIVATE_KEY }}
@@ -354,7 +356,7 @@ jobs:
 
   cypress:
     name: 🎡 ・Cypress (${{ matrix.containers }})
-    needs: [prepare]
+    needs: prepare
     runs-on: ubuntu-20.04
     if: ${{ needs.prepare.outputs.cypress }}
     strategy:
