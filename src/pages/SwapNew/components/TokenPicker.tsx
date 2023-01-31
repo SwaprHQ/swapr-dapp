@@ -24,23 +24,27 @@ export function TokenPicker() {
     <Container>
       <Input placeholder="Search token by name or paste address" spellCheck={false} />
       <TokenBalanceContainer>
-        <TokenItem>
-          <ETHLogoSVG />
-          ETH
-        </TokenItem>
-        <TokenItem>
-          <USDCLogoSVG />
-          USDC
-        </TokenItem>
-        <TokenItem>
-          <DXDLogoSVG /> DXD
-        </TokenItem>
-        <TokenItem>
-          <DAILogoSVG /> DAI
-        </TokenItem>
-        <TokenItem>
-          <SWPRLogoSVG /> SWPR
-        </TokenItem>
+        <Heading>Your Balance</Heading>
+        <TokenItems>
+          <TokenItem>
+            <ETHLogoSVG />
+            ETH
+          </TokenItem>
+          <TokenItem>
+            <USDCLogoSVG />
+            USDC
+          </TokenItem>
+          <TokenItem>
+            <DXDLogoSVG /> DXD
+          </TokenItem>
+          <TokenItem>
+            <DAILogoSVG /> DAI
+          </TokenItem>
+          <TokenItem>
+            <SWPRLogoSVG /> SWPR
+          </TokenItem>
+          <TokenItem>+11</TokenItem>
+        </TokenItems>
       </TokenBalanceContainer>
     </Container>,
     tokenPickerContainer
@@ -77,11 +81,28 @@ const Input = styled.input`
   text-shadow: 0px 0px 10px rgba(255, 255, 255, 0.15);
   padding: 15px 20px;
   backdrop-filter: blur(12.5px);
-  margin-top: 220px;
+  margin: 220px auto 74px;
 `
 
 const TokenBalanceContainer = styled.div`
   width: 478px;
+  text-align: center;
+`
+
+const Heading = styled.h1`
+  height: 12px;
+  line-height: 12px;
+  display: inline-block;
+  font-size: 10px;
+  font-family: Montserrat, Inter;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: #bcb3f0;
+  margin-bottom: 16px;
+`
+
+const TokenItems = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
