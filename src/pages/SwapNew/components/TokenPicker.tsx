@@ -2,11 +2,14 @@ import { useEffect, useState } from 'react'
 import { createPortal } from 'react-dom'
 import styled from 'styled-components'
 
+import { ReactComponent as BALLogoSVG } from '../../../assets/swapbox/token-logo-bal.svg'
+import { ReactComponent as BATLogoSVG } from '../../../assets/swapbox/token-logo-bat.svg'
 import { ReactComponent as DAILogoSVG } from '../../../assets/swapbox/token-logo-dai.svg'
 import { ReactComponent as DXDLogoSVG } from '../../../assets/swapbox/token-logo-dxd.svg'
 import { ReactComponent as ETHLogoSVG } from '../../../assets/swapbox/token-logo-eth.svg'
 import { ReactComponent as SWPRLogoSVG } from '../../../assets/swapbox/token-logo-swpr.svg'
 import { ReactComponent as USDCLogoSVG } from '../../../assets/swapbox/token-logo-usdc.svg'
+import { ReactComponent as USDTLogoSVG } from '../../../assets/swapbox/token-logo-usdt.svg'
 
 export function TokenPicker() {
   const [tokenPickerContainer] = useState(() => document.createElement('div'))
@@ -23,7 +26,7 @@ export function TokenPicker() {
   return createPortal(
     <Container>
       <Input placeholder="Search token by name or paste address" spellCheck={false} />
-      <TokenBalanceContainer>
+      <TokensSection>
         <Heading>Your Balance</Heading>
         <TokenItems>
           <TokenItem>
@@ -45,7 +48,40 @@ export function TokenPicker() {
           </TokenItem>
           <TokenItem>+11</TokenItem>
         </TokenItems>
-      </TokenBalanceContainer>
+      </TokensSection>
+      <TokensSection>
+        <Heading>Common Tokens</Heading>
+        <TokenItems>
+          <TokenItem>
+            <ETHLogoSVG />
+            ETH
+          </TokenItem>
+          <TokenItem>
+            <USDCLogoSVG />
+            USDC
+          </TokenItem>
+          <TokenItem>
+            <DXDLogoSVG /> DXD
+          </TokenItem>
+          <TokenItem>
+            <SWPRLogoSVG /> SWPR
+          </TokenItem>
+          <TokenItem>
+            <ETHLogoSVG />
+            DAI
+          </TokenItem>
+          <TokenItem>
+            <BALLogoSVG />
+            BAL
+          </TokenItem>
+          <TokenItem>
+            <USDTLogoSVG /> USDT
+          </TokenItem>
+          <TokenItem>
+            <BATLogoSVG /> BAT
+          </TokenItem>
+        </TokenItems>
+      </TokensSection>
     </Container>,
     tokenPickerContainer
   )
@@ -84,9 +120,10 @@ const Input = styled.input`
   margin: 220px auto 74px;
 `
 
-const TokenBalanceContainer = styled.div`
+const TokensSection = styled.div`
   width: 478px;
   text-align: center;
+  margin-bottom: 34px;
 `
 
 const Heading = styled.h1`
@@ -104,6 +141,7 @@ const Heading = styled.h1`
 
 const TokenItems = styled.div`
   display: flex;
+  flex: 1 0 auto;
   justify-content: center;
   align-items: center;
   gap: 8px;
@@ -127,7 +165,7 @@ const TokenItem = styled.p`
   text-transform: uppercase;
   color: #bcb3f0;
   background: linear-gradient(143.3deg, rgba(46, 23, 242, 0.5) -185.11%, rgba(46, 23, 242, 0) 49.63%),
-    linear-gradient(113.18deg, rgba(255, 255, 255, 0.5) -0.1%, rgba(0, 0, 0, 0) 98.9%), rgba(57, 51, 88, 0.3);
+    rgba(57, 51, 88, 0.3);
   background-blend-mode: normal, overlay, normal;
   backdrop-filter: blur(12.5px);
 `
