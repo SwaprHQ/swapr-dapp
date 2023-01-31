@@ -9,6 +9,14 @@ import { LimitOrderKind, MarketPrices } from '../../interfaces'
 import { calculateMarketPriceDiffPercentage } from '../../utils'
 import { ConfirmationFooter } from './ConfirmationFooter'
 import { ConfirmationHeader } from './ConfirmationHeader'
+interface ConfirmLimitOrderModalProps {
+  isOpen: boolean
+  attemptingTxn: boolean
+  errorMessage: string | undefined
+  onDismiss: () => void
+  onConfirm: () => void
+  marketPrices: MarketPrices
+}
 
 export default function ConfirmLimitOrderModal({
   onConfirm,
@@ -17,14 +25,7 @@ export default function ConfirmLimitOrderModal({
   isOpen,
   attemptingTxn,
   marketPrices,
-}: {
-  isOpen: boolean
-  attemptingTxn: boolean
-  onConfirm: () => void
-  errorMessage: string | undefined
-  onDismiss: () => void
-  marketPrices: MarketPrices
-}) {
+}: ConfirmLimitOrderModalProps) {
   const {
     limitOrder,
     buyTokenAmount,

@@ -7,13 +7,14 @@ import styled from 'styled-components'
 import Hero from '../../components/LandingPageComponents/layout/Hero'
 import { useActiveWeb3React } from '../../hooks'
 import { useRouter } from '../../hooks/useRouter'
+import { ChartOption, SwapTab } from '../../state/user/reducer'
 import { AdvancedTradingViewBox } from './AdvancedTradingViewBox'
 import { Tabs } from './Components/Tabs'
 import { LandingSections } from './LandingSections'
 import { LimitOrderBox } from './LimitOrderBox'
 import { supportedChainIdList } from './LimitOrderBox/constants'
 import { SwapBox } from './SwapBox/SwapBox.component'
-import { ChartOptions, SwapTab, SwapTabContext } from './SwapContext'
+import { SwapTabContext } from './SwapContext'
 
 const AppBodyContainer = styled.section`
   display: flex;
@@ -31,7 +32,7 @@ export function Swap() {
 
   // Control the active tab
   const [activeTab, setActiveTab] = useState(SWAP)
-  const [activeChartTab, setActiveChartTab] = useState(ChartOptions.OFF)
+  const [activeChartTab, setActiveChartTab] = useState(ChartOption.OFF)
   const { pathname } = useRouter()
 
   const isPro = pathname.includes('/pro')
@@ -46,11 +47,11 @@ export function Swap() {
 
   useEffect(() => {
     if (isPro) {
-      setActiveChartTab(ChartOptions.PRO)
+      setActiveChartTab(ChartOption.PRO)
     } else if (pathname.includes('swap')) {
-      setActiveChartTab(ChartOptions.OFF)
+      setActiveChartTab(ChartOption.OFF)
     }
-  }, [isPro, pathname])
+  }, [isPro, setActiveChartTab, pathname])
 
   const AdvancedViewWrapper = isPro ? AdvancedTradingViewBox : Fragment
 

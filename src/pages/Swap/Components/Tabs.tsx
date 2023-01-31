@@ -11,8 +11,9 @@ import { MouseoverTooltip } from '../../../components/Tooltip'
 import { useActiveWeb3React } from '../../../hooks'
 import { useRouter } from '../../../hooks/useRouter'
 import { ecoBridgeUIActions } from '../../../services/EcoBridge/store/UI.reducer'
+import { SwapTab } from '../../../state/user/reducer'
 import { supportedChainIdList } from '../LimitOrderBox/constants'
-import { SwapTab, SwapTabContext } from '../SwapContext'
+import { SwapTabContext } from '../SwapContext'
 import { ChartTabs } from './ChartTabs'
 
 const TabsColumn = styled.div`

@@ -6,14 +6,14 @@ import { MouseoverTooltip } from '../../../components/Tooltip'
 import { useIsDesktop } from '../../../hooks/useIsDesktopByMedia'
 import { useRouter } from '../../../hooks/useRouter'
 import { useUpdateSelectedChartOption } from '../../../state/user/hooks'
-import { ChartOptions } from '../SwapContext'
+import { ChartOption } from '../../../state/user/reducer'
 
 export const ChartTabs = ({
   activeChartTab,
   setActiveChartTab,
 }: {
-  activeChartTab: ChartOptions
-  setActiveChartTab: (tab: ChartOptions) => void
+  activeChartTab: ChartOption
+  setActiveChartTab: (tab: ChartOption) => void
 }) => {
   const { navigate } = useRouter()
   const { t } = useTranslation('swap')
@@ -37,12 +37,13 @@ export const ChartTabs = ({
         {t('advancedTradingView.chartTabs.simple')}
       </Tab> */}
         <Tab
-          active={activeChartTab === ChartOptions.PRO}
+          active={activeChartTab === ChartOption.PRO}
           onClick={() => {
-            setActiveChartTab(ChartOptions.PRO)
-            setSelectedChartTab(ChartOptions.PRO)
-            navigate('/swap/pro')
-            window?.fathom?.trackPageview()
+            if (activeChartTab !== ChartOption.PRO) {
+              setActiveChartTab(ChartOption.PRO)
+              navigate('/swap/pro')
+              window?.fathom?.trackPageview()
+            }
           }}
           title={
             // proOptionsDisabled
@@ -54,12 +55,14 @@ export const ChartTabs = ({
           {t('advancedTradingView.chartTabs.pro')}
         </Tab>
         <Tab
-          active={activeChartTab === ChartOptions.OFF}
+          active={activeChartTab === ChartOption.OFF}
           onClick={() => {
-            setActiveChartTab(ChartOptions.OFF)
-            setSelectedChartTab(ChartOptions.OFF)
-            navigate('/swap')
-            window?.fathom?.trackPageview()
+            if (activeChartTab !== ChartOption.OFF) {
+              setActiveChartTab(ChartOption.OFF)
+              setSelectedChartTab(ChartOption.OFF)
+              navigate('/swap')
+              window?.fathom?.trackPageview()
+            }
           }}
           title={t('advancedTradingView.chartTabs.offTitle')}
           disabled={!isDesktop}
