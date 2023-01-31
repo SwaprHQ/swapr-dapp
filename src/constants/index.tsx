@@ -24,6 +24,7 @@ import { AbstractConnector } from '@web3-react/abstract-connector'
 import { providers } from 'ethers'
 import { ReactNode } from 'react'
 
+import OneInchLogo from '../assets/images/1inch-logo.svg'
 import RightArrow from '../assets/images/arrow-right.svg'
 import BaoswapLogo from '../assets/images/baoswap-logo.png'
 import PancakeSwapLogo from '../assets/images/bunny-mono.png'
@@ -532,11 +533,13 @@ export const RoutablePlatformKeysByNetwork = {
     UniswapV2RoutablePlatform.SUSHISWAP.name,
     RoutablePlatform.ZEROX.name,
     RoutablePlatform.GNOSIS_PROTOCOL.name,
+    RoutablePlatform.ONE_INCH.name,
   ],
   [ChainId.ARBITRUM_ONE]: [
     UniswapV2RoutablePlatform.SWAPR.name,
     RoutablePlatform.UNISWAP.name,
     UniswapV2RoutablePlatform.SUSHISWAP.name,
+    RoutablePlatform.ONE_INCH.name,
   ],
   [ChainId.XDAI]: [
     UniswapV2RoutablePlatform.SWAPR.name,
@@ -547,6 +550,7 @@ export const RoutablePlatformKeysByNetwork = {
     UniswapV2RoutablePlatform.BAOSWAP.name,
     RoutablePlatform.CURVE.name,
     RoutablePlatform.GNOSIS_PROTOCOL.name,
+    RoutablePlatform.ONE_INCH.name,
   ],
   [ChainId.POLYGON]: [
     RoutablePlatform.UNISWAP.name,
@@ -554,13 +558,19 @@ export const RoutablePlatformKeysByNetwork = {
     UniswapV2RoutablePlatform.QUICKSWAP.name,
     UniswapV2RoutablePlatform.DFYN.name,
     RoutablePlatform.ZEROX.name,
+    RoutablePlatform.ONE_INCH.name,
   ],
   [ChainId.OPTIMISM_MAINNET]: [
     RoutablePlatform.UNISWAP.name,
     UniswapV2RoutablePlatform.SUSHISWAP.name,
     RoutablePlatform.CURVE.name,
+    RoutablePlatform.ONE_INCH.name,
   ],
-  [ChainId.BSC_MAINNET]: [UniswapV2RoutablePlatform.SUSHISWAP.name, UniswapV2RoutablePlatform.PANCAKESWAP.name],
+  [ChainId.BSC_MAINNET]: [
+    UniswapV2RoutablePlatform.SUSHISWAP.name,
+    UniswapV2RoutablePlatform.PANCAKESWAP.name,
+    RoutablePlatform.ONE_INCH.name,
+  ],
   // TEST NETS WITH ALL DEXES
   [ChainId.RINKEBY]: [
     UniswapV2RoutablePlatform.SWAPR.name,
@@ -588,6 +598,7 @@ export const RoutablePlatformKeysByNetwork = {
     UniswapV2RoutablePlatform.SUSHISWAP.name,
     RoutablePlatform.CURVE.name,
     RoutablePlatform.VELODROME.name,
+    RoutablePlatform.ONE_INCH.name,
   ],
   [ChainId.BSC_TESTNET]: [],
 }
@@ -684,6 +695,12 @@ export const ROUTABLE_PLATFORM_STYLE: {
     gradientColor: '#FB52A1',
     name: RoutablePlatform.VELODROME.name,
   },
+  [RoutablePlatform.ONE_INCH.name]: {
+    logo: OneInchLogo,
+    alt: RoutablePlatform.ONE_INCH.name,
+    gradientColor: '#FB52A1',
+    name: RoutablePlatform.ONE_INCH.name,
+  },
 }
 
 export const ROUTABLE_PLATFORM_LOGO: {
@@ -703,6 +720,7 @@ export const ROUTABLE_PLATFORM_LOGO: {
   [RoutablePlatform.GNOSIS_PROTOCOL.name]: <img width={16} height={16} src={CoWLogo} alt="CoW" />,
   [RoutablePlatform.VELODROME.name]: <img width={16} height={16} src={VelodromeLogo} alt="Velodrome" />,
   [RoutablePlatform.UNISWAP.name]: <img width={16} height={16} src={UniswapLogo} alt="Uniswap Unicorn" />,
+  [RoutablePlatform.ONE_INCH.name]: <img width={16} height={16} src={OneInchLogo} alt="One Inch" />,
 }
 
 export const ChainLabel: any = {

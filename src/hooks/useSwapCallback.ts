@@ -4,6 +4,7 @@ import {
   ChainId,
   CoWTrade,
   CurveTrade,
+  OneInchTrade,
   Trade,
   TradeType,
   UniswapTrade,
@@ -64,7 +65,7 @@ export function useSwapsCallArguments(
   allowedSlippage: number = INITIAL_ALLOWED_SLIPPAGE, // in bips
   recipient?: string | null // the ENS name or address of the recipient of the trade, or null if swap should be returned to sender
 ): SwapCall[][] {
-  const { chainId, library } = useActiveWeb3React()
+  const { chainId, library, account } = useActiveWeb3React()
 
   const deadline = useTransactionDeadline()
 
@@ -98,10 +99,20 @@ export function useSwapsCallArguments(
         )
       }
 
-      /**
-       * @todo implement slippage
-       */
+      if (trade instanceof OneInchTrade && account) {
+        swapMethods.push(
+          trade.swapTransaction({
+            recipient,
+            ttl: deadline.toNumber(),
+            account,
+          })
+        )
+      }
+
       if (allowedSlippage > 6 && trade.tradeType === TradeType.EXACT_INPUT) {
+        /**
+         * @todo implement slippage
+         */
         // swapMethods.push(
         // Router.swapCallParameters(trade, {
         //   feeOnTransfer: true,
@@ -114,7 +125,7 @@ export function useSwapsCallArguments(
 
       return swapMethods.map(transactionParameters => ({ transactionParameters }))
     })
-  }, [allowedSlippage, chainId, deadline, library, trades, recipient])
+  }, [allowedSlippage, chainId, deadline, library, trades, recipient, account])
 }
 
 /**
