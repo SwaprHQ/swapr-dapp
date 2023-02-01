@@ -147,7 +147,7 @@ const TokenItems = styled.div`
   gap: 8px;
 `
 
-const TokenItem = styled.p`
+const TokenItem = styled.button`
   height: 38px;
   display: inline-flex;
   justify-content: center;
@@ -168,4 +168,6 @@ const TokenItem = styled.p`
     rgba(57, 51, 88, 0.3);
   background-blend-mode: normal, overlay, normal;
   backdrop-filter: blur(12.5px);
+
+  cursor: pointer;
 `
