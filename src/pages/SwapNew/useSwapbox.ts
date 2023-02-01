@@ -44,6 +44,7 @@ function reducer(state: SwapBoxState, action: Action) {
 export const useSwapbox = () => {
   const [state, dispatch] = useReducer(reducer, initialState)
   const [tokenPickerOpened, setTokenPickerOpened] = useState(false)
+  const [tokenPickerInput, setTokenPickerInput] = useState('')
 
   const onFromInputChange = (event: ChangeEvent<HTMLInputElement>) =>
     dispatch({
@@ -59,6 +60,16 @@ export const useSwapbox = () => {
 
   const openTokenPicker = () => setTokenPickerOpened(true)
   const closeTokenPicker = () => setTokenPickerOpened(false)
+  const onTokenPickerInputChange = (event: ChangeEvent<HTMLInputElement>) => setTokenPickerInput(event.target.value)
 
-  return { state, onFromInputChange, onToInputChange, tokenPickerOpened, openTokenPicker, closeTokenPicker }
+  return {
+    state,
+    onFromInputChange,
+    onToInputChange,
+    tokenPickerOpened,
+    openTokenPicker,
+    closeTokenPicker,
+    tokenPickerInput,
+    onTokenPickerInputChange,
+  }
 }
