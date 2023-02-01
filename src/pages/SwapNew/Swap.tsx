@@ -27,14 +27,26 @@ const swapData: SwapData = {
 }
 
 export function Swapbox2() {
-  const { state, onFromInputChange, onToInputChange } = useSwapbox()
+  const { state, onFromInputChange, onToInputChange, tokenPickerOpened, openTokenPicker, closeTokenPicker } =
+    useSwapbox()
 
   return (
     <>
       <Container>
-        <TokenPicker />
-        <CurrencyItem value={state.fromValue} onChange={onFromInputChange} currency={swapData.from} />
-        <CurrencyItem value={state.toValue} onChange={onToInputChange} currency={swapData.to} lowerItem />
+        {tokenPickerOpened && <TokenPicker closeTokenPicker={closeTokenPicker} />}
+        <CurrencyItem
+          value={state.fromValue}
+          onChange={onFromInputChange}
+          currency={swapData.from}
+          openTokenPicker={openTokenPicker}
+        />
+        <CurrencyItem
+          value={state.toValue}
+          onChange={onToInputChange}
+          currency={swapData.to}
+          openTokenPicker={openTokenPicker}
+          lowerItem
+        />
         <SwitchCurrenciesButton />
         <SwapInfo />
         <SwapButton />
