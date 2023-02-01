@@ -1,4 +1,4 @@
-import { ChangeEvent, useReducer } from 'react'
+import { ChangeEvent, useReducer, useState } from 'react'
 
 type SwapBoxState = {
   fromValue: number
@@ -43,6 +43,7 @@ function reducer(state: SwapBoxState, action: Action) {
 
 export const useSwapbox = () => {
   const [state, dispatch] = useReducer(reducer, initialState)
+  const [tokenPickerOpened, setTokenPickerOpened] = useState(false)
 
   const onFromInputChange = (event: ChangeEvent<HTMLInputElement>) =>
     dispatch({
@@ -56,5 +57,8 @@ export const useSwapbox = () => {
       payload: event.target.value,
     })
 
-  return { state, onFromInputChange, onToInputChange }
+  const openTokenPicker = () => setTokenPickerOpened(true)
+  const closeTokenPicker = () => setTokenPickerOpened(false)
+
+  return { state, onFromInputChange, onToInputChange, tokenPickerOpened, openTokenPicker, closeTokenPicker }
 }
