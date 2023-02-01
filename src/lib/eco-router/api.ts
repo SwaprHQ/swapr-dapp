@@ -1,7 +1,6 @@
 import { AddressZero } from '@ethersproject/constants'
 import { Provider } from '@ethersproject/providers'
 import {
-  ChainId,
   CoWTrade,
   CurveTrade,
   getAllCommonUniswapV2Pairs,
@@ -11,13 +10,14 @@ import {
   Trade,
   TradeType,
   UniswapTrade,
+  UniswapV2RoutablePlatform,
   UniswapV2Trade,
   VelodromeTrade,
   ZeroXTrade,
 } from '@swapr/sdk'
-// Low-level API for Uniswap V2
 
-import { getUniswapV2PlatformList } from './platforms'
+// Low-level API for Uniswap V2
+import { getSupportedPlatformsByChainId } from './platforms'
 // Types
 import {
   EcoRouterBestExactInParams,
@@ -71,164 +71,94 @@ export async function getExactIn(
     }
   }
 
-  // Uniswap V2
-  // Get the list of Uniswap V2 platform that support current chain
-  const uniswapV2PlatformList = getUniswapV2PlatformList(chainId)
+  const supportedEcoRouterPlatforms = getSupportedPlatformsByChainId(chainId)
 
-  const uniswapV2TradesList = uniswapV2PlatformList.map(async platform => {
-    try {
-      const getAllCommonUniswapV2PairsParams = {
-        currencyA: currencyAmountIn.currency,
-        currencyB: currencyOut,
-        platform,
-        provider,
+  const ecoRouterTradeList = await Promise.all(
+    supportedEcoRouterPlatforms.map(async platform => {
+      try {
+        // Uniswap v2
+        if (platform instanceof UniswapV2RoutablePlatform) {
+          const pairs = await getAllCommonUniswapV2Pairs({
+            currencyA: currencyAmountIn.currency,
+            currencyB: currencyOut,
+            platform,
+            provider,
+          })
+
+          return (
+            UniswapV2Trade.computeTradesExactIn({
+              currencyAmountIn,
+              currencyOut,
+              maximumSlippage,
+              maxHops: {
+                maxHops: uniswapV2.useMultihops ? 3 : 1,
+                maxNumResults: 1,
+              },
+              pairs,
+            })[0] ?? undefined
+          )
+        }
+        // Uniswap v3
+        if (platform.name === RoutablePlatform.UNISWAP.name) {
+          return UniswapTrade.getQuote({
+            quoteCurrency: currencyOut,
+            amount: currencyAmountIn,
+            maximumSlippage,
+            recipient: receiver,
+            tradeType: TradeType.EXACT_INPUT,
+          })
+        }
+        // Curve
+        if (platform.name === RoutablePlatform.CURVE.name) {
+          return CurveTrade.bestTradeExactIn({
+            currencyAmountIn,
+            currencyOut,
+            maximumSlippage,
+            receiver,
+          })
+        }
+        // ZeroX
+        if (platform.name === RoutablePlatform.ZEROX.name) {
+          return ZeroXTrade.bestTradeExactIn(currencyAmountIn, currencyOut, maximumSlippage)
+        }
+        // COW
+        if (platform.name === RoutablePlatform.COW.name) {
+          return CoWTrade.bestTradeExactIn({
+            currencyAmountIn,
+            currencyOut,
+            maximumSlippage,
+            receiver,
+            user,
+          })
+        }
+        // Velodrome
+        if (platform.name === RoutablePlatform.VELODROME.name) {
+          return VelodromeTrade.getQuote({
+            quoteCurrency: currencyOut,
+            amount: currencyAmountIn,
+            maximumSlippage,
+            recipient: receiver,
+            tradeType: TradeType.EXACT_INPUT,
+          })
+        }
+        if (platform.name === RoutablePlatform.ONE_INCH.name) {
+          return OneInchTrade.getQuote({
+            quoteCurrency: currencyOut,
+            amount: currencyAmountIn,
+            maximumSlippage,
+            recipient: receiver,
+            tradeType: TradeType.EXACT_INPUT,
+          })
+        }
+      } catch (error) {
+        errors.push(error)
+        return undefined
       }
-
-      const pairs = await getAllCommonUniswapV2Pairs(getAllCommonUniswapV2PairsParams)
-
-      return (
-        UniswapV2Trade.computeTradesExactIn({
-          currencyAmountIn,
-          currencyOut,
-          maximumSlippage,
-          maxHops: {
-            maxHops: uniswapV2.useMultihops ? 3 : 1,
-            maxNumResults: 1,
-          },
-          pairs,
-        })[0] ?? undefined
-      )
-    } catch (error) {
-      errors.push(error)
-      return undefined
-    }
-  })
-
-  const uniswapTrade = new Promise<UniswapTrade | undefined>(resolve => {
-    if (!RoutablePlatform.UNISWAP.supportsChain(chainId)) {
-      return resolve(undefined)
-    }
-
-    UniswapTrade.getQuote({
-      quoteCurrency: currencyOut,
-      amount: currencyAmountIn,
-      maximumSlippage,
-      recipient: receiver,
-      tradeType: TradeType.EXACT_INPUT,
     })
-      .then(res => resolve(res ? res : undefined))
-      .catch(error => {
-        console.error(error)
-        errors.push(error)
-        resolve(undefined)
-      })
-  })
+  )
 
-  const velodromeTrade = new Promise<VelodromeTrade | undefined>(resolve => {
-    if (!RoutablePlatform.VELODROME.supportsChain(chainId)) {
-      return resolve(undefined)
-    }
-
-    VelodromeTrade.getQuote({
-      quoteCurrency: currencyOut,
-      amount: currencyAmountIn,
-      maximumSlippage,
-      recipient: receiver,
-      tradeType: TradeType.EXACT_INPUT,
-    })
-      .then(res => resolve(res ? res : undefined))
-      .catch(error => {
-        console.error(error)
-        errors.push(error)
-        resolve(undefined)
-      })
-  })
-
-  const OneInch = new Promise<OneInchTrade | undefined>(resolve => {
-    if (!RoutablePlatform.ONE_INCH.supportsChain(chainId)) {
-      return resolve(undefined)
-    }
-    OneInchTrade.getQuote({
-      quoteCurrency: currencyOut,
-      amount: currencyAmountIn,
-      maximumSlippage,
-      recipient: receiver,
-      tradeType: TradeType.EXACT_INPUT,
-    })
-      .then(res => resolve(res ? res : undefined))
-      .catch(error => {
-        console.error(error)
-        errors.push(error)
-        resolve(undefined)
-      })
-  })
-
-  // Curve
-  const curveTrade = new Promise<CurveTrade | undefined>(async resolve => {
-    if (!RoutablePlatform.CURVE.supportsChain(chainId)) {
-      return resolve(undefined)
-    }
-
-    CurveTrade.bestTradeExactIn({
-      currencyAmountIn,
-      currencyOut,
-      maximumSlippage,
-      receiver,
-    })
-      .then(resolve)
-      .catch(error => {
-        errors.push(error)
-        resolve(undefined)
-      })
-  })
-
-  // ZeroX
-  const zeroXTrade = new Promise<ZeroXTrade | undefined>(async resolve => {
-    if (!RoutablePlatform.ZEROX.supportsChain(chainId)) {
-      return resolve(undefined)
-    }
-
-    ZeroXTrade.bestTradeExactIn(currencyAmountIn, currencyOut, maximumSlippage)
-      .then(resolve)
-      .catch(error => {
-        errors.push(error)
-        resolve(undefined)
-        console.error(error)
-      })
-  })
-
-  // Gnosis Protocol V2
-  const gnosisProtocolTrade = new Promise<CoWTrade | undefined>(async resolve => {
-    if (!RoutablePlatform.COW.supportsChain(chainId as ChainId)) {
-      return resolve(undefined)
-    }
-
-    CoWTrade.bestTradeExactIn({
-      currencyAmountIn,
-      currencyOut,
-      maximumSlippage,
-      receiver,
-      user,
-    })
-      .then(resolve)
-      .catch(error => {
-        resolve(undefined)
-        console.error(error)
-      })
-  })
-
-  // Wait for all promises to resolve, and
+  const unsortedTrades = ecoRouterTradeList.filter(trade => trade !== undefined || trade !== null) as Trade[]
   // remove undefined values
-  const unsortedTradesWithUndefined = await Promise.all<Trade | undefined>([
-    ...uniswapV2TradesList,
-    velodromeTrade,
-    curveTrade,
-    gnosisProtocolTrade,
-    uniswapTrade,
-    zeroXTrade,
-    OneInch,
-  ])
-  const unsortedTrades = unsortedTradesWithUndefined.filter((trade): trade is Trade => !!trade)
 
   // Return the list of sorted trades
   return {
@@ -258,164 +188,91 @@ export async function getExactOut(
     }
   }
 
-  // Uniswap V2
-  // Get the list of Uniswap V2 platform that support current chain
-  const uniswapV2PlatformList = getUniswapV2PlatformList(chainId)
+  const supportedEcoRouterPlatforms = getSupportedPlatformsByChainId(chainId)
 
-  const uniswapV2TradesList = uniswapV2PlatformList.map(async platform => {
-    try {
-      const getAllCommonUniswapV2PairsParams = {
-        currencyA: currencyAmountOut.currency,
-        currencyB: currencyIn,
-        platform,
-        provider,
+  const ecoRouterTradeList = await Promise.all(
+    supportedEcoRouterPlatforms.map(async platform => {
+      try {
+        // Uniswap v2
+        if (platform instanceof UniswapV2RoutablePlatform) {
+          const pairs = await getAllCommonUniswapV2Pairs({
+            currencyA: currencyAmountOut.currency,
+            currencyB: currencyIn,
+            platform,
+            provider,
+          })
+          return (
+            UniswapV2Trade.computeTradesExactOut({
+              currencyAmountOut,
+              currencyIn,
+              maximumSlippage,
+              maxHops: {
+                maxHops: uniswapV2.useMultihops ? 3 : 1,
+                maxNumResults: 1,
+              },
+              pairs,
+            })[0] ?? undefined
+          )
+        }
+        // Uniswap v3
+        if (platform.name === RoutablePlatform.UNISWAP.name) {
+          return UniswapTrade.getQuote({
+            quoteCurrency: currencyIn,
+            amount: currencyAmountOut,
+            maximumSlippage,
+            recipient: receiver,
+            tradeType: TradeType.EXACT_OUTPUT,
+          })
+        }
+        // Curve
+        if (platform.name === RoutablePlatform.CURVE.name) {
+          return CurveTrade.bestTradeExactOut({
+            currencyAmountOut,
+            currencyIn,
+            maximumSlippage,
+            receiver,
+          })
+        }
+        // ZeroX
+        if (platform.name === RoutablePlatform.ZEROX.name) {
+          return ZeroXTrade.bestTradeExactOut(currencyIn, currencyAmountOut, maximumSlippage)
+        }
+        // COW
+        if (platform.name === RoutablePlatform.COW.name) {
+          return CoWTrade.bestTradeExactOut({
+            currencyAmountOut,
+            currencyIn,
+            maximumSlippage,
+            receiver,
+            user,
+          })
+        }
+        if (platform.name === RoutablePlatform.VELODROME.name) {
+          return VelodromeTrade.getQuote({
+            quoteCurrency: currencyIn,
+            amount: currencyAmountOut,
+            maximumSlippage,
+            recipient: receiver,
+            tradeType: TradeType.EXACT_OUTPUT,
+          })
+        }
+        if (platform.name === RoutablePlatform.ONE_INCH.name) {
+          return OneInchTrade.getQuote({
+            quoteCurrency: currencyIn,
+            amount: currencyAmountOut,
+            maximumSlippage,
+            recipient: receiver,
+            tradeType: TradeType.EXACT_OUTPUT,
+          })
+        }
+      } catch (error) {
+        errors.push(error)
+        return undefined
       }
-
-      const pairs = await getAllCommonUniswapV2Pairs(getAllCommonUniswapV2PairsParams)
-
-      return (
-        UniswapV2Trade.computeTradesExactOut({
-          currencyAmountOut,
-          currencyIn,
-          maximumSlippage,
-          maxHops: {
-            maxHops: uniswapV2.useMultihops ? 3 : 1,
-            maxNumResults: 1,
-          },
-          pairs,
-        })[0] ?? undefined
-      )
-    } catch (error) {
-      errors.push(error)
-      return undefined
-    }
-  })
-
-  // Uniswap v2 and v3
-  const uniswapTrade = new Promise<UniswapTrade | undefined>(resolve => {
-    if (!RoutablePlatform.UNISWAP.supportsChain(chainId)) {
-      return resolve(undefined)
-    }
-
-    UniswapTrade.getQuote({
-      quoteCurrency: currencyIn,
-      amount: currencyAmountOut,
-      maximumSlippage,
-      recipient: receiver,
-      tradeType: TradeType.EXACT_OUTPUT,
     })
-      .then(res => resolve(res ? res : undefined))
-      .catch(error => {
-        console.error(error)
-        errors.push(error)
-        resolve(undefined)
-      })
-  })
+  )
 
-  const velodromeTrade = new Promise<VelodromeTrade | undefined>(resolve => {
-    if (!RoutablePlatform.VELODROME.supportsChain(chainId)) {
-      return resolve(undefined)
-    }
-
-    VelodromeTrade.getQuote({
-      quoteCurrency: currencyIn,
-      amount: currencyAmountOut,
-      maximumSlippage,
-      recipient: receiver,
-      tradeType: TradeType.EXACT_OUTPUT,
-    })
-      .then(res => resolve(res ? res : undefined))
-      .catch(error => {
-        console.error(error)
-        errors.push(error)
-        resolve(undefined)
-      })
-  })
-
-  // Curve
-  const curveTrade = new Promise<CurveTrade | undefined>(async resolve => {
-    if (!RoutablePlatform.CURVE.supportsChain(chainId)) {
-      return resolve(undefined)
-    }
-
-    CurveTrade.bestTradeExactOut({
-      currencyAmountOut,
-      currencyIn,
-      maximumSlippage,
-      receiver,
-    })
-      .then(resolve)
-      .catch(error => {
-        errors.push(error)
-        resolve(undefined)
-      })
-  })
-
-  // ZeroX
-  const zeroXTrade = new Promise<ZeroXTrade | undefined>(async resolve => {
-    if (!RoutablePlatform.ZEROX.supportsChain(chainId)) {
-      return resolve(undefined)
-    }
-
-    ZeroXTrade.bestTradeExactOut(currencyIn, currencyAmountOut, maximumSlippage)
-      .then(resolve)
-      .catch(error => {
-        errors.push(error)
-        resolve(undefined)
-        console.error(error)
-      })
-  })
-
-  // Gnosis Protocol V2
-  const gnosisProtocolTrade = new Promise<CoWTrade | undefined>(async resolve => {
-    if (!RoutablePlatform.GNOSIS_PROTOCOL.supportsChain(chainId as ChainId)) {
-      return resolve(undefined)
-    }
-
-    CoWTrade.bestTradeExactOut({
-      currencyAmountOut,
-      currencyIn,
-      maximumSlippage,
-      receiver,
-      user,
-    })
-      .then(resolve)
-      .catch(error => {
-        resolve(undefined)
-        console.error(error)
-      })
-  })
-  const OneInch = new Promise<OneInchTrade | undefined>(resolve => {
-    if (!RoutablePlatform.ONE_INCH.supportsChain(chainId)) {
-      return resolve(undefined)
-    }
-
-    OneInchTrade.getQuote({
-      quoteCurrency: currencyIn,
-      amount: currencyAmountOut,
-      maximumSlippage,
-      recipient: receiver,
-      tradeType: TradeType.EXACT_OUTPUT,
-    })
-      .then(res => resolve(res ? res : undefined))
-      .catch(error => {
-        console.error(error)
-        errors.push(error)
-        resolve(undefined)
-      })
-  })
-  // Wait for all promises to resolve, and
-  // remove undefined values
-  const unsortedTradesWithUndefined = await Promise.all<Trade | undefined>([
-    ...uniswapV2TradesList,
-    curveTrade,
-    gnosisProtocolTrade,
-    uniswapTrade,
-    velodromeTrade,
-    zeroXTrade,
-    OneInch,
-  ])
-  const unsortedTrades = unsortedTradesWithUndefined.filter((trade): trade is Trade => !!trade)
+  const unsortedTrades = ecoRouterTradeList.filter(trade => trade !== undefined || trade !== null) as Trade[]
 
   // Return the list of sorted trades
   return {
