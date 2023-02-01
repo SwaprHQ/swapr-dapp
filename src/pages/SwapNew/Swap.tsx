@@ -28,13 +28,29 @@ const swapData: SwapData = {
 }
 
 export function Swapbox2() {
-  const { state, onFromInputChange, onToInputChange, tokenPickerOpened, openTokenPicker, closeTokenPicker } =
-    useSwapbox()
+  const {
+    state,
+    onFromInputChange,
+    onToInputChange,
+    tokenPickerOpened,
+    openTokenPicker,
+    closeTokenPicker,
+    tokenPickerInput,
+    onTokenPickerInputChange,
+  } = useSwapbox()
 
   return (
     <>
       <Container>
-        <AnimatePresence>{tokenPickerOpened && <TokenPicker closeTokenPicker={closeTokenPicker} />}</AnimatePresence>
+        <AnimatePresence>
+          {tokenPickerOpened && (
+            <TokenPicker
+              tokenPickerInput={tokenPickerInput}
+              onTokenPickerInputChange={onTokenPickerInputChange}
+              closeTokenPicker={closeTokenPicker}
+            />
+          )}
+        </AnimatePresence>
         <CurrencyItem
           value={state.fromValue}
           onChange={onFromInputChange}

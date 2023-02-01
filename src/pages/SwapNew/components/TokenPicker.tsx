@@ -1,5 +1,5 @@
 import { motion } from 'framer-motion'
-import { useEffect, useState } from 'react'
+import { ChangeEvent, useEffect, useState } from 'react'
 import { createPortal } from 'react-dom'
 import styled from 'styled-components'
 
@@ -13,10 +13,12 @@ import { ReactComponent as USDCLogoSVG } from '../../../assets/swapbox/token-log
 import { ReactComponent as USDTLogoSVG } from '../../../assets/swapbox/token-logo-usdt.svg'
 
 type TokenPickerProps = {
+  tokenPickerInput: string
+  onTokenPickerInputChange: (event: ChangeEvent<HTMLInputElement>) => void
   closeTokenPicker: () => void
 }
 
-export function TokenPicker({ closeTokenPicker }: TokenPickerProps) {
+export function TokenPicker({ tokenPickerInput, onTokenPickerInputChange, closeTokenPicker }: TokenPickerProps) {
   const [tokenPickerContainer] = useState(() => document.createElement('div'))
 
   useEffect(() => {
@@ -54,63 +56,72 @@ export function TokenPicker({ closeTokenPicker }: TokenPickerProps) {
         },
       }}
     >
-      <Input placeholder="Search token by name or paste address" spellCheck={false} />
-      <TokensSection>
-        <Heading>Your Balance</Heading>
-        <TokenItems>
-          <TokenItem>
-            <ETHLogoSVG />
-            ETH
-          </TokenItem>
-          <TokenItem>
-            <USDCLogoSVG />
-            USDC
-          </TokenItem>
-          <TokenItem>
-            <DXDLogoSVG /> DXD
-          </TokenItem>
-          <TokenItem>
-            <DAILogoSVG /> DAI
-          </TokenItem>
-          <TokenItem>
-            <SWPRLogoSVG /> SWPR
-          </TokenItem>
-          <TokenItem>+11</TokenItem>
-        </TokenItems>
-      </TokensSection>
-      <TokensSection>
-        <Heading>Common Tokens</Heading>
-        <TokenItems>
-          <TokenItem>
-            <ETHLogoSVG />
-            ETH
-          </TokenItem>
-          <TokenItem>
-            <USDCLogoSVG />
-            USDC
-          </TokenItem>
-          <TokenItem>
-            <DXDLogoSVG /> DXD
-          </TokenItem>
-          <TokenItem>
-            <SWPRLogoSVG /> SWPR
-          </TokenItem>
-          <TokenItem>
-            <ETHLogoSVG />
-            DAI
-          </TokenItem>
-          <TokenItem>
-            <BALLogoSVG />
-            BAL
-          </TokenItem>
-          <TokenItem>
-            <USDTLogoSVG /> USDT
-          </TokenItem>
-          <TokenItem>
-            <BATLogoSVG /> BAT
-          </TokenItem>
-        </TokenItems>
-      </TokensSection>
+      <Input
+        value={tokenPickerInput}
+        onChange={onTokenPickerInputChange}
+        placeholder="Search token by name or paste address"
+        spellCheck={false}
+      />
+      {!tokenPickerInput.trim() && (
+        <>
+          <TokensSection>
+            <Heading>Your Balance</Heading>
+            <TokenItems>
+              <TokenItem>
+                <ETHLogoSVG />
+                ETH
+              </TokenItem>
+              <TokenItem>
+                <USDCLogoSVG />
+                USDC
+              </TokenItem>
+              <TokenItem>
+                <DXDLogoSVG /> DXD
+              </TokenItem>
+              <TokenItem>
+                <DAILogoSVG /> DAI
+              </TokenItem>
+              <TokenItem>
+                <SWPRLogoSVG /> SWPR
+              </TokenItem>
+              <TokenItem>+11</TokenItem>
+            </TokenItems>
+          </TokensSection>
+          <TokensSection>
+            <Heading>Common Tokens</Heading>
+            <TokenItems>
+              <TokenItem>
+                <ETHLogoSVG />
+                ETH
+              </TokenItem>
+              <TokenItem>
+                <USDCLogoSVG />
+                USDC
+              </TokenItem>
+              <TokenItem>
+                <DXDLogoSVG /> DXD
+              </TokenItem>
+              <TokenItem>
+                <SWPRLogoSVG /> SWPR
+              </TokenItem>
+              <TokenItem>
+                <ETHLogoSVG />
+                DAI
+              </TokenItem>
+              <TokenItem>
+                <BALLogoSVG />
+                BAL
+              </TokenItem>
+              <TokenItem>
+                <USDTLogoSVG /> USDT
+              </TokenItem>
+              <TokenItem>
+                <BATLogoSVG /> BAT
+              </TokenItem>
+            </TokenItems>
+          </TokensSection>
+        </>
+      )}
     </Container>,
     tokenPickerContainer
   )
