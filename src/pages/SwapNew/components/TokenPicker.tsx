@@ -62,7 +62,7 @@ export function TokenPicker({ tokenPickerInput, onTokenPickerInputChange, closeT
         placeholder="Search token by name or paste address"
         spellCheck={false}
       />
-      {!tokenPickerInput.trim() && (
+      {!tokenPickerInput.trim() ? (
         <>
           <TokensSection>
             <Heading>Your Balance</Heading>
@@ -121,6 +121,13 @@ export function TokenPicker({ tokenPickerInput, onTokenPickerInputChange, closeT
             </TokenItems>
           </TokensSection>
         </>
+      ) : (
+        <SearchList>
+          <SearchTokenItem>
+            <SearchTokenInfo></SearchTokenInfo>
+            <SearchTokenName>Ether</SearchTokenName>
+          </SearchTokenItem>
+        </SearchList>
       )}
     </Container>,
     tokenPickerContainer
@@ -210,4 +217,27 @@ const TokenItem = styled.button`
   backdrop-filter: blur(12.5px);
 
   cursor: pointer;
+`
+
+const SearchList = styled.div`
+  max-width: 478px;
+`
+
+const SearchTokenItem = styled.div``
+
+const SearchTokenInfo = styled.div`
+  height: 20px;
+  display: flex;
+  justify-content: space-between;
+`
+
+const SearchTokenName = styled.p`
+  line-height: 12px;
+  font-size: 10px;
+  font-family: Inter;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #dddaf8;
+  opacity: 0.8;
 `
