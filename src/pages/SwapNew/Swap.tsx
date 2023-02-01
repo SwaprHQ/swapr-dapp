@@ -1,3 +1,4 @@
+import { AnimatePresence } from 'framer-motion'
 import styled from 'styled-components'
 
 import { ReactComponent as EtherLogoSVG } from '../../assets/swapbox/currency-logo-eth.svg'
@@ -33,7 +34,7 @@ export function Swapbox2() {
   return (
     <>
       <Container>
-        {tokenPickerOpened && <TokenPicker closeTokenPicker={closeTokenPicker} />}
+        <AnimatePresence>{tokenPickerOpened && <TokenPicker closeTokenPicker={closeTokenPicker} />}</AnimatePresence>
         <CurrencyItem
           value={state.fromValue}
           onChange={onFromInputChange}

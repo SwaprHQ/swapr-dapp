@@ -1,3 +1,4 @@
+import { motion } from 'framer-motion'
 import { useEffect, useState } from 'react'
 import { createPortal } from 'react-dom'
 import styled from 'styled-components'
@@ -35,7 +36,24 @@ export function TokenPicker({ closeTokenPicker }: TokenPickerProps) {
   }
 
   return createPortal(
-    <Container onClick={onClose}>
+    <Container
+      onClick={onClose}
+      initial={{ opacity: 0, scale: 2 }}
+      animate={{
+        opacity: 1,
+        scale: 1,
+        transition: {
+          duration: 0.2,
+        },
+      }}
+      exit={{
+        opacity: 0,
+        scale: 2,
+        transition: {
+          duration: 0.1,
+        },
+      }}
+    >
       <Input placeholder="Search token by name or paste address" spellCheck={false} />
       <TokensSection>
         <Heading>Your Balance</Heading>
@@ -98,7 +116,7 @@ export function TokenPicker({ closeTokenPicker }: TokenPickerProps) {
   )
 }
 
-const Container = styled.div`
+const Container = styled(motion.div)`
   position: fixed;
   top: 0;
   right: 0;
