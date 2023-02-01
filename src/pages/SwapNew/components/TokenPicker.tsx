@@ -11,7 +11,11 @@ import { ReactComponent as SWPRLogoSVG } from '../../../assets/swapbox/token-log
 import { ReactComponent as USDCLogoSVG } from '../../../assets/swapbox/token-logo-usdc.svg'
 import { ReactComponent as USDTLogoSVG } from '../../../assets/swapbox/token-logo-usdt.svg'
 
-export function TokenPicker() {
+type TokenPickerProps = {
+  closeTokenPicker: () => void
+}
+
+export function TokenPicker({ closeTokenPicker }: TokenPickerProps) {
   const [tokenPickerContainer] = useState(() => document.createElement('div'))
 
   useEffect(() => {
@@ -24,7 +28,7 @@ export function TokenPicker() {
   }, [tokenPickerContainer])
 
   return createPortal(
-    <Container>
+    <Container onClick={closeTokenPicker}>
       <Input placeholder="Search token by name or paste address" spellCheck={false} />
       <TokensSection>
         <Heading>Your Balance</Heading>

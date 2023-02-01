@@ -18,10 +18,11 @@ type CurrencyItemProps = {
   currency: Currency
   value: number
   onChange: (event: ChangeEvent<HTMLInputElement>) => void
+  openTokenPicker: () => void
   lowerItem?: boolean
 }
 
-export function CurrencyItem({ currency, value, onChange, lowerItem }: CurrencyItemProps) {
+export function CurrencyItem({ currency, value, onChange, openTokenPicker, lowerItem }: CurrencyItemProps) {
   return (
     <CurrencyContainer lowerItem={lowerItem}>
       <CurrencyAmountContainer>
@@ -30,7 +31,7 @@ export function CurrencyItem({ currency, value, onChange, lowerItem }: CurrencyI
       </CurrencyAmountContainer>
 
       <CurrencyInfoContainer>
-        <CurrencyTypeContainer>
+        <CurrencyTypeContainer onClick={openTokenPicker}>
           {currency.logo}
           <CurrencySymbol>{currency.symbol}</CurrencySymbol>
           <DownArrowLargeSVG />
