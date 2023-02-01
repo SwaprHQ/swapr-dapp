@@ -109,6 +109,7 @@ const CurrencyTypeContainer = styled.div`
   justify-content: flex-end;
   align-items: center;
   margin-bottom: 17px;
+  cursor: pointer;
 `
 
 const CurrencySymbol = styled.p`

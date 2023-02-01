@@ -27,8 +27,15 @@ export function TokenPicker({ closeTokenPicker }: TokenPickerProps) {
     }
   }, [tokenPickerContainer])
 
+  const onClose = (event: React.MouseEvent<HTMLDivElement>) => {
+    if (event.target === event.currentTarget) {
+      event.stopPropagation()
+      closeTokenPicker()
+    }
+  }
+
   return createPortal(
-    <Container onClick={closeTokenPicker}>
+    <Container onClick={onClose}>
       <Input placeholder="Search token by name or paste address" spellCheck={false} />
       <TokensSection>
         <Heading>Your Balance</Heading>
