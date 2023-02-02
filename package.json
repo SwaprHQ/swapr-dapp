@@ -68,7 +68,7 @@
     "etherscan-api": "10.2.0",
     "git-revision-webpack-plugin": "^5.0.0",
     "graphql": "^16.5.0",
-    "graphql-request": "^4.3.0",
+    "graphql-request": "^5.1.0",
     "i18next": "^21.9.2",
     "i18next-browser-languagedetector": "^7.0.1",
     "i18next-http-backend": "^1.4.4",
