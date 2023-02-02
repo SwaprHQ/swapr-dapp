@@ -14,6 +14,7 @@ import {
 import { PageMetaData } from '../../components/PageMetaData'
 import { RowBetween } from '../../components/Row'
 import { useActiveWeb3React } from '../../hooks'
+import { useEnvironment } from '../../hooks/useEnvironment'
 import {
   useBridgeActionHandlers,
   useBridgeCollectHandlers,
@@ -119,6 +120,7 @@ export default function Bridge() {
   const dispatch = useDispatch()
   const { chainId, account } = useActiveWeb3React()
   const ecoBridge = useEcoBridge()
+  const { isDevelopment } = useEnvironment()
 
   const bridgeSummaries = useSelector((state: AppState) =>
     selectBridgeFilteredTransactions(state, account ?? undefined)
@@ -296,7 +298,7 @@ export default function Bridge() {
         onNetworkChange: onFromNetworkChange,
         selectedNetworkChainId: isCollecting && collectableTx ? collectableTx.fromChainId : fromChainId,
         activeChainId: account ? chainId : -1,
-        showTestnets: window.location.hostname === 'localhost',
+        showTestnets: isDevelopment,
       }),
     [account, chainId, collectableTx, isCollecting, fromChainId, onFromNetworkChange]
   )
@@ -309,7 +311,7 @@ export default function Bridge() {
         onNetworkChange: onToNetworkChange,
         selectedNetworkChainId: isCollecting && collectableTx ? collectableTx.toChainId : toChainId,
         activeChainId: account ? chainId : -1,
-        showTestnets: window.location.hostname === 'localhost',
+        showTestnets: isDevelopment,
       }),
     [account, chainId, collectableTx, isCollecting, onToNetworkChange, toChainId]
   )
