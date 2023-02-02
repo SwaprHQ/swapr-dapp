@@ -124,7 +124,33 @@ export function TokenPicker({ tokenPickerInput, onTokenPickerInputChange, closeT
       ) : (
         <SearchList>
           <SearchTokenItem>
-            <SearchTokenInfo></SearchTokenInfo>
+            <SearchTokenInfo>
+              <SearchTokenCurrencyInfo>
+                <ETHLogoSVG />
+                <SearchTokenCurrencySymbol>ETH</SearchTokenCurrencySymbol>
+              </SearchTokenCurrencyInfo>
+              <SearchTokenCurrencyBalance>0.4130</SearchTokenCurrencyBalance>
+            </SearchTokenInfo>
+            <SearchTokenName>Ether</SearchTokenName>
+          </SearchTokenItem>
+          <SearchTokenItem>
+            <SearchTokenInfo>
+              <SearchTokenCurrencyInfo>
+                <ETHLogoSVG />
+                <SearchTokenCurrencySymbol>ETH</SearchTokenCurrencySymbol>
+              </SearchTokenCurrencyInfo>
+              <SearchTokenCurrencyBalance>0.4130</SearchTokenCurrencyBalance>
+            </SearchTokenInfo>
+            <SearchTokenName>Ether</SearchTokenName>
+          </SearchTokenItem>
+          <SearchTokenItem>
+            <SearchTokenInfo>
+              <SearchTokenCurrencyInfo>
+                <ETHLogoSVG />
+                <SearchTokenCurrencySymbol>ETH</SearchTokenCurrencySymbol>
+              </SearchTokenCurrencyInfo>
+              <SearchTokenCurrencyBalance>0.4130</SearchTokenCurrencyBalance>
+            </SearchTokenInfo>
             <SearchTokenName>Ether</SearchTokenName>
           </SearchTokenItem>
         </SearchList>
@@ -221,6 +247,7 @@ const TokenItem = styled.button`
 
 const SearchList = styled.div`
   max-width: 478px;
+  width: 100%;
 `
 
 const SearchTokenItem = styled.div``
@@ -231,12 +258,23 @@ const SearchTokenInfo = styled.div`
   justify-content: space-between;
 `
 
+const SearchTokenCurrencyInfo = styled.div``
+
+const SearchTokenCurrencySymbol = styled.p`
+  display: inline-block;
+`
+
+const SearchTokenCurrencyBalance = styled.p`
+  display: inline-block;
+`
+
 const SearchTokenName = styled.p`
   line-height: 12px;
   font-size: 10px;
   font-family: Inter;
   font-weight: 600;
   letter-spacing: 0.08em;
+  text-align: left;
   text-transform: uppercase;
   color: #dddaf8;
   opacity: 0.8;
