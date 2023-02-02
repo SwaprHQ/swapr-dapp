@@ -250,15 +250,22 @@ const SearchList = styled.div`
   width: 100%;
 `
 
-const SearchTokenItem = styled.div``
+const SearchTokenItem = styled.div`
+  margin-bottom: 16px;
+`
 
 const SearchTokenInfo = styled.div`
   height: 20px;
   display: flex;
   justify-content: space-between;
+  margin-bottom: 4px;
 `
 
-const SearchTokenCurrencyInfo = styled.div``
+const SearchTokenCurrencyInfo = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 6px;
+`
 
 const SearchTokenCurrencySymbol = styled.p`
   display: inline-block;
@@ -266,6 +273,14 @@ const SearchTokenCurrencySymbol = styled.p`
 
 const SearchTokenCurrencyBalance = styled.p`
   display: inline-block;
+  line-height: 18px;
+  font-size: 15px;
+  font-family: Inter;
+  font-weight: 500;
+  text-align: right;
+  text-transform: uppercase;
+  font-feature-settings: 'zero' on;
+  color: #bcb3f0;
 `
 
 const SearchTokenName = styled.p`
