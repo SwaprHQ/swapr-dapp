@@ -71,7 +71,7 @@
     "graphql-request": "^5.1.0",
     "i18next": "^21.9.2",
     "i18next-browser-languagedetector": "^7.0.1",
-    "i18next-http-backend": "^1.4.4",
+    "i18next-http-backend": "^2.1.1",
     "lightweight-charts": "^3.8.0",
     "luxon": "^3.2.1",
     "merkletreejs": "^0.2.32",
