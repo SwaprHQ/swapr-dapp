@@ -1,3 +1,4 @@
+import { AnimatePresence, motion } from 'framer-motion'
 import { useState } from 'react'
 import styled from 'styled-components'
 
@@ -34,13 +35,29 @@ export function SwapInfo() {
         </ExpandButton>
       </SwapInfoBasics>
 
-      {showSwapInfoDetails && (
-        <SwapInfoDetailed showSwapInfoDetails={showSwapInfoDetails}>
-          <SwapDexInfoItem />
-          <SwapDexInfoItem isSelected />
-          <SwapDexInfoItem />
-        </SwapInfoDetailed>
-      )}
+      <AnimatePresence>
+        {showSwapInfoDetails && (
+          <SwapInfoDetailed
+            initial={{ height: 0 }}
+            animate={{
+              height: 'auto',
+              transition: {
+                duration: 0.2,
+              },
+            }}
+            exit={{
+              height: 0,
+              transition: {
+                duration: 0.1,
+              },
+            }}
+          >
+            <SwapDexInfoItem />
+            <SwapDexInfoItem isSelected />
+            <SwapDexInfoItem />
+          </SwapInfoDetailed>
+        )}
+      </AnimatePresence>
     </SwapInfoContainer>
   )
 }
@@ -82,7 +99,7 @@ const SwapInfoBasics = styled.div`
   align-items: center;
 `
 
-const SwapInfoDetailed = styled.div<{ showSwapInfoDetails: boolean }>`
+const SwapInfoDetailed = styled(motion.div)`
   margin-top: 9px;
 `
 
