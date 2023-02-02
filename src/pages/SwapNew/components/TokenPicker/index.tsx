@@ -3,15 +3,8 @@ import { ChangeEvent, useEffect, useState } from 'react'
 import { createPortal } from 'react-dom'
 import styled from 'styled-components'
 
-import { ReactComponent as BALLogoSVG } from '../../../../assets/swapbox/token-logo-bal.svg'
-import { ReactComponent as BATLogoSVG } from '../../../../assets/swapbox/token-logo-bat.svg'
-import { ReactComponent as DAILogoSVG } from '../../../../assets/swapbox/token-logo-dai.svg'
-import { ReactComponent as DXDLogoSVG } from '../../../../assets/swapbox/token-logo-dxd.svg'
-import { ReactComponent as ETHLogoSVG } from '../../../../assets/swapbox/token-logo-eth.svg'
-import { ReactComponent as SWPRLogoSVG } from '../../../../assets/swapbox/token-logo-swpr.svg'
-import { ReactComponent as USDCLogoSVG } from '../../../../assets/swapbox/token-logo-usdc.svg'
-import { ReactComponent as USDTLogoSVG } from '../../../../assets/swapbox/token-logo-usdt.svg'
 import { CurrencySymbol } from '../../constants'
+import { SearchTokenItem } from './SearchTokenItem'
 import { TokenItem } from './TokenItem'
 
 type TokenPickerProps = {
@@ -91,36 +84,9 @@ export function TokenPicker({ tokenPickerInput, onTokenPickerInputChange, closeT
         </>
       ) : (
         <SearchList>
-          <SearchTokenItem>
-            <SearchTokenInfo>
-              <SearchTokenCurrencyInfo>
-                <ETHLogoSVG />
-                <SearchTokenCurrencySymbol>ETH</SearchTokenCurrencySymbol>
-              </SearchTokenCurrencyInfo>
-              <SearchTokenCurrencyBalance>0.4130</SearchTokenCurrencyBalance>
-            </SearchTokenInfo>
-            <SearchTokenName>Ether</SearchTokenName>
-          </SearchTokenItem>
-          <SearchTokenItem>
-            <SearchTokenInfo>
-              <SearchTokenCurrencyInfo>
-                <ETHLogoSVG />
-                <SearchTokenCurrencySymbol>ETH</SearchTokenCurrencySymbol>
-              </SearchTokenCurrencyInfo>
-              <SearchTokenCurrencyBalance>0.4130</SearchTokenCurrencyBalance>
-            </SearchTokenInfo>
-            <SearchTokenName>Ether</SearchTokenName>
-          </SearchTokenItem>
-          <SearchTokenItem>
-            <SearchTokenInfo>
-              <SearchTokenCurrencyInfo>
-                <ETHLogoSVG />
-                <SearchTokenCurrencySymbol>ETH</SearchTokenCurrencySymbol>
-              </SearchTokenCurrencyInfo>
-              <SearchTokenCurrencyBalance>0.4130</SearchTokenCurrencyBalance>
-            </SearchTokenInfo>
-            <SearchTokenName>Ether</SearchTokenName>
-          </SearchTokenItem>
+          <SearchTokenItem currencySymbol={CurrencySymbol.ETH} balance={0.4342} />
+          <SearchTokenItem currencySymbol={CurrencySymbol.SWPR} balance={1214.15} />
+          <SearchTokenItem currencySymbol={CurrencySymbol.DXD} balance={55532.1245} />
         </SearchList>
       )}
     </Container>,
@@ -193,7 +159,7 @@ const SearchList = styled.div`
   width: 100%;
 `
 
-const SearchTokenItem = styled.div`
+const CCC = styled.div`
   margin-bottom: 16px;
 `
 
