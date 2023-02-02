@@ -19,12 +19,36 @@ export enum CurrencySymbol {
 }
 
 export const currencies = {
-  [CurrencySymbol.BAL]: BALLogoSVG,
-  [CurrencySymbol.BAT]: BATLogoSVG,
-  [CurrencySymbol.DAI]: DAILogoSVG,
-  [CurrencySymbol.DXD]: DXDLogoSVG,
-  [CurrencySymbol.ETH]: ETHLogoSVG,
-  [CurrencySymbol.SWPR]: SWPRLogoSVG,
-  [CurrencySymbol.USDC]: USDCLogoSVG,
-  [CurrencySymbol.USDT]: USDTLogoSVG,
+  [CurrencySymbol.BAL]: {
+    name: 'BAL',
+    logo: BALLogoSVG,
+  },
+  [CurrencySymbol.BAT]: {
+    name: 'Basic Attention Token',
+    logo: BATLogoSVG,
+  },
+  [CurrencySymbol.DAI]: {
+    name: 'xDAI',
+    logo: DAILogoSVG,
+  },
+  [CurrencySymbol.DXD]: {
+    name: 'dxDAO',
+    logo: DXDLogoSVG,
+  },
+  [CurrencySymbol.ETH]: {
+    name: 'Ether',
+    logo: ETHLogoSVG,
+  },
+  [CurrencySymbol.SWPR]: {
+    name: 'Swapr Token',
+    logo: SWPRLogoSVG,
+  },
+  [CurrencySymbol.USDC]: {
+    name: 'USDC Token',
+    logo: USDCLogoSVG,
+  },
+  [CurrencySymbol.USDT]: {
+    name: 'USDT Token',
+    logo: USDTLogoSVG,
+  },
 }
