@@ -3,14 +3,16 @@ import { ChangeEvent, useEffect, useState } from 'react'
 import { createPortal } from 'react-dom'
 import styled from 'styled-components'
 
-import { ReactComponent as BALLogoSVG } from '../../../assets/swapbox/token-logo-bal.svg'
-import { ReactComponent as BATLogoSVG } from '../../../assets/swapbox/token-logo-bat.svg'
-import { ReactComponent as DAILogoSVG } from '../../../assets/swapbox/token-logo-dai.svg'
-import { ReactComponent as DXDLogoSVG } from '../../../assets/swapbox/token-logo-dxd.svg'
-import { ReactComponent as ETHLogoSVG } from '../../../assets/swapbox/token-logo-eth.svg'
-import { ReactComponent as SWPRLogoSVG } from '../../../assets/swapbox/token-logo-swpr.svg'
-import { ReactComponent as USDCLogoSVG } from '../../../assets/swapbox/token-logo-usdc.svg'
-import { ReactComponent as USDTLogoSVG } from '../../../assets/swapbox/token-logo-usdt.svg'
+import { ReactComponent as BALLogoSVG } from '../../../../assets/swapbox/token-logo-bal.svg'
+import { ReactComponent as BATLogoSVG } from '../../../../assets/swapbox/token-logo-bat.svg'
+import { ReactComponent as DAILogoSVG } from '../../../../assets/swapbox/token-logo-dai.svg'
+import { ReactComponent as DXDLogoSVG } from '../../../../assets/swapbox/token-logo-dxd.svg'
+import { ReactComponent as ETHLogoSVG } from '../../../../assets/swapbox/token-logo-eth.svg'
+import { ReactComponent as SWPRLogoSVG } from '../../../../assets/swapbox/token-logo-swpr.svg'
+import { ReactComponent as USDCLogoSVG } from '../../../../assets/swapbox/token-logo-usdc.svg'
+import { ReactComponent as USDTLogoSVG } from '../../../../assets/swapbox/token-logo-usdt.svg'
+import { CurrencySymbol } from '../../constants'
+import { TokenItem } from './TokenItem'
 
 type TokenPickerProps = {
   tokenPickerInput: string
@@ -67,57 +69,23 @@ export function TokenPicker({ tokenPickerInput, onTokenPickerInputChange, closeT
           <TokensSection>
             <Heading>Your Balance</Heading>
             <TokenItems>
-              <TokenItem>
-                <ETHLogoSVG />
-                ETH
-              </TokenItem>
-              <TokenItem>
-                <USDCLogoSVG />
-                USDC
-              </TokenItem>
-              <TokenItem>
-                <DXDLogoSVG /> DXD
-              </TokenItem>
-              <TokenItem>
-                <DAILogoSVG /> DAI
-              </TokenItem>
-              <TokenItem>
-                <SWPRLogoSVG /> SWPR
-              </TokenItem>
-              <TokenItem>+11</TokenItem>
+              <TokenItem currencySymbol={CurrencySymbol.ETH} />
+              <TokenItem currencySymbol={CurrencySymbol.BAL} />
+              <TokenItem currencySymbol={CurrencySymbol.DAI} />
+              <TokenItem currencySymbol={CurrencySymbol.DXD} />
+              <TokenItem currencySymbol={CurrencySymbol.USDC} />
+              <TokenItem currencySymbol={CurrencySymbol.USDT} />
+              {/* <TokenItem>+11</TokenItem> */}
             </TokenItems>
           </TokensSection>
           <TokensSection>
             <Heading>Common Tokens</Heading>
             <TokenItems>
-              <TokenItem>
-                <ETHLogoSVG />
-                ETH
-              </TokenItem>
-              <TokenItem>
-                <USDCLogoSVG />
-                USDC
-              </TokenItem>
-              <TokenItem>
-                <DXDLogoSVG /> DXD
-              </TokenItem>
-              <TokenItem>
-                <SWPRLogoSVG /> SWPR
-              </TokenItem>
-              <TokenItem>
-                <ETHLogoSVG />
-                DAI
-              </TokenItem>
-              <TokenItem>
-                <BALLogoSVG />
-                BAL
-              </TokenItem>
-              <TokenItem>
-                <USDTLogoSVG /> USDT
-              </TokenItem>
-              <TokenItem>
-                <BATLogoSVG /> BAT
-              </TokenItem>
+              <TokenItem currencySymbol={CurrencySymbol.SWPR} />
+              <TokenItem currencySymbol={CurrencySymbol.ETH} />
+              <TokenItem currencySymbol={CurrencySymbol.BAL} />
+              <TokenItem currencySymbol={CurrencySymbol.BAT} />
+              <TokenItem currencySymbol={CurrencySymbol.SWPR} />
             </TokenItems>
           </TokensSection>
         </>
@@ -218,31 +186,6 @@ const TokenItems = styled.div`
   justify-content: center;
   align-items: center;
   gap: 8px;
-`
-
-const TokenItem = styled.button`
-  height: 38px;
-  display: inline-flex;
-  justify-content: center;
-  align-items: center;
-  gap: 10px;
-  box-sizing: border-box;
-  border-radius: 12px;
-  border: 1px solid #464366;
-  padding: 10px 14px;
-  line-height: 18px;
-  font-size: 14px;
-  font-family: Inter;
-  font-weight: 600;
-  letter-spacing: 0.02em;
-  text-transform: uppercase;
-  color: #bcb3f0;
-  background: linear-gradient(143.3deg, rgba(46, 23, 242, 0.5) -185.11%, rgba(46, 23, 242, 0) 49.63%),
-    rgba(57, 51, 88, 0.3);
-  background-blend-mode: normal, overlay, normal;
-  backdrop-filter: blur(12.5px);
-
-  cursor: pointer;
 `
 
 const SearchList = styled.div`
