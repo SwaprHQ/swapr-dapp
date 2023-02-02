@@ -1,6 +1,6 @@
 import styled from 'styled-components'
 
-import { CurrencySymbol } from '../../constants'
+import { currencies, CurrencySymbol } from '../../constants'
 import { renderCurrencyLogo } from '../../utils'
 
 type SearchTokenItemProps = {
@@ -18,7 +18,7 @@ export function SearchTokenItem({ currencySymbol, balance }: SearchTokenItemProp
         </TokenInfo>
         <TokenBalance>{balance}</TokenBalance>
       </Info>
-      <TokenName>Ether</TokenName>
+      <TokenName>{currencies[currencySymbol].name}</TokenName>
     </Container>
   )
 }
