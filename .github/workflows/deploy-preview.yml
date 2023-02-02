@@ -15,7 +15,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Inject slug variables
-        uses: rlespinasse/github-slug-action@v4.3.0
+        uses: rlespinasse/github-slug-action@v4.4.0
       - name: Checkout
         uses: actions/checkout@v3
       - name: Setup Node.js
