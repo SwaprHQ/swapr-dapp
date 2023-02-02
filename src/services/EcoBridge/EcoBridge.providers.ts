@@ -16,7 +16,7 @@ const addInfuraKey = (rpcUrl: string) => {
 export const initiateEcoBridgeProviders = (): EcoBridgeProviders => ({
   [ChainId.MAINNET]: new JsonRpcProvider(addInfuraKey(NETWORK_DETAIL[ChainId.MAINNET].rpcUrls[0])),
   [ChainId.ARBITRUM_ONE]: new JsonRpcProvider(addInfuraKey(NETWORK_DETAIL[ChainId.ARBITRUM_ONE].rpcUrls[0])),
-  [ChainId.ARBITRUM_RINKEBY]: new JsonRpcProvider(addInfuraKey(NETWORK_DETAIL[ChainId.ARBITRUM_RINKEBY].rpcUrls[0])),
-  [ChainId.RINKEBY]: new JsonRpcProvider(addInfuraKey(NETWORK_DETAIL[ChainId.RINKEBY].rpcUrls[0])),
+  [ChainId.ARBITRUM_GOERLI]: new JsonRpcProvider(addInfuraKey(NETWORK_DETAIL[ChainId.ARBITRUM_GOERLI].rpcUrls[0])),
+  [ChainId.GOERLI]: new JsonRpcProvider(addInfuraKey(NETWORK_DETAIL[ChainId.GOERLI].rpcUrls[0])),
   [ChainId.XDAI]: new JsonRpcProvider(addInfuraKey(NETWORK_DETAIL[ChainId.XDAI].rpcUrls[0])),
 })

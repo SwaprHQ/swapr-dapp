@@ -524,6 +524,14 @@ export const NETWORK_OPTIONAL_DETAIL: {
     partnerChainId: ChainId.OPTIMISM_GOERLI,
     isArbitrum: false,
   },
+  [ChainId.GOERLI]: {
+    partnerChainId: ChainId.ARBITRUM_GOERLI,
+    isArbitrum: false,
+  },
+  [ChainId.ARBITRUM_GOERLI]: {
+    partnerChainId: ChainId.GOERLI,
+    isArbitrum: true,
+  },
 }
 
 export const RoutablePlatformKeysByNetwork = {
