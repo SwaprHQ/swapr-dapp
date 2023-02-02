@@ -2,22 +2,13 @@ import { ChainId, Token } from '@swapr/sdk'
 
 import { configureStore, Store } from '@reduxjs/toolkit'
 
-import { AdapterKey, AdapterPayloadType } from '../advancedTradingView.types'
-import advancedTradingView, { actions } from '../store/advancedTradingView.reducer'
+import advancedTradingView from '../store/advancedTradingView.reducer'
 import { adapters } from './adapters.config'
 import { AdvancedTradingViewAdapter } from './advancedTradingView.adapter'
 import { BaseAppState } from './baseAdapter/base.adapter'
 
 const USDC_TOKEN = new Token(ChainId.MAINNET, '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48', 6, 'USDC', 'USD Coin')
 const USDT_TOKEN = new Token(ChainId.MAINNET, '0xdAC17F958D2ee523a2206206994597C13D831ec7', 6, 'USDT', 'Tether USD')
-
-const fakeData = {
-  pairId: '0x123456789',
-  data: [],
-  hasMore: false,
-  key: AdapterKey.SWAPR,
-  payloadType: AdapterPayloadType.SWAPS,
-}
 
 describe('AdvancedTradingView - adapter', () => {
   let store: Store<BaseAppState>

@@ -9,6 +9,8 @@ import { AnalyticsProvider } from './analytics'
 import { NetworkContextName } from './constants'
 import './i18n'
 import App from './pages/App'
+import { LimitOrderFromProvider } from './pages/Swap/LimitOrderBox/contexts/LimitOrderFormProvider'
+import { SwapProvider } from './pages/Swap/SwapBox/SwapProvider'
 import { EcoBridgeProvider } from './services/EcoBridge/EcoBridgeProvider'
 import store from './state'
 import ApplicationUpdater from './state/application/updater'
@@ -67,9 +69,14 @@ root.render(
               <Updaters />
               <ThemeProvider>
                 <ThemedGlobalStyle />
+
                 <HashRouter>
                   <MultiChainLinksUpdater />
-                  <App />
+                  <SwapProvider>
+                    <LimitOrderFromProvider>
+                      <App />
+                    </LimitOrderFromProvider>
+                  </SwapProvider>
                 </HashRouter>
               </ThemeProvider>
             </EcoBridgeProvider>

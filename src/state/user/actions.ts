@@ -1,7 +1,7 @@
 import { createAction } from '@reduxjs/toolkit'
 
+import { ChartOptions, SwapTab } from '../../pages/Swap/SwapContext'
 import { MainnetGasPrice } from '../application/actions'
-import { ChartOptions, SwapTabs } from './reducer'
 
 export interface SerializedToken {
   chainId: number
@@ -20,7 +20,7 @@ export const updateMatchesDarkMode = createAction<{ matchesDarkMode: boolean }>(
 export const updateUserDarkMode = createAction<{ userDarkMode: boolean }>('user/updateUserDarkMode')
 export const updateUserMultihop = createAction<{ userMultihop: boolean }>('user/updateUserMultihop')
 export const updateUserExpertMode = createAction<{ userExpertMode: boolean }>('user/updateUserExpertMode')
-export const updateSelectedSwapTab = createAction<{ selectedSwapTab: SwapTabs }>('user/updateSelectedSwapTab')
+export const updateSelectedSwapTab = createAction<{ selectedSwapTab: SwapTab }>('user/updateSelectedSwapTab')
 export const updateUserPreferredGasPrice = createAction<MainnetGasPrice | string | null>(
   'user/updateUserPreferredGasPrice'
 )

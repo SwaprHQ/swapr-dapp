@@ -1,6 +1,6 @@
 // Landing Page Imports
 import './../../theme/landingPageTheme/stylesheet.css'
-import { useEffect, useState } from 'react'
+import { Fragment, useEffect, useState } from 'react'
 import { redirect } from 'react-router-dom'
 import styled from 'styled-components'
 
@@ -8,14 +8,13 @@ import Hero from '../../components/LandingPageComponents/layout/Hero'
 import { useActiveWeb3React } from '../../hooks'
 import { useRouter } from '../../hooks/useRouter'
 import { useUpdateSelectedSwapTab } from '../../state/user/hooks'
-import { ChartOptions, SwapTabs } from '../../state/user/reducer'
 import { AdvancedTradingViewBox } from './AdvancedTradingViewBox'
 import { Tabs } from './Components/Tabs'
 import { LandingSections } from './LandingSections'
 import { LimitOrderBox } from './LimitOrderBox'
 import { supportedChainIdList } from './LimitOrderBox/constants'
 import { SwapBox } from './SwapBox/SwapBox.component'
-import { SwapContext, SwapTab } from './SwapContext'
+import { ChartOptions, SwapTab, SwapTabContext } from './SwapContext'
 
 const AppBodyContainer = styled.section`
   display: flex;
@@ -28,7 +27,7 @@ const AppBodyContainer = styled.section`
  * Swap page component
  */
 export function Swap() {
-  const { Swap, AdvancedTradingView, LimitOrder } = SwapTab
+  const { Swap, LimitOrder } = SwapTab
   const { account, chainId } = useActiveWeb3React()
 
   // Control the active tab
@@ -48,16 +47,16 @@ export function Swap() {
 
   useEffect(() => {
     if (isPro) {
-      setActiveTab(AdvancedTradingView)
-      setAdvancedView(SwapTabs.SWAP)
+      setActiveChartTab(ChartOptions.PRO)
     } else if (pathname.includes('swap')) {
       setActiveChartTab(ChartOptions.OFF)
-      setActiveTab(Swap)
     }
-  }, [AdvancedTradingView, Swap, isPro, setAdvancedView, setActiveChartTab, pathname])
+  }, [Swap, isPro, setAdvancedView, setActiveChartTab, pathname])
+
+  const AdvancedViewWrapper = isPro ? AdvancedTradingViewBox : Fragment
 
   return (
-    <SwapContext.Provider
+    <SwapTabContext.Provider
       value={{
         activeTab,
         setActiveTab,
@@ -65,15 +64,16 @@ export function Swap() {
         setActiveChartTab,
       }}
     >
-      <Hero showMarquee={activeTab !== AdvancedTradingView}>
+      <Hero showMarquee={!isPro}>
         <AppBodyContainer>
-          {activeTab !== AdvancedTradingView && <Tabs />}
-          {activeTab === Swap && <SwapBox />}
-          {activeTab === AdvancedTradingView && <AdvancedTradingViewBox />}
-          {activeTab === LimitOrder && <LimitOrderBox />}
+          <AdvancedViewWrapper>
+            <Tabs />
+            {activeTab === Swap && <SwapBox />}
+            {activeTab === LimitOrder && <LimitOrderBox />}
+          </AdvancedViewWrapper>
         </AppBodyContainer>
       </Hero>
-      {activeTab !== AdvancedTradingView && <LandingSections />}
-    </SwapContext.Provider>
+      {!isPro && <LandingSections />}
+    </SwapTabContext.Provider>
   )
 }

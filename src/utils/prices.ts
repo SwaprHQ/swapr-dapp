@@ -8,6 +8,7 @@ import {
   CurveTrade,
   Fraction,
   JSBI,
+  OneInchTrade,
   Pair,
   Percent,
   Price,
@@ -71,7 +72,7 @@ export function computeTradePriceBreakdown(trade?: Trade): TradePriceBreakdown {
       return ONE_HUNDRED_PERCENT.subtract(totalRoutesFee)
     } else if (trade instanceof CoWTrade || trade instanceof UniswapTrade || trade instanceof ZeroXTrade) {
       return trade.fee
-    } else if (trade instanceof CurveTrade || trade instanceof VelodromeTrade) {
+    } else if (trade instanceof CurveTrade || trade instanceof VelodromeTrade || trade instanceof OneInchTrade) {
       return ONE_HUNDRED_PERCENT.subtract(ONE_HUNDRED_PERCENT.subtract(trade.fee))
     } else return undefined
   }

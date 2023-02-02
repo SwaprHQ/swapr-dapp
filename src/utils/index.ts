@@ -35,19 +35,19 @@ const ETHERSCAN_PREFIXES: { [chainId in ChainId | number]: string } = {
 const getExplorerPrefix = (chainId: ChainId) => {
   switch (chainId) {
     case ChainId.ARBITRUM_ONE:
-      return 'https://arbiscan.io'
+      return new URL('https://arbiscan.io')
     case ChainId.ARBITRUM_RINKEBY:
-      return 'https://testnet.arbiscan.io'
+      return new URL('https://testnet.arbiscan.io')
     case ChainId.XDAI:
-      return 'https://gnosisscan.io'
+      return new URL('https://gnosisscan.io')
     case ChainId.POLYGON:
-      return 'https://polygonscan.com'
+      return new URL('https://polygonscan.com')
     case ChainId.OPTIMISM_MAINNET:
-      return 'https://optimistic.etherscan.io'
+      return new URL('https://optimistic.etherscan.io')
     case ChainId.BSC_MAINNET:
-      return 'https://bscscan.com'
+      return new URL('https://bscscan.com')
     default:
-      return `https://${ETHERSCAN_PREFIXES[chainId] || ETHERSCAN_PREFIXES[1]}etherscan.io`
+      return new URL(`https://${ETHERSCAN_PREFIXES[chainId] || ETHERSCAN_PREFIXES[1]}etherscan.io`)
   }
 }
 
@@ -74,22 +74,22 @@ export function getExplorerLink(
   const prefix = getExplorerPrefix(chainId)
   // exception. blockscout doesn't have a token-specific address
   if (chainId === ChainId.XDAI && type === EXPLORER_LINK_TYPE.token) {
-    return `${prefix}/address/${hash}`
+    return new URL(`/address/${hash}`, prefix).href
   }
 
   switch (type) {
     case EXPLORER_LINK_TYPE.transaction: {
-      return `${prefix}/tx/${hash}`
+      return new URL(`/tx/${hash}`, prefix).href
     }
     case EXPLORER_LINK_TYPE.token: {
-      return `${prefix}/token/${hash}`
+      return new URL(`/token/${hash}`, prefix).href
     }
     case EXPLORER_LINK_TYPE.block: {
-      return `${prefix}/block/${hash}`
+      return new URL(`/block/${hash}`, prefix).href
     }
     case EXPLORER_LINK_TYPE.address:
     default: {
-      return `${prefix}/address/${hash}`
+      return new URL(`/address/${hash}`, prefix).href
     }
   }
 }
@@ -271,16 +271,16 @@ export const normalizeInputValue = (val: string, strictFormat?: boolean) => {
 }
 
 export function getSocketExplorerLink(transactionHash: string) {
-  return `https://socketscan.io/tx/${transactionHash}`
+  return new URL(`https://socketscan.io/tx/${transactionHash}`).href
 }
 
 /**
  * Gnosis Protocol Explorer Base URL list
  */
 const GNOSIS_PROTOCOL_EXPLORER_BASE_URL = {
-  [ChainId.MAINNET]: 'https://explorer.cow.fi',
-  [ChainId.RINKEBY]: 'https://explorer.cow.fi/rinkeby',
-  [ChainId.XDAI]: 'https://explorer.cow.fi/xdai',
+  [ChainId.MAINNET]: new URL('https://explorer.cow.fi'),
+  [ChainId.RINKEBY]: new URL('https://explorer.cow.fi/rinkeby'),
+  [ChainId.XDAI]: new URL('https://explorer.cow.fi/xdai'),
 }
 
 /**
@@ -288,7 +288,7 @@ const GNOSIS_PROTOCOL_EXPLORER_BASE_URL = {
  * @param chainId the chain Id
  * @returns the explorer URL for given chain ID
  */
-export function getGnosisProtocolExplorerLink(chainId: ChainId): string {
+export function getGnosisProtocolExplorerLink(chainId: ChainId): URL {
   return GNOSIS_PROTOCOL_EXPLORER_BASE_URL[chainId as keyof typeof GNOSIS_PROTOCOL_EXPLORER_BASE_URL]
 }
 
@@ -299,7 +299,7 @@ export function getGnosisProtocolExplorerLink(chainId: ChainId): string {
  * @returns the order link
  */
 export function getGnosisProtocolExplorerOrderLink(chainId: ChainId, orderId: string): string {
-  return getGnosisProtocolExplorerLink(chainId) + `/orders/${orderId}`
+  return new URL(`/orders/${orderId}`, getGnosisProtocolExplorerLink(chainId)).href
 }
 
 /**
@@ -309,5 +309,5 @@ export function getGnosisProtocolExplorerOrderLink(chainId: ChainId, orderId: st
  * @returns the order link
  */
 export function getGnosisProtocolExplorerAddressLink(chainId: ChainId, address: string): string {
-  return getGnosisProtocolExplorerLink(chainId) + `/address/${address}`
+  return new URL(`/address/${address}`, getGnosisProtocolExplorerLink(chainId)).href
 }

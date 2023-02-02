@@ -3,12 +3,12 @@ import { useTranslation } from 'react-i18next'
 import { Box } from 'rebass'
 import styled, { useTheme } from 'styled-components'
 
-import { ChartOptions } from '../../state/user/reducer'
+import { ChartOptions } from '../../pages/Swap/SwapContext'
 import { ButtonGroup, ButtonGroupOption } from '../ButtonGroup/ButtonGroup'
 
 interface ChartToggleProps {
   hasBothCurrenciesInput: boolean
-  selectedChartOption: number | undefined
+  selectedChartOption: ChartOptions | undefined
   setselectedChartOption: Function
 }
 
@@ -24,7 +24,9 @@ export function ChartToggle({ hasBothCurrenciesInput, setselectedChartOption, se
           disabled={!hasBothCurrenciesInput}
           active={selectedChartOption === ChartOptions.SIMPLE_CHART}
           onClick={() =>
-            setselectedChartOption(selectedChartOption === 0 ? ChartOptions.SIMPLE_CHART : ChartOptions.OFF)
+            setselectedChartOption(
+              selectedChartOption === ChartOptions.OFF ? ChartOptions.SIMPLE_CHART : ChartOptions.OFF
+            )
           }
         >
           <Barchart2Icon color={!hasBothCurrenciesInput ? theme.dark2 : theme.text4} />

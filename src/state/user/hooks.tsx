@@ -8,6 +8,7 @@ import { BASES_TO_TRACK_LIQUIDITY_FOR, PINNED_PAIRS } from '../../constants'
 import { PairState, usePairs } from '../../data/Reserves'
 import { useActiveWeb3React } from '../../hooks'
 import { useAllTokens } from '../../hooks/Tokens'
+import { ChartOptions, SwapTab } from '../../pages/Swap/SwapContext'
 import { MainnetGasPrice } from '../application/actions'
 import { AppDispatch, AppState } from '../index'
 import {
@@ -28,7 +29,6 @@ import {
   updateUserPreferredGasPrice,
   updateUserSlippageTolerance,
 } from './actions'
-import { ChartOptions, SwapTabs } from './reducer'
 
 function serializeToken(token: Token): SerializedToken {
   return {
@@ -151,12 +151,12 @@ export function useSelectedSwapTab() {
   return useSelector<AppState, AppState['user']['selectedSwapTab']>(selectSelectedSwapTab)
 }
 
-export function useUpdateSelectedSwapTab(): [SwapTabs, (selectedTab: SwapTabs) => void] {
+export function useUpdateSelectedSwapTab(): [SwapTab, (selectedTab: SwapTab) => void] {
   const dispatch = useDispatch<AppDispatch>()
   const currentTab = useSelectedSwapTab()
 
   const setSelectedTab = useCallback(
-    (selectedTab: SwapTabs) => {
+    (selectedTab: SwapTab) => {
       if (currentTab !== selectedTab || !currentTab) {
         dispatch(updateSelectedSwapTab({ selectedSwapTab: selectedTab }))
       }
