@@ -9,7 +9,7 @@ import { REFETCH_DATA_INTERVAL } from '../../constants/data'
 import { useActiveWeb3React } from '../../hooks'
 import { useToken } from '../../hooks/Tokens'
 import { useRouter } from '../../hooks/useRouter'
-import { useTabHasFocus } from '../../hooks/useTabHasFocus'
+import { useWindowIsVisable } from '../../hooks/useWindowIsVisable'
 import { LimitOrderFormContext } from '../../pages/Swap/LimitOrderBox/contexts'
 import { SwapTabContext } from '../../pages/Swap/SwapContext'
 import store, { AppState } from '../../state'
@@ -75,7 +75,7 @@ export const useAdvancedTradingView = () => {
   )
 
   const trackEvent = useSimpleAnalyticsEvent()
-  const tabHasFocus = useTabHasFocus()
+  const windowIsVisable = useWindowIsVisable()
 
   useEffect(() => {
     setIsLoadingTrades(true)
@@ -183,7 +183,7 @@ export const useAdvancedTradingView = () => {
     fetchTrades()
 
     const interval = setInterval(() => {
-      if (tabHasFocus) {
+      if (windowIsVisable) {
         fetchTrades()
         trackEvent(proModeEventNameByChain(chainId))
       }
@@ -193,7 +193,7 @@ export const useAdvancedTradingView = () => {
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [
-    tabHasFocus,
+    windowIsVisable,
     dispatch,
     inputToken?.address,
     outputToken?.address,
