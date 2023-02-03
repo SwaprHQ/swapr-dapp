@@ -1,9 +1,9 @@
-import { RoutablePlatform, UniswapV2RoutablePlatform } from '@swapr/sdk'
+import { ChainId, RoutablePlatform, UniswapV2RoutablePlatform } from '@swapr/sdk'
 
 import { mkdir, writeFile } from 'fs/promises'
 import { join } from 'path'
 
-import { getChainNameByChainId } from './chain'
+import { getChainNameByChainId, proModeEventNameByChain } from './chain'
 import { ecoBridgePlatformList } from './eco-bridge-platforms'
 import { getMapOfExchanges } from './eco-router-platforms'
 import { createSiteEvent, getSiteEvents } from './fathom-api'
@@ -36,11 +36,25 @@ export async function main({ siteId, token, outputDirectory }: MainParams): Prom
     })
     .flat()
 
+  const proModeEvents = [
+    ...Object.values(ChainId)
+      //remove string values
+      .filter(value => typeof value === 'number')
+      //remove duplicate values (remove xdai duplicate)
+      .filter((value, index, array) => array.indexOf(value) === index)
+      .map(chainId => proModeEventNameByChain(chainId as ChainId)),
+    proModeEventNameByChain(),
+  ]
+  const clickEvents = ['click/chartOff', 'click/chartPro']
+
   const allSiteEvents = await getSiteEvents(siteId, token)
 
-  const siteEventsToCreate = [...ecoRouterVolumeUSDEventList, ...ecoBridgeVolumeUSDEventList].filter(
-    event => !allSiteEvents.find(siteEvent => siteEvent.name === event)
-  )
+  const siteEventsToCreate = [
+    ...ecoRouterVolumeUSDEventList,
+    ...ecoBridgeVolumeUSDEventList,
+    ...proModeEvents,
+    ...clickEvents,
+  ].filter(event => !allSiteEvents.find(siteEvent => siteEvent.name === event))
 
   const siteEventsCreated: Awaited<ReturnType<typeof createSiteEvent>>[] = []
 

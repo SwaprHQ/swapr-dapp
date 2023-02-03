@@ -133,6 +133,62 @@ export type FathomRegisteredEventName =
   | 'optimism-10/ecoBridge/connext/bsc-56/volumeUSD'
   | 'bsc-56/ecoBridge/connext/gnosis-100/volumeUSD'
   | 'ethereum-1/ecoBridge/omnibridge-eth-xdai/gnosis-100/volumeUSD'
+  | 'ethereum-1/ecoRouter/0x/volumeUSD/pro'
+  | 'polygon-137/ecoRouter/0x/volumeUSD/pro'
+  | 'arbitrum-42161/ecoRouter/curve/volumeUSD/pro'
+  | 'ethereum-1/ecoRouter/curve/volumeUSD/pro'
+  | 'optimism-10/ecoRouter/velodrome/volumeUSD/pro'
+  | 'gnosis-100/ecoRouter/curve/volumeUSD/pro'
+  | 'ethereum-1/ecoRouter/cow/volumeUSD/pro'
+  | 'ethereum-1/ecoRouter/uniswap/volumeUSD/pro'
+  | 'gnosis-100/ecoRouter/cow/volumeUSD/pro'
+  | 'arbitrum-42161/ecoRouter/uniswap/volumeUSD/pro'
+  | 'ethereum-1/ecoRouter/swapr/volumeUSD/pro'
+  | 'optimism-10/ecoRouter/uniswap/volumeUSD/pro'
+  | 'polygon-137/ecoRouter/uniswap/volumeUSD/pro'
+  | 'arbitrum-42161/ecoRouter/swapr/volumeUSD/pro'
+  | 'arbitrum-rinkeby-421611/ecoRouter/swapr/volumeUSD/pro'
+  | 'rinkeby-4/ecoRouter/swapr/volumeUSD/pro'
+  | 'arbitrum-goerli-421613/ecoRouter/swapr/volumeUSD/pro'
+  | 'gnosis-100/ecoRouter/swapr/volumeUSD/pro'
+  | 'goerli-5/ecoRouter/swapr/volumeUSD/pro'
+  | 'rinkeby-4/ecoRouter/uniswap/volumeUSD/pro'
+  | 'arbitrum-42161/ecoRouter/sushiswap/volumeUSD/pro'
+  | 'polygon-137/ecoRouter/sushiswap/volumeUSD/pro'
+  | 'ethereum-1/ecoRouter/sushiswap/volumeUSD/pro'
+  | 'rinkeby-4/ecoRouter/sushiswap/volumeUSD/pro'
+  | 'gnosis-100/ecoRouter/baoswap/volumeUSD/pro'
+  | 'gnosis-100/ecoRouter/levinswap/volumeUSD/pro'
+  | 'bsc-56/ecoRouter/sushiswap/volumeUSD/pro'
+  | 'gnosis-100/ecoRouter/honeyswap/volumeUSD/pro'
+  | 'bsc-56/ecoRouter/pancakeswap/volumeUSD/pro'
+  | 'polygon-137/ecoRouter/quickswap/volumeUSD/pro'
+  | 'polygon-137/ecoRouter/dfyn/volumeUSD/pro'
+  | 'bsc-56/ecoRouter/0x/volumeUSD'
+  | 'arbitrum-42161/ecoRouter/0x/volumeUSD'
+  | 'ethereum-1/ecoRouter/1inch/volumeUSD'
+  | 'optimism-10/ecoRouter/0x/volumeUSD'
+  | 'arbitrum-42161/ecoRouter/1inch/volumeUSD'
+  | 'gnosis-100/ecoRouter/1inch/volumeUSD'
+  | 'polygon-137/ecoRouter/1inch/volumeUSD'
+  | 'optimism-10/ecoRouter/1inch/volumeUSD'
+  | 'bsc-56/ecoRouter/1inch/volumeUSD'
+  | 'proMode/ethereum/15seconds'
+  | 'proMode/rinkbey/15seconds'
+  | 'proMode/goerli/15seconds'
+  | 'proMode/gnosis/15seconds'
+  | 'proMode/polygon/15seconds'
+  | 'proMode/arbitrum/15seconds'
+  | 'proMode/optimism-goerli/15seconds'
+  | 'proMode/bsc/15seconds'
+  | 'proMode/arbitrum-rinkeby/15seconds'
+  | 'proMode/arbitrum-goerli/15seconds'
+  | 'proMode/optimism/15seconds'
+  | 'proMode/bsc-testnet/15seconds'
+  | 'proMode/undefined/15seconds'
+  | 'proMode/not-defined/15seconds'
+  | 'click/chartOff'
+  | 'click/chartPro'
 export type FathomRegisteredNetworkName =
   | 'ethereum'
   | 'rinkeby'
@@ -1082,8 +1138,400 @@ export const siteEvents: FathomSiteInformation = {
       currency: null,
       created_at: '2023-01-12 10:01:33',
     },
+    {
+      id: 'Y5ZOGVCR',
+      object: 'event',
+      name: 'ethereum-1/ecoRouter/0x/volumeUSD/pro',
+      currency: null,
+      created_at: '2023-01-27 16:34:56',
+    },
+    {
+      id: 'JMOO9EJX',
+      object: 'event',
+      name: 'polygon-137/ecoRouter/0x/volumeUSD/pro',
+      currency: null,
+      created_at: '2023-01-27 16:34:57',
+    },
+    {
+      id: 'KZOVAQYW',
+      object: 'event',
+      name: 'arbitrum-42161/ecoRouter/curve/volumeUSD/pro',
+      currency: null,
+      created_at: '2023-01-27 16:34:57',
+    },
+    {
+      id: 'WLOUSHUR',
+      object: 'event',
+      name: 'ethereum-1/ecoRouter/curve/volumeUSD/pro',
+      currency: null,
+      created_at: '2023-01-27 16:34:57',
+    },
+    {
+      id: 'FRX1KP35',
+      object: 'event',
+      name: 'optimism-10/ecoRouter/velodrome/volumeUSD/pro',
+      currency: null,
+      created_at: '2023-01-27 16:34:58',
+    },
+    {
+      id: 'JHQJW02X',
+      object: 'event',
+      name: 'gnosis-100/ecoRouter/curve/volumeUSD/pro',
+      currency: null,
+      created_at: '2023-01-27 16:34:58',
+    },
+    {
+      id: '3YUNHISR',
+      object: 'event',
+      name: 'ethereum-1/ecoRouter/cow/volumeUSD/pro',
+      currency: null,
+      created_at: '2023-01-27 16:34:59',
+    },
+    {
+      id: 'AO1LHIQP',
+      object: 'event',
+      name: 'ethereum-1/ecoRouter/uniswap/volumeUSD/pro',
+      currency: null,
+      created_at: '2023-01-27 16:34:59',
+    },
+    {
+      id: 'DDDRXGIY',
+      object: 'event',
+      name: 'gnosis-100/ecoRouter/cow/volumeUSD/pro',
+      currency: null,
+      created_at: '2023-01-27 16:34:59',
+    },
+    {
+      id: 'BA5SNNME',
+      object: 'event',
+      name: 'arbitrum-42161/ecoRouter/uniswap/volumeUSD/pro',
+      currency: null,
+      created_at: '2023-01-27 16:35:00',
+    },
+    {
+      id: 'DZ0EXNU5',
+      object: 'event',
+      name: 'ethereum-1/ecoRouter/swapr/volumeUSD/pro',
+      currency: null,
+      created_at: '2023-01-27 16:35:00',
+    },
+    {
+      id: 'RCA0JZIV',
+      object: 'event',
+      name: 'optimism-10/ecoRouter/uniswap/volumeUSD/pro',
+      currency: null,
+      created_at: '2023-01-27 16:35:00',
+    },
+    {
+      id: 'TIVCAH6C',
+      object: 'event',
+      name: 'polygon-137/ecoRouter/uniswap/volumeUSD/pro',
+      currency: null,
+      created_at: '2023-01-27 16:35:00',
+    },
+    {
+      id: 'BIGFA6UZ',
+      object: 'event',
+      name: 'arbitrum-42161/ecoRouter/swapr/volumeUSD/pro',
+      currency: null,
+      created_at: '2023-01-27 16:35:01',
+    },
+    {
+      id: 'FBVGUITL',
+      object: 'event',
+      name: 'arbitrum-rinkeby-421611/ecoRouter/swapr/volumeUSD/pro',
+      currency: null,
+      created_at: '2023-01-27 16:35:01',
+    },
+    {
+      id: 'PSQ0DGOH',
+      object: 'event',
+      name: 'rinkeby-4/ecoRouter/swapr/volumeUSD/pro',
+      currency: null,
+      created_at: '2023-01-27 16:35:01',
+    },
+    {
+      id: 'VRBEHL1S',
+      object: 'event',
+      name: 'arbitrum-goerli-421613/ecoRouter/swapr/volumeUSD/pro',
+      currency: null,
+      created_at: '2023-01-27 16:35:01',
+    },
+    {
+      id: 'CK3SZMBS',
+      object: 'event',
+      name: 'gnosis-100/ecoRouter/swapr/volumeUSD/pro',
+      currency: null,
+      created_at: '2023-01-27 16:35:02',
+    },
+    {
+      id: 'EFVWDJ0C',
+      object: 'event',
+      name: 'goerli-5/ecoRouter/swapr/volumeUSD/pro',
+      currency: null,
+      created_at: '2023-01-27 16:35:02',
+    },
+    {
+      id: 'YAAWBUWX',
+      object: 'event',
+      name: 'rinkeby-4/ecoRouter/uniswap/volumeUSD/pro',
+      currency: null,
+      created_at: '2023-01-27 16:35:02',
+    },
+    {
+      id: '9LKT0ALX',
+      object: 'event',
+      name: 'arbitrum-42161/ecoRouter/sushiswap/volumeUSD/pro',
+      currency: null,
+      created_at: '2023-01-27 16:35:03',
+    },
+    {
+      id: 'A7G6JGGJ',
+      object: 'event',
+      name: 'polygon-137/ecoRouter/sushiswap/volumeUSD/pro',
+      currency: null,
+      created_at: '2023-01-27 16:35:03',
+    },
+    {
+      id: 'LM8QNSO5',
+      object: 'event',
+      name: 'ethereum-1/ecoRouter/sushiswap/volumeUSD/pro',
+      currency: null,
+      created_at: '2023-01-27 16:35:03',
+    },
+    {
+      id: 'PPBRBWAW',
+      object: 'event',
+      name: 'rinkeby-4/ecoRouter/sushiswap/volumeUSD/pro',
+      currency: null,
+      created_at: '2023-01-27 16:35:03',
+    },
+    {
+      id: 'DUYT3VCV',
+      object: 'event',
+      name: 'gnosis-100/ecoRouter/baoswap/volumeUSD/pro',
+      currency: null,
+      created_at: '2023-01-27 16:35:04',
+    },
+    {
+      id: 'EDR3LLLM',
+      object: 'event',
+      name: 'gnosis-100/ecoRouter/levinswap/volumeUSD/pro',
+      currency: null,
+      created_at: '2023-01-27 16:35:04',
+    },
+    {
+      id: 'L8NFO92E',
+      object: 'event',
+      name: 'bsc-56/ecoRouter/sushiswap/volumeUSD/pro',
+      currency: null,
+      created_at: '2023-01-27 16:35:04',
+    },
+    {
+      id: 'QOCKM8MM',
+      object: 'event',
+      name: 'gnosis-100/ecoRouter/honeyswap/volumeUSD/pro',
+      currency: null,
+      created_at: '2023-01-27 16:35:04',
+    },
+    {
+      id: 'TLIY0FNV',
+      object: 'event',
+      name: 'bsc-56/ecoRouter/pancakeswap/volumeUSD/pro',
+      currency: null,
+      created_at: '2023-01-27 16:35:04',
+    },
+    {
+      id: 'IWZGJU5Z',
+      object: 'event',
+      name: 'polygon-137/ecoRouter/quickswap/volumeUSD/pro',
+      currency: null,
+      created_at: '2023-01-27 16:35:05',
+    },
+    {
+      id: 'MZDRO4RG',
+      object: 'event',
+      name: 'polygon-137/ecoRouter/dfyn/volumeUSD/pro',
+      currency: null,
+      created_at: '2023-01-27 16:35:05',
+    },
+    {
+      id: '07DACSWI',
+      object: 'event',
+      name: 'bsc-56/ecoRouter/0x/volumeUSD',
+      currency: null,
+      created_at: '2023-02-02 19:40:12',
+    },
+    {
+      id: 'HGVKYCTP',
+      object: 'event',
+      name: 'arbitrum-42161/ecoRouter/0x/volumeUSD',
+      currency: null,
+      created_at: '2023-02-02 19:40:12',
+    },
+    {
+      id: 'J47ELQDX',
+      object: 'event',
+      name: 'ethereum-1/ecoRouter/1inch/volumeUSD',
+      currency: null,
+      created_at: '2023-02-02 19:40:13',
+    },
+    {
+      id: 'O9ZBXCCD',
+      object: 'event',
+      name: 'optimism-10/ecoRouter/0x/volumeUSD',
+      currency: null,
+      created_at: '2023-02-02 19:40:13',
+    },
+    {
+      id: '9NWPVUXY',
+      object: 'event',
+      name: 'arbitrum-42161/ecoRouter/1inch/volumeUSD',
+      currency: null,
+      created_at: '2023-02-02 19:40:14',
+    },
+    {
+      id: 'DAPJIFEQ',
+      object: 'event',
+      name: 'gnosis-100/ecoRouter/1inch/volumeUSD',
+      currency: null,
+      created_at: '2023-02-02 19:40:14',
+    },
+    {
+      id: 'MI9N1VKP',
+      object: 'event',
+      name: 'polygon-137/ecoRouter/1inch/volumeUSD',
+      currency: null,
+      created_at: '2023-02-02 19:40:14',
+    },
+    {
+      id: 'N5G6DDOP',
+      object: 'event',
+      name: 'optimism-10/ecoRouter/1inch/volumeUSD',
+      currency: null,
+      created_at: '2023-02-02 19:40:14',
+    },
+    {
+      id: 'DUDW8FHU',
+      object: 'event',
+      name: 'bsc-56/ecoRouter/1inch/volumeUSD',
+      currency: null,
+      created_at: '2023-02-02 19:40:15',
+    },
+    {
+      id: '8S1PBML1',
+      object: 'event',
+      name: 'proMode/ethereum/15seconds',
+      currency: null,
+      created_at: '2023-02-02 19:40:20',
+    },
+    {
+      id: 'KRCP5GXU',
+      object: 'event',
+      name: 'proMode/rinkbey/15seconds',
+      currency: null,
+      created_at: '2023-02-02 19:40:20',
+    },
+    {
+      id: 'X7RVUFQP',
+      object: 'event',
+      name: 'proMode/goerli/15seconds',
+      currency: null,
+      created_at: '2023-02-02 19:40:20',
+    },
+    {
+      id: '9ZQLTCNQ',
+      object: 'event',
+      name: 'proMode/gnosis/15seconds',
+      currency: null,
+      created_at: '2023-02-02 19:40:21',
+    },
+    {
+      id: 'HAJRHZEV',
+      object: 'event',
+      name: 'proMode/polygon/15seconds',
+      currency: null,
+      created_at: '2023-02-02 19:40:21',
+    },
+    {
+      id: 'NL7RB6BQ',
+      object: 'event',
+      name: 'proMode/arbitrum/15seconds',
+      currency: null,
+      created_at: '2023-02-02 19:40:21',
+    },
+    {
+      id: 'BKZBR3WJ',
+      object: 'event',
+      name: 'proMode/optimism-goerli/15seconds',
+      currency: null,
+      created_at: '2023-02-02 19:40:22',
+    },
+    {
+      id: 'KRCYYPA3',
+      object: 'event',
+      name: 'proMode/bsc/15seconds',
+      currency: null,
+      created_at: '2023-02-02 19:40:22',
+    },
+    {
+      id: 'LAWN3E0E',
+      object: 'event',
+      name: 'proMode/arbitrum-rinkeby/15seconds',
+      currency: null,
+      created_at: '2023-02-02 19:40:22',
+    },
+    {
+      id: 'NJVBGIZ8',
+      object: 'event',
+      name: 'proMode/arbitrum-goerli/15seconds',
+      currency: null,
+      created_at: '2023-02-02 19:40:22',
+    },
+    {
+      id: 'YEQ3XMGT',
+      object: 'event',
+      name: 'proMode/optimism/15seconds',
+      currency: null,
+      created_at: '2023-02-02 19:40:22',
+    },
+    {
+      id: 'CXR1MYHZ',
+      object: 'event',
+      name: 'proMode/bsc-testnet/15seconds',
+      currency: null,
+      created_at: '2023-02-02 19:40:23',
+    },
+    {
+      id: 'HKFQTSYZ',
+      object: 'event',
+      name: 'proMode/undefined/15seconds',
+      currency: null,
+      created_at: '2023-02-02 19:40:23',
+    },
+    {
+      id: 'LDB0ELJN',
+      object: 'event',
+      name: 'proMode/not-defined/15seconds',
+      currency: null,
+      created_at: '2023-02-03 10:39:06',
+    },
+    {
+      id: 'ZSSUU2WT',
+      object: 'event',
+      name: 'click/chartOff',
+      currency: 'dollar',
+      created_at: '2023-02-03 10:58:56',
+    },
+    {
+      id: 'IKILIA81',
+      object: 'event',
+      name: 'click/chartPro',
+      currency: 'dollar',
+      created_at: '2023-02-03 10:58:57',
+    },
   ],
-  timestamp: '2023-01-12T12:09:47.671Z',
+  timestamp: '2023-02-03T10:58:57.429Z',
 }
 
 /**
