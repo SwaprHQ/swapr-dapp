@@ -74,7 +74,7 @@
     "i18next-http-backend": "^2.1.1",
     "lightweight-charts": "^3.8.0",
     "luxon": "^3.2.1",
-    "merkletreejs": "^0.2.32",
+    "merkletreejs": "^0.3.9",
     "multicodec": "^3.2.1",
     "multiformats": "^9.9.0",
     "multihashes": "^4.0.3",
