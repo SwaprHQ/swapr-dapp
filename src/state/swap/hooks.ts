@@ -470,15 +470,14 @@ export function useDefaultsFromURLSearch():
       newRecipient = null
     } else {
       inputCurrencyId =
-        prevInputCurrencyId && prevInputCurrencyId !== currencyId(nativeCurrency) && !isAddress(parsedQs.inputCurrency)
-          ? prevInputCurrencyId
-          : parsed[Field.INPUT].currencyId
+        prevInputCurrencyId && !isAddress(parsedQs.inputCurrency) ? prevInputCurrencyId : parsed[Field.INPUT].currencyId
 
-      outputCurrencyId = !!parsed[Field.OUTPUT].currencyId?.length
-        ? parsed[Field.OUTPUT].currencyId
-        : prevOutputCurrencyId && prevOutputCurrencyId !== currencyId(nativeCurrency)
-        ? prevOutputCurrencyId
-        : PRE_SELECT_OUTPUT_CURRENCY_ID[chainId]
+      outputCurrencyId =
+        prevOutputCurrencyId && !isAddress(parsedQs.outputCurrency)
+          ? prevOutputCurrencyId
+          : !!parsed[Field.OUTPUT].currencyId?.length
+          ? parsed[Field.OUTPUT].currencyId
+          : PRE_SELECT_OUTPUT_CURRENCY_ID[chainId]
 
       newTypedValue = typedValue
       newIndependentField = independentField
