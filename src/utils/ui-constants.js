@@ -24,6 +24,7 @@ import EthereumLogo from './../assets/images/logo-Ethereum.svg'
 import PolygonLogo from './../assets/images/logo-Polygon.svg'
 import xDaiLogo from './../assets/images/logo-xDai.svg'
 import OptimismLogo from './../assets/images/optimism.svg'
+import RoutingOneInch from './../assets/images/routing-1inch.svg'
 import RoutingBaoSwap from './../assets/images/routing-BaoSwap.svg'
 import RoutingCoW from './../assets/images/routing-cow.svg'
 import RoutingCurve from './../assets/images/routing-curve.svg'
@@ -134,6 +135,10 @@ export const RoutingThroughContent = {
     {
       title: 'PancakeSwap',
       img: RoutingPancakeSwap,
+    },
+    {
+      title: '1inch',
+      img: RoutingOneInch,
     },
   ],
 }

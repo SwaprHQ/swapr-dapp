@@ -109,12 +109,14 @@ jobs:
       - name: ⎔・Setup node
         uses: actions/setup-node@v3
         with:
-          node-version: '16'
+          node-version: lts/hydrogen
           check-latest: true
           cache: 'yarn'
 
       - name: Install dependencies
-        run: yarn install --frozen-lockfile --cache-folder $(yarn cache dir)
+        run: yarn install --immutable
+        env:
+          HUSKY: '0'
 
       - name: Generate open-api
         run: yarn codegen:socket
@@ -235,7 +237,7 @@ jobs:
     if: ${{ !(github.event_name == 'schedule' || github.actor == 'dependabot[bot]') }}
     steps:
       - name: Inject slug variables
-        uses: rlespinasse/github-slug-action@v4.3.0
+        uses: rlespinasse/github-slug-action@v4.4.0
 
       - name: 📥 ・Download workspace artifact
         uses: actions/download-artifact@v3
@@ -250,7 +252,7 @@ jobs:
         with:
           node-version: '16'
       - name: Start Deployment
-        uses: bobheadxi/deployments@v1.3.0
+        uses: bobheadxi/deployments@v1.4.0
         id: deployment
         with:
           step: start
@@ -266,7 +268,7 @@ jobs:
           path_to_add: 'build'
 
       - name: Update Deployment Status
-        uses: bobheadxi/deployments@v1.3.0
+        uses: bobheadxi/deployments@v1.4.0
         if: always()
         with:
           step: finish
@@ -320,7 +322,7 @@ jobs:
           java-version: '17'
 
       - name: Install dependencies
-        run: yarn install --frozen-lockfile --cache-folder $(yarn cache dir)
+        run: yarn install --immutable
 
       - name: Generate open-api
         run: yarn codegen:socket
@@ -380,7 +382,7 @@ jobs:
           java-version: '17'
 
       - name: Install dependencies
-        run: yarn install --frozen-lockfile --cache-folder $(yarn cache dir)
+        run: yarn install --immutable
 
       - name: Generate open-api
         run: yarn codegen:socket
@@ -392,7 +394,7 @@ jobs:
         run: yarn codegen:graphql
 
       - name: Install dependencies
-        run: yarn install --frozen-lockfile --cache-folder $(yarn cache dir)
+        run: yarn install --immutable
 
       - name: Verify Cypress
         run: yarn cypress install
