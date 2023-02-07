@@ -4,7 +4,7 @@ import { Trade } from '@swapr/sdk'
 import debugFactory from 'debug'
 
 import { BridgeTransactionSummary } from '../../state/bridgeTransactions/types'
-import { ChartOptions } from '../../state/user/reducer'
+import { ChartOption } from '../../state/user/reducer'
 import { getTradeUSDValue, getUSDPriceCurrencyQuote, getUSDPriceTokenQuote } from '../../utils/coingecko'
 import {
   FathomSiteInformation,
@@ -25,7 +25,7 @@ const debug = debugFactory('analytics:trackers')
 export async function trackEcoRouterTradeVolume(
   trade: Trade,
   site: FathomSiteInformation,
-  chartOption = ChartOptions.OFF
+  chartOption = ChartOption.OFF
 ) {
   debug('tracking EcoRouter trade USD volume', { trade, chartOption, site })
   // Get use value for input amount

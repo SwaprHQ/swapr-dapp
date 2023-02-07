@@ -1,12 +1,12 @@
 import { Trade } from '@swapr/sdk'
 
 import { BridgeTransactionSummary } from '../../state/bridgeTransactions/types'
-import { ChartOptions } from '../../state/user/reducer'
+import { ChartOption } from '../../state/user/reducer'
 
 export const chartOptionToString = {
-  [ChartOptions.OFF]: '',
-  [ChartOptions.SIMPLE_CHART]: '',
-  [ChartOptions.PRO]: '/pro',
+  [ChartOption.OFF]: '',
+  [ChartOption.SIMPLE_CHART]: '',
+  [ChartOption.PRO]: '/pro',
 }
 
 /**
@@ -14,7 +14,7 @@ export const chartOptionToString = {
  * @param item
  * @returns
  */
-export function computeItemId(item: Trade | BridgeTransactionSummary, chartOption = ChartOptions.OFF) {
+export function computeItemId(item: Trade | BridgeTransactionSummary, chartOption = ChartOption.OFF) {
   if (item instanceof Trade) {
     return `${item.platform.name.toLowerCase()}-${item.chainId}/${item.inputAmount.currency.address}-${
       item.outputAmount.currency.address

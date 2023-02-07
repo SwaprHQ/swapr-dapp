@@ -19,7 +19,7 @@ import { useContext, useMemo } from 'react'
 
 import { useAnalytics } from '../analytics/'
 import { INITIAL_ALLOWED_SLIPPAGE } from '../constants'
-import { SwapContext } from '../pages/Swap/SwapContext'
+import { SwapTabContext } from '../pages/Swap/SwapContext'
 import { MainnetGasPrice } from '../state/application/actions'
 import { useMainnetGasPrices } from '../state/application/hooks'
 import { useTransactionAdder } from '../state/transactions/hooks'
@@ -175,7 +175,7 @@ export function useSwapCallback({
   const { account, chainId, library } = useActiveWeb3React()
   const mainnetGasPrices = useMainnetGasPrices()
   const [preferredGasPrice] = useUserPreferredGasPrice()
-  const { activeChartTab } = useContext(SwapContext)
+  const { activeChartTab } = useContext(SwapTabContext)
   const { trackEcoRouterTradeVolume } = useAnalytics()
 
   const memoizedTrades = useMemo(() => (trade ? [trade] : undefined), [trade])

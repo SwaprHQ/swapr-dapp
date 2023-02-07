@@ -5,7 +5,7 @@ import { useEffect, useRef, useState } from 'react'
 
 import { useEnvironment } from '../../hooks/useEnvironment'
 import { BridgeTransactionSummary } from '../../state/bridgeTransactions/types'
-import { ChartOptions } from '../../state/user/reducer'
+import { ChartOption } from '../../state/user/reducer'
 import { loadFathom } from '../fathom'
 import { siteEvents as siteEventsDev } from '../generated/dev'
 import { FathomSiteInformation, siteEvents as siteEventsProd } from '../generated/prod'
@@ -133,7 +133,7 @@ export function AnalyticsProvider({ children }: AnalyticsProviderProps) {
     }
   }, [site, tradeQueue])
 
-  const trackEcoRouterTradeVolume = (trade: Trade, chartOption = ChartOptions.OFF) => {
+  const trackEcoRouterTradeVolume = (trade: Trade, chartOption = ChartOption.OFF) => {
     if (!site || !window.fathom) {
       return console.error('Fathom site not found', { site, fathom: window.fathom })
     }
