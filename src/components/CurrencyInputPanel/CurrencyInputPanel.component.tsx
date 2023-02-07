@@ -1,6 +1,6 @@
 import { Currency } from '@swapr/sdk'
 
-import { Fragment, useCallback, useEffect, useMemo, useState } from 'react'
+import { Fragment, ReactNode, useCallback, useEffect, useMemo, useState } from 'react'
 
 import { useActiveWeb3React } from '../../hooks'
 import { useCurrencyBalance } from '../../state/wallet/hooks'
@@ -26,6 +26,10 @@ import {
 import { CurrencyInputPanelProps } from './CurrencyInputPanel.types'
 import { CurrencyUserBalance } from './CurrencyUserBalance'
 import { CurrencyView } from './CurrencyView'
+
+const CurrencySelectFallback = ({ children, currency: _ }: { children: ReactNode; currency: any }) => (
+  <Fragment>{children}</Fragment>
+)
 
 export const CurrencyInputPanelComponent = ({
   id,
@@ -54,7 +58,7 @@ export const CurrencyInputPanelComponent = ({
   isOutputPanel,
   showNativeCurrency = true,
   currencyOmitList,
-  currencySelectWrapper: CurrencySelectWrapper = Fragment,
+  currencySelectWrapper: CurrencySelectWrapper = CurrencySelectFallback,
 }: CurrencyInputPanelProps) => {
   const [isOpen, setIsOpen] = useState(false)
   const [focused, setFocused] = useState(false)

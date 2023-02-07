@@ -12,13 +12,7 @@
       "version": "detect"
     }
   },
-  "extends": [
-    "react-app",
-    "react-app/jest",
-    "plugin:import/recommended",
-    "plugin:import/typescript",
-    "plugin:prettier/recommended"
-  ],
+  "extends": ["react-app", "react-app/jest", "plugin:import/typescript", "plugin:prettier/recommended"],
   "rules": {
     "@typescript-eslint/explicit-function-return-type": "off",
     "@typescript-eslint/no-explicit-any": "off",
@@ -56,16 +50,6 @@
           "caseInsensitive": true,
           "order": "asc"
         }
-      }
-    ],
-    "sort-imports": [
-      "error",
-      {
-        "allowSeparatedGroups": true,
-        "ignoreCase": true,
-        "ignoreDeclarationSort": true,
-        "ignoreMemberSort": false,
-        "memberSyntaxSortOrder": ["none", "all", "multiple", "single"]
       }
     ]
   }
