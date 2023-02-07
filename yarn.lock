@@ -7681,7 +7681,7 @@ __metadata:
     eslint-plugin-react-hooks: ^4.6.0
     eslint-plugin-storybook: ^0.6.1
     ethers: ^5.4.4
-    etherscan-api: 10.2.0
+    etherscan-api: 10.3.0
     git-revision-webpack-plugin: ^5.0.0
     graphql: ^16.5.0
     graphql-request: ^5.1.0
@@ -11931,6 +11931,17 @@ __metadata:
   languageName: node
   linkType: hard
 
+"axios@npm:1.2.2, axios@npm:^1.1.2":
+  version: 1.2.2
+  resolution: "axios@npm:1.2.2"
+  dependencies:
+    follow-redirects: ^1.15.0
+    form-data: ^4.0.0
+    proxy-from-env: ^1.1.0
+  checksum: 6e357491b38426c5720f7328ecbafca3c643b03952c052d787570672ce7a9365717c2d64db4ce97cfbee3f830fa405101e360e14d0857ef7f96a9f4d814c4e03
+  languageName: node
+  linkType: hard
+
 "axios@npm:^0.18.0":
   version: 0.18.1
   resolution: "axios@npm:0.18.1"
@@ -11956,17 +11967,6 @@ __metadata:
   dependencies:
     follow-redirects: ^1.14.7
   checksum: 2a8a3787c05f2a0c9c3878f49782357e2a9f38945b93018fb0c4fd788171c43dceefbb577988628e09fea53952744d1ecebde234b561f1e703aa43e0a598a3ad
-  languageName: node
-  linkType: hard
-
-"axios@npm:^1.1.2":
-  version: 1.2.2
-  resolution: "axios@npm:1.2.2"
-  dependencies:
-    follow-redirects: ^1.15.0
-    form-data: ^4.0.0
-    proxy-from-env: ^1.1.0
-  checksum: 6e357491b38426c5720f7328ecbafca3c643b03952c052d787570672ce7a9365717c2d64db4ce97cfbee3f830fa405101e360e14d0857ef7f96a9f4d814c4e03
   languageName: node
   linkType: hard
 
@@ -19258,7 +19258,18 @@ __metadata:
   languageName: node
   linkType: hard
 
-"etherscan-api@npm:10.2.0, etherscan-api@npm:^10.2.0":
+"etherscan-api@npm:10.3.0":
+  version: 10.3.0
+  resolution: "etherscan-api@npm:10.3.0"
+  dependencies:
+    axios: 1.2.2
+    gh-pages: 4.0.0
+    querystring: 0.2.1
+  checksum: d40f66955620db0a962cb46caf33512ac3e97d26ac4fd51958b08a7b8fae80e3f52df8f83d6a55a364298fa447f9838bc15f68ab5710d3a997bc1091ef7502e2
+  languageName: node
+  linkType: hard
+
+"etherscan-api@npm:^10.2.0":
   version: 10.2.0
   resolution: "etherscan-api@npm:10.2.0"
   dependencies:
