@@ -11,6 +11,7 @@ import { useHigherUSDValue } from '../../../../hooks/useUSDValue'
 import { useDefaultsFromURLSearch } from '../../../../state/swap/hooks'
 import { Field } from '../../../../state/swap/types'
 import { SwapContext } from '../../SwapBox/SwapContext'
+import { supportedChainIdList } from '../constants/index'
 import { InputFocus, OrderExpiresInUnit } from '../interfaces'
 import { getInitialState } from '../utils'
 import { LimitOrderFormContext } from './LimitOrderFormContext'
@@ -121,8 +122,9 @@ export function LimitOrderFormBaseConditionalProvider({
 
 export const LimitOrderFromProvider = ({ children }: { children: ReactNode }) => {
   const { chainId, account } = useActiveWeb3React()
+  const noLimitOrderSupport = chainId ? !supportedChainIdList.includes(chainId) : true
 
-  if (!chainId || !account) return <>{children}</>
+  if (!chainId || noLimitOrderSupport || !account) return <>{children}</>
 
   return (
     <LimitOrderFormBaseConditionalProvider chainId={chainId} account={account}>
