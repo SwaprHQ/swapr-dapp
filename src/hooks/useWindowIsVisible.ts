@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 
-export const useWindowIsVisable = () => {
-  const [windowIsVisable, setWindowIsVisible] = useState(true)
+export const useWindowIsVisible = () => {
+  const [windowIsVisible, setWindowIsVisible] = useState(true)
   const onVisibilityChange = () => setWindowIsVisible(!document.hidden)
 
   useEffect(() => {
@@ -12,5 +12,5 @@ export const useWindowIsVisable = () => {
     }
   }, [])
 
-  return windowIsVisable
+  return windowIsVisible
 }

@@ -63,7 +63,6 @@ interface CreateSiteEventParams {
 }
 
 export function createSiteEvent({ name, siteId, token }: CreateSiteEventParams): Promise<SiteEvent> {
-  console.log(name)
   return fetch(`https://api.usefathom.com/v1/sites/${siteId}/events`, {
     method: 'POST',
     headers: {

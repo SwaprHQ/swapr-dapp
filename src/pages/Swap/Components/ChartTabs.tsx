@@ -66,6 +66,7 @@ export const ChartTabs = ({
               setActiveChartTab(ChartOption.OFF)
               setSelectedChartTab(ChartOption.OFF)
               navigate('/swap')
+              trackEvent(ClickEvents.CHART_OFF)
               window?.fathom?.trackPageview()
             }
           }}
