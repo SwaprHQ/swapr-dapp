@@ -1,26 +1,17 @@
 import { createContext } from 'react'
 
-export enum SwapTab {
-  Swap = 'Swap',
-  LimitOrder = 'LimitOrder',
-  BridgeSwap = 'BridgeSwap',
-}
+import { ChartOption, SwapTab } from '../../state/user/reducer'
 
-export enum ChartOptions {
-  OFF = 'OFF',
-  SIMPLE_CHART = 'SIMPLE_CHART',
-  PRO = 'PRO',
-}
 export interface ISwapTabContext {
   activeTab: SwapTab
   setActiveTab: (tab: SwapTab) => void
-  activeChartTab: ChartOptions
-  setActiveChartTab: (tab: ChartOptions) => void
+  activeChartTab: ChartOption
+  setActiveChartTab: (tab: ChartOption) => void
 }
 
 export const SwapTabContext = createContext<ISwapTabContext>({
-  activeTab: SwapTab.Swap,
+  activeTab: SwapTab.SWAP,
   setActiveTab: () => {},
-  activeChartTab: ChartOptions.OFF,
+  activeChartTab: ChartOption.OFF,
   setActiveChartTab: () => {},
 })
