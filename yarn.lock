@@ -2499,9 +2499,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@cypress/webpack-dev-server@npm:^2.3.0":
-  version: 2.5.0
-  resolution: "@cypress/webpack-dev-server@npm:2.5.0"
+"@cypress/webpack-dev-server@npm:^3.1.0":
+  version: 3.2.3
+  resolution: "@cypress/webpack-dev-server@npm:3.2.3"
   dependencies:
     find-up: 6.3.0
     fs-extra: 9.1.0
@@ -2512,7 +2512,7 @@ __metadata:
     tslib: ^2.3.1
     webpack-dev-server: ^4.7.4
     webpack-merge: ^5.4.0
-  checksum: ab9ccd3942c9c8e8fe8605deb9ef8d021416cf7c1b29b254d2cfda2602c3934abb2d884146e4357e4fc6bfeaecc027443d734597b02527ddd7c5f62d9b0fbf72
+  checksum: 1b1c6b8b8e1491d7260a3c38a1b5779ce40d456e276531b1597c8fc65e1734ddc8604aaa4f0fc99c99b2a697b39a42f4daa0f7253d2d1af4e5ac31d6d7ae4036
   languageName: node
   linkType: hard
 
@@ -7686,7 +7686,7 @@ __metadata:
     "@swapr/core": ^0.3.19
     "@swapr/periphery": ^0.3.22
     "@swapr/sdk": 1.8.1
-    "@synthetixio/synpress": ^2.3.3
+    "@synthetixio/synpress": ^3.0.5
     "@testing-library/cypress": ^8.0.3
     "@types/aos": ^3.0.4
     "@types/debug": ^4.1.7
@@ -7872,19 +7872,19 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@synthetixio/synpress@npm:^2.3.3":
-  version: 2.4.1
-  resolution: "@synthetixio/synpress@npm:2.4.1"
+"@synthetixio/synpress@npm:^3.0.5":
+  version: 3.0.5
+  resolution: "@synthetixio/synpress@npm:3.0.5"
   dependencies:
     "@cypress/code-coverage": ^3.10.0
-    "@cypress/webpack-dev-server": ^2.3.0
+    "@cypress/webpack-dev-server": ^3.1.0
     "@drptbl/gremlins.js": ^2.2.1
     "@playwright/test": ^1.27.1
     "@synthetixio/js": ^2.41.0
     "@testing-library/cypress": ^8.0.3
     "@testing-library/react": ^13.4.0
     "@types/testing-library__cypress": ^5.0.9
-    axios: ^1.1.2
+    axios: ^1.1.3
     babel-plugin-istanbul: ^6.1.1
     babel-plugin-react-generate-property: ^1.1.2
     babel-plugin-react-remove-properties: ^0.3.0
@@ -7892,7 +7892,7 @@ __metadata:
     babel-plugin-transform-react-styled-components-qa: ^2.1.0
     bytes32: ^0.0.3
     commander: ^9.4.1
-    cypress: ^10.10.0
+    cypress: ^11.0.1
     cypress-wait-until: ^1.7.2
     debug: ^4.3.4
     dotenv: ^16.0.3
@@ -7906,21 +7906,22 @@ __metadata:
     eslint-plugin-import: ^2.26.0
     eslint-plugin-node: ^11.1.0
     eslint-plugin-prettier: ^4.2.1
-    eslint-plugin-promise: ^6.0.1
+    eslint-plugin-promise: ^6.1.1
     eslint-plugin-standard: ^4.1.0
-    eslint-plugin-testing-library: ^5.7.2
+    eslint-plugin-testing-library: ^5.9.1
     eslint-plugin-ui-testing: ^2.0.1
     eslint-plugin-unicorn: ^44.0.2
+    ethers: ^5.7.2
     etherscan-api: ^10.2.0
     find-config: ^1.0.0
     node-fetch: ^2.6.1
     prettier: ^2.7.1
-    serve: ^14.0.1
+    serve: ^14.1.1
     start-server-and-test: ^1.14.0
     synthetix-js: ^2.74.1
   bin:
     synpress: synpress.js
-  checksum: 48e0d5f87754f4b34d9ea141537673c09c138803924f54815f811768d4d01ace4604cc6bba55a98fee2417aa176923c74ee508e9f0b5495ebf0aa01eae4bc667
+  checksum: a52a4dd0745615ea7392ea6328d29a7159555e3fced0a54a739bbff59fb920731cd5209112d79e144967e50ba61b59ea286694f7ac7a21da97c0e9957c78ed5f
   languageName: node
   linkType: hard
 
@@ -9409,6 +9410,16 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@typescript-eslint/scope-manager@npm:5.51.0":
+  version: 5.51.0
+  resolution: "@typescript-eslint/scope-manager@npm:5.51.0"
+  dependencies:
+    "@typescript-eslint/types": 5.51.0
+    "@typescript-eslint/visitor-keys": 5.51.0
+  checksum: b3c9f48b6b7a7ae2ebcad4745ef91e4727776b2cf56d31be6456b1aa063aa649539e20f9fffa83cad9ccaaa9c492f2354a1c15526a2b789e235ec58b3a82d22c
+  languageName: node
+  linkType: hard
+
 "@typescript-eslint/type-utils@npm:5.48.0":
   version: 5.48.0
   resolution: "@typescript-eslint/type-utils@npm:5.48.0"
@@ -9461,6 +9472,13 @@ __metadata:
   version: 5.49.0
   resolution: "@typescript-eslint/types@npm:5.49.0"
   checksum: 41f72a043007fc3f3356b5a38d7bfa54871545b4a309810a062f044cff25122413a9660ce6d83d1221762f60d067351d020b0cb68f7e1279817f53e77ce8f33d
+  languageName: node
+  linkType: hard
+
+"@typescript-eslint/types@npm:5.51.0":
+  version: 5.51.0
+  resolution: "@typescript-eslint/types@npm:5.51.0"
+  checksum: b31021a0866f41ba5d71b6c4c7e20cc9b99d49c93bb7db63b55b2e51542fb75b4e27662ee86350da3c1318029e278a5a807facaf4cb5aeea724be8b0e021e836
   languageName: node
   linkType: hard
 
@@ -9518,6 +9536,24 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@typescript-eslint/typescript-estree@npm:5.51.0":
+  version: 5.51.0
+  resolution: "@typescript-eslint/typescript-estree@npm:5.51.0"
+  dependencies:
+    "@typescript-eslint/types": 5.51.0
+    "@typescript-eslint/visitor-keys": 5.51.0
+    debug: ^4.3.4
+    globby: ^11.1.0
+    is-glob: ^4.0.3
+    semver: ^7.3.7
+    tsutils: ^3.21.0
+  peerDependenciesMeta:
+    typescript:
+      optional: true
+  checksum: aec23e5cab48ee72fefa6d1ac266639ebabf6cebec1e0207ad47011d3a48186ac9a632c8e34c3bac896155f54895a497230c11d789fd81263b08eb267d7113ce
+  languageName: node
+  linkType: hard
+
 "@typescript-eslint/utils@npm:5.48.0, @typescript-eslint/utils@npm:^5.13.0, @typescript-eslint/utils@npm:^5.45.0":
   version: 5.48.0
   resolution: "@typescript-eslint/utils@npm:5.48.0"
@@ -9554,6 +9590,24 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@typescript-eslint/utils@npm:^5.43.0":
+  version: 5.51.0
+  resolution: "@typescript-eslint/utils@npm:5.51.0"
+  dependencies:
+    "@types/json-schema": ^7.0.9
+    "@types/semver": ^7.3.12
+    "@typescript-eslint/scope-manager": 5.51.0
+    "@typescript-eslint/types": 5.51.0
+    "@typescript-eslint/typescript-estree": 5.51.0
+    eslint-scope: ^5.1.1
+    eslint-utils: ^3.0.0
+    semver: ^7.3.7
+  peerDependencies:
+    eslint: ^6.0.0 || ^7.0.0 || ^8.0.0
+  checksum: c6e28c942fbac5500f0e8ed67ef304b484ba296486e55306f78fb090dc9d5bb1f25a0bedc065e14680041eadce5e95fa10aab618cb0c316599ec987e6ea72442
+  languageName: node
+  linkType: hard
+
 "@typescript-eslint/visitor-keys@npm:4.33.0":
   version: 4.33.0
   resolution: "@typescript-eslint/visitor-keys@npm:4.33.0"
@@ -9581,6 +9635,16 @@ __metadata:
     "@typescript-eslint/types": 5.49.0
     eslint-visitor-keys: ^3.3.0
   checksum: 46dc7bc713e8825d1fccba521fdf7c6e2f8829e491c2afd44dbe4105c6432e3c3dfe7e1ecb221401269d639264bb4af77b60a7b65521fcff9ab02cd31d8ef782
+  languageName: node
+  linkType: hard
+
+"@typescript-eslint/visitor-keys@npm:5.51.0":
+  version: 5.51.0
+  resolution: "@typescript-eslint/visitor-keys@npm:5.51.0"
+  dependencies:
+    "@typescript-eslint/types": 5.51.0
+    eslint-visitor-keys: ^3.3.0
+  checksum: b49710f3c6b3b62a846a163afffd81be5eb2b1f44e25bec51ff3c9f4c3b579d74aa4cbd3753b4fc09ea3dbc64a7062f9c658c08d22bb2740a599cb703d876220
   languageName: node
   linkType: hard
 
@@ -10801,13 +10865,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@zeit/schemas@npm:2.21.0":
-  version: 2.21.0
-  resolution: "@zeit/schemas@npm:2.21.0"
-  checksum: 59d4f0851dd6ff7a56ebab66f51af36bcebe9ac81377c1a9f85a97769c894f22168bbe88c47978964d95dd8ef76e9d25d2ed5a5131905d2aea703423fe3930ad
-  languageName: node
-  linkType: hard
-
 "@zeit/schemas@npm:2.29.0":
   version: 2.29.0
   resolution: "@zeit/schemas@npm:2.29.0"
@@ -11994,7 +12051,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"axios@npm:1.2.2, axios@npm:^1.1.2":
+"axios@npm:1.2.2":
   version: 1.2.2
   resolution: "axios@npm:1.2.2"
   dependencies:
@@ -12030,6 +12087,17 @@ __metadata:
   dependencies:
     follow-redirects: ^1.14.7
   checksum: 2a8a3787c05f2a0c9c3878f49782357e2a9f38945b93018fb0c4fd788171c43dceefbb577988628e09fea53952744d1ecebde234b561f1e703aa43e0a598a3ad
+  languageName: node
+  linkType: hard
+
+"axios@npm:^1.1.3":
+  version: 1.3.2
+  resolution: "axios@npm:1.3.2"
+  dependencies:
+    follow-redirects: ^1.15.0
+    form-data: ^4.0.0
+    proxy-from-env: ^1.1.0
+  checksum: 9791af75a6df137b15ef45d13ad11eb357b3860d2496347ee18778db9d0abc2320362a4452f1e070e3160f1dbcc518fcefdc9e005be097e7db39acb22cf608e5
   languageName: node
   linkType: hard
 
@@ -16326,7 +16394,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"cypress@npm:^10.10.0, cypress@npm:^10.8.0":
+"cypress@npm:^10.8.0":
   version: 10.11.0
   resolution: "cypress@npm:10.11.0"
   dependencies:
@@ -16375,6 +16443,58 @@ __metadata:
   bin:
     cypress: bin/cypress
   checksum: 938cc6a20f7eeace5c8e850d234904ee1651cbb36d94666fe600cf17ce964e73d4f7d8d944aab677491702a57364e6aceeb4fe8bcbd96147ff5e2b575a956fb2
+  languageName: node
+  linkType: hard
+
+"cypress@npm:^11.0.1":
+  version: 11.2.0
+  resolution: "cypress@npm:11.2.0"
+  dependencies:
+    "@cypress/request": ^2.88.10
+    "@cypress/xvfb": ^1.2.4
+    "@types/node": ^14.14.31
+    "@types/sinonjs__fake-timers": 8.1.1
+    "@types/sizzle": ^2.3.2
+    arch: ^2.2.0
+    blob-util: ^2.0.2
+    bluebird: ^3.7.2
+    buffer: ^5.6.0
+    cachedir: ^2.3.0
+    chalk: ^4.1.0
+    check-more-types: ^2.24.0
+    cli-cursor: ^3.1.0
+    cli-table3: ~0.6.1
+    commander: ^5.1.0
+    common-tags: ^1.8.0
+    dayjs: ^1.10.4
+    debug: ^4.3.2
+    enquirer: ^2.3.6
+    eventemitter2: 6.4.7
+    execa: 4.1.0
+    executable: ^4.1.1
+    extract-zip: 2.0.1
+    figures: ^3.2.0
+    fs-extra: ^9.1.0
+    getos: ^3.2.1
+    is-ci: ^3.0.0
+    is-installed-globally: ~0.4.0
+    lazy-ass: ^1.6.0
+    listr2: ^3.8.3
+    lodash: ^4.17.21
+    log-symbols: ^4.0.0
+    minimist: ^1.2.6
+    ospath: ^1.2.2
+    pretty-bytes: ^5.6.0
+    proxy-from-env: 1.0.0
+    request-progress: ^3.0.0
+    semver: ^7.3.2
+    supports-color: ^8.1.1
+    tmp: ~0.2.1
+    untildify: ^4.0.0
+    yauzl: ^2.10.0
+  bin:
+    cypress: bin/cypress
+  checksum: e13649fb4b62a3c9dff7cc571f4e01dba009d8179b05c4f885c5ceb4ed76b78a7323fec491d992da35527708b54e596bfc9edb1d702f788317889f794d8c1e76
   languageName: node
   linkType: hard
 
@@ -18175,7 +18295,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"eslint-plugin-promise@npm:^6.0.1":
+"eslint-plugin-promise@npm:^6.1.1":
   version: 6.1.1
   resolution: "eslint-plugin-promise@npm:6.1.1"
   peerDependencies:
@@ -18266,7 +18386,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"eslint-plugin-testing-library@npm:^5.0.1, eslint-plugin-testing-library@npm:^5.7.2":
+"eslint-plugin-testing-library@npm:^5.0.1":
   version: 5.9.1
   resolution: "eslint-plugin-testing-library@npm:5.9.1"
   dependencies:
@@ -18274,6 +18394,17 @@ __metadata:
   peerDependencies:
     eslint: ^7.5.0 || ^8.0.0
   checksum: d09f9486945807e9587d52b6979117bc41b750df741567381a06219671096afb318696a0e0db63e253e150fead40e77ef9653ee00f1dda83fc8920e3b3c47107
+  languageName: node
+  linkType: hard
+
+"eslint-plugin-testing-library@npm:^5.9.1":
+  version: 5.10.0
+  resolution: "eslint-plugin-testing-library@npm:5.10.0"
+  dependencies:
+    "@typescript-eslint/utils": ^5.43.0
+  peerDependencies:
+    eslint: ^7.5.0 || ^8.0.0
+  checksum: 3278fc4683a99d24ac2b6d2ed0359db1b0509674350e4b9a958a226f57b4b90e070c02e1f4c2806da885d8025c1e8c952cb9a5e9751e69baac3d12cfe6804000
   languageName: node
   linkType: hard
 
@@ -19269,7 +19400,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"ethers@npm:^5.0.13, ethers@npm:^5.1.0, ethers@npm:^5.4.4, ethers@npm:^5.4.6, ethers@npm:^5.5.3, ethers@npm:^5.6.1":
+"ethers@npm:^5.0.13, ethers@npm:^5.1.0, ethers@npm:^5.4.4, ethers@npm:^5.4.6, ethers@npm:^5.5.3, ethers@npm:^5.6.1, ethers@npm:^5.7.2":
   version: 5.7.2
   resolution: "ethers@npm:5.7.2"
   dependencies:
@@ -33289,28 +33420,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"serve@npm:^14.0.1":
-  version: 14.1.2
-  resolution: "serve@npm:14.1.2"
-  dependencies:
-    "@zeit/schemas": 2.21.0
-    ajv: 8.11.0
-    arg: 5.0.2
-    boxen: 7.0.0
-    chalk: 5.0.1
-    chalk-template: 0.4.0
-    clipboardy: 3.0.0
-    compression: 1.7.4
-    is-port-reachable: 4.0.0
-    serve-handler: 6.1.5
-    update-check: 1.5.4
-  bin:
-    serve: build/main.js
-  checksum: 814e429f2373addca7e57c38c548ae1d4ef7afe52f5091aa421604f4c61633417e891834d5c7bcb6439ee4b0aeb7a4871e3e704c42173b602986566be21f5375
-  languageName: node
-  linkType: hard
-
-"serve@npm:^14.2.0":
+"serve@npm:^14.1.1, serve@npm:^14.2.0":
   version: 14.2.0
   resolution: "serve@npm:14.2.0"
   dependencies:
