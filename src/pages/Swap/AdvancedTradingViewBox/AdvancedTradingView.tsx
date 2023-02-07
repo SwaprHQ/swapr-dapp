@@ -16,10 +16,8 @@ export function AdvancedTradingViewBox({ children }: { children: React.ReactNode
   const isInProMode = pathname.includes('/pro')
 
   useEffect(() => {
-    if (isInProMode) {
-      if (!isDesktop) {
-        navigate('/swap')
-      }
+    if (isInProMode && !isDesktop) {
+      navigate('/swap')
     }
   }, [isDesktop, navigate, isInProMode])
 

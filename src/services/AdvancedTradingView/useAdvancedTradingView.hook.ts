@@ -8,9 +8,10 @@ import { useActiveWeb3React } from '../../hooks'
 import { useToken } from '../../hooks/Tokens'
 import { useRouter } from '../../hooks/useRouter'
 import { LimitOrderFormContext } from '../../pages/Swap/LimitOrderBox/contexts'
-import { SwapTab, SwapTabContext } from '../../pages/Swap/SwapContext'
+import { SwapTabContext } from '../../pages/Swap/SwapContext'
 import store, { AppState } from '../../state'
 import { useSwapState } from '../../state/swap/hooks'
+import { SwapTab } from '../../state/user/reducer'
 import { adapters } from './adapters/adapters.config'
 import { AdvancedTradingViewAdapter } from './adapters/advancedTradingView.adapter'
 import { AdapterAmountToFetch } from './advancedTradingView.types'
@@ -94,13 +95,13 @@ export const useAdvancedTradingView = () => {
     useToken(
       getTokenAddress(
         chainId as ChainId,
-        activeTab === SwapTab.Swap ? inputCurrencyId : sellTokenAmount.currency.address
+        activeTab === SwapTab.SWAP ? inputCurrencyId : sellTokenAmount.currency.address
       )
     ),
     useToken(
       getTokenAddress(
         chainId as ChainId,
-        activeTab === SwapTab.Swap ? outputCurrencyId : buyTokenAmount.currency.address
+        activeTab === SwapTab.SWAP ? outputCurrencyId : buyTokenAmount.currency.address
       )
     ),
   ]
