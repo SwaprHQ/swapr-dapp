@@ -4,6 +4,7 @@ import { Trade } from '@swapr/sdk'
 import debugFactory from 'debug'
 
 import { BridgeTransactionSummary } from '../../state/bridgeTransactions/types'
+import { ChartOption } from '../../state/user/reducer'
 import { getTradeUSDValue, getUSDPriceCurrencyQuote, getUSDPriceTokenQuote } from '../../utils/coingecko'
 import {
   FathomSiteInformation,
@@ -11,6 +12,7 @@ import {
   getEcoRouterVolumeUSDEventName,
   getNetworkNameByChainId,
 } from '../generated/prod'
+import { chartOptionToString } from '../utils'
 
 const debug = debugFactory('analytics:trackers')
 
@@ -20,8 +22,12 @@ const debug = debugFactory('analytics:trackers')
  * @returns void
  * @throws Error on null USD value and when
  */
-export async function trackEcoRouterTradeVolume(trade: Trade, site: FathomSiteInformation) {
-  debug('tracking EcoRouter trade USD volume', { trade, site })
+export async function trackEcoRouterTradeVolume(
+  trade: Trade,
+  site: FathomSiteInformation,
+  chartOption = ChartOption.OFF
+) {
+  debug('tracking EcoRouter trade USD volume', { trade, chartOption, site })
   // Get use value for input amount
   const tradeUSDValue = await getTradeUSDValue(trade)
 
@@ -33,13 +39,13 @@ export async function trackEcoRouterTradeVolume(trade: Trade, site: FathomSiteIn
 
   const tradeUSDValueInCents = (parseFloat(parseFloat(tradeUSDValue).toFixed(2)) * 100).toString() // convert to cents because fathom requires it
   const networkName = getNetworkNameByChainId(trade.chainId as number)
-  const eventName = getEcoRouterVolumeUSDEventName(networkName, trade.chainId, trade.platform.name)
+  const chartOptionString = chartOptionToString[chartOption]
+  const eventName = getEcoRouterVolumeUSDEventName(networkName, trade.chainId, trade.platform.name, chartOptionString)
   const eventId = site.events.find(event => event.name === eventName)?.id
 
   if (!eventId) {
     throw new Error(`Event ID for (${eventName}) not found in site (${site.siteId})`)
   }
-
   window.fathom.trackGoal(eventId, tradeUSDValueInCents)
 }
 

@@ -5,6 +5,7 @@ import { useEffect, useRef, useState } from 'react'
 
 import { useEnvironment } from '../../hooks/useEnvironment'
 import { BridgeTransactionSummary } from '../../state/bridgeTransactions/types'
+import { ChartOption } from '../../state/user/reducer'
 import { loadFathom } from '../fathom'
 import { siteEvents as siteEventsDev } from '../generated/dev'
 import { FathomSiteInformation, siteEvents as siteEventsProd } from '../generated/prod'
@@ -85,7 +86,11 @@ export function AnalyticsProvider({ children }: AnalyticsProviderProps) {
         debug('Processing item', { pendingItem })
         try {
           if (pendingItem.item instanceof Trade) {
-            await trackers.trackEcoRouterTradeVolume(pendingItem.item, site as FathomSiteInformation)
+            await trackers.trackEcoRouterTradeVolume(
+              pendingItem.item,
+              site as FathomSiteInformation,
+              pendingItem?.chartOption
+            )
           } else {
             await trackers.trackEcoBridgeTradeVolume(pendingItem.item, site as FathomSiteInformation)
           }
@@ -128,7 +133,7 @@ export function AnalyticsProvider({ children }: AnalyticsProviderProps) {
     }
   }, [site, tradeQueue])
 
-  const trackEcoRouterTradeVolume = (trade: Trade) => {
+  const trackEcoRouterTradeVolume = (trade: Trade, chartOption = ChartOption.OFF) => {
     if (!site || !window.fathom) {
       return console.error('Fathom site not found', { site, fathom: window.fathom })
     }
@@ -136,16 +141,17 @@ export function AnalyticsProvider({ children }: AnalyticsProviderProps) {
     // Attempt to process the trade volume event
     // If it fails, add it to the queue
     trackers
-      .trackEcoRouterTradeVolume(trade, site)
-      .then(() => debug('processed trade volume event', { trade }))
+      .trackEcoRouterTradeVolume(trade, site, chartOption)
+      .then(() => debug('processed trade volume event', { trade, chartOption }))
       .catch(error => {
-        console.error('Error processing trade', { trade, error })
-        const id = computeItemId(trade)
+        console.error('Error processing trade', { trade, chartOption, error })
+        const id = computeItemId(trade, chartOption)
         setTradeQueue(state => ({
           ...state,
           [id]: {
             id,
             item: trade,
+            chartOption,
             status: ItemStatus.PENDING,
             retries: 0,
           },

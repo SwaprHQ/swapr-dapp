@@ -15,10 +15,11 @@ import {
 } from '@swapr/sdk'
 
 import { UnsignedTransaction } from 'ethers'
-import { useMemo } from 'react'
+import { useContext, useMemo } from 'react'
 
 import { useAnalytics } from '../analytics/'
 import { INITIAL_ALLOWED_SLIPPAGE } from '../constants'
+import { SwapTabContext } from '../pages/Swap/SwapContext'
 import { MainnetGasPrice } from '../state/application/actions'
 import { useMainnetGasPrices } from '../state/application/hooks'
 import { useTransactionAdder } from '../state/transactions/hooks'
@@ -174,7 +175,7 @@ export function useSwapCallback({
   const { account, chainId, library } = useActiveWeb3React()
   const mainnetGasPrices = useMainnetGasPrices()
   const [preferredGasPrice] = useUserPreferredGasPrice()
-
+  const { activeChartTab } = useContext(SwapTabContext)
   const { trackEcoRouterTradeVolume } = useAnalytics()
 
   const memoizedTrades = useMemo(() => (trade ? [trade] : undefined), [trade])
@@ -209,7 +210,7 @@ export function useSwapCallback({
           await trade.signOrder(signer, recipient)
           const orderId = await trade.submitOrder()
 
-          trackEcoRouterTradeVolume(trade)
+          trackEcoRouterTradeVolume(trade, activeChartTab)
 
           addTransaction(
             {
@@ -306,7 +307,7 @@ export function useSwapCallback({
             ...((await transactionParameters) as any),
           })
           .then(async response => {
-            trackEcoRouterTradeVolume(trade)
+            trackEcoRouterTradeVolume(trade, activeChartTab)
             addTransaction(response, {
               summary: getSwapSummary(trade, recipient),
             })
@@ -331,12 +332,13 @@ export function useSwapCallback({
     library,
     account,
     chainId,
+    recipient,
+    recipientAddressOrName,
     swapCalls,
     preferredGasPrice,
-    mainnetGasPrices,
-    recipientAddressOrName,
-    recipient,
-    addTransaction,
     trackEcoRouterTradeVolume,
+    activeChartTab,
+    addTransaction,
+    mainnetGasPrices,
   ])
 }
