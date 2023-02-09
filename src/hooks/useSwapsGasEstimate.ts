@@ -52,7 +52,7 @@ export function useSwapsGasEstimations(
       } else {
         try {
           const transactionRequest = await call.transactionParameters
-          estimatedCall = calculateGasMargin(await (library as Web3Provider).estimateGas(transactionRequest as any))
+          estimatedCall = await (library as Web3Provider).estimateGas(transactionRequest as any)
         } catch (error) {
           console.error(error)
           // silent fail
