@@ -3,12 +3,12 @@ import { useTranslation } from 'react-i18next'
 import { Box } from 'rebass'
 import styled, { useTheme } from 'styled-components'
 
-import { ChartOptions } from '../../pages/Swap/SwapContext'
+import { ChartOption } from '../../state/user/reducer'
 import { ButtonGroup, ButtonGroupOption } from '../ButtonGroup/ButtonGroup'
 
 interface ChartToggleProps {
   hasBothCurrenciesInput: boolean
-  selectedChartOption: ChartOptions | undefined
+  selectedChartOption: ChartOption | undefined
   setselectedChartOption: Function
 }
 
@@ -22,11 +22,9 @@ export function ChartToggle({ hasBothCurrenciesInput, setselectedChartOption, se
       <Box display={['block', 'none']}>
         <ToggleChartButton
           disabled={!hasBothCurrenciesInput}
-          active={selectedChartOption === ChartOptions.SIMPLE_CHART}
+          active={selectedChartOption === ChartOption.SIMPLE_CHART}
           onClick={() =>
-            setselectedChartOption(
-              selectedChartOption === ChartOptions.OFF ? ChartOptions.SIMPLE_CHART : ChartOptions.OFF
-            )
+            setselectedChartOption(selectedChartOption === ChartOption.OFF ? ChartOption.SIMPLE_CHART : ChartOption.OFF)
           }
         >
           <Barchart2Icon color={!hasBothCurrenciesInput ? theme.dark2 : theme.text4} />
@@ -37,15 +35,15 @@ export function ChartToggle({ hasBothCurrenciesInput, setselectedChartOption, se
         <ButtonGroup mb={[3, 0]}>
           <ButtonGroupOption
             disabled={!hasBothCurrenciesInput}
-            active={selectedChartOption === ChartOptions.SIMPLE_CHART}
-            onClick={() => setselectedChartOption(ChartOptions.SIMPLE_CHART)}
+            active={selectedChartOption === ChartOption.SIMPLE_CHART}
+            onClick={() => setselectedChartOption(ChartOption.SIMPLE_CHART)}
           >
             {t('chart')}
           </ButtonGroupOption>
           <ButtonGroupOption
             disabled={!hasBothCurrenciesInput}
-            active={selectedChartOption === ChartOptions.OFF}
-            onClick={() => setselectedChartOption(ChartOptions.OFF)}
+            active={selectedChartOption === ChartOption.OFF}
+            onClick={() => setselectedChartOption(ChartOption.OFF)}
           >
             {t('off')}
           </ButtonGroupOption>

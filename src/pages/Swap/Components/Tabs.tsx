@@ -11,8 +11,9 @@ import { MouseoverTooltip } from '../../../components/Tooltip'
 import { useActiveWeb3React } from '../../../hooks'
 import { useRouter } from '../../../hooks/useRouter'
 import { ecoBridgeUIActions } from '../../../services/EcoBridge/store/UI.reducer'
+import { SwapTab } from '../../../state/user/reducer'
 import { supportedChainIdList } from '../LimitOrderBox/constants'
-import { SwapTab, SwapTabContext } from '../SwapContext'
+import { SwapTabContext } from '../SwapContext'
 import { ChartTabs } from './ChartTabs'
 
 const TabsColumn = styled.div`
@@ -85,21 +86,21 @@ export function Tabs() {
       <TabsRow>
         <Button
           onClick={() => {
-            setActiveTab(SwapTab.Swap)
+            setActiveTab(SwapTab.SWAP)
           }}
-          className={activeTab === SwapTab.Swap ? 'active' : ''}
+          className={activeTab === SwapTab.SWAP ? 'active' : ''}
         >
           <StyledEcoRouter />
           Swap
         </Button>
-        <LimitOrderTab className={activeTab === SwapTab.LimitOrder ? 'active' : ''} setActiveTab={setActiveTab} />
+        <LimitOrderTab className={activeTab === SwapTab.LIMIT_ORDER ? 'active' : ''} setActiveTab={setActiveTab} />
         <Button
           title="Bridge Swap"
           onClick={() => {
             dispatch(ecoBridgeUIActions.setBridgeSwapStatus(true))
             navigate('/bridge')
           }}
-          className={activeTab === SwapTab.BridgeSwap ? 'active' : ''}
+          className={activeTab === SwapTab.BRIDGE_SWAP ? 'active' : ''}
         >
           <StyledBridge height={11} />
           {t('tabs.bridgeSwap')}
@@ -116,7 +117,7 @@ const LimitOrderTab = ({ className, setActiveTab }: { className?: string; setAct
   const noLimitOrderSupport = chainId ? !supportedChainIdList.includes(chainId) : true
 
   const LimitOrderButton = ({ disabled = false }) => (
-    <Button onClick={() => setActiveTab(SwapTab.LimitOrder)} className={className} disabled={disabled}>
+    <Button onClick={() => setActiveTab(SwapTab.LIMIT_ORDER)} className={className} disabled={disabled}>
       <StyledSliders height={11} />
       {t('tabs.limit')}
     </Button>

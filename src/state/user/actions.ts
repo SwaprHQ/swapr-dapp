@@ -1,7 +1,7 @@
 import { createAction } from '@reduxjs/toolkit'
 
-import { ChartOptions, SwapTab } from '../../pages/Swap/SwapContext'
 import { MainnetGasPrice } from '../application/actions'
+import { ChartOption, SwapTab } from './reducer'
 
 export interface SerializedToken {
   chainId: number
@@ -36,6 +36,6 @@ export const toggleURLWarning = createAction<void>('app/toggleURLWarning')
 export const updateUserAdvancedSwapDetails = createAction<{ userAdvancedSwapDetails: boolean }>(
   'user/updateUserAdvancedSwapDetails'
 )
-export const updateSelectedChartOption = createAction<{ selectedChartOption: ChartOptions }>(
+export const updateSelectedChartOption = createAction<{ selectedChartOption: ChartOption }>(
   'user/updateSelectedChartOption'
 )

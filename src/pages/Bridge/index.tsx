@@ -300,7 +300,7 @@ export default function Bridge() {
         activeChainId: account ? chainId : -1,
         showTestnets: isDevelopment,
       }),
-    [onFromNetworkChange, isCollecting, collectableTx, fromChainId, account, chainId, isDevelopment]
+    [account, chainId, collectableTx, isCollecting, fromChainId, onFromNetworkChange, isDevelopment]
   )
 
   const toNetworkList = useMemo(
@@ -313,7 +313,7 @@ export default function Bridge() {
         activeChainId: account ? chainId : -1,
         showTestnets: isDevelopment,
       }),
-    [account, chainId, collectableTx, isCollecting, isDevelopment, onToNetworkChange, toChainId]
+    [account, chainId, collectableTx, isCollecting, onToNetworkChange, toChainId, isDevelopment]
   )
 
   return (
