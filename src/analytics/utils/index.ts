@@ -4,7 +4,7 @@ import { BridgeTransactionSummary } from '../../state/bridgeTransactions/types'
 
 export const ClickEvents = { CHART_OFF: 'click/chartOff', CHART_PRO: 'click/chartPro' }
 
-export function proModeEventNameByChain(chainId?: ChainId): string {
+export function getProModeEventNameByChainId(chainId?: ChainId): string {
   if (!chainId) return 'proMode/not-defined/15seconds'
 
   return {

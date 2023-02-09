@@ -4,7 +4,7 @@ import { useContext, useEffect, useMemo, useRef, useState } from 'react'
 import { useDispatch } from 'react-redux'
 
 import { useSimpleAnalyticsEvent } from '../../analytics/hooks/useSimpleAnalyticsEvent'
-import { proModeEventNameByChain } from '../../analytics/utils/index'
+import { getProModeEventNameByChainId } from '../../analytics/utils/index'
 import { REFETCH_DATA_INTERVAL } from '../../constants/data'
 import { useActiveWeb3React } from '../../hooks'
 import { useToken } from '../../hooks/Tokens'
@@ -185,7 +185,7 @@ export const useAdvancedTradingView = () => {
     const interval = setInterval(() => {
       if (windowIsVisible) {
         fetchTrades()
-        trackEvent(proModeEventNameByChain(chainId))
+        trackEvent(getProModeEventNameByChainId(chainId))
       }
     }, REFETCH_DATA_INTERVAL)
 

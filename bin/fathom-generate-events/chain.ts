@@ -15,7 +15,7 @@ export function getChainNameByChainId(chainId: ChainId): string {
   }[chainId]
 }
 
-export function proModeEventNameByChain(chainId?: ChainId): string {
+export function getProModeEventNameByChainId(chainId?: ChainId): string {
   if (!chainId) return 'proMode/not-defined/15seconds'
 
   return {
