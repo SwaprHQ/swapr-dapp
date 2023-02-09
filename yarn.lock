@@ -7591,7 +7591,7 @@ __metadata:
     "@storybook/testing-library": ^0.0.13
     "@swapr/core": ^0.3.19
     "@swapr/periphery": ^0.3.22
-    "@swapr/sdk": 1.8.1
+    "@swapr/sdk": "file:.yalc/@swapr/sdk"
     "@synthetixio/synpress": ^2.3.3
     "@testing-library/cypress": ^8.0.3
     "@types/aos": ^3.0.4
@@ -7730,9 +7730,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@swapr/sdk@npm:1.8.1":
+"@swapr/sdk@file:.yalc/@swapr/sdk::locator=%40swapr%2Ffrontend%40workspace%3A.":
   version: 1.8.1
-  resolution: "@swapr/sdk@npm:1.8.1"
+  resolution: "@swapr/sdk@file:.yalc/@swapr/sdk#.yalc/@swapr/sdk::hash=60c4a8&locator=%40swapr%2Ffrontend%40workspace%3A."
   dependencies:
     "@cowprotocol/cow-sdk": ^1.0.2-RC.0
     "@ethersproject/abi": ^5.6.4
@@ -7763,7 +7763,7 @@ __metadata:
     tslib: ^2.3.1
   peerDependencies:
     ethers: ^5.4.0
-  checksum: 60c1f71211328d6b7ab3fd627b317bb4eef54bf73c2b05d6e9abebd69d745f5f737b47b677e20affdc353afeb73b14c8ba4d98e4caa15d5f8d5e15a4ecbb58fc
+  checksum: 9d1461688e528ab85ab6fe01a9ef0525f9e1b8bc430b9aac853a02bbf7dba34473bda5c1d80d4f019fab03fb714f2054fb22d40352b643dcc3a567a0093dbbd1
   languageName: node
   linkType: hard
 

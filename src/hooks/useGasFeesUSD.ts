@@ -11,7 +11,7 @@ import { useNativeCurrencyUSDPrice } from './useNativeCurrencyUSDPrice'
 
 import { useActiveWeb3React } from './index'
 
-export function useGasFeesUSD(gasEstimations: (BigNumber | null)[]): {
+export function useGasFeesUSD(gasEstimations: (BigNumber | undefined)[]): {
   loading: boolean
   gasFeesUSD: (CurrencyAmount | null)[]
 } {

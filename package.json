@@ -44,7 +44,7 @@
     "@reduxjs/toolkit": "^1.9.2",
     "@swapr/core": "^0.3.19",
     "@swapr/periphery": "^0.3.22",
-    "@swapr/sdk": "1.8.1",
+    "@swapr/sdk": "file:.yalc/@swapr/sdk",
     "@types/react-helmet": "^6.1.6",
     "@uniswap/smart-order-router": "^2.9.3",
     "@uniswap/token-lists": "^1.0.0-beta.27",

@@ -1,4 +1,4 @@
-import { CurrencyAmount, Percent, RoutablePlatform, Trade, TradeType, UniswapV2Trade } from '@swapr/sdk'
+import { CurrencyAmount, Percent, RoutablePlatform, Trade, TradeType, UniswapV2Trade, ChainId } from '@swapr/sdk'
 
 import { useCallback, useEffect, useState } from 'react'
 import { ChevronsDown } from 'react-feather'
@@ -20,6 +20,7 @@ import {
 } from '../../../components/SelectionList'
 import WarningHelper from '../../../components/WarningHelper'
 import { ONE_BIPS, PRICE_IMPACT_MEDIUM, ROUTABLE_PLATFORM_LOGO } from '../../../constants'
+import { useActiveWeb3React } from '../../../hooks'
 import useDebounce from '../../../hooks/useDebounce'
 import { useGasFeesUSD } from '../../../hooks/useGasFeesUSD'
 import { useIsMobileByMedia } from '../../../hooks/useIsMobileByMedia'
@@ -99,6 +100,7 @@ export function SwapPlatformSelector({
   selectedTrade,
   onSelectedPlatformChange,
 }: SwapPlatformSelectorProps) {
+  const { chainId } = useActiveWeb3React()
   const isMobileByMedia = useIsMobileByMedia()
   const { t } = useTranslation('swap')
   const theme = useTheme()
@@ -111,9 +113,9 @@ export function SwapPlatformSelector({
     recipient,
     allPlatformTrades
   )
-  const { loading: loadingGasFeesUSD, gasFeesUSD } = useGasFeesUSD(
-    estimations.map(estimation => (estimation && estimation.length > 0 ? estimation[0] : null))
-  )
+  console.log('ESIMATIONS ARRAY', estimations)
+
+  const { loading: loadingGasFeesUSD, gasFeesUSD } = useGasFeesUSD(estimations)
   const loadingGasFees = loadingGasFeesUSD || loadingTradesGasEstimates
   const debouncedLoadingGasFees = useDebounce(loadingGasFees, 2000)
 
@@ -121,7 +123,8 @@ export function SwapPlatformSelector({
     setShowAllPlatformsTrades(false)
   }, [allPlatformTrades?.length])
 
-  const showGasFees = estimations.length === allPlatformTrades?.length
+  //TODO: ADD EVAULATION IF ESTIMATIONS ARE OF LENGTH 0
+  const showGasFees = chainId === ChainId.MAINNET
 
   const handleSelectedTradeOverride = useCallback(
     (platformName: string) => {

@@ -1,19 +1,11 @@
 import { Web3Provider } from '@ethersproject/providers'
-import { ChainId, Token, Trade, UniswapV2RoutablePlatform, UniswapV2Trade } from '@swapr/sdk'
+import { Trade } from '@swapr/sdk'
 
 import { BigNumber } from 'ethers'
-import { useCallback, useEffect, useMemo, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 
 import { INITIAL_ALLOWED_SLIPPAGE } from '../constants'
-import { useTokenAllowancesForMultipleSpenders } from '../data/Allowances'
-import { MainnetGasPrice } from '../state/application/actions'
-import { useMainnetGasPrices } from '../state/application/hooks'
-import { tryParseAmount, useSwapState } from '../state/swap/hooks'
-import { Field } from '../state/swap/types'
-import { useUserPreferredGasPrice } from '../state/user/hooks'
-import { useCurrencyBalance } from '../state/wallet/hooks'
 import { calculateGasMargin } from '../utils'
-import { useCurrency } from './Tokens'
 import useENS from './useENS'
 import { useSwapsCallArguments } from './useSwapCallback'
 
@@ -23,121 +15,63 @@ export function useSwapsGasEstimations(
   allowedSlippage: number = INITIAL_ALLOWED_SLIPPAGE,
   recipientAddressOrName: string | null,
   trades?: (Trade | undefined)[]
-): { loading: boolean; estimations: (BigNumber | null)[][] } {
+): { loading: boolean; estimations: (BigNumber | undefined)[] } {
   const { account, library, chainId } = useActiveWeb3React()
-  const platformSwapCalls = useSwapsCallArguments(trades, allowedSlippage, recipientAddressOrName)
-  const mainnetGasPrices = useMainnetGasPrices()
-  const [preferredGasPrice] = useUserPreferredGasPrice()
-
-  const {
-    independentField,
-    typedValue,
-    INPUT: { currencyId: inputCurrencyId },
-    OUTPUT: { currencyId: outputCurrencyId },
-  } = useSwapState()
-  const isExactIn = independentField === Field.INPUT
-  const independentCurrencyId = isExactIn ? inputCurrencyId : outputCurrencyId
-  const independentCurrency = useCurrency(independentCurrencyId)
-  const independentCurrencyBalance = useCurrencyBalance(account || undefined, independentCurrency || undefined)
-  const typedIndependentCurrencyAmount = useMemo(
-    () => tryParseAmount(typedValue, independentCurrency || undefined, chainId),
-    [chainId, independentCurrency, typedValue]
-  )
-  const routerAddresses = useMemo(() => {
-    if (!trades) return undefined
-    const rawRouterAddresses = trades.map(trade => {
-      return (
-        trade instanceof UniswapV2Trade &&
-        (trade.platform as UniswapV2RoutablePlatform).routerAddress[chainId || ChainId.MAINNET]
-      )
-    })
-    if (rawRouterAddresses.some(address => !address)) return undefined
-    return rawRouterAddresses as string[]
-  }, [chainId, trades])
-  const routerAllowances = useTokenAllowancesForMultipleSpenders(
-    independentCurrency as Token,
-    account || undefined,
-    routerAddresses
-  )
-
-  // this boolean represents whether the user has approved the traded token and whether they
-  // have enough balance for the trade to go through or not. If any of the preconditions are
-  // not satisfied, the trade won't go through, so no gas estimations are performed
-  const calculateGasFees = useMemo(() => {
-    return (
-      !!account &&
-      !!trades &&
-      trades.length > 0 &&
-      !!preferredGasPrice &&
-      (preferredGasPrice in MainnetGasPrice ? !!mainnetGasPrices : true) &&
-      routerAllowances &&
-      routerAllowances.length === trades.length &&
-      typedIndependentCurrencyAmount &&
-      independentCurrencyBalance &&
-      (independentCurrencyBalance.greaterThan(typedIndependentCurrencyAmount) ||
-        independentCurrencyBalance.equalTo(typedIndependentCurrencyAmount))
-    )
-  }, [
-    account,
-    independentCurrencyBalance,
-    mainnetGasPrices,
-    preferredGasPrice,
-    routerAllowances,
-    trades,
-    typedIndependentCurrencyAmount,
-  ])
+  console.log('trades', trades)
+  const platformSwapCalls = useSwapsCallArguments(trades, allowedSlippage, recipientAddressOrName || account)
 
   const [loading, setLoading] = useState(false)
-  const [estimations, setEstimations] = useState<(BigNumber | null)[][]>([])
+  const [estimations, setEstimations] = useState<(BigNumber | undefined)[]>([])
 
   const { address: recipientAddress } = useENS(recipientAddressOrName)
   const recipient = recipientAddress || account
 
   const updateEstimations = useCallback(async () => {
-    if (!routerAllowances || !trades || !typedIndependentCurrencyAmount || routerAllowances.length !== trades.length)
-      return
+    if (!trades || platformSwapCalls.length === 0) return
     setLoading(true)
     const estimatedCalls = []
+    console.log('PlatformSwapCalls', platformSwapCalls)
+
     for (let i = 0; i < platformSwapCalls.length; i++) {
       const platformCalls = platformSwapCalls[i]
-      let specificCalls = []
-      // if the allowance to the router for the traded token is less than the
-      // types amount, avoid estimating gas since the tx would fail, printing
-      // an horrible error log in the console, continuously
-      if (routerAllowances[i].lessThan(typedIndependentCurrencyAmount)) {
-        specificCalls = platformCalls.map(() => null)
-      } else {
-        for (const call of platformCalls) {
-          const { transactionParameters } = call
-          // const { value } = await transactionParameters
-          // const options = !value || isZero(value as string) ? {} : { value }
+      const call = platformCalls[0]
 
-          let estimatedCall = null
-          try {
-            estimatedCall = calculateGasMargin(
-              await (library as Web3Provider).estimateGas(transactionParameters as any)
-            )
-          } catch (error) {
-            console.error(error)
-            // silent fail
-          } finally {
-            specificCalls.push(estimatedCall)
-          }
+      console.log('PlatformCallOne', platformCalls)
+
+      console.log('call', call)
+      // if (!call) {
+      // } else if (trades)
+
+      // const { value } = await transactionParameters
+      // const options = !value || isZero(value as string) ? {} : { value }
+
+      let estimatedCall = undefined
+      if (trades[i]?.estimatedGas !== undefined) {
+        estimatedCall = trades[i]?.estimatedGas
+        console.log('esimated gas works', trades[i]?.estimatedGas)
+      } else {
+        try {
+          const transactionRequest = await call.transactionParameters
+          estimatedCall = calculateGasMargin(await (library as Web3Provider).estimateGas(transactionRequest as any))
+        } catch (error) {
+          console.error(error)
+          // silent fail
         }
       }
-      estimatedCalls.push(specificCalls)
+
+      estimatedCalls.push(estimatedCall)
     }
+    console.log('estimatedCalls', estimatedCalls)
     setEstimations(estimatedCalls)
     setLoading(false)
-  }, [platformSwapCalls, library, routerAllowances, trades, typedIndependentCurrencyAmount])
+  }, [platformSwapCalls, library, trades])
 
   useEffect(() => {
-    if (!trades || trades.length === 0 || !library || !chainId || !recipient || !account || !calculateGasFees) {
+    if (!trades || trades.length === 0 || !library || !chainId || !recipient) {
       setEstimations([])
-      return
     }
     updateEstimations()
-  }, [chainId, library, recipient, trades, updateEstimations, account, calculateGasFees])
+  }, [chainId, library, recipient, trades, updateEstimations, account])
 
   return { loading: loading, estimations }
 }
