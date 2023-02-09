@@ -237,7 +237,7 @@ jobs:
     if: ${{ !(github.event_name == 'schedule' || github.actor == 'dependabot[bot]') }}
     steps:
       - name: Inject slug variables
-        uses: rlespinasse/github-slug-action@v4.3.0
+        uses: rlespinasse/github-slug-action@v4.4.0
 
       - name: 📥 ・Download workspace artifact
         uses: actions/download-artifact@v3
@@ -322,7 +322,7 @@ jobs:
           java-version: '17'
 
       - name: Install dependencies
-        run: yarn install --frozen-lockfile --cache-folder $(yarn cache dir)
+        run: yarn install --immutable
 
       - name: Generate open-api
         run: yarn codegen:socket
@@ -382,7 +382,7 @@ jobs:
           java-version: '17'
 
       - name: Install dependencies
-        run: yarn install --frozen-lockfile --cache-folder $(yarn cache dir)
+        run: yarn install --immutable
 
       - name: Generate open-api
         run: yarn codegen:socket
@@ -394,7 +394,7 @@ jobs:
         run: yarn codegen:graphql
 
       - name: Install dependencies
-        run: yarn install --frozen-lockfile --cache-folder $(yarn cache dir)
+        run: yarn install --immutable
 
       - name: Verify Cypress
         run: yarn cypress install
