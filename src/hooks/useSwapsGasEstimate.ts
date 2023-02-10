@@ -5,7 +5,6 @@ import { BigNumber } from 'ethers'
 import { useCallback, useEffect, useState } from 'react'
 
 import { INITIAL_ALLOWED_SLIPPAGE } from '../constants'
-import { calculateGasMargin } from '../utils'
 import useENS from './useENS'
 import { useSwapsCallArguments } from './useSwapCallback'
 

@@ -4,6 +4,9 @@ import { CurrencyAmount, USD } from '@swapr/sdk'
 import { BigNumber } from 'ethers'
 import { useMemo } from 'react'
 
+import { MainnetGasPrice } from '../state/application/actions'
+import { useUserPreferredGasPrice } from '../state/user/hooks'
+import { useGasInfo } from './useGasInfo'
 import { useNativeCurrencyUSDPrice } from './useNativeCurrencyUSDPrice'
 
 import { useActiveWeb3React } from './index'
@@ -13,26 +16,36 @@ export function useGasFeesUSD(gasEstimations: (BigNumber | undefined)[]): {
   gasFeesUSD: (CurrencyAmount | null)[]
 } {
   const { chainId } = useActiveWeb3React()
-  // const mainnetGasPrices = useMainnetGasPrices()
-  // const [preferredGasPrice] = useUserPreferredGasPrice()
+
+  const [preferredGasPrice] = useUserPreferredGasPrice()
   const { loading: loadingNativeCurrencyUSDPrice, nativeCurrencyUSDPrice } = useNativeCurrencyUSDPrice()
-  console.log('nativeCurrencyUSDPrice', nativeCurrencyUSDPrice)
+  const { gas, loading: loadingGasPrices } = useGasInfo()
 
   return useMemo(() => {
     console.log('loadingNativeCurrencyUSDPrice', loadingNativeCurrencyUSDPrice)
-    if (loadingNativeCurrencyUSDPrice) return { loading: true, gasFeesUSD: [] }
-    console.log('GasEstimations', gasEstimations)
+    if (loadingNativeCurrencyUSDPrice || loadingGasPrices) return { loading: true, gasFeesUSD: [] }
 
-    console.log('chainId', chainId)
+    console.log('preferredGasPrice', preferredGasPrice)
+    if (!gasEstimations || gasEstimations.length === 0 || !chainId || !preferredGasPrice)
+      return { loading: false, gasFeesUSD: [] }
 
-    if (!gasEstimations || gasEstimations.length === 0 || !chainId) return { loading: false, gasFeesUSD: [] }
+    const gasMapped = {
+      [MainnetGasPrice.INSTANT]: gas.fast,
+      [MainnetGasPrice.FAST]: gas.slow,
+      [MainnetGasPrice.NORMAL]: gas.normal,
+    }
 
     return {
       loading: false,
       gasFeesUSD: gasEstimations.map(gasEstimation => {
         if (gasEstimation === undefined) return null
-        console.log('GAS ESTIMATION STRING', gasEstimation.toString())
-        const nativeCurrencyAmount = CurrencyAmount.nativeCurrency(gasEstimation.mul(10000).toString(), chainId)
+        //hardcoded gas price to 20 gwei
+
+        const gasCalc = gasMapped[preferredGasPrice as MainnetGasPrice] + '000000000'
+
+        const nativeCurrencyAmount = CurrencyAmount.nativeCurrency(gasEstimation.mul(gasCalc).toString(), chainId)
+        console.log('nativeCurrencyAmount', nativeCurrencyAmount.toString())
+        console.log('price', nativeCurrencyUSDPrice.toString())
         return CurrencyAmount.usd(
           parseUnits(
             nativeCurrencyAmount.multiply(nativeCurrencyUSDPrice).toFixed(USD.decimals),
