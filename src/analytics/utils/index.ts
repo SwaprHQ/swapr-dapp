@@ -1,4 +1,4 @@
-import { Trade } from '@swapr/sdk'
+import { ChainId, Trade } from '@swapr/sdk'
 
 import { BridgeTransactionSummary } from '../../state/bridgeTransactions/types'
 import { ChartOption } from '../../state/user/reducer'
@@ -7,6 +7,28 @@ export const chartOptionToString = {
   [ChartOption.OFF]: '',
   [ChartOption.SIMPLE_CHART]: '',
   [ChartOption.PRO]: '/pro',
+}
+
+export const ClickEvents = { CHART_OFF: 'click/chartOff', CHART_PRO: 'click/chartPro' }
+
+export function getProModeEventNameByChainId(chainId?: ChainId): string {
+  if (!chainId) return 'proMode/not-defined/15seconds'
+
+  return {
+    [ChainId.MAINNET]: 'proMode/ethereum/15seconds',
+    [ChainId.GOERLI]: 'proMode/goerli/15seconds',
+    [ChainId.GNOSIS]: 'proMode/gnosis/15seconds',
+    [ChainId.RINKEBY]: 'proMode/rinkbey/15seconds',
+    [ChainId.ARBITRUM_ONE]: 'proMode/arbitrum/15seconds',
+    [ChainId.OPTIMISM_MAINNET]: 'proMode/optimism/15seconds',
+    [ChainId.POLYGON]: 'proMode/polygon/15seconds',
+    [ChainId.ARBITRUM_GOERLI]: 'proMode/arbitrum-goerli/15seconds',
+    [ChainId.ARBITRUM_RINKEBY]: 'proMode/arbitrum-rinkeby/15seconds',
+    [ChainId.BSC_MAINNET]: 'proMode/bsc/15seconds',
+    [ChainId.BSC_TESTNET]: 'proMode/bsc-testnet/15seconds',
+    [ChainId.OPTIMISM_MAINNET]: 'proMode/optimism/15seconds',
+    [ChainId.OPTIMISM_GOERLI]: 'proMode/optimism-goerli/15seconds',
+  }[chainId]
 }
 
 /**

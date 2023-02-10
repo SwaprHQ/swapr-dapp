@@ -2,6 +2,8 @@ import { useTranslation } from 'react-i18next'
 import { Flex } from 'rebass'
 import styled from 'styled-components'
 
+import { useSimpleAnalyticsEvent } from '../../../analytics/hooks/useSimpleAnalyticsEvent'
+import { ClickEvents } from '../../../analytics/utils/index'
 import { MouseoverTooltip } from '../../../components/Tooltip'
 import { useIsDesktop } from '../../../hooks/useIsDesktopByMedia'
 import { useRouter } from '../../../hooks/useRouter'
@@ -19,6 +21,7 @@ export const ChartTabs = ({
   const { t } = useTranslation('swap')
   const isDesktop = useIsDesktop()
   const [, setSelectedChartTab] = useUpdateSelectedChartOption()
+  const trackEvent = useSimpleAnalyticsEvent()
 
   return (
     <MouseoverTooltip placement="top" disabled={isDesktop} content="Available only on desktop">
@@ -43,6 +46,7 @@ export const ChartTabs = ({
               setActiveChartTab(ChartOption.PRO)
               setSelectedChartTab(ChartOption.PRO)
               navigate('/swap/pro')
+              trackEvent(ClickEvents.CHART_PRO)
               window?.fathom?.trackPageview()
             }
           }}
@@ -62,6 +66,7 @@ export const ChartTabs = ({
               setActiveChartTab(ChartOption.OFF)
               setSelectedChartTab(ChartOption.OFF)
               navigate('/swap')
+              trackEvent(ClickEvents.CHART_OFF)
               window?.fathom?.trackPageview()
             }
           }}

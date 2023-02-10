@@ -3,10 +3,13 @@ import { ChainId, Currency, Pair, Token, WETH, WMATIC, WXDAI } from '@swapr/sdk'
 import { useContext, useEffect, useMemo, useRef, useState } from 'react'
 import { useDispatch } from 'react-redux'
 
+import { useSimpleAnalyticsEvent } from '../../analytics/hooks/useSimpleAnalyticsEvent'
+import { getProModeEventNameByChainId } from '../../analytics/utils/index'
 import { REFETCH_DATA_INTERVAL } from '../../constants/data'
 import { useActiveWeb3React } from '../../hooks'
 import { useToken } from '../../hooks/Tokens'
 import { useRouter } from '../../hooks/useRouter'
+import { useWindowIsVisible } from '../../hooks/useWindowIsVisible'
 import { LimitOrderFormContext } from '../../pages/Swap/LimitOrderBox/contexts'
 import { SwapTabContext } from '../../pages/Swap/SwapContext'
 import store, { AppState } from '../../state'
@@ -70,6 +73,9 @@ export const useAdvancedTradingView = () => {
     ],
     [chainId]
   )
+
+  const trackEvent = useSimpleAnalyticsEvent()
+  const windowIsVisible = useWindowIsVisible()
 
   useEffect(() => {
     setIsLoadingTrades(true)
@@ -177,13 +183,17 @@ export const useAdvancedTradingView = () => {
     fetchTrades()
 
     const interval = setInterval(() => {
-      fetchTrades()
+      if (windowIsVisible) {
+        fetchTrades()
+        trackEvent(getProModeEventNameByChainId(chainId))
+      }
     }, REFETCH_DATA_INTERVAL)
 
     return () => clearInterval(interval)
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [
+    windowIsVisible,
     dispatch,
     inputToken?.address,
     outputToken?.address,
