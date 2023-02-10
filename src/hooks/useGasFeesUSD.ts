@@ -29,7 +29,9 @@ export function useGasFeesUSD(gasEstimations: (BigNumber | undefined)[]): {
     if (!gasEstimations || gasEstimations.length === 0 || !chainId || !preferredGasPrice)
       return { loading: false, gasFeesUSD: [] }
 
-    const gasMapped = {
+    const gasMapped: {
+      [key in MainnetGasPrice]: number
+    } = {
       [MainnetGasPrice.INSTANT]: gas.fast,
       [MainnetGasPrice.FAST]: gas.slow,
       [MainnetGasPrice.NORMAL]: gas.normal,
