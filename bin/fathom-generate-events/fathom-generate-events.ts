@@ -20,6 +20,9 @@ export async function main({ siteId, token, outputDirectory }: MainParams): Prom
   const ecoRouterVolumeUSDEventList = platformsNames.map(
     ({ networkName, platformName, networkId }) => `${networkName}-${networkId}/ecoRouter/${platformName}/volumeUSD`
   )
+  const ecoRouterVolumeUSDProModeEventList = platformsNames.map(
+    ({ networkName, platformName, networkId }) => `${networkName}-${networkId}/ecoRouter/${platformName}/volumeUSD/pro`
+  )
   // a metric to track ecoBridge USD volume between origin and destination chains for each bridge
   const ecoBridgeVolumeUSDEventList = ecoBridgePlatformList()
     .map(({ platformName, supportedChains }) => {
@@ -52,6 +55,7 @@ export async function main({ siteId, token, outputDirectory }: MainParams): Prom
   const siteEventsToCreate = [
     ...ecoRouterVolumeUSDEventList,
     ...ecoBridgeVolumeUSDEventList,
+    ...ecoRouterVolumeUSDProModeEventList,
     ...proModeEvents,
     ...clickEvents,
   ].filter(event => !allSiteEvents.find(siteEvent => siteEvent.name === event))

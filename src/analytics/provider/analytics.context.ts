@@ -3,6 +3,7 @@ import { Trade } from '@swapr/sdk'
 import { createContext } from 'react'
 
 import { BridgeTransactionSummary } from '../../state/bridgeTransactions/types'
+import { ChartOption } from '../../state/user/reducer'
 import { Fathom } from '../fathom'
 import { FathomSiteInformation } from '../generated/prod'
 
@@ -18,7 +19,7 @@ export interface IAnalyticsContext {
   /**
    * Track the volume of a trade in USD and send it to Fathom
    */
-  trackEcoRouterTradeVolume(trade: Trade): void
+  trackEcoRouterTradeVolume(trade: Trade, chartOption: ChartOption): void
   /**
    * Track the volume of a trade in USD and send it to Fathom
    */
