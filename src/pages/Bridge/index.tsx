@@ -143,6 +143,7 @@ export default function Bridge() {
     isBridgeSwapActive,
     toValue,
   } = useBridgeInfo()
+
   const {
     onCurrencySelection,
     onCurrencyOutputSelection,
@@ -151,8 +152,10 @@ export default function Bridge() {
     onFromNetworkChange,
     onSwapBridgeNetworks,
   } = useBridgeActionHandlers()
+
   const { collectableTx, setCollectableTx, isCollecting, setIsCollecting, collectableCurrency } =
     useBridgeCollectHandlers()
+
   const listsLoading = useBridgeListsLoadingStatus()
 
   const [activeTab, setActiveTab] = useState<BridgeTab>(isBridgeSwapActive ? BridgeTab.BRIDGE_SWAP : BridgeTab.BRIDGE)

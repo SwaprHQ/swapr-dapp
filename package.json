@@ -36,6 +36,7 @@
   "dependencies": {
     "@apollo/client": "^3.7.5",
     "@arbitrum/sdk": "3.0.0-beta.12",
+    "@lifi/sdk": "1.7.2",
     "@popperjs/core": "^2.11.6",
     "@reach/dialog": "^0.18.0",
     "@reach/portal": "^0.17.0",

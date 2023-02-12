@@ -3050,7 +3050,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@ethersproject/contracts@npm:5.7.0, @ethersproject/contracts@npm:^5.0.0, @ethersproject/contracts@npm:^5.4.0, @ethersproject/contracts@npm:^5.4.1":
+"@ethersproject/contracts@npm:5.7.0, @ethersproject/contracts@npm:^5.0.0, @ethersproject/contracts@npm:^5.4.0, @ethersproject/contracts@npm:^5.4.1, @ethersproject/contracts@npm:^5.7.0":
   version: 5.7.0
   resolution: "@ethersproject/contracts@npm:5.7.0"
   dependencies:
@@ -4756,6 +4756,30 @@ __metadata:
   dependencies:
     "@lezer/common": ^0.15.0
   checksum: e741225d6ac9cf08f8016bad49622fbd4a4e0d20c2e8c2b38a0abf0ddca69c58275b0ebdb9d5dde2905cf84f6977bc302f7ed5e5ba42c23afa27e9e65b900f36
+  languageName: node
+  linkType: hard
+
+"@lifi/sdk@npm:1.7.2":
+  version: 1.7.2
+  resolution: "@lifi/sdk@npm:1.7.2"
+  dependencies:
+    "@ethersproject/abi": ^5.7.0
+    "@ethersproject/contracts": ^5.7.0
+    "@lifi/types": ^1.19.0
+    axios: 1.1.3
+    bignumber.js: ^9.1.1
+    eth-rpc-errors: ^4.0.3
+    ethers: ^5.7.2
+  checksum: e036bfebdff7b7b12dfb2d1f333d1dd890ab8d86bed7333930bfd3906de0a877ec63292a666bb8d1a47570240fed20dac1877e555d0d021fc0111732b8deb87d
+  languageName: node
+  linkType: hard
+
+"@lifi/types@npm:^1.19.0":
+  version: 1.24.0
+  resolution: "@lifi/types@npm:1.24.0"
+  dependencies:
+    ethers: ^5.7.2
+  checksum: 45fa0f1c2b57396de36f838d1cb117f02b28cfbfbb05f25c30f3cc20ff83d01b156f4eeddbf9082308b97765cfc2ddd1328c1c49020b83def4bd3d1664da9675
   languageName: node
   linkType: hard
 
@@ -7471,6 +7495,7 @@ __metadata:
     "@graphql-codegen/typescript": 3.0.3
     "@graphql-codegen/typescript-operations": ^3.0.3
     "@graphql-codegen/typescript-react-apollo": ^3.3.7
+    "@lifi/sdk": 1.7.2
     "@openapitools/openapi-generator-cli": ^2.5.1
     "@popperjs/core": ^2.11.6
     "@reach/dialog": ^0.18.0
@@ -11748,6 +11773,17 @@ __metadata:
   languageName: node
   linkType: hard
 
+"axios@npm:1.1.3":
+  version: 1.1.3
+  resolution: "axios@npm:1.1.3"
+  dependencies:
+    follow-redirects: ^1.15.0
+    form-data: ^4.0.0
+    proxy-from-env: ^1.1.0
+  checksum: cab3b17bf6092c9387f7023d699db093cfa23650b56c4422cd474d124b78b2e3b5a520f932c330664a58ab85b867b1c25a95cace475ef72d236888c852b84e6d
+  languageName: node
+  linkType: hard
+
 "axios@npm:1.2.2, axios@npm:^1.1.2":
   version: 1.2.2
   resolution: "axios@npm:1.2.2"
@@ -12977,7 +13013,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"bignumber.js@npm:^9.0.0, bignumber.js@npm:^9.0.1":
+"bignumber.js@npm:^9.0.0, bignumber.js@npm:^9.0.1, bignumber.js@npm:^9.1.1":
   version: 9.1.1
   resolution: "bignumber.js@npm:9.1.1"
   checksum: ad243b7e2f9120b112d670bb3d674128f0bd2ca1745b0a6c9df0433bd2c0252c43e6315d944c2ac07b4c639e7496b425e46842773cf89c6a2dcd4f31e5c4b11e
@@ -18512,7 +18548,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"eth-rpc-errors@npm:^4.0.2":
+"eth-rpc-errors@npm:^4.0.2, eth-rpc-errors@npm:^4.0.3":
   version: 4.0.3
   resolution: "eth-rpc-errors@npm:4.0.3"
   dependencies:
@@ -18915,7 +18951,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"ethers@npm:^5.0.13, ethers@npm:^5.1.0, ethers@npm:^5.4.4, ethers@npm:^5.4.6, ethers@npm:^5.5.3, ethers@npm:^5.6.1":
+"ethers@npm:^5.0.13, ethers@npm:^5.1.0, ethers@npm:^5.4.4, ethers@npm:^5.4.6, ethers@npm:^5.5.3, ethers@npm:^5.6.1, ethers@npm:^5.7.2":
   version: 5.7.2
   resolution: "ethers@npm:5.7.2"
   dependencies:

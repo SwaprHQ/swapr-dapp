@@ -57,6 +57,7 @@ export type SocketList = 'socket'
 export type XdaiBridgeList = 'xdai'
 export type OmniBridgeList = 'omnibridge:eth-xdai'
 export type ArbitrumList = 'arbitrum:mainnet' | 'arbitrum:testnet'
+export type LifiList = 'lifi'
 
 export type BridgeList = ArbitrumList | SocketList | OmniBridgeList | ConnextList | XdaiBridgeList
 export type OptionalBridgeList = BridgeList | undefined
