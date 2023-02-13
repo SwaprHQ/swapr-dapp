@@ -26,6 +26,7 @@ export function getSupportedPlatformsByChainId(chainId: ChainId) {
     RoutablePlatform.ZEROX,
     RoutablePlatform.UNISWAP,
     RoutablePlatform.COW,
+    RoutablePlatform.ONE_INCH,
     UniswapV2RoutablePlatform.SWAPR,
     UniswapV2RoutablePlatform.SUSHISWAP,
     UniswapV2RoutablePlatform.HONEYSWAP,
