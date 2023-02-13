@@ -7606,7 +7606,7 @@ __metadata:
     mochawesome-merge: ^4.2.2
     mochawesome-report-generator: ^6.2.0
     multicodec: ^3.2.1
-    multiformats: ^9.9.0
+    multiformats: ^11.0.1
     multihashes: ^4.0.3
     net: ^1.0.2
     node-fetch: ^2.6.8
@@ -27022,7 +27022,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"multiformats@npm:^9.4.2, multiformats@npm:^9.6.4, multiformats@npm:^9.9.0":
+"multiformats@npm:^11.0.1":
+  version: 11.0.1
+  resolution: "multiformats@npm:11.0.1"
+  checksum: 056dec14b5ee0570eaa43204385bc16783f93dc8668a8ddcee806c4232adfa58cfc272abb587ce94d9314627eb6f2c115e53ff01169c9909768f8c7d0deaa9e6
+  languageName: node
+  linkType: hard
+
+"multiformats@npm:^9.4.2, multiformats@npm:^9.6.4":
   version: 9.9.0
   resolution: "multiformats@npm:9.9.0"
   checksum: d3e8c1be400c09a014f557ea02251a2710dbc9fca5aa32cc702ff29f636c5471e17979f30bdcb0a9cbb556f162a8591dc2e1219c24fc21394a56115b820bb84e
