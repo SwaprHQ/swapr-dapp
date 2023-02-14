@@ -1,8 +1,10 @@
-import { RoutablePlatform, UniswapV2RoutablePlatform } from '@swapr/sdk'
+import { ChainId, RoutablePlatform, UniswapV2RoutablePlatform } from '@swapr/sdk'
 
 import { mkdir, writeFile } from 'fs/promises'
 import { join } from 'path'
 
+import { getChainNameByChainId, getProModeEventNameByChainId } from './chain'
+import { ecoBridgePlatformList } from './eco-bridge-platforms'
 import { getMapOfExchanges } from './eco-router-platforms'
 import { createSiteEvent, getSiteEvents } from './fathom-api'
 import { generateFileContent } from './file-content-generator'
@@ -18,18 +20,45 @@ export async function main({ siteId, token, outputDirectory }: MainParams): Prom
   const ecoRouterVolumeUSDEventList = platformsNames.map(
     ({ networkName, platformName, networkId }) => `${networkName}-${networkId}/ecoRouter/${platformName}/volumeUSD`
   )
+  const ecoRouterVolumeUSDProModeEventList = platformsNames.map(
+    ({ networkName, platformName, networkId }) => `${networkName}-${networkId}/ecoRouter/${platformName}/volumeUSD/pro`
+  )
+  // a metric to track ecoBridge USD volume between origin and destination chains for each bridge
+  const ecoBridgeVolumeUSDEventList = ecoBridgePlatformList()
+    .map(({ platformName, supportedChains }) => {
+      return supportedChains
+        .map(({ to, from }) => {
+          const fromNetworkName = getChainNameByChainId(from)
+          const toNetworkName = getChainNameByChainId(to)
+          return [
+            `${fromNetworkName}-${from}/ecoBridge/${platformName}/${toNetworkName}-${to}/volumeUSD`,
+            `${toNetworkName}-${to}/ecoBridge/${platformName}/${fromNetworkName}-${from}/volumeUSD`,
+          ]
+        })
+        .flat()
+    })
+    .flat()
 
-  // create networkId->networkName map
-  const networkIdToNameMapEntries = platformsNames.reduce((acc, { networkId, networkName }) => {
-    acc[networkId] = networkName
-    return acc
-  }, {} as Record<number, string>)
+  const proModeEvents = [
+    ...Object.values(ChainId)
+      //remove string values
+      .filter(value => typeof value === 'number')
+      //remove duplicate values (remove xdai duplicate)
+      .filter((value, index, array) => array.indexOf(value) === index)
+      .map(chainId => getProModeEventNameByChainId(chainId as ChainId)),
+    getProModeEventNameByChainId(),
+  ]
+  const clickEvents = ['click/chartOff', 'click/chartPro']
 
   const allSiteEvents = await getSiteEvents(siteId, token)
 
-  const siteEventsToCreate = ecoRouterVolumeUSDEventList.filter(
-    event => !allSiteEvents.find(siteEvent => siteEvent.name === event)
-  )
+  const siteEventsToCreate = [
+    ...ecoRouterVolumeUSDEventList,
+    ...ecoBridgeVolumeUSDEventList,
+    ...ecoRouterVolumeUSDProModeEventList,
+    ...proModeEvents,
+    ...clickEvents,
+  ].filter(event => !allSiteEvents.find(siteEvent => siteEvent.name === event))
 
   const siteEventsCreated: Awaited<ReturnType<typeof createSiteEvent>>[] = []
 
@@ -55,6 +84,12 @@ export async function main({ siteId, token, outputDirectory }: MainParams): Prom
   const siteEventsUnique = siteEvents.filter(
     (siteEvent, index) => siteEvents.findIndex(siteEvent2 => siteEvent2.name === siteEvent.name) === index
   )
+
+  // create networkId->networkName map
+  const networkIdToNameMapEntries = platformsNames.reduce((acc, { networkId, networkName }) => {
+    acc[networkId] = networkName
+    return acc
+  }, {} as Record<number, string>)
 
   const generatedFileContent = generateFileContent({
     siteEvents: {

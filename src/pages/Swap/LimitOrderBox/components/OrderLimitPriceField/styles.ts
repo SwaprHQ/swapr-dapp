@@ -10,11 +10,11 @@ export const LimitLabel = styled(InputGroup.Label)`
 `
 
 export const SetToMarket = styled.button`
-  font-size: 11px;
+  font-size: 10px;
   color: #8c83c0;
   border: none;
   cursor: pointer;
-  background-color: #686e9410;
+  background-color: #2a2f41;
   border-radius: 5px;
   text-transform: uppercase;
   padding: 3px 8px;

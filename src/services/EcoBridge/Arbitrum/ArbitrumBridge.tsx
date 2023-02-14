@@ -139,8 +139,8 @@ export class ArbitrumBridge extends EcoBridgeChildBase {
 
   public collect = async (l2Tx: BridgeTransactionSummary) => {
     try {
-      const { batchIndex, batchNumber, fromValue, assetAddressL2, log } = l2Tx
-      if (!this._account || !batchIndex || !batchNumber || !fromValue) return
+      const { fromValue, assetAddressL2, log } = l2Tx
+      if (!this._account || !fromValue) return
 
       this.ecoBridgeUtils.ui.modal.setBridgeModalStatus(BridgeModalStatus.PENDING)
 

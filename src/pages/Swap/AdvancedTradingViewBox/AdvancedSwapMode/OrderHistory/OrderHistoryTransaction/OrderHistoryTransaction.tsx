@@ -57,7 +57,6 @@ export const OrderHistoryTransaction = ({ tx }: { tx: Transaction }) => {
   let formattedTimestamp: string | null = null
 
   if (tx.confirmedTime) {
-    console.log('tx.confirmedTime', tx.confirmedTime)
     formattedTimestamp = dayjs(tx.confirmedTime).format('DD/MM/YYYY HH:mm')
   }
 

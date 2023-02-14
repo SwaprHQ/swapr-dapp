@@ -1,9 +1,9 @@
-import { TokenAmount } from '@swapr/sdk'
+import { CurrencyAmount, TokenAmount } from '@swapr/sdk'
 
 import { createContext, Dispatch, SetStateAction } from 'react'
 
 import { OrderExpiresInUnit, SerializableLimitOrder } from '../interfaces'
-import { InputFocus, MarketPrices } from '../interfaces/order.interface'
+import { InputFocus } from '../interfaces/order.interface'
 
 interface ILimitOrderFormContext {
   /**
@@ -31,12 +31,16 @@ interface ILimitOrderFormContext {
   setFormattedLimitPrice: Dispatch<SetStateAction<string>>
 
   /**
+   * Display sell token
+   */
+  formattedSellAmount: string
+  setFormattedSellAmount: Dispatch<SetStateAction<string>>
+  /**
    * Display buy token
    */
   formattedBuyAmount: string
   setFormattedBuyAmount: Dispatch<SetStateAction<string>>
 
-  setFormattedSellAmount: Dispatch<SetStateAction<string>>
   /**
    * order expiry
    */
@@ -44,12 +48,17 @@ interface ILimitOrderFormContext {
   setExpiresIn: Dispatch<SetStateAction<number>>
   expiresInUnit: OrderExpiresInUnit
   setExpiresInUnit: Dispatch<SetStateAction<OrderExpiresInUnit>>
-  setToMarket: () => void
 
-  marketPrices: MarketPrices
+  /**
+   * input focus
+   */
   inputFocus: InputFocus
-  fetchMarketPrice: boolean
-  setFetchMarketPrice: Dispatch<SetStateAction<boolean>>
+  setInputFocus: Dispatch<SetStateAction<InputFocus>>
+
+  fiatValueInput: CurrencyAmount | null
+  fiatValueOutput: CurrencyAmount | null
+  isFallbackFiatValueInput: boolean
+  isFallbackFiatValueOutput: boolean
 }
 
 export const LimitOrderFormContext = createContext<ILimitOrderFormContext>({} as ILimitOrderFormContext)

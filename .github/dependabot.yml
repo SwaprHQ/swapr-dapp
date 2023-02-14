@@ -14,9 +14,9 @@ updates:
       interval: 'weekly'
     versioning-strategy: increase
     labels:
-      - 'npm dependencies'
+      - 'dependencies'
+      - 'Dev/QA Attention'
     reviewers:
-      - 'niemam29'
       - 'MilanVojnovic95'
       - 'wixzi'
     ignore:

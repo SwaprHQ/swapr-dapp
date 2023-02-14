@@ -59,8 +59,27 @@ export function getNetworkNameByChainId(chainId: number): string {
 /**
  * Constructs EcoRouter volumeUSD event name
  */
-export function getEcoRouterVolumeUSDEventName(networkName: string, networkId: number, platformName: string): string {
-    return \`\${networkName.toLowerCase()}-\${networkId}/ecoRouter/\${platformName.toLowerCase()}/volumeUSD\`;
+export function getEcoRouterVolumeUSDEventName(
+  networkName: string,
+  networkId: number,
+  platformName: string,
+  chartOptions: string
+): string {
+  return \`\${networkName.toLowerCase()}-\${networkId}/ecoRouter/\${platformName.toLowerCase()}/volumeUSD\${chartOptions.toLowerCase()}\`;
+}
+
+/**
+ * Constructs EcoBridge volumeUSD event name for a given platform, from network and to network
+ */
+export function getEcoBridgeVolumeUSDEventName(
+  platformName: string,
+  fromNetworkId: number,
+  toNetworkId: number
+): string {
+  const fromNetworkName = getNetworkNameByChainId(fromNetworkId)
+  const toNetworkName = getNetworkNameByChainId(toNetworkId)
+  platformName = platformName.replace(/:/g, '-').toLowerCase()
+  return \`\${fromNetworkName}-\${fromNetworkId}/ecoBridge/\${platformName}/\${toNetworkName}-\${toNetworkId}/volumeUSD\`;
 }
 `
 

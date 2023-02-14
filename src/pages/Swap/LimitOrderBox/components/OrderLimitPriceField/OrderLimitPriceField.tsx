@@ -1,12 +1,12 @@
 import { formatUnits, parseUnits } from '@ethersproject/units'
 
-import { useCallback, useContext, useEffect, useState } from 'react'
+import { Dispatch, SetStateAction, useCallback, useContext, useEffect, useState } from 'react'
 import { RefreshCw } from 'react-feather'
 import { useTranslation } from 'react-i18next'
 
 import { invalidChars } from '../../constants'
 import { LimitOrderFormContext } from '../../contexts/LimitOrderFormContext'
-import { InputFocus, LimitOrderKind } from '../../interfaces'
+import { InputFocus, LimitOrderKind, MarketPrices } from '../../interfaces'
 import { calculateMarketPriceDiffPercentage, computeNewAmount } from '../../utils'
 import { InputGroup } from '../InputGroup'
 import { MarketPriceButton } from './MarketPriceButton'
@@ -21,25 +21,30 @@ import {
 
 export interface OrderLimitPriceFieldProps {
   id?: string
+  marketPrices: MarketPrices
+  fetchMarketPrice: boolean
+  setFetchMarketPrice: Dispatch<SetStateAction<boolean>>
 }
 
-export function OrderLimitPriceField({ id }: OrderLimitPriceFieldProps) {
+export function OrderLimitPriceField({
+  id,
+  marketPrices,
+  fetchMarketPrice,
+  setFetchMarketPrice,
+}: OrderLimitPriceFieldProps) {
   const { t } = useTranslation('swap')
   const {
     limitOrder,
-    buyTokenAmount,
-    sellTokenAmount,
     setLimitOrder,
+    buyTokenAmount,
+    setBuyTokenAmount,
+    sellTokenAmount,
+    setSellTokenAmount,
     formattedLimitPrice,
     setFormattedLimitPrice,
-    setBuyTokenAmount,
     setFormattedBuyAmount,
-    setSellTokenAmount,
     setFormattedSellAmount,
-    marketPrices,
     inputFocus,
-    fetchMarketPrice,
-    setFetchMarketPrice,
   } = useContext(LimitOrderFormContext)
 
   const [baseTokenAmount, quoteTokenAmount] =
@@ -171,6 +176,7 @@ export function OrderLimitPriceField({ id }: OrderLimitPriceFieldProps) {
       <InputGroup.InnerWrapper>
         <InputGroup.Input
           id={id}
+          type="number"
           onKeyDown={e => {
             if (invalidChars.includes(e.key)) {
               e.preventDefault()

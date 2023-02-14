@@ -4,6 +4,7 @@ import {
   ChainId,
   CoWTrade,
   CurveTrade,
+  OneInchTrade,
   Trade,
   TradeType,
   UniswapTrade,
@@ -14,10 +15,11 @@ import {
 } from '@swapr/sdk'
 
 import { UnsignedTransaction } from 'ethers'
-import { useMemo } from 'react'
+import { useContext, useMemo } from 'react'
 
 import { useAnalytics } from '../analytics/'
 import { INITIAL_ALLOWED_SLIPPAGE } from '../constants'
+import { SwapTabContext } from '../pages/Swap/SwapContext'
 import { MainnetGasPrice } from '../state/application/actions'
 import { useMainnetGasPrices } from '../state/application/hooks'
 import { useTransactionAdder } from '../state/transactions/hooks'
@@ -64,7 +66,7 @@ export function useSwapsCallArguments(
   allowedSlippage: number = INITIAL_ALLOWED_SLIPPAGE, // in bips
   recipient?: string | null // the ENS name or address of the recipient of the trade, or null if swap should be returned to sender
 ): SwapCall[][] {
-  const { chainId, library } = useActiveWeb3React()
+  const { chainId, library, account } = useActiveWeb3React()
 
   const deadline = useTransactionDeadline()
 
@@ -98,10 +100,20 @@ export function useSwapsCallArguments(
         )
       }
 
-      /**
-       * @todo implement slippage
-       */
+      if (trade instanceof OneInchTrade && account) {
+        swapMethods.push(
+          trade.swapTransaction({
+            recipient,
+            ttl: deadline.toNumber(),
+            account,
+          })
+        )
+      }
+
       if (allowedSlippage > 6 && trade.tradeType === TradeType.EXACT_INPUT) {
+        /**
+         * @todo implement slippage
+         */
         // swapMethods.push(
         // Router.swapCallParameters(trade, {
         //   feeOnTransfer: true,
@@ -114,7 +126,7 @@ export function useSwapsCallArguments(
 
       return swapMethods.map(transactionParameters => ({ transactionParameters }))
     })
-  }, [allowedSlippage, chainId, deadline, library, trades, recipient])
+  }, [allowedSlippage, chainId, deadline, library, trades, recipient, account])
 }
 
 /**
@@ -163,8 +175,8 @@ export function useSwapCallback({
   const { account, chainId, library } = useActiveWeb3React()
   const mainnetGasPrices = useMainnetGasPrices()
   const [preferredGasPrice] = useUserPreferredGasPrice()
-
-  const { trackEcoEcoRouterTradeVolume } = useAnalytics()
+  const { activeChartTab } = useContext(SwapTabContext)
+  const { trackEcoRouterTradeVolume } = useAnalytics()
 
   const memoizedTrades = useMemo(() => (trade ? [trade] : undefined), [trade])
 
@@ -198,7 +210,7 @@ export function useSwapCallback({
           await trade.signOrder(signer, recipient)
           const orderId = await trade.submitOrder()
 
-          trackEcoEcoRouterTradeVolume(trade)
+          trackEcoRouterTradeVolume(trade, activeChartTab)
 
           addTransaction(
             {
@@ -295,7 +307,7 @@ export function useSwapCallback({
             ...((await transactionParameters) as any),
           })
           .then(async response => {
-            trackEcoEcoRouterTradeVolume(trade)
+            trackEcoRouterTradeVolume(trade, activeChartTab)
             addTransaction(response, {
               summary: getSwapSummary(trade, recipient),
             })
@@ -320,12 +332,13 @@ export function useSwapCallback({
     library,
     account,
     chainId,
+    recipient,
+    recipientAddressOrName,
     swapCalls,
     preferredGasPrice,
-    mainnetGasPrices,
-    recipientAddressOrName,
-    recipient,
+    trackEcoRouterTradeVolume,
+    activeChartTab,
     addTransaction,
-    trackEcoEcoRouterTradeVolume,
+    mainnetGasPrices,
   ])
 }

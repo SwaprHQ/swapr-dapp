@@ -14,7 +14,8 @@ import { useGasInfo } from '../../hooks/useGasInfo'
 import { useLiquidityMiningCampaignPosition } from '../../hooks/useLiquidityMiningCampaignPosition'
 import { ApplicationModal } from '../../state/application/actions'
 import { useModalOpen, useToggleShowClaimPopup, useToggleShowExpeditionsPopup } from '../../state/application/hooks'
-import { useDarkModeManager } from '../../state/user/hooks'
+import { useDarkModeManager, useUpdateSelectedChartOption } from '../../state/user/hooks'
+import { ChartOption } from '../../state/user/reducer'
 import { useTokenBalance } from '../../state/wallet/hooks'
 import { breakpoints } from '../../utils/theme'
 import ClaimModal from '../Claim/ClaimModal'
@@ -236,6 +237,10 @@ function Header() {
     }
   }, [])
 
+  const [selectedChartTab] = useUpdateSelectedChartOption()
+
+  const swapRoute = selectedChartTab === ChartOption.PRO ? '/swap/pro' : '/swap'
+
   return (
     <HeaderFrame>
       <ClaimModal
@@ -248,12 +253,12 @@ function Header() {
       />
       <ExpeditionsModal onDismiss={toggleExpeditionsPopup} />
       <HeaderRow isDark={isDark}>
-        <Title to="/swap">
+        <Title to={swapRoute}>
           <SwaprVersionLogo />
         </Title>
         <HeaderLinks>
           <Divider />
-          <HeaderLink data-testid="swap-nav-link" id="swap-nav-link" to="/swap">
+          <HeaderLink data-testid="swap-nav-link" id="swap-nav-link" to={swapRoute}>
             {t('swap')}
           </HeaderLink>
           <HeaderLink

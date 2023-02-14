@@ -25,18 +25,17 @@ import {
 
 const currentTimestamp = () => new Date().getTime()
 
-export enum ChartOptions {
-  OFF,
-  SIMPLE_CHART,
-  PRO,
+export enum SwapTab {
+  SWAP = 'SWAP',
+  LIMIT_ORDER = 'LIMIT_ORDER',
+  BRIDGE_SWAP = 'BRIDGE_SWAP',
 }
 
-export enum SwapTabs {
-  SWAP,
-  LIMIT_ORDER,
-  BRIDGE_SWAP,
+export enum ChartOption {
+  OFF = 'OFF',
+  SIMPLE_CHART = 'SIMPLE_CHART',
+  PRO = 'PRO',
 }
-
 export interface UserState {
   // the timestamp of the last updateVersion action
   lastUpdateVersionTimestamp?: number
@@ -45,7 +44,7 @@ export interface UserState {
   matchesDarkMode: boolean // whether the dark mode media query matches
 
   userExpertMode: boolean
-  selectedSwapTab: SwapTabs
+  selectedSwapTab: SwapTab
 
   // user defined slippage tolerance in bips, used in all txns
   userSlippageTolerance: number
@@ -60,7 +59,7 @@ export interface UserState {
   userPreferredGasPrice: MainnetGasPrice | string | null
 
   //user chart option preference
-  selectedChartOption?: ChartOptions
+  selectedChartOption?: ChartOption
 
   tokens: {
     [chainId: number]: {
@@ -88,8 +87,8 @@ export const initialState: UserState = {
   userDarkMode: true,
   matchesDarkMode: false,
   userExpertMode: false,
-  selectedSwapTab: 0,
-  selectedChartOption: 0,
+  selectedSwapTab: SwapTab.SWAP,
+  selectedChartOption: ChartOption.OFF,
   userSlippageTolerance: INITIAL_ALLOWED_SLIPPAGE,
   userDeadline: DEFAULT_DEADLINE_FROM_NOW,
   userMultihop: DEFAULT_USER_MULTIHOP_ENABLED,
