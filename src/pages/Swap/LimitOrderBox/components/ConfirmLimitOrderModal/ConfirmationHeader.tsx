@@ -4,6 +4,7 @@ import { ArrowDown } from 'react-feather'
 import styled from 'styled-components'
 
 import { CurrencyLogo } from '../../../../../components/CurrencyLogo'
+import { toFixedSix } from '../LimitOrderForm/utils'
 
 export type HeaderData = {
   fiatValueInput: CurrencyAmount | null
@@ -27,7 +28,7 @@ export const ConfirmationHeader = ({ fiatValueInput, fiatValueOutput, buyToken, 
           </LogoWithText>
         </CurrencyLogoInfo>
         <AmountWithUsd>
-          <Amount>{sellToken.toExact()}</Amount>
+          <Amount>{toFixedSix(Number(sellToken.toExact()))}</Amount>
           {fiatInput && <PurpleText>${fiatInput}</PurpleText>}
         </AmountWithUsd>
       </CurrencyAmountContainer>
@@ -41,7 +42,7 @@ export const ConfirmationHeader = ({ fiatValueInput, fiatValueOutput, buyToken, 
           </LogoWithText>
         </CurrencyLogoInfo>
         <AmountWithUsd>
-          <Amount>{buyToken.toExact()}</Amount>
+          <Amount>{toFixedSix(Number(buyToken.toExact()))}</Amount>
           {fiatOutput && <PurpleText>${fiatOutput}</PurpleText>}
         </AmountWithUsd>
       </CurrencyAmountContainer>
@@ -87,8 +88,8 @@ const AmountWithUsd = styled.div`
 `
 const Amount = styled.div`
   font-weight: 600;
-  font-size: 28px;
-  line-height: 34px;
+  font-size: 20px;
+  line-height: 28px;
 `
 const PurpleText = styled.div`
   font-weight: 600;

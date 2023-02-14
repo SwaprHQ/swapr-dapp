@@ -4,11 +4,13 @@ import debugFactory from 'debug'
 import { useEffect, useRef, useState } from 'react'
 
 import { useEnvironment } from '../../hooks/useEnvironment'
+import { BridgeTransactionSummary } from '../../state/bridgeTransactions/types'
+import { ChartOption } from '../../state/user/reducer'
 import { loadFathom } from '../fathom'
 import { siteEvents as siteEventsDev } from '../generated/dev'
 import { FathomSiteInformation, siteEvents as siteEventsProd } from '../generated/prod'
 import * as trackers from '../trackers'
-import { computeTradeId } from '../utils'
+import { computeItemId } from '../utils'
 import { AnalyticsContext, IAnalyticsContext } from './analytics.context'
 import { AnalyticsTradeQueueState, ItemStatus } from './analytics.state'
 
@@ -30,19 +32,17 @@ export function AnalyticsProvider({ children }: AnalyticsProviderProps) {
   useEffect(() => {
     const siteId = process.env.REACT_APP_FATHOM_SITE_ID
     const siteScriptURL = process.env.REACT_APP_FATHOM_SITE_SCRIPT_URL
-    const siteEvents = isProduction ? siteEventsProd : siteEventsDev
+    const siteEvents = siteEventsProd.siteId === siteId ? siteEventsProd : siteEventsDev
 
-    debug('Loading Fathom', { siteId, siteScriptURL })
+    debug('Loading Fathom', { siteId, siteScriptURL, siteEvents })
 
-    if (!siteId) {
-      if (isDevelopment) {
-        console.warn('REACT_APP_FATHOM_SITE_ID not set, skipping Fathom analytics')
-      }
+    if (!siteId && isDevelopment) {
+      console.warn('REACT_APP_FATHOM_SITE_ID not set, skipping Fathom analytics')
       return
     }
 
     if (siteId !== siteEvents.siteId) {
-      console.error(`Fathom site ID (${siteId}) not found in generated fathom settings`)
+      console.error(`Fathom site ID (${siteId}) not found in generated fathom settings. Found (${siteEvents.siteId})`)
       return
     }
 
@@ -85,7 +85,15 @@ export function AnalyticsProvider({ children }: AnalyticsProviderProps) {
       for await (const pendingItem of pendingItems) {
         debug('Processing item', { pendingItem })
         try {
-          await trackers.trackEcoEcoRouterTradeVolume(pendingItem.trade, site as FathomSiteInformation)
+          if (pendingItem.item instanceof Trade) {
+            await trackers.trackEcoRouterTradeVolume(
+              pendingItem.item,
+              site as FathomSiteInformation,
+              pendingItem?.chartOption
+            )
+          } else {
+            await trackers.trackEcoBridgeTradeVolume(pendingItem.item, site as FathomSiteInformation)
+          }
 
           const payload = {
             ...pendingItem,
@@ -125,25 +133,51 @@ export function AnalyticsProvider({ children }: AnalyticsProviderProps) {
     }
   }, [site, tradeQueue])
 
-  const trackEcoEcoRouterTradeVolume = (trade: Trade) => {
+  const trackEcoRouterTradeVolume = (trade: Trade, chartOption = ChartOption.OFF) => {
     if (!site || !window.fathom) {
-      console.error('trackEcoEcoRouterTradeVolume: Fathom site not found', { site, fathom: window.fathom })
-      return
+      return console.error('Fathom site not found', { site, fathom: window.fathom })
     }
 
     // Attempt to process the trade volume event
     // If it fails, add it to the queue
     trackers
-      .trackEcoEcoRouterTradeVolume(trade, site)
-      .then(() => {
-        debug('trackEcoEcoRouterTradeVolume: processed trade volume event', { trade })
-      })
+      .trackEcoRouterTradeVolume(trade, site, chartOption)
+      .then(() => debug('processed trade volume event', { trade, chartOption }))
       .catch(error => {
-        console.error('trackEcoEcoRouterTradeVolume: Error processing trade', { trade, error })
-        const id = computeTradeId(trade)
+        console.error('Error processing trade', { trade, chartOption, error })
+        const id = computeItemId(trade, chartOption)
         setTradeQueue(state => ({
           ...state,
-          [id]: { id: computeTradeId(trade), trade, status: ItemStatus.PENDING, retries: 0 },
+          [id]: {
+            id,
+            item: trade,
+            chartOption,
+            status: ItemStatus.PENDING,
+            retries: 0,
+          },
+        }))
+      })
+  }
+
+  const trackEcoBridgeTradeVolume = (transactionSummary: BridgeTransactionSummary) => {
+    if (!site || !window.fathom) {
+      return console.error('Fathom site not found', { site, fathom: window.fathom })
+    }
+
+    trackers
+      .trackEcoBridgeTradeVolume(transactionSummary, site)
+      .then(() => debug('processed trade volume event', { transactionSummary }))
+      .catch(error => {
+        console.error('Error processing trade', { transactionSummary, error })
+        const id = computeItemId(transactionSummary)
+        setTradeQueue(state => ({
+          ...state,
+          [id]: {
+            id,
+            item: transactionSummary,
+            status: ItemStatus.PENDING,
+            retries: 0,
+          },
         }))
       })
   }
@@ -154,7 +188,8 @@ export function AnalyticsProvider({ children }: AnalyticsProviderProps) {
         {
           site,
           fathom: window.fathom,
-          trackEcoEcoRouterTradeVolume,
+          trackEcoRouterTradeVolume,
+          trackEcoBridgeTradeVolume,
         } as IAnalyticsContext
       }
     >

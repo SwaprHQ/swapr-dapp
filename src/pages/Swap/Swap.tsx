@@ -1,21 +1,20 @@
 // Landing Page Imports
 import './../../theme/landingPageTheme/stylesheet.css'
-import { useEffect, useState } from 'react'
+import { Fragment, useEffect, useState } from 'react'
 import { redirect } from 'react-router-dom'
 import styled from 'styled-components'
 
 import Hero from '../../components/LandingPageComponents/layout/Hero'
 import { useActiveWeb3React } from '../../hooks'
 import { useRouter } from '../../hooks/useRouter'
-import { useUpdateSelectedSwapTab } from '../../state/user/hooks'
-import { ChartOptions, SwapTabs } from '../../state/user/reducer'
+import { ChartOption, SwapTab } from '../../state/user/reducer'
 import { AdvancedTradingViewBox } from './AdvancedTradingViewBox'
 import { Tabs } from './Components/Tabs'
 import { LandingSections } from './LandingSections'
 import { LimitOrderBox } from './LimitOrderBox'
 import { supportedChainIdList } from './LimitOrderBox/constants'
 import { SwapBox } from './SwapBox/SwapBox.component'
-import { SwapContext, SwapTab } from './SwapContext'
+import { SwapTabContext } from './SwapContext'
 
 const AppBodyContainer = styled.section`
   display: flex;
@@ -28,19 +27,19 @@ const AppBodyContainer = styled.section`
  * Swap page component
  */
 export function Swap() {
-  const { Swap, AdvancedTradingView, LimitOrder } = SwapTab
+  const { SWAP, LIMIT_ORDER } = SwapTab
   const { account, chainId } = useActiveWeb3React()
 
   // Control the active tab
-  const [activeTab, setActiveTab] = useState(Swap)
-  const [activeChartTab, setActiveChartTab] = useState(ChartOptions.OFF)
+  const [activeTab, setActiveTab] = useState(SWAP)
+  const [activeChartTab, setActiveChartTab] = useState(ChartOption.OFF)
   const { pathname } = useRouter()
-  const [, setAdvancedView] = useUpdateSelectedSwapTab()
+
   const isPro = pathname.includes('/pro')
 
   useEffect(() => {
-    if (activeTab === LimitOrder && (!chainId || (chainId && !supportedChainIdList.includes(chainId)))) {
-      setActiveTab(Swap)
+    if (activeTab === LIMIT_ORDER && (!chainId || (chainId && !supportedChainIdList.includes(chainId)))) {
+      setActiveTab(SWAP)
       redirect('/swap')
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -48,16 +47,16 @@ export function Swap() {
 
   useEffect(() => {
     if (isPro) {
-      setActiveTab(AdvancedTradingView)
-      setAdvancedView(SwapTabs.SWAP)
+      setActiveChartTab(ChartOption.PRO)
     } else if (pathname.includes('swap')) {
-      setActiveChartTab(ChartOptions.OFF)
-      setActiveTab(Swap)
+      setActiveChartTab(ChartOption.OFF)
     }
-  }, [AdvancedTradingView, Swap, isPro, setAdvancedView, setActiveChartTab, pathname])
+  }, [isPro, setActiveChartTab, pathname])
+
+  const AdvancedViewWrapper = isPro ? AdvancedTradingViewBox : Fragment
 
   return (
-    <SwapContext.Provider
+    <SwapTabContext.Provider
       value={{
         activeTab,
         setActiveTab,
@@ -65,15 +64,16 @@ export function Swap() {
         setActiveChartTab,
       }}
     >
-      <Hero showMarquee={activeTab !== AdvancedTradingView}>
+      <Hero showMarquee={!isPro}>
         <AppBodyContainer>
-          {activeTab !== AdvancedTradingView && <Tabs />}
-          {activeTab === Swap && <SwapBox />}
-          {activeTab === AdvancedTradingView && <AdvancedTradingViewBox />}
-          {activeTab === LimitOrder && <LimitOrderBox />}
+          <AdvancedViewWrapper>
+            <Tabs />
+            {activeTab === SWAP && <SwapBox />}
+            {activeTab === LIMIT_ORDER && <LimitOrderBox />}
+          </AdvancedViewWrapper>
         </AppBodyContainer>
       </Hero>
-      {activeTab !== AdvancedTradingView && <LandingSections />}
-    </SwapContext.Provider>
+      {!isPro && <LandingSections />}
+    </SwapTabContext.Provider>
   )
 }
