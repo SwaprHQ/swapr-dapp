@@ -18,7 +18,7 @@ Swapr releases are published to the IPFS at [swapr.eth](https://swapr.eth.limo).
 Clone the repo
 
 ```bash
-git clone https://github.com/ImpeccableHQ/dxswap-dapp.git
+git clone https://github.com/ImpeccableHQ/swapr-dapp.git
 ```
 
 Install dependencies using Yarn
