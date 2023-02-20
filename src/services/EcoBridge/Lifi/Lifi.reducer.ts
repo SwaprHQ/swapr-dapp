@@ -4,13 +4,16 @@ import { PayloadAction } from '@reduxjs/toolkit'
 
 import { createEcoBridgeChildBaseSlice } from '../EcoBridge.utils'
 import { LifiList } from './../EcoBridge.types'
+import { Route } from './Lifi.types'
 
 type LifiBridgeState = {
-  transactions: []
+  transactions: any[]
+  routes: Route[]
 }
 
 const initialState: LifiBridgeState = {
   transactions: [],
+  routes: [],
 }
 
 const createLifiSlice = (bridgeId: LifiList) =>
