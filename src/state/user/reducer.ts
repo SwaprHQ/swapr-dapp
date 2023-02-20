@@ -1,7 +1,6 @@
 import { createReducer } from '@reduxjs/toolkit'
 
 import { DEFAULT_DEADLINE_FROM_NOW, DEFAULT_USER_MULTIHOP_ENABLED, INITIAL_ALLOWED_SLIPPAGE } from '../../constants'
-import { ChartOptions, SwapTab } from '../../pages/Swap/SwapContext'
 import { MainnetGasPrice } from '../application/actions'
 import { updateVersion } from '../global/actions'
 import {
@@ -26,6 +25,17 @@ import {
 
 const currentTimestamp = () => new Date().getTime()
 
+export enum SwapTab {
+  SWAP = 'SWAP',
+  LIMIT_ORDER = 'LIMIT_ORDER',
+  BRIDGE_SWAP = 'BRIDGE_SWAP',
+}
+
+export enum ChartOption {
+  OFF = 'OFF',
+  SIMPLE_CHART = 'SIMPLE_CHART',
+  PRO = 'PRO',
+}
 export interface UserState {
   // the timestamp of the last updateVersion action
   lastUpdateVersionTimestamp?: number
@@ -49,7 +59,7 @@ export interface UserState {
   userPreferredGasPrice: MainnetGasPrice | string | null
 
   //user chart option preference
-  selectedChartOption?: ChartOptions
+  selectedChartOption?: ChartOption
 
   tokens: {
     [chainId: number]: {
@@ -77,8 +87,8 @@ export const initialState: UserState = {
   userDarkMode: true,
   matchesDarkMode: false,
   userExpertMode: false,
-  selectedSwapTab: SwapTab.Swap,
-  selectedChartOption: ChartOptions.OFF,
+  selectedSwapTab: SwapTab.SWAP,
+  selectedChartOption: ChartOption.OFF,
   userSlippageTolerance: INITIAL_ALLOWED_SLIPPAGE,
   userDeadline: DEFAULT_DEADLINE_FROM_NOW,
   userMultihop: DEFAULT_USER_MULTIHOP_ENABLED,

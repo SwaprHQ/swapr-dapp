@@ -332,7 +332,7 @@ export const NO_PRICE_IMPACT = 0
 // used to ensure the user doesn't send so much ETH so they end up with <.01
 export const MIN_ETH: JSBI = JSBI.exponentiate(JSBI.BigInt(10), JSBI.BigInt(16)) // .01 ETH
 
-export const DEFAULT_TOKEN_LIST = 'ipfs://QmRqvWQahoyAUdeXEroKsWtLMLPpJ2Nxad7SeGTN4H6zRt'
+export const DEFAULT_TOKEN_LIST = 'ipfs://QmU4sW7YZqS8BCSUuo6zaqDxmbpKZRQWJVM4BPjwEgEZPn'
 
 export const DOLLAR_AMOUNT_MAX_SIMULATION = 10000000
 export const ZERO_USD = CurrencyAmount.usd('0')
@@ -523,6 +523,14 @@ export const NETWORK_OPTIONAL_DETAIL: {
   [ChainId.OPTIMISM_GOERLI]: {
     partnerChainId: ChainId.OPTIMISM_GOERLI,
     isArbitrum: false,
+  },
+  [ChainId.GOERLI]: {
+    partnerChainId: ChainId.ARBITRUM_GOERLI,
+    isArbitrum: false,
+  },
+  [ChainId.ARBITRUM_GOERLI]: {
+    partnerChainId: ChainId.GOERLI,
+    isArbitrum: true,
   },
 }
 

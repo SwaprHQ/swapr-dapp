@@ -3,14 +3,18 @@ import { ChainId, Currency, Pair, Token, WETH, WMATIC, WXDAI } from '@swapr/sdk'
 import { useContext, useEffect, useMemo, useRef, useState } from 'react'
 import { useDispatch } from 'react-redux'
 
+import { useSimpleAnalyticsEvent } from '../../analytics/hooks/useSimpleAnalyticsEvent'
+import { getProModeEventNameByChainId } from '../../analytics/utils/index'
 import { REFETCH_DATA_INTERVAL } from '../../constants/data'
 import { useActiveWeb3React } from '../../hooks'
 import { useToken } from '../../hooks/Tokens'
 import { useRouter } from '../../hooks/useRouter'
+import { useWindowIsVisible } from '../../hooks/useWindowIsVisible'
 import { LimitOrderFormContext } from '../../pages/Swap/LimitOrderBox/contexts'
-import { SwapTab, SwapTabContext } from '../../pages/Swap/SwapContext'
+import { SwapTabContext } from '../../pages/Swap/SwapContext'
 import store, { AppState } from '../../state'
 import { useSwapState } from '../../state/swap/hooks'
+import { SwapTab } from '../../state/user/reducer'
 import { adapters } from './adapters/adapters.config'
 import { AdvancedTradingViewAdapter } from './adapters/advancedTradingView.adapter'
 import { AdapterAmountToFetch } from './advancedTradingView.types'
@@ -70,6 +74,9 @@ export const useAdvancedTradingView = () => {
     [chainId]
   )
 
+  const trackEvent = useSimpleAnalyticsEvent()
+  const windowIsVisible = useWindowIsVisible()
+
   useEffect(() => {
     setIsLoadingTrades(true)
   }, [chainId])
@@ -94,13 +101,13 @@ export const useAdvancedTradingView = () => {
     useToken(
       getTokenAddress(
         chainId as ChainId,
-        activeTab === SwapTab.Swap ? inputCurrencyId : sellTokenAmount.currency.address
+        activeTab === SwapTab.SWAP ? inputCurrencyId : sellTokenAmount.currency.address
       )
     ),
     useToken(
       getTokenAddress(
         chainId as ChainId,
-        activeTab === SwapTab.Swap ? outputCurrencyId : buyTokenAmount.currency.address
+        activeTab === SwapTab.SWAP ? outputCurrencyId : buyTokenAmount.currency.address
       )
     ),
   ]
@@ -176,13 +183,17 @@ export const useAdvancedTradingView = () => {
     fetchTrades()
 
     const interval = setInterval(() => {
-      fetchTrades()
+      if (windowIsVisible) {
+        fetchTrades()
+        trackEvent(getProModeEventNameByChainId(chainId))
+      }
     }, REFETCH_DATA_INTERVAL)
 
     return () => clearInterval(interval)
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [
+    windowIsVisible,
     dispatch,
     inputToken?.address,
     outputToken?.address,

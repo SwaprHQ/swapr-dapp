@@ -1,6 +1,7 @@
 import { Trade } from '@swapr/sdk'
 
 import { BridgeTransactionSummary } from '../../state/bridgeTransactions/types'
+import { ChartOption } from '../../state/user/reducer'
 
 export enum ActionType {
   ADD = 'ADD',
@@ -17,6 +18,7 @@ export enum ItemStatus {
 interface AnalyticsTradeQueueItem {
   id: string
   item: Trade | BridgeTransactionSummary
+  chartOption?: ChartOption
   status: ItemStatus
   retries: number
 }

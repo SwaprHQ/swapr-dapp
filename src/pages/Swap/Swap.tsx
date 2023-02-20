@@ -7,14 +7,14 @@ import styled from 'styled-components'
 import Hero from '../../components/LandingPageComponents/layout/Hero'
 import { useActiveWeb3React } from '../../hooks'
 import { useRouter } from '../../hooks/useRouter'
-import { useUpdateSelectedSwapTab } from '../../state/user/hooks'
+import { ChartOption, SwapTab } from '../../state/user/reducer'
 import { AdvancedTradingViewBox } from './AdvancedTradingViewBox'
 import { Tabs } from './Components/Tabs'
 import { LandingSections } from './LandingSections'
 import { LimitOrderBox } from './LimitOrderBox'
 import { supportedChainIdList } from './LimitOrderBox/constants'
 import { SwapBox } from './SwapBox/SwapBox.component'
-import { ChartOptions, SwapTab, SwapTabContext } from './SwapContext'
+import { SwapTabContext } from './SwapContext'
 
 const AppBodyContainer = styled.section`
   display: flex;
@@ -27,19 +27,19 @@ const AppBodyContainer = styled.section`
  * Swap page component
  */
 export function Swap() {
-  const { Swap, LimitOrder } = SwapTab
+  const { SWAP, LIMIT_ORDER } = SwapTab
   const { account, chainId } = useActiveWeb3React()
 
   // Control the active tab
-  const [activeTab, setActiveTab] = useState(Swap)
-  const [activeChartTab, setActiveChartTab] = useState(ChartOptions.OFF)
+  const [activeTab, setActiveTab] = useState(SWAP)
+  const [activeChartTab, setActiveChartTab] = useState(ChartOption.OFF)
   const { pathname } = useRouter()
-  const [, setAdvancedView] = useUpdateSelectedSwapTab()
+
   const isPro = pathname.includes('/pro')
 
   useEffect(() => {
-    if (activeTab === LimitOrder && (!chainId || (chainId && !supportedChainIdList.includes(chainId)))) {
-      setActiveTab(Swap)
+    if (activeTab === LIMIT_ORDER && (!chainId || (chainId && !supportedChainIdList.includes(chainId)))) {
+      setActiveTab(SWAP)
       redirect('/swap')
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -47,11 +47,11 @@ export function Swap() {
 
   useEffect(() => {
     if (isPro) {
-      setActiveChartTab(ChartOptions.PRO)
+      setActiveChartTab(ChartOption.PRO)
     } else if (pathname.includes('swap')) {
-      setActiveChartTab(ChartOptions.OFF)
+      setActiveChartTab(ChartOption.OFF)
     }
-  }, [Swap, isPro, setAdvancedView, setActiveChartTab, pathname])
+  }, [isPro, setActiveChartTab, pathname])
 
   const AdvancedViewWrapper = isPro ? AdvancedTradingViewBox : Fragment
 
@@ -68,8 +68,8 @@ export function Swap() {
         <AppBodyContainer>
           <AdvancedViewWrapper>
             <Tabs />
-            {activeTab === Swap && <SwapBox />}
-            {activeTab === LimitOrder && <LimitOrderBox />}
+            {activeTab === SWAP && <SwapBox />}
+            {activeTab === LIMIT_ORDER && <LimitOrderBox />}
           </AdvancedViewWrapper>
         </AppBodyContainer>
       </Hero>
