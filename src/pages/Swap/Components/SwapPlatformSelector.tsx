@@ -113,7 +113,6 @@ export function SwapPlatformSelector({
     recipient,
     allPlatformTrades
   )
-  console.log('ESIMATIONS ARRAY', estimations)
 
   const { loading: loadingGasFeesUSD, gasFeesUSD } = useGasFeesUSD(estimations)
   const loadingGasFees = loadingGasFeesUSD || loadingTradesGasEstimates

@@ -2,9 +2,12 @@ import { Web3Provider } from '@ethersproject/providers'
 import { Trade } from '@swapr/sdk'
 
 import { BigNumber } from 'ethers'
-import { useCallback, useEffect, useState } from 'react'
+import { parseEther } from 'ethers/lib/utils'
+import { useCallback, useContext, useEffect, useState } from 'react'
 
 import { INITIAL_ALLOWED_SLIPPAGE } from '../constants'
+import { SwapContext } from '../pages/Swap/SwapBox/SwapContext'
+import { useTokenContract } from './useContract'
 import useENS from './useENS'
 import { useSwapsCallArguments } from './useSwapCallback'
 
@@ -16,7 +19,11 @@ export function useSwapsGasEstimations(
   trades?: (Trade | undefined)[]
 ): { loading: boolean; estimations: (BigNumber | undefined)[] } {
   const { account, library, chainId } = useActiveWeb3React()
-  console.log('trades', trades)
+
+  const { parsedAmount } = useContext(SwapContext)
+
+  // const maxAmountInput: CurrencyAmount | undefined = maxAmountSpend(currencyBalances['INPUT'], chainId)
+  const tokenContract = useTokenContract(parsedAmount?.currency.address, false)
   const platformSwapCalls = useSwapsCallArguments(trades, allowedSlippage, recipientAddressOrName || account)
 
   const [loading, setLoading] = useState(false)
@@ -26,51 +33,89 @@ export function useSwapsGasEstimations(
   const recipient = recipientAddress || account
 
   const updateEstimations = useCallback(async () => {
-    if (!trades || platformSwapCalls.length === 0) return
+    if (!trades || platformSwapCalls.length === 0 || !chainId) return
     setLoading(true)
     const estimatedCalls = []
-    console.log('PlatformSwapCalls', platformSwapCalls)
 
     for (let i = 0; i < platformSwapCalls.length; i++) {
       const platformCalls = platformSwapCalls[i]
       const call = platformCalls[0]
 
-      console.log('PlatformCallOne', platformCalls)
-
-      console.log('call', call)
-      // if (!call) {
-      // } else if (trades)
-
-      // const { value } = await transactionParameters
-      // const options = !value || isZero(value as string) ? {} : { value }
-
       let estimatedCall = undefined
       if (trades[i]?.estimatedGas !== undefined) {
         estimatedCall = trades[i]?.estimatedGas
-        console.log('esimated gas works', trades[i]?.estimatedGas)
       } else {
         try {
-          const transactionRequest = await call.transactionParameters
-          estimatedCall = await (library as Web3Provider).estimateGas(transactionRequest as any)
-        } catch (error) {
-          console.error(error)
-          // silent fail
+          const { to, data, value } = await call.transactionParameters
+          const isNative = !(value as BigNumber).isZero()
+
+          const transactionObject = {
+            to,
+            data,
+            value,
+            from: !isNative ? account : undefined,
+          } as any
+          try {
+            estimatedCall = await (library as Web3Provider).estimateGas(transactionObject)
+          } catch {
+            try {
+              //// parseEther(maxAmountInput?.raw.toString()!),
+              const amount = parseEther('1')
+              const tokenContractAddress = tokenContract?.address
+              const approvalData = tokenContract?.interface.encodeFunctionData('approve', [to, amount])
+
+              const appovalTx = {
+                to: tokenContractAddress,
+                data: approvalData,
+                from: account,
+              }
+
+              const transferData = tokenContract?.interface.encodeFunctionData('transferFrom', [
+                tokenContractAddress,
+                account,
+                amount,
+              ])
+
+              const mintTx = {
+                to: tokenContractAddress,
+                data: transferData,
+                from: tokenContractAddress,
+              }
+
+              const swapTransaction = {
+                to,
+                data,
+                value,
+                from: !isNative ? account : undefined,
+              } as any
+
+              console.log('approvalTx', appovalTx)
+              console.log('mintTx', mintTx)
+              console.log('swapTransaction', swapTransaction)
+            } catch (e) {
+              console.error(`Gas estimation failed for trade ${trades[i]?.platform.name}:`, e)
+            }
+          }
+        } catch (e) {
+          console.error('Error fetching call estimations:', e)
         }
       }
 
       estimatedCalls.push(estimatedCall)
     }
-    console.log('estimatedCalls', estimatedCalls)
+
     setEstimations(estimatedCalls)
     setLoading(false)
-  }, [platformSwapCalls, library, trades])
+    //eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [platformSwapCalls])
 
   useEffect(() => {
     if (!trades || trades.length === 0 || !library || !chainId || !recipient) {
       setEstimations([])
     }
     updateEstimations()
-  }, [chainId, library, recipient, trades, updateEstimations, account])
+    //eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [platformSwapCalls, trades])
 
   return { loading: loading, estimations }
 }

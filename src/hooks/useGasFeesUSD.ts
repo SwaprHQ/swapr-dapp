@@ -22,10 +22,8 @@ export function useGasFeesUSD(gasEstimations: (BigNumber | undefined)[]): {
   const { gas, loading: loadingGasPrices } = useGasInfo()
 
   return useMemo(() => {
-    console.log('loadingNativeCurrencyUSDPrice', loadingNativeCurrencyUSDPrice)
     if (loadingNativeCurrencyUSDPrice || loadingGasPrices) return { loading: true, gasFeesUSD: [] }
 
-    console.log('preferredGasPrice', preferredGasPrice)
     if (!gasEstimations || gasEstimations.length === 0 || !chainId || !preferredGasPrice)
       return { loading: false, gasFeesUSD: [] }
 
@@ -46,8 +44,7 @@ export function useGasFeesUSD(gasEstimations: (BigNumber | undefined)[]): {
         const gasCalc = gasMapped[preferredGasPrice as MainnetGasPrice] + '000000000'
 
         const nativeCurrencyAmount = CurrencyAmount.nativeCurrency(gasEstimation.mul(gasCalc).toString(), chainId)
-        console.log('nativeCurrencyAmount', nativeCurrencyAmount.toString())
-        console.log('price', nativeCurrencyUSDPrice.toString())
+
         return CurrencyAmount.usd(
           parseUnits(
             nativeCurrencyAmount.multiply(nativeCurrencyUSDPrice).toFixed(USD.decimals),
@@ -56,5 +53,6 @@ export function useGasFeesUSD(gasEstimations: (BigNumber | undefined)[]): {
         )
       }),
     }
+    //eslint-disable-next-line react-hooks/exhaustive-deps
   }, [gasEstimations, loadingNativeCurrencyUSDPrice, nativeCurrencyUSDPrice, chainId])
 }
