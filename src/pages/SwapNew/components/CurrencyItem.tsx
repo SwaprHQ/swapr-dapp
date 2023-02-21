@@ -1,4 +1,3 @@
-import { ChangeEvent } from 'react'
 import styled from 'styled-components'
 
 import { ReactComponent as DownArrowLargeSVG } from '../../../assets/swapbox/down-arrow-large.svg'
@@ -17,17 +16,17 @@ import { BorderStyle, FontFamily } from './styles'
 
 type CurrencyItemProps = {
   currency: Currency
-  value: number
-  onChange: (event: ChangeEvent<HTMLInputElement>) => void
+  value: string
   openTokenPicker: () => void
+  onUserInput: (value: string) => void
   lowerItem?: boolean
 }
 
-export function CurrencyItem({ currency, value, onChange, openTokenPicker, lowerItem }: CurrencyItemProps) {
+export function CurrencyItem({ currency, value, openTokenPicker, onUserInput, lowerItem }: CurrencyItemProps) {
   return (
     <CurrencyContainer lowerItem={lowerItem}>
       <CurrencyAmountContainer>
-        <CurrencyAmount value={value} onChange={onChange} />
+        <CurrencyAmount value={value} onUserInput={onUserInput} />
         <CurrencyAmountWorth>$4000</CurrencyAmountWorth>
       </CurrencyAmountContainer>
 

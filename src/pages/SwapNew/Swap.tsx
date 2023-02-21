@@ -3,6 +3,7 @@ import styled from 'styled-components'
 
 import { ReactComponent as EtherLogoSVG } from '../../assets/swapbox/currency-logo-eth.svg'
 import { ReactComponent as USDTLogoSVG } from '../../assets/swapbox/currency-logo-usdt.svg'
+import { Field } from '../../state/swap/types'
 import { CurrencyItem, SwapButton, SwapInfo, SwitchCurrenciesButton } from './components'
 import { TokenPicker } from './components/TokenPicker'
 import { SWAPBOX_WIDTH } from './constants'
@@ -29,16 +30,8 @@ const swapData: SwapData = {
 }
 
 export function Swapbox2() {
-  const {
-    state,
-    onFromInputChange,
-    onToInputChange,
-    tokenPickerOpened,
-    openTokenPicker,
-    closeTokenPicker,
-    tokenPickerInput,
-    onTokenPickerInputChange,
-  } = useSwapbox()
+  const { tokenPickerOpened, openTokenPicker, closeTokenPicker, tokenPickerInput, onTokenPickerInputChange } =
+    useSwapbox()
 
   const {
     formattedAmounts,
@@ -84,6 +77,8 @@ export function Swapbox2() {
     setWrapState,
   } = useSwap()
 
+  console.log('AMOUNTS', formattedAmounts)
+
   return (
     <>
       <Container>
@@ -97,15 +92,15 @@ export function Swapbox2() {
           )}
         </AnimatePresence>
         <CurrencyItem
-          value={state.fromValue}
-          onChange={onFromInputChange}
+          value={formattedAmounts[Field.INPUT]}
           currency={swapData.from}
+          onUserInput={handleTypeInput}
           openTokenPicker={openTokenPicker}
         />
         <CurrencyItem
-          value={state.toValue}
-          onChange={onToInputChange}
+          value={formattedAmounts[Field.OUTPUT]}
           currency={swapData.to}
+          onUserInput={handleTypeOutput}
           openTokenPicker={openTokenPicker}
           lowerItem
         />
