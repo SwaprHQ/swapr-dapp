@@ -12,6 +12,7 @@ import {
 } from '../constants'
 import { Currency } from '../models'
 import { CurrencyAmount } from './CurrencyAmount'
+import { CurrencyBalance } from './CurrencyBalance'
 import { BorderStyle, FontFamily } from './styles'
 
 type CurrencyItemProps = {
@@ -36,9 +37,7 @@ export function CurrencyItem({ currency, value, openTokenPicker, onUserInput, lo
           <CurrencySymbol>{currency.symbol}</CurrencySymbol>
           <DownArrowLargeSVG />
         </CurrencyTypeContainer>
-        <CurrencyBalance>
-          Balance: <span>{currency.balance}</span>
-        </CurrencyBalance>
+        <CurrencyBalance />
       </CurrencyInfoContainer>
     </CurrencyContainer>
   )
@@ -105,19 +104,4 @@ const CurrencySymbol = styled.p`
   text-transform: uppercase;
   color: ${TEXT_COLOR_PRIMARY};
   margin: 0 6px;
-`
-
-const CurrencyBalance = styled.p`
-  width: fit-content;
-  line-height: 12px;
-  font-size: 10px;
-  ${FontFamily}
-  font-weight: 600;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  color: ${TEXT_COLOR_SECONDARY};
-
-  & span {
-    text-decoration: underline;
-  }
 `

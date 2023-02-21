@@ -34,10 +34,11 @@ export function Swapbox2() {
     useSwapbox()
 
   const {
+    // AMOUNT of CURRENCIES
     formattedAmounts,
-    currencies,
     handleTypeInput,
     handleTypeOutput,
+    currencies,
     handleMaxInput,
     handleInputSelect,
     handleOutputSelect,
@@ -97,6 +98,7 @@ export function Swapbox2() {
           onUserInput={handleTypeInput}
           openTokenPicker={openTokenPicker}
         />
+        <SwitchCurrenciesButton />
         <CurrencyItem
           value={formattedAmounts[Field.OUTPUT]}
           currency={swapData.to}
@@ -104,7 +106,6 @@ export function Swapbox2() {
           openTokenPicker={openTokenPicker}
           lowerItem
         />
-        <SwitchCurrenciesButton />
         <SwapInfo />
         <SwapButton />
       </Container>

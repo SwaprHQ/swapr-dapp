@@ -27,4 +27,5 @@ const StyledButton = styled.button`
   border: 1px solid #0c0c14;
   box-shadow: 0px 0px 42px rgba(0, 0, 0, 0.42);
   backdrop-filter: blur(11px);
+  cursor: pointer;
 `
