@@ -12,6 +12,7 @@ import {
   TEXT_COLOR_SECONDARY,
 } from '../constants'
 import { Currency } from '../models'
+import { CurrencyAmount } from './CurrencyAmount'
 import { BorderStyle, FontFamily } from './styles'
 
 type CurrencyItemProps = {
@@ -75,22 +76,6 @@ const CurrencyContainer = styled.div<{ lowerItem?: boolean }>`
 `
 
 const CurrencyAmountContainer = styled.div``
-
-const CurrencyAmount = styled.input`
-  width: 250px;
-  height: 34px;
-  line-height: 34px;
-  font-size: 28px;
-  ${FontFamily}
-  font-weight: 600;
-  letter-spacing: 0.02em;
-  text-shadow: 0px 0px 12px rgba(255, 255, 255, 0.14);
-  color: ${TEXT_COLOR_PRIMARY};
-  background-color: transparent;
-  border: none;
-  outline: none;
-  margin-bottom: 5px;
-`
 
 const CurrencyAmountWorth = styled.p`
   line-height: 12px;

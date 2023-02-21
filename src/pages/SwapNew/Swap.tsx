@@ -7,6 +7,7 @@ import { CurrencyItem, SwapButton, SwapInfo, SwitchCurrenciesButton } from './co
 import { TokenPicker } from './components/TokenPicker'
 import { SWAPBOX_WIDTH } from './constants'
 import { Currency } from './models'
+import { useSwap } from './useSwap'
 import { useSwapbox } from './useSwapbox'
 
 type SwapData = {
@@ -38,6 +39,50 @@ export function Swapbox2() {
     tokenPickerInput,
     onTokenPickerInputChange,
   } = useSwapbox()
+
+  const {
+    formattedAmounts,
+    currencies,
+    handleTypeInput,
+    handleTypeOutput,
+    handleMaxInput,
+    handleInputSelect,
+    handleOutputSelect,
+    fiatValueInput,
+    fiatValueOutput,
+    isFallbackFiatValueInput,
+    isFallbackFiatValueOutput,
+    maxAmountInput,
+    maxAmountOutput,
+    isInputPanelDisabled,
+
+    onSwitchTokens,
+
+    showWrap,
+    bestPricedTrade,
+    showAdvancedSwapDetails,
+    setShowAdvancedSwapDetails,
+    recipient,
+
+    wrapInputError,
+    showApproveFlow,
+    userHasSpecifiedInputOutput,
+    approval,
+    setSwapState,
+    priceImpactSeverity,
+    swapCallbackError,
+    wrapType,
+    approvalsSubmitted,
+    trade,
+    swapInputError,
+    swapErrorMessage,
+    loading,
+    onWrap,
+    approveCallback,
+    handleSwap,
+    wrapState,
+    setWrapState,
+  } = useSwap()
 
   return (
     <>
