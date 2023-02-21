@@ -94,14 +94,14 @@ export function Swapbox2() {
         </AnimatePresence>
         <CurrencyItem
           value={formattedAmounts[Field.INPUT]}
-          currency={swapData.from}
+          currency={currencies[Field.INPUT]}
           onUserInput={handleTypeInput}
           openTokenPicker={openTokenPicker}
         />
         <SwitchCurrenciesButton />
         <CurrencyItem
           value={formattedAmounts[Field.OUTPUT]}
-          currency={swapData.to}
+          currency={currencies[Field.OUTPUT]}
           onUserInput={handleTypeOutput}
           openTokenPicker={openTokenPicker}
           lowerItem

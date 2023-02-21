@@ -1,3 +1,5 @@
+import { Currency } from '@swapr/sdk'
+
 import styled from 'styled-components'
 
 import { ReactComponent as DownArrowLargeSVG } from '../../../assets/swapbox/down-arrow-large.svg'
@@ -10,13 +12,12 @@ import {
   TEXT_COLOR_PRIMARY,
   TEXT_COLOR_SECONDARY,
 } from '../constants'
-import { Currency } from '../models'
 import { CurrencyAmount } from './CurrencyAmount'
 import { CurrencyBalance } from './CurrencyBalance'
 import { BorderStyle, FontFamily } from './styles'
 
 type CurrencyItemProps = {
-  currency: Currency
+  currency?: Currency
   value: string
   openTokenPicker: () => void
   onUserInput: (value: string) => void
@@ -33,11 +34,12 @@ export function CurrencyItem({ currency, value, openTokenPicker, onUserInput, lo
 
       <CurrencyInfoContainer>
         <CurrencyTypeContainer onClick={openTokenPicker}>
-          {currency.logo}
-          <CurrencySymbol>{currency.symbol}</CurrencySymbol>
+          {/* TODO: HANDLE THIS */}
+          {/* {currency.logo} */}
+          {/* <CurrencySymbol>{currency.symbol}</CurrencySymbol> */}
           <DownArrowLargeSVG />
         </CurrencyTypeContainer>
-        <CurrencyBalance />
+        <CurrencyBalance currency={currency} />
       </CurrencyInfoContainer>
     </CurrencyContainer>
   )
