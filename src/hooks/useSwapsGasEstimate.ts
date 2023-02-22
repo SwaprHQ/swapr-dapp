@@ -96,7 +96,7 @@ export function useSwapsGasEstimations(
                 const params = [appovalTx, mintTx, swapTransaction]
                 const options = alchemyExectuionBundleOptions(params)
                 const alchemyRequest = fetch(
-                  'https://eth-mainnet.g.alchemy.com/v2/bdq2KDp6h9kd9-cNSTExAyS7OTJSDI-W',
+                  `https://eth-mainnet.g.alchemy.com/v2/${process.env.REACT_APP_ALCHEMY_KEY}`,
                   options
                 )
 
