@@ -4774,6 +4774,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@lifi/types@npm:2.1.1":
+  version: 2.1.1
+  resolution: "@lifi/types@npm:2.1.1"
+  dependencies:
+    ethers: ^5.7.2
+  checksum: e39108046d0b69577b9c5b71e52bbf0628fabbb78c448840c7bc7983b8fcc304f8bd2251da08000f6d32adbd84c18c214c04d780b648c60c643ede7719d43f07
+  languageName: node
+  linkType: hard
+
 "@lifi/types@npm:^1.19.0":
   version: 1.24.0
   resolution: "@lifi/types@npm:1.24.0"
@@ -7496,6 +7505,7 @@ __metadata:
     "@graphql-codegen/typescript-operations": ^3.0.3
     "@graphql-codegen/typescript-react-apollo": ^3.3.7
     "@lifi/sdk": 1.7.2
+    "@lifi/types": 2.1.1
     "@openapitools/openapi-generator-cli": ^2.5.1
     "@popperjs/core": ^2.11.6
     "@reach/dialog": ^0.18.0

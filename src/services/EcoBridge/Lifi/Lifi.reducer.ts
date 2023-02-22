@@ -1,19 +1,33 @@
 import { ChainId } from '@swapr/sdk'
 
+import { Route, TransactionInfo } from '@lifi/sdk'
 import { PayloadAction } from '@reduxjs/toolkit'
 
 import { createEcoBridgeChildBaseSlice } from '../EcoBridge.utils'
 import { LifiList } from './../EcoBridge.types'
-import { Route } from './Lifi.types'
+// import { Route } from './Lifi.types'
 
 type LifiBridgeState = {
-  transactions: any[]
+  transactions: TransactionInfo[]
   routes: Route[]
+  approvalData: {
+    chainId?: ChainId
+    owner?: string
+    allowanceTarget?: string
+    tokenAddress?: string
+    amount?: string
+  }
+  txBridgingData: {
+    data?: string
+    to?: string
+  }
 }
 
 const initialState: LifiBridgeState = {
   transactions: [],
+  approvalData: {},
   routes: [],
+  txBridgingData: {},
 }
 
 const createLifiSlice = (bridgeId: LifiList) =>
@@ -21,31 +35,31 @@ const createLifiSlice = (bridgeId: LifiList) =>
     name: bridgeId,
     initialState,
     reducers: {
-      // setApprovalData: (
-      //   state,
-      //   action: PayloadAction<{
-      //     chainId?: ChainId
-      //     owner?: string
-      //     allowanceTarget?: string
-      //     tokenAddress?: string
-      //     amount?: string
-      //   }>
-      // ) => {
-      //   state.approvalData = action.payload
-      // },
-      // setTxBridgingData: (
-      //   state,
-      //   action: PayloadAction<{
-      //     data: string
-      //     to: string
-      //   }>
-      // ) => {
-      //   state.txBridgingData = action.payload
-      // },
-      // addTx: (state, action: PayloadAction<Omit<SocketTx, 'partnerTxHash' | 'status' | 'timestampResolved'>>) => {
-      //   const { payload: txn } = action
-      //   state.transactions.push({ ...txn, status: SocketTxStatus.FROM_PENDING })
-      // },
+      setApprovalData: (
+        state,
+        action: PayloadAction<{
+          chainId?: ChainId
+          owner?: string
+          allowanceTarget?: string
+          tokenAddress?: string
+          amount?: string
+        }>
+      ) => {
+        state.approvalData = action.payload
+      },
+      setTxBridgingData: (
+        state,
+        action: PayloadAction<{
+          data: string
+          to: string
+        }>
+      ) => {
+        state.txBridgingData = action.payload
+      },
+      addTx: (state, action: PayloadAction<TransactionInfo>) => {
+        const { payload: txn } = action
+        state.transactions.push(txn)
+      },
       // updateTx: (state, action: PayloadAction<Pick<SocketTx, 'txHash' | 'partnerTxHash' | 'status'>>) => {
       //   const { txHash, partnerTxHash, status } = action.payload
       //   const index = state.transactions.findIndex(tx => tx.txHash === txHash)
@@ -58,9 +72,9 @@ const createLifiSlice = (bridgeId: LifiList) =>
       //     tx.status = status
       //   }
       // },
-      // setRoutes: (state, action: PayloadAction<Route[]>) => {
-      //   state.routes = action.payload
-      // },
+      setRoutes: (state, action: PayloadAction<Route[]>) => {
+        state.routes = action.payload
+      },
       // setToAssetDecimals: (state, action: PayloadAction<number | undefined>) => {
       //   state.assetDecimals = action.payload ?? 18
       // },

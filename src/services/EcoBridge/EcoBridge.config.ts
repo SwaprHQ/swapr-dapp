@@ -3,6 +3,7 @@ import { ChainId } from '@swapr/sdk'
 import { ArbitrumBridge } from './Arbitrum/ArbitrumBridge'
 import { Connext } from './Connext/Connext'
 import { EcoBridgeChildBase } from './EcoBridge.utils'
+import { LifiBridge } from './Lifi/LifiBridge'
 import { OmniBridge } from './OmniBridge/OmniBridge'
 import { bridgeSupportedChains } from './Socket/Socket.utils'
 import { SocketBridge } from './Socket/SocketBridge'
@@ -55,6 +56,18 @@ export const ecoBridgeConfig: EcoBridgeChildBase[] = [
     bridgeId: 'omnibridge:eth-xdai',
     displayName: 'OmniBridge',
     supportedChains: [{ from: ChainId.XDAI, to: ChainId.MAINNET }],
+  }),
+  new LifiBridge({
+    bridgeId: 'lifi',
+    displayName: 'Lifi',
+    supportedChains: bridgeSupportedChains([
+      ChainId.ARBITRUM_ONE,
+      ChainId.MAINNET,
+      ChainId.POLYGON,
+      ChainId.GNOSIS,
+      ChainId.OPTIMISM_MAINNET,
+      ChainId.BSC_MAINNET,
+    ]),
   }),
 ]
 
