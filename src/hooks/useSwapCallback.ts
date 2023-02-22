@@ -227,7 +227,13 @@ export function useSwapCallback({
 
         const estimatedCalls: EstimatedSwapCall[] = await Promise.all(
           swapCalls.map(async call => {
-            const transactionRequest = await call.transactionParameters
+            let transactionRequest: any
+            try {
+              transactionRequest = await call.transactionParameters
+            } catch (e) {
+              console.log('Failed to get transaction parameters', e)
+            }
+
             // Ignore gas estimation if the request has gasLimit property
             if (transactionRequest.gasLimit) {
               return {

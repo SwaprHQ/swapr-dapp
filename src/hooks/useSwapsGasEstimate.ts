@@ -1,5 +1,5 @@
 import { Web3Provider } from '@ethersproject/providers'
-import { CurrencyAmount, Trade } from '@swapr/sdk'
+import { CurrencyAmount, RoutablePlatform, Trade } from '@swapr/sdk'
 
 import { BigNumber } from 'ethers'
 import { parseEther } from 'ethers/lib/utils'
@@ -36,16 +36,21 @@ export function useSwapsGasEstimations(
 
   const updateEstimations = useCallback(async () => {
     if (!trades || platformSwapCalls.length === 0 || !chainId) return
+
     setLoading(true)
     const estimatedCalls = []
 
     for (let i = 0; i < platformSwapCalls.length; i++) {
       const platformCalls = platformSwapCalls[i]
       const call = platformCalls[0]
+      console.log('call', call)
 
       let estimatedCall = undefined
       if (trades[i]?.estimatedGas !== undefined) {
+        //get estimated gas from trade when it is available
         estimatedCall = trades[i]?.estimatedGas
+      } else if (!call || call.transactionParameters === undefined || trades[i]?.platform === RoutablePlatform.COW) {
+        estimatedCall = undefined
       } else {
         try {
           const { to, data, value } = await call.transactionParameters
@@ -58,9 +63,12 @@ export function useSwapsGasEstimations(
             from: !isNative ? account : undefined,
           } as any
           try {
+            //try to estimate gas from rpc function
             estimatedCall = await (library as Web3Provider).estimateGas(transactionObject)
           } catch {
+            //else estimate withc alchemy api using execution bundle
             try {
+              //check if there user has inputted amount greate then max amount
               if (maxAmountInput && !isNative && !parsedAmount?.greaterThan(maxAmountInput.raw.toString())) {
                 const amount = parseEther(maxAmountInput?.raw.toString()!)
                 const tokenContractAddress = tokenContract?.address
@@ -121,12 +129,14 @@ export function useSwapsGasEstimations(
   }, [platformSwapCalls])
 
   useEffect(() => {
-    if (!trades || trades.length === 0 || !library || !chainId || !recipient) {
+    if (!platformSwapCalls || platformSwapCalls.length === 0 || !library || !chainId || !recipient) {
       setEstimations([])
+    } else {
+      updateEstimations()
     }
-    updateEstimations()
+
     //eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [platformSwapCalls, trades])
+  }, [platformSwapCalls])
 
   return { loading: loading, estimations }
 }
