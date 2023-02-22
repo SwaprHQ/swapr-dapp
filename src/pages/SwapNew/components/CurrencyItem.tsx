@@ -2,21 +2,19 @@ import { Currency, CurrencyAmount as CurrencyAmountType, Percent } from '@swapr/
 
 import styled from 'styled-components'
 
-import { ReactComponent as DownArrowLargeSVG } from '../../../assets/swapbox/down-arrow-large.svg'
 import {
   ELEMENTS_BACKGROUND_PRIMARY,
   ELEMENTS_BACKGROUND_SECONDARY,
   ELEMENTS_BORDER_PRIMARY,
   ELEMENTS_BORDER_SECONDARY,
   ELEMENTS_SPACING,
-  TEXT_COLOR_PRIMARY,
-  TEXT_COLOR_SECONDARY,
 } from '../constants'
 import { CurrencyAmount } from './CurrencyAmount'
 import { CurrencyAmountWorth } from './CurrencyAmountWorth'
 import { CurrencyBalance } from './CurrencyBalance'
 import { CurrencySymbol } from './CurrencySymbol'
-import { BorderStyle, FontFamily } from './styles'
+import { CurrencyType } from './CurrencyType'
+import { BorderStyle } from './styles'
 
 type CurrencyItemProps = {
   currency?: Currency
@@ -47,12 +45,7 @@ export function CurrencyItem({
       </CurrencyAmountContainer>
 
       <CurrencyInfoContainer>
-        <CurrencyTypeContainer onClick={openTokenPicker}>
-          {/* TODO: HANDLE THIS */}
-          {/* {currency.logo} */}
-          <CurrencySymbol currency={currency} />
-          <DownArrowLargeSVG />
-        </CurrencyTypeContainer>
+        <CurrencyType onClick={openTokenPicker} currency={currency} />
         <CurrencyBalance currency={currency} />
       </CurrencyInfoContainer>
     </CurrencyContainer>
@@ -92,12 +85,3 @@ const CurrencyContainer = styled.div<{ lowerItem?: boolean }>`
 const CurrencyAmountContainer = styled.div``
 
 const CurrencyInfoContainer = styled.div``
-
-const CurrencyTypeContainer = styled.div`
-  height: 24px;
-  display: flex;
-  justify-content: flex-end;
-  align-items: center;
-  margin-bottom: 17px;
-  cursor: pointer;
-`
