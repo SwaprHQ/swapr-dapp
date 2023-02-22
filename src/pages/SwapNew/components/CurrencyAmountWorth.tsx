@@ -1,4 +1,4 @@
-import { CurrencyAmount, JSBI, Percent } from '@swapr/sdk'
+import { CurrencyAmount, Percent } from '@swapr/sdk'
 
 import styled from 'styled-components'
 
@@ -14,7 +14,7 @@ type CurrencyAmountWorthProps = {
 export function CurrencyAmountWorth({ fiatValue, priceImpact, isFallback }: CurrencyAmountWorthProps) {
   console.log('VALUES', fiatValue, priceImpact, isFallback)
 
-  const value = fiatValue ? `${isFallback && '~'}$${fiatValue.toFixed(2, { groupSeparator: ',' })}` : ''
+  const value = fiatValue ? `${`${isFallback && '~'}`}$${fiatValue.toFixed(2, { groupSeparator: ',' })}` : ''
 
   return <Paragraph>{value}</Paragraph>
 }

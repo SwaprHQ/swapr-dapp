@@ -15,6 +15,7 @@ import {
 import { CurrencyAmount } from './CurrencyAmount'
 import { CurrencyAmountWorth } from './CurrencyAmountWorth'
 import { CurrencyBalance } from './CurrencyBalance'
+import { CurrencySymbol } from './CurrencySymbol'
 import { BorderStyle, FontFamily } from './styles'
 
 type CurrencyItemProps = {
@@ -49,7 +50,7 @@ export function CurrencyItem({
         <CurrencyTypeContainer onClick={openTokenPicker}>
           {/* TODO: HANDLE THIS */}
           {/* {currency.logo} */}
-          {/* <CurrencySymbol>{currency.symbol}</CurrencySymbol> */}
+          <CurrencySymbol currency={currency} />
           <DownArrowLargeSVG />
         </CurrencyTypeContainer>
         <CurrencyBalance currency={currency} />
@@ -99,15 +100,4 @@ const CurrencyTypeContainer = styled.div`
   align-items: center;
   margin-bottom: 17px;
   cursor: pointer;
-`
-
-const CurrencySymbol = styled.p`
-  display: inline-block;
-  line-height: 24px;
-  font-size: 20px;
-  ${FontFamily}
-  font-weight: 600;
-  text-transform: uppercase;
-  color: ${TEXT_COLOR_PRIMARY};
-  margin: 0 6px;
 `
