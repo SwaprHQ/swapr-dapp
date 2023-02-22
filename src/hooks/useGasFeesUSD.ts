@@ -42,6 +42,7 @@ export function useGasFeesUSD(gasEstimations: (BigNumber | undefined)[]): {
         //hardcoded gas price to 20 gwei
 
         const gasCalc = gasMapped[preferredGasPrice as MainnetGasPrice] + '000000000'
+        console.log('gasCalc', gasCalc)
 
         const nativeCurrencyAmount = CurrencyAmount.nativeCurrency(gasEstimation.mul(gasCalc).toString(), chainId)
 

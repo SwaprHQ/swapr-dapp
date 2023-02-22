@@ -6,6 +6,7 @@ import { parseEther } from 'ethers/lib/utils'
 import { useCallback, useContext, useEffect, useState } from 'react'
 
 import { INITIAL_ALLOWED_SLIPPAGE } from '../constants'
+import { alchemyExectuionBundleOptions, calucalateGasFromAlchemyResponse } from '../constants/data'
 import { SwapContext } from '../pages/Swap/SwapBox/SwapContext'
 import { maxAmountSpend } from '../utils/maxAmountSpend'
 import { useTokenContract } from './useContract'
@@ -58,16 +59,9 @@ export function useSwapsGasEstimations(
           } as any
           try {
             estimatedCall = await (library as Web3Provider).estimateGas(transactionObject)
-            console.log('estimatedCall', estimatedCall.toString())
-            console.log('tradetype', trades[i]?.platform.name)
-            console.log('to', to)
-            console.log('data', data)
-            console.log('value', value)
-            console.log('account', account)
           } catch {
             try {
-              if (maxAmountInput && !parsedAmount?.greaterThan(maxAmountInput.raw.toString())) {
-                console.log('jere')
+              if (maxAmountInput && !isNative && !parsedAmount?.greaterThan(maxAmountInput.raw.toString())) {
                 const amount = parseEther(maxAmountInput?.raw.toString()!)
                 const tokenContractAddress = tokenContract?.address
                 const approvalData = tokenContract?.interface.encodeFunctionData('approve', [to, amount])
@@ -96,10 +90,18 @@ export function useSwapsGasEstimations(
                   value,
                   from: !isNative ? account : undefined,
                 } as any
-
                 console.log('approvalTx', appovalTx)
                 console.log('mintTx', mintTx)
                 console.log('swapTransaction', swapTransaction)
+                const params = [appovalTx, mintTx, swapTransaction]
+                const options = alchemyExectuionBundleOptions(params)
+                const alchemyRequest = fetch(
+                  'https://eth-mainnet.g.alchemy.com/v2/bdq2KDp6h9kd9-cNSTExAyS7OTJSDI-W',
+                  options
+                )
+
+                const gasCalculation = await calucalateGasFromAlchemyResponse(alchemyRequest)
+                estimatedCall = BigNumber.from(gasCalculation)
               }
             } catch (e) {
               console.error(`Gas estimation failed for trade ${trades[i]?.platform.name}:`, e)
