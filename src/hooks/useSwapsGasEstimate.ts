@@ -1,5 +1,5 @@
 import { Web3Provider } from '@ethersproject/providers'
-import { Trade } from '@swapr/sdk'
+import { CurrencyAmount, Trade } from '@swapr/sdk'
 
 import { BigNumber } from 'ethers'
 import { parseEther } from 'ethers/lib/utils'
@@ -7,6 +7,7 @@ import { useCallback, useContext, useEffect, useState } from 'react'
 
 import { INITIAL_ALLOWED_SLIPPAGE } from '../constants'
 import { SwapContext } from '../pages/Swap/SwapBox/SwapContext'
+import { maxAmountSpend } from '../utils/maxAmountSpend'
 import { useTokenContract } from './useContract'
 import useENS from './useENS'
 import { useSwapsCallArguments } from './useSwapCallback'
@@ -20,9 +21,9 @@ export function useSwapsGasEstimations(
 ): { loading: boolean; estimations: (BigNumber | undefined)[] } {
   const { account, library, chainId } = useActiveWeb3React()
 
-  const { parsedAmount } = useContext(SwapContext)
+  const { parsedAmount, currencyBalances } = useContext(SwapContext)
 
-  // const maxAmountInput: CurrencyAmount | undefined = maxAmountSpend(currencyBalances['INPUT'], chainId)
+  const maxAmountInput: CurrencyAmount | undefined = maxAmountSpend(currencyBalances['INPUT'], chainId)
   const tokenContract = useTokenContract(parsedAmount?.currency.address, false)
   const platformSwapCalls = useSwapsCallArguments(trades, allowedSlippage, recipientAddressOrName || account)
 
@@ -57,41 +58,49 @@ export function useSwapsGasEstimations(
           } as any
           try {
             estimatedCall = await (library as Web3Provider).estimateGas(transactionObject)
+            console.log('estimatedCall', estimatedCall.toString())
+            console.log('tradetype', trades[i]?.platform.name)
+            console.log('to', to)
+            console.log('data', data)
+            console.log('value', value)
+            console.log('account', account)
           } catch {
             try {
-              //// parseEther(maxAmountInput?.raw.toString()!),
-              const amount = parseEther('1')
-              const tokenContractAddress = tokenContract?.address
-              const approvalData = tokenContract?.interface.encodeFunctionData('approve', [to, amount])
+              if (maxAmountInput && !parsedAmount?.greaterThan(maxAmountInput.raw.toString())) {
+                console.log('jere')
+                const amount = parseEther(maxAmountInput?.raw.toString()!)
+                const tokenContractAddress = tokenContract?.address
+                const approvalData = tokenContract?.interface.encodeFunctionData('approve', [to, amount])
 
-              const appovalTx = {
-                to: tokenContractAddress,
-                data: approvalData,
-                from: account,
+                const appovalTx = {
+                  to: tokenContractAddress,
+                  data: approvalData,
+                  from: account,
+                }
+
+                const transferData = tokenContract?.interface.encodeFunctionData('transferFrom', [
+                  tokenContractAddress,
+                  account,
+                  amount,
+                ])
+
+                const mintTx = {
+                  to: tokenContractAddress,
+                  data: transferData,
+                  from: tokenContractAddress,
+                }
+
+                const swapTransaction = {
+                  to,
+                  data,
+                  value,
+                  from: !isNative ? account : undefined,
+                } as any
+
+                console.log('approvalTx', appovalTx)
+                console.log('mintTx', mintTx)
+                console.log('swapTransaction', swapTransaction)
               }
-
-              const transferData = tokenContract?.interface.encodeFunctionData('transferFrom', [
-                tokenContractAddress,
-                account,
-                amount,
-              ])
-
-              const mintTx = {
-                to: tokenContractAddress,
-                data: transferData,
-                from: tokenContractAddress,
-              }
-
-              const swapTransaction = {
-                to,
-                data,
-                value,
-                from: !isNative ? account : undefined,
-              } as any
-
-              console.log('approvalTx', appovalTx)
-              console.log('mintTx', mintTx)
-              console.log('swapTransaction', swapTransaction)
             } catch (e) {
               console.error(`Gas estimation failed for trade ${trades[i]?.platform.name}:`, e)
             }
