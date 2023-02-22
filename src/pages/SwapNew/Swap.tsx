@@ -38,7 +38,11 @@ export function Swapbox2() {
     formattedAmounts,
     handleTypeInput,
     handleTypeOutput,
+
+    // CURRENCIES
     currencies,
+
+    // AMOUNT WORTH
     handleMaxInput,
     handleInputSelect,
     handleOutputSelect,
@@ -63,6 +67,7 @@ export function Swapbox2() {
     userHasSpecifiedInputOutput,
     approval,
     setSwapState,
+    priceImpact,
     priceImpactSeverity,
     swapCallbackError,
     wrapType,
@@ -96,6 +101,8 @@ export function Swapbox2() {
           value={formattedAmounts[Field.INPUT]}
           currency={currencies[Field.INPUT]}
           onUserInput={handleTypeInput}
+          fiatValue={fiatValueInput}
+          isFallbackFiatValue={isFallbackFiatValueInput}
           openTokenPicker={openTokenPicker}
         />
         <SwitchCurrenciesButton />
@@ -103,6 +110,9 @@ export function Swapbox2() {
           value={formattedAmounts[Field.OUTPUT]}
           currency={currencies[Field.OUTPUT]}
           onUserInput={handleTypeOutput}
+          fiatValue={fiatValueOutput}
+          isFallbackFiatValue={isFallbackFiatValueOutput}
+          priceImpact={priceImpact}
           openTokenPicker={openTokenPicker}
           lowerItem
         />

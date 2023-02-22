@@ -1,4 +1,4 @@
-import { Currency } from '@swapr/sdk'
+import { Currency, CurrencyAmount as CurrencyAmountType, Percent } from '@swapr/sdk'
 
 import styled from 'styled-components'
 
@@ -13,6 +13,7 @@ import {
   TEXT_COLOR_SECONDARY,
 } from '../constants'
 import { CurrencyAmount } from './CurrencyAmount'
+import { CurrencyAmountWorth } from './CurrencyAmountWorth'
 import { CurrencyBalance } from './CurrencyBalance'
 import { BorderStyle, FontFamily } from './styles'
 
@@ -21,15 +22,27 @@ type CurrencyItemProps = {
   value: string
   openTokenPicker: () => void
   onUserInput: (value: string) => void
+  fiatValue?: CurrencyAmountType | null
+  isFallbackFiatValue?: boolean
+  priceImpact?: Percent
   lowerItem?: boolean
 }
 
-export function CurrencyItem({ currency, value, openTokenPicker, onUserInput, lowerItem }: CurrencyItemProps) {
+export function CurrencyItem({
+  currency,
+  value,
+  openTokenPicker,
+  onUserInput,
+  fiatValue,
+  isFallbackFiatValue,
+  priceImpact,
+  lowerItem,
+}: CurrencyItemProps) {
   return (
     <CurrencyContainer lowerItem={lowerItem}>
       <CurrencyAmountContainer>
         <CurrencyAmount value={value} onUserInput={onUserInput} />
-        <CurrencyAmountWorth>$4000</CurrencyAmountWorth>
+        <CurrencyAmountWorth fiatValue={fiatValue} priceImpact={priceImpact} isFallback={isFallbackFiatValue} />
       </CurrencyAmountContainer>
 
       <CurrencyInfoContainer>
@@ -76,15 +89,6 @@ const CurrencyContainer = styled.div<{ lowerItem?: boolean }>`
 `
 
 const CurrencyAmountContainer = styled.div``
-
-const CurrencyAmountWorth = styled.p`
-  line-height: 12px;
-  font-size: 10px;
-  ${FontFamily}
-  font-weight: 600;
-  letter-spacing: 0.08em;
-  color: ${TEXT_COLOR_SECONDARY};
-`
 
 const CurrencyInfoContainer = styled.div``
 
