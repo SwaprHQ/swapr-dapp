@@ -333,6 +333,7 @@ export const useSwap = () => {
     userHasSpecifiedInputOutput,
     approval,
     setSwapState,
+    priceImpact,
     priceImpactSeverity,
     swapCallbackError,
     wrapType,
