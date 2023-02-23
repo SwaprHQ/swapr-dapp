@@ -1,16 +1,19 @@
+import { Token } from '@swapr/sdk'
+
 import styled from 'styled-components'
 
-import { CurrencySymbol } from '../../constants'
-import { renderCurrencyLogo } from '../../utils'
+import { CurrencyLogo } from '../CurrencyLogo'
 
 type TokenItemProps = {
-  currencySymbol: CurrencySymbol
+  token?: Token
+  onClick: () => void
 }
 
-export function TokenItem({ currencySymbol }: TokenItemProps) {
+export function TokenItem({ token, onClick }: TokenItemProps) {
   return (
-    <Button>
-      {currencySymbol} {renderCurrencyLogo(currencySymbol)}
+    <Button onClick={onClick}>
+      {token?.symbol}
+      <CurrencyLogo currency={token} />
     </Button>
   )
 }
