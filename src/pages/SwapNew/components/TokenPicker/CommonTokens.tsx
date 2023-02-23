@@ -1,10 +1,9 @@
-import { ChainId, Currency, Token } from '@swapr/sdk'
+import { Currency, Token } from '@swapr/sdk'
 
 import styled from 'styled-components'
 
 import { SUGGESTED_BASES } from '../../../../constants'
 import { useActiveWeb3React } from '../../../../hooks'
-import { CurrencySymbol } from '../../constants'
 import { Heading } from './Heading'
 import { TokenItem } from './TokenItem'
 import { TokenList } from './TokenList'

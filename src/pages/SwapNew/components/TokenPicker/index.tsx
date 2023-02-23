@@ -1,11 +1,17 @@
+import { Currency } from '@swapr/sdk'
+
 import { motion } from 'framer-motion'
-import { ChangeEvent, useEffect, useState } from 'react'
+import { ChangeEvent, useEffect, useState, useCallback } from 'react'
 import { createPortal } from 'react-dom'
 import styled from 'styled-components'
 
 import { CurrencySymbol } from '../../constants'
+import { CommonTokens } from './CommonTokens'
+import { Heading } from './Heading'
 import { SearchTokenItem } from './SearchTokenItem'
 import { TokenItem } from './TokenItem'
+import { TokenList } from './TokenList'
+import { YourBalance } from './YourBalance'
 
 type TokenPickerProps = {
   tokenPickerInput: string
@@ -15,6 +21,7 @@ type TokenPickerProps = {
 
 export function TokenPicker({ tokenPickerInput, onTokenPickerInputChange, closeTokenPicker }: TokenPickerProps) {
   const [tokenPickerContainer] = useState(() => document.createElement('div'))
+  const [searchValue, setSearchValue] = useState('')
 
   useEffect(() => {
     tokenPickerContainer.classList.add('token-picker-root')
@@ -59,28 +66,8 @@ export function TokenPicker({ tokenPickerInput, onTokenPickerInputChange, closeT
       />
       {!tokenPickerInput.trim() ? (
         <>
-          <TokensSection>
-            <Heading>Your Balance</Heading>
-            <TokenItems>
-              <TokenItem currencySymbol={CurrencySymbol.ETH} />
-              <TokenItem currencySymbol={CurrencySymbol.BAL} />
-              <TokenItem currencySymbol={CurrencySymbol.DAI} />
-              <TokenItem currencySymbol={CurrencySymbol.DXD} />
-              <TokenItem currencySymbol={CurrencySymbol.USDC} />
-              <TokenItem currencySymbol={CurrencySymbol.USDT} />
-              {/* <TokenItem>+11</TokenItem> */}
-            </TokenItems>
-          </TokensSection>
-          <TokensSection>
-            <Heading>Common Tokens</Heading>
-            <TokenItems>
-              <TokenItem currencySymbol={CurrencySymbol.SWPR} />
-              <TokenItem currencySymbol={CurrencySymbol.ETH} />
-              <TokenItem currencySymbol={CurrencySymbol.BAL} />
-              <TokenItem currencySymbol={CurrencySymbol.BAT} />
-              <TokenItem currencySymbol={CurrencySymbol.SWPR} />
-            </TokenItems>
-          </TokensSection>
+          {/* <YourBalance onCurrencySelect={() => console.log('TODO!')} /> */}
+          <CommonTokens onCurrencySelect={() => console.log('TODO!')} />
         </>
       ) : (
         <SearchList>
@@ -131,27 +118,6 @@ const TokensSection = styled.div`
   width: 478px;
   text-align: center;
   margin-bottom: 34px;
-`
-
-const Heading = styled.h1`
-  height: 12px;
-  line-height: 12px;
-  display: inline-block;
-  font-size: 10px;
-  font-family: Montserrat, Inter;
-  font-weight: 700;
-  letter-spacing: 0.05em;
-  text-transform: uppercase;
-  color: #bcb3f0;
-  margin-bottom: 16px;
-`
-
-const TokenItems = styled.div`
-  display: flex;
-  flex: 1 0 auto;
-  justify-content: center;
-  align-items: center;
-  gap: 8px;
 `
 
 const SearchList = styled.div`
