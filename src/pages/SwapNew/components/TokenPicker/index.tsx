@@ -1,27 +1,26 @@
 import { Currency } from '@swapr/sdk'
 
 import { motion } from 'framer-motion'
-import { ChangeEvent, useEffect, useState, useCallback } from 'react'
+import { useCallback } from 'react'
+import { useEffect, useState } from 'react'
 import { createPortal } from 'react-dom'
 import styled from 'styled-components'
 
+import { useAutoMaxBalance } from '../../../../hooks/useAutoMaxBalance'
 import { CurrencySymbol } from '../../constants'
 import { CommonTokens } from './CommonTokens'
-import { Heading } from './Heading'
 import { SearchTokenItem } from './SearchTokenItem'
-import { TokenItem } from './TokenItem'
-import { TokenList } from './TokenList'
-import { YourBalance } from './YourBalance'
 
 type TokenPickerProps = {
-  tokenPickerInput: string
-  onTokenPickerInputChange: (event: ChangeEvent<HTMLInputElement>) => void
+  onMax?: () => void
+  onCurrencySelect?: (currency: Currency, isMaxAmount?: boolean) => void
+  isMaxAmount: boolean
   closeTokenPicker: () => void
 }
 
-export function TokenPicker({ tokenPickerInput, onTokenPickerInputChange, closeTokenPicker }: TokenPickerProps) {
+export function TokenPicker({ onMax, onCurrencySelect, isMaxAmount, closeTokenPicker }: TokenPickerProps) {
   const [tokenPickerContainer] = useState(() => document.createElement('div'))
-  const [searchValue, setSearchValue] = useState('')
+  const [tokenPickerInputValue, setTokenPickerInputValue] = useState('')
 
   useEffect(() => {
     tokenPickerContainer.classList.add('token-picker-root')
@@ -31,6 +30,26 @@ export function TokenPicker({ tokenPickerInput, onTokenPickerInputChange, closeT
       document.body.removeChild(tokenPickerContainer)
     }
   }, [tokenPickerContainer])
+
+  const { handleOnCurrencySelect } = useAutoMaxBalance({
+    onMax,
+    onCurrencySelect,
+  })
+
+  const onCurrencySelectWithoutDismiss = useCallback(
+    (currency: Currency) => {
+      if (handleOnCurrencySelect && currency) handleOnCurrencySelect(currency, isMaxAmount)
+    },
+    [isMaxAmount, handleOnCurrencySelect]
+  )
+
+  const handleCurrencySelect = useCallback(
+    (currency: Currency) => {
+      onCurrencySelectWithoutDismiss(currency)
+      closeTokenPicker()
+    },
+    [closeTokenPicker, onCurrencySelectWithoutDismiss]
+  )
 
   const onClose = (event: React.MouseEvent<HTMLDivElement>) => {
     if (event.target === event.currentTarget) {
@@ -59,15 +78,15 @@ export function TokenPicker({ tokenPickerInput, onTokenPickerInputChange, closeT
       }}
     >
       <Input
-        value={tokenPickerInput}
-        onChange={onTokenPickerInputChange}
+        value={tokenPickerInputValue}
+        onChange={e => setTokenPickerInputValue(e.target.value)}
         placeholder="Search token by name or paste address"
         spellCheck={false}
       />
-      {!tokenPickerInput.trim() ? (
+      {!tokenPickerInputValue.trim() ? (
         <>
           {/* <YourBalance onCurrencySelect={() => console.log('TODO!')} /> */}
-          <CommonTokens onCurrencySelect={() => console.log('TODO!')} />
+          <CommonTokens onCurrencySelect={handleCurrencySelect} />
         </>
       ) : (
         <SearchList>

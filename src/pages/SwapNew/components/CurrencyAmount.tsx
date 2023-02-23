@@ -13,12 +13,12 @@ const inputRegex = RegExp(`^\\d*(?:\\\\[.])?\\d*$`)
 type CurrencyAmountProps = {
   value: string | number
   onUserInput: (value: string) => void
+  setIsMaxAmount: (value: boolean) => void
   maxAmount?: CurrencyAmountType
 }
 
-export function CurrencyAmount({ value, onUserInput, maxAmount }: CurrencyAmountProps) {
+export function CurrencyAmount({ value, onUserInput, setIsMaxAmount, maxAmount }: CurrencyAmountProps) {
   const [inputValue, setInputValue] = useState(value)
-  const [isMaxAmount, setIsMaxAmount] = useState(false)
 
   const handleOnUserInput = useCallback(
     (value: string) => {

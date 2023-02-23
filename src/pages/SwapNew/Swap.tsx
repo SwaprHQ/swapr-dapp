@@ -1,38 +1,12 @@
 import { AnimatePresence } from 'framer-motion'
 import styled from 'styled-components'
 
-import { ReactComponent as EtherLogoSVG } from '../../assets/swapbox/currency-logo-eth.svg'
-import { ReactComponent as USDTLogoSVG } from '../../assets/swapbox/currency-logo-usdt.svg'
 import { Field } from '../../state/swap/types'
 import { CurrencyItem, SwapButton, SwapInfo, SwitchCurrenciesButton } from './components'
-import { TokenPicker } from './components/TokenPicker'
 import { SWAPBOX_WIDTH } from './constants'
-import { Currency } from './models'
 import { useSwap } from './useSwap'
-import { useSwapbox } from './useSwapbox'
-
-type SwapData = {
-  from: Currency
-  to: Currency
-}
-
-const swapData: SwapData = {
-  from: {
-    symbol: 'ETH',
-    balance: 1.488,
-    logo: <EtherLogoSVG />,
-  },
-  to: {
-    symbol: 'USDT',
-    balance: 4009.12,
-    logo: <USDTLogoSVG />,
-  },
-}
 
 export function Swapbox2() {
-  const { tokenPickerOpened, openTokenPicker, closeTokenPicker, tokenPickerInput, onTokenPickerInputChange } =
-    useSwapbox()
-
   const {
     // AMOUNT of CURRENCIES
     formattedAmounts,
@@ -43,13 +17,16 @@ export function Swapbox2() {
     currencies,
 
     // AMOUNT WORTH
-    handleMaxInput,
-    handleInputSelect,
-    handleOutputSelect,
     fiatValueInput,
     fiatValueOutput,
     isFallbackFiatValueInput,
     isFallbackFiatValueOutput,
+
+    // CURRENCY SELECT
+    handleMaxInput,
+    handleInputSelect,
+    handleOutputSelect,
+
     maxAmountInput,
     maxAmountOutput,
     isInputPanelDisabled,
@@ -88,22 +65,15 @@ export function Swapbox2() {
   return (
     <>
       <Container>
-        <AnimatePresence>
-          {tokenPickerOpened && (
-            <TokenPicker
-              tokenPickerInput={tokenPickerInput}
-              onTokenPickerInputChange={onTokenPickerInputChange}
-              closeTokenPicker={closeTokenPicker}
-            />
-          )}
-        </AnimatePresence>
+        <AnimatePresence></AnimatePresence>
         <CurrencyItem
           value={formattedAmounts[Field.INPUT]}
           currency={currencies[Field.INPUT]}
           onUserInput={handleTypeInput}
           fiatValue={fiatValueInput}
           isFallbackFiatValue={isFallbackFiatValueInput}
-          openTokenPicker={openTokenPicker}
+          onMax={handleMaxInput(Field.INPUT)}
+          onCurrencySelect={handleInputSelect}
         />
         <SwitchCurrenciesButton />
         <CurrencyItem
@@ -113,7 +83,8 @@ export function Swapbox2() {
           fiatValue={fiatValueOutput}
           isFallbackFiatValue={isFallbackFiatValueOutput}
           priceImpact={priceImpact}
-          openTokenPicker={openTokenPicker}
+          onMax={handleMaxInput(Field.OUTPUT)}
+          onCurrencySelect={handleOutputSelect}
           lowerItem
         />
         <SwapInfo />

@@ -1,5 +1,6 @@
 import { Currency, CurrencyAmount as CurrencyAmountType, Percent } from '@swapr/sdk'
 
+import { useState } from 'react'
 import styled from 'styled-components'
 
 import {
@@ -12,42 +13,54 @@ import {
 import { CurrencyAmount } from './CurrencyAmount'
 import { CurrencyAmountWorth } from './CurrencyAmountWorth'
 import { CurrencyBalance } from './CurrencyBalance'
-import { CurrencySymbol } from './CurrencySymbol'
 import { CurrencyType } from './CurrencyType'
 import { BorderStyle } from './styles'
+import { TokenPicker } from './TokenPicker'
 
 type CurrencyItemProps = {
   currency?: Currency
   value: string
-  openTokenPicker: () => void
   onUserInput: (value: string) => void
   fiatValue?: CurrencyAmountType | null
   isFallbackFiatValue?: boolean
   priceImpact?: Percent
+  onMax?: () => void
+  onCurrencySelect?: (currency: Currency, isMaxAmount?: boolean) => void
   lowerItem?: boolean
 }
 
 export function CurrencyItem({
   currency,
   value,
-  openTokenPicker,
   onUserInput,
   fiatValue,
   isFallbackFiatValue,
   priceImpact,
+  onMax,
+  onCurrencySelect,
   lowerItem,
 }: CurrencyItemProps) {
+  const [isMaxAmount, setIsMaxAmount] = useState(false)
+  const [tokenPickerOpened, setTokenPickerOpened] = useState(false)
+
   return (
     <CurrencyContainer lowerItem={lowerItem}>
       <CurrencyAmountContainer>
-        <CurrencyAmount value={value} onUserInput={onUserInput} />
+        <CurrencyAmount value={value} onUserInput={onUserInput} setIsMaxAmount={setIsMaxAmount} />
         <CurrencyAmountWorth fiatValue={fiatValue} priceImpact={priceImpact} isFallback={isFallbackFiatValue} />
       </CurrencyAmountContainer>
 
       <CurrencyInfoContainer>
-        <CurrencyType onClick={openTokenPicker} currency={currency} />
+        <CurrencyType onClick={() => setTokenPickerOpened(true)} currency={currency} />
         <CurrencyBalance currency={currency} />
       </CurrencyInfoContainer>
+      {tokenPickerOpened && (
+        <TokenPicker
+          isMaxAmount={isMaxAmount}
+          onCurrencySelect={onCurrencySelect}
+          closeTokenPicker={() => setTokenPickerOpened(false)}
+        />
+      )}
     </CurrencyContainer>
   )
 }
