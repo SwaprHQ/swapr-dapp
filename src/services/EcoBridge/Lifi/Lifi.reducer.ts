@@ -1,15 +1,15 @@
 import { ChainId } from '@swapr/sdk'
 
-import { Route, TransactionInfo } from '@lifi/sdk'
+import { Step } from '@lifi/sdk'
 import { PayloadAction } from '@reduxjs/toolkit'
 
 import { createEcoBridgeChildBaseSlice } from '../EcoBridge.utils'
 import { LifiList } from './../EcoBridge.types'
-// import { Route } from './Lifi.types'
+import { LifiStatusResponse, LifiTransactionStatus } from './Lifi.types'
 
 type LifiBridgeState = {
-  transactions: TransactionInfo[]
-  routes: Route[]
+  transactions: LifiTransactionStatus[]
+  route: Step
   approvalData: {
     chainId?: ChainId
     owner?: string
@@ -26,7 +26,7 @@ type LifiBridgeState = {
 const initialState: LifiBridgeState = {
   transactions: [],
   approvalData: {},
-  routes: [],
+  route: {} as Step,
   txBridgingData: {},
 }
 
@@ -35,6 +35,7 @@ const createLifiSlice = (bridgeId: LifiList) =>
     name: bridgeId,
     initialState,
     reducers: {
+      // TODO: cleanup redux and fix txn history
       setApprovalData: (
         state,
         action: PayloadAction<{
@@ -56,28 +57,23 @@ const createLifiSlice = (bridgeId: LifiList) =>
       ) => {
         state.txBridgingData = action.payload
       },
-      addTx: (state, action: PayloadAction<TransactionInfo>) => {
+      addTx: (state, action: PayloadAction<LifiTransactionStatus>) => {
         const { payload: txn } = action
         state.transactions.push(txn)
       },
-      // updateTx: (state, action: PayloadAction<Pick<SocketTx, 'txHash' | 'partnerTxHash' | 'status'>>) => {
-      //   const { txHash, partnerTxHash, status } = action.payload
-      //   const index = state.transactions.findIndex(tx => tx.txHash === txHash)
-      //   const tx = state.transactions[index]
-      //   if (partnerTxHash) {
-      //     tx.partnerTxHash = partnerTxHash
-      //     tx.timestampResolved = Date.now()
-      //   }
-      //   if (status) {
-      //     tx.status = status
-      //   }
-      // },
-      setRoutes: (state, action: PayloadAction<Route[]>) => {
-        state.routes = action.payload
+
+      updateTx: (state, action: PayloadAction<LifiStatusResponse>) => {
+        const { timeResolved, ...statusResponse } = action.payload
+
+        state.transactions.forEach((txn, index) => {
+          if (txn.statusResponse.sending.txHash === statusResponse.sending.txHash) {
+            state.transactions[index] = { ...txn, statusResponse: statusResponse, timeResolved }
+          }
+        })
       },
-      // setToAssetDecimals: (state, action: PayloadAction<number | undefined>) => {
-      //   state.assetDecimals = action.payload ?? 18
-      // },
+      setRoute: (state, action: PayloadAction<Step>) => {
+        state.route = action.payload
+      },
     },
   })
 

@@ -1,28 +1,30 @@
 import { Currency } from '@swapr/sdk'
 
-import { Route } from '@lifi/sdk'
+import { Step, Token } from '@lifi/sdk'
 import { TokenInfo, TokenList } from '@uniswap/token-lists'
-import { BigNumber } from 'ethers'
+import { BigNumber, Contract, ethers } from 'ethers'
 import { formatUnits, parseUnits } from 'ethers/lib/utils'
 
 import LifiLogo from '../../../assets/images/lifi-logo.png'
 import {
+  BridgeModalStatus,
   EcoBridgeChangeHandler,
   EcoBridgeChildBaseConstructor,
   EcoBridgeChildBaseInit,
   SyncState,
 } from '../EcoBridge.types'
-import { EcoBridgeChildBase } from '../EcoBridge.utils'
+import { ButtonStatus, EcoBridgeChildBase } from '../EcoBridge.utils'
 import { overrideTokensAddresses } from '../Socket/Socket.utils'
 import { LifiList } from './../EcoBridge.types'
 import { LifiApi } from './Lifi.api'
 import { NATIVE_TOKEN_ADDRESS, VERSION } from './Lifi.constants'
 import { lifiActions } from './Lifi.reducer'
-import { LifiTokenMap } from './Lifi.types'
-import { LifiChainShortNames } from './Lifi.utils'
+import { lifiSelectors } from './Lifi.selectors'
+import { LifiQuoteRequest, LifiTransactionStatus } from './Lifi.types'
+import { isLifiChainId, LifiChainShortNames } from './Lifi.utils'
 
 export class LifiBridge extends EcoBridgeChildBase {
-  private _tokenLists: LifiTokenMap = {}
+  // private _tokenLists: LifiTokenMap = {}
 
   constructor({ supportedChains, bridgeId, displayName = 'Lifi' }: EcoBridgeChildBaseConstructor) {
     super({ supportedChains, bridgeId, displayName })
@@ -33,16 +35,157 @@ export class LifiBridge extends EcoBridgeChildBase {
     return lifiActions[this.bridgeId as LifiList]
   }
 
-  public collect = () => undefined
-  public approve = () => undefined
+  private get selectors() {
+    return lifiSelectors[this.bridgeId as LifiList]
+  }
+
+  private pendingTxListener = async () => {
+    const pendingTransactions = this.selectors.selectPendingTransactions(this.store.getState(), this._account)
+
+    await this.checkBridgingStatus(pendingTransactions)
+  }
+
+  private checkBridgingStatus = async (lifiExecutedRoutes: LifiTransactionStatus[]) => {
+    if (!lifiExecutedRoutes.length) return
+
+    const promises = lifiExecutedRoutes.map(async tx => {
+      try {
+        const { statusRequest, statusResponse } = tx
+        if (statusResponse.status !== 'DONE' && statusResponse.status !== 'FAILED') {
+          const result = await LifiApi.getStatus(statusRequest)
+          if (result.status === 'DONE') {
+            this.store.dispatch(this.actions.updateTx({ ...result, timeResolved: Date.now() }))
+          } else {
+            this.store.dispatch(this.actions.updateTx(result))
+          }
+
+          if (result.status === 'FAILED' || result.status === 'INVALID' || result.status === 'NOT_FOUND') {
+            this.ecoBridgeUtils.ui.modal.setBridgeModalStatus(
+              BridgeModalStatus.ERROR,
+              this.bridgeId,
+              result.substatusMessage
+            )
+          }
+        }
+      } catch (e) {
+        console.error(`Lifi bridge: failed to get bridging status of ${tx.statusResponse.bridgeExplorerLink}`)
+      }
+    })
+
+    await Promise.all(promises)
+  }
+
   public init = async ({ account, activeChainId, activeProvider, staticProviders, store }: EcoBridgeChildBaseInit) => {
     this.setInitialEnv({ staticProviders, store })
     this.setSignerData({ account, activeChainId, activeProvider })
 
-    //this.ecoBridgeUtils.listeners.start([{ listener: this.pendingTxListener }])
+    this.ecoBridgeUtils.listeners.start([{ listener: this.pendingTxListener }])
   }
+
+  public collect = () => undefined
+  public approve = () => undefined
+
+  public validate = async () => {
+    const routeId = this.store.getState().ecoBridge.common.activeRouteId
+    const route = this.selectors.selectRoute(this.store.getState())
+
+    //this shouldn't happen because validation on front not allowed to set bridge which status is "failed"
+    if (!routeId || !route || route.id !== routeId) return
+
+    //build txn
+
+    try {
+      this.ecoBridgeUtils.ui.statusButton.setStatus(ButtonStatus.LOADING)
+      const ERC20_ABI = [
+        {
+          name: 'approve',
+          inputs: [
+            {
+              internalType: 'address',
+              name: 'spender',
+              type: 'address',
+            },
+            {
+              internalType: 'uint256',
+              name: 'amount',
+              type: 'uint256',
+            },
+          ],
+          outputs: [
+            {
+              internalType: 'bool',
+              name: '',
+              type: 'bool',
+            },
+          ],
+          stateMutability: 'nonpayable',
+          type: 'function',
+        },
+        {
+          name: 'allowance',
+          inputs: [
+            {
+              internalType: 'address',
+              name: 'owner',
+              type: 'address',
+            },
+            {
+              internalType: 'address',
+              name: 'spender',
+              type: 'address',
+            },
+          ],
+          outputs: [
+            {
+              internalType: 'uint256',
+              name: '',
+              type: 'uint256',
+            },
+          ],
+          stateMutability: 'view',
+          type: 'function',
+        },
+      ]
+
+      // Get the current the allowance and update if needed
+      const checkAndSetAllowance = async (
+        wallet: any,
+        tokenAddress: string,
+        approvalAddress: string,
+        amount: string
+      ) => {
+        // Transactions with the native token don't need approval
+        if (tokenAddress === ethers.constants.AddressZero) {
+          return
+        }
+
+        const erc20 = new Contract(tokenAddress, ERC20_ABI, wallet)
+        const allowance = await erc20.allowance(await wallet.getAddress(), approvalAddress)
+
+        if (allowance.lt(amount)) {
+          const approveTx = await erc20.approve(approvalAddress, amount)
+          await approveTx.wait()
+        }
+      }
+      try {
+        await checkAndSetAllowance(
+          this._activeProvider?.getSigner(),
+          route.action.fromToken.address,
+          route.estimate.approvalAddress,
+          route.estimate.fromAmount
+        )
+        this.ecoBridgeUtils.ui.statusButton.setStatus(ButtonStatus.BRIDGE)
+      } catch (e) {
+        this.ecoBridgeUtils.ui.statusButton.setError()
+
+        return
+      }
+    } catch (e) {
+      this.ecoBridgeUtils.ui.modal.setBridgeModalStatus(BridgeModalStatus.ERROR, this.bridgeId, e)
+    }
+  }
+
   public fetchDynamicLists = async () => {
-    console.log({ state: this.store.getState().ecoBridge.ui })
     const {
       from: { chainId: fromChainId },
       to: { chainId: toChainId },
@@ -60,25 +203,28 @@ export class LifiBridge extends EcoBridgeChildBase {
 
     // if (isBridgeSwapActive) {
     try {
-      const { fromChainTokens, toChainTokens } = await LifiApi.getTokenList(fromChainId, toChainId)
-      const tokens = [...fromChainTokens, ...toChainTokens].reduce<TokenInfo[]>((allTokens, token) => {
-        const { address, chainId, symbol, decimals, logoURI, name } = token
+      let tokens: Token[] = []
+      if (isLifiChainId(fromChainId) && isLifiChainId(toChainId)) {
+        const { fromChainTokens, toChainTokens } = await LifiApi.getTokenList(fromChainId!, toChainId!)
+        tokens = [...fromChainTokens, ...toChainTokens]
 
-        // remove native currency from fromTokenList
-        if (address === NATIVE_TOKEN_ADDRESS && symbol === Currency.getNative(fromChainId).symbol) return allTokens
+        tokens = tokens.reduce<TokenInfo[]>((allTokens, token) => {
+          const { address, chainId, symbol, decimals, logoURI, name } = token
+          // remove native currency from fromTokenList
+          if (address === NATIVE_TOKEN_ADDRESS && symbol === Currency.getNative(fromChainId).symbol) return allTokens
 
-        allTokens.push({
-          address,
-          chainId: Number(chainId),
-          symbol,
-          decimals: decimals ?? 18,
-          name: name ?? '',
-          logoURI,
-        })
+          allTokens.push({
+            address,
+            chainId: Number(chainId),
+            symbol,
+            decimals: decimals ?? 18,
+            name: name ?? '',
+            logoURI,
+          })
 
-        return allTokens
-      }, [])
-
+          return allTokens
+        }, [])
+      }
       tokenList = {
         name: 'Lifi',
         timestamp: new Date().toISOString(),
@@ -89,7 +235,6 @@ export class LifiBridge extends EcoBridgeChildBase {
     } catch (e) {
       throw this.ecoBridgeUtils.logger.error('Failed to fetch Lifi token lists')
     }
-    // }
 
     this.store.dispatch(this.baseActions.addTokenLists({ lifi: tokenList as TokenList }))
     this.store.dispatch(this.baseActions.setTokenListsStatus(SyncState.READY))
@@ -112,7 +257,7 @@ export class LifiBridge extends EcoBridgeChildBase {
         tokenAddress: undefined,
       })
     )
-    this.store.dispatch(this.actions.setRoutes([]))
+    this.store.dispatch(this.actions.setRoute({} as Step))
 
     if (!from.chainId || !to.chainId || !this._account || !from.address || Number(from.value) === 0) return
 
@@ -173,10 +318,10 @@ export class LifiBridge extends EcoBridgeChildBase {
     }
 
     await this._getLifiRoutes({
-      fromChainId: from.chainId,
-      fromTokenAddress,
-      toTokenAddress,
-      toChainId: to.chainId,
+      fromChain: from.chainId.toString(),
+      fromToken: fromTokenAddress,
+      toToken: toTokenAddress,
+      toChain: to.chainId.toString(),
       fromAmount: value.toString(),
       requestId,
     })
@@ -186,76 +331,83 @@ export class LifiBridge extends EcoBridgeChildBase {
   public onSignerChange = async (data: EcoBridgeChangeHandler) => {
     return {} as Promise<void>
   }
-  private _getLifiRoutes = async ({
-    fromChainId,
-    fromTokenAddress,
-    toTokenAddress,
-    toChainId,
-    fromAmount,
-    requestId,
-  }: {
-    fromChainId: number
-    fromTokenAddress: string
-    toTokenAddress: string
-    toChainId: number
-    fromAmount: string
-    requestId: number
-  }) => {
+  private _getLifiRoutes = async (request: LifiQuoteRequest) => {
     if (!this._account) return
 
-    let routes: Route[]
-
+    let step: Step
+    const { requestId, ...rest } = request
     try {
-      routes = await LifiApi.getRoutes({
-        fromChainId,
-        fromTokenAddress,
-        toTokenAddress,
-        toChainId,
-        fromAmount,
-        fromAddress: this._account,
-      })
+      step = await LifiApi.getQuote({ ...rest, fromAddress: this._account })
     } catch (e) {
       this.ecoBridgeUtils.metadataStatus.fail('No available routes / details')
       return
     }
-    if (!routes) return
 
-    if (routes.length === 0) {
+    if (!step) {
       this.ecoBridgeUtils.metadataStatus.fail('No available routes / details')
       return
     }
 
-    this.store.dispatch(this.actions.setRoutes(routes))
-    // Need to calculate the recommended route
-    const bestRoute = routes[0]
-    if (bestRoute === undefined) {
-      this.ecoBridgeUtils.metadataStatus.fail('No available routes / details')
-      return
-    }
-    const { toAmount, gasCostUSD: totalGasFeesInUsd, id: routeId, steps, toToken } = bestRoute
-    const executionDuration = steps[0]?.estimate?.executionDuration
+    this.store.dispatch(this.actions.setRoute(step))
 
+    const { id: routeId, action, estimate } = step
+    const { executionDuration, toAmount, gasCosts } = estimate
+    const { toToken } = action
+    const { amountUSD: totalGasFeeUSD } = gasCosts?.[0] ?? {}
     const formattedToAmount = Number(formatUnits(toAmount, toToken.decimals))
       .toFixed(this._receiveAmountDecimalPlaces)
       .toString()
 
-    this.store.dispatch(this.commonActions.setActiveRouteId(routeId))
-
     this.store.dispatch(
       this.baseActions.setBridgeDetails({
-        gas: `${Number(totalGasFeesInUsd ?? 0)
-          .toFixed(2)
-          .toString()}$`,
+        gas: `${Number(totalGasFeeUSD ?? 0).toFixed(2)}$`,
         estimateTime: executionDuration ? `${(executionDuration / 60).toFixed(0).toString()} min` : undefined,
         receiveAmount: formattedToAmount,
         requestId,
+        routeId,
       })
     )
-
-    // const { toAmount, serviceTime, totalGasFeesInUsd, routeId }
-
-    // return {} as Promise<void>
   }
-  public triggerBridging = () => undefined
-  public validate = () => undefined
+  public triggerBridging = async () => {
+    try {
+      this.ecoBridgeUtils.ui.modal.setBridgeModalStatus(BridgeModalStatus.PENDING)
+
+      const routeId = this.store.getState().ecoBridge.common.activeRouteId
+      const route = this.selectors.selectRoute(this.store.getState())
+      const checkRoute = route.id === routeId
+
+      if (!this._account || !checkRoute || !this._activeProvider || !route.transactionRequest) return
+
+      const transaction = await this._activeProvider.getSigner().sendTransaction(route.transactionRequest)
+      const transactionReceipt = await transaction.wait()
+
+      if (!transactionReceipt) return
+
+      const { hash } = transaction
+      const {
+        tool,
+        action: { fromChainId, toChainId },
+      } = route
+      const statusRequest = {
+        bridge: tool,
+        txHash: hash,
+        fromChain: fromChainId,
+        toChain: toChainId,
+      }
+      const statusResponse = await LifiApi.getStatus(statusRequest)
+      console.log({ statusResponse })
+
+      this.ecoBridgeUtils.ui.modal.setBridgeModalStatus(BridgeModalStatus.INITIATED)
+
+      this.store.dispatch(
+        this.actions.addTx({
+          statusRequest,
+          statusResponse,
+          account: this._account,
+        })
+      )
+    } catch (error) {
+      this.ecoBridgeUtils.ui.modal.setBridgeModalStatus(BridgeModalStatus.ERROR, this.bridgeId, error)
+    }
+  }
 }

@@ -1,6 +1,5 @@
-import { ChainId } from '@swapr/sdk'
+import { GetStatusRequest, QuoteRequest, StatusResponse } from '@lifi/sdk'
 
-import { Order } from '@lifi/sdk'
 type LifiTokenInfo = {
   address: string
   symbol: string
@@ -11,57 +10,94 @@ type LifiTokenInfo = {
   priceUSD: string
   logoURI: string
 }
+export interface LifiQuoteRequest extends Omit<QuoteRequest, 'fromAddress'> {
+  requestId: number
+}
+
+export interface LifiTransactionStatus {
+  statusRequest: GetStatusRequest
+  statusResponse: StatusResponse
+  account: string
+  timeResolved?: number
+}
+
+export interface LifiStatusResponse extends StatusResponse {
+  timeResolved?: number
+}
+
+export enum LifiTxStatus {
+  PENDING = 'PENDING',
+  INVALID = 'INVALID',
+  ERROR = 'ERROR',
+  FAILED = 'FAILED',
+  DONE = 'DONE',
+}
+
+export const LIFI_PENDING_REASONS = {
+  WAIT_SOURCE_CONFIRMATIONS: 'The bridge is waiting for additional confirmations.',
+  WAIT_DESTINATION_TRANSACTION: 'Transaction on destination chain has not been confirmed yet.',
+  BRIDGE_NOT_AVAILABLE: 'The bridge API / subgraph is temporarily unavailable, check back later.',
+  CHAIN_NOT_AVAILABLE: 'The RPC for the source/destination chain is temporarily unavailable',
+  NOT_PROCESSABLE_REFUND_NEEDED: 'The transfer cannot be completed, a refund is required.',
+  REFUND_IN_PROGRESS:
+    'The refund has been requested and its being processed (not all bridges will go through this state!)',
+  UNKNOWN_ERROR: 'We cannot determine the status of the transfer.',
+  COMPLETED: 'The transfer was successful.',
+  PARTIAL:
+    'The transfer was partially successful. This can happen for specific bridges like across , multichain or connext which may provide alternative tokens in case of low liquidity.',
+  REFUNDED: ' The transfer was not successful and the sent token has been refunded',
+}
 
 export type LifiTokenMap = {
   [key: string]: LifiTokenInfo
 }
 
-const BridgeNames = [
-  'connext',
-  'hop',
-  'cbridge',
-  'optimism',
-  'arbitrum',
-  'avalanche',
-  'across',
-  'hyphen',
-  'omni',
-  'gnosis',
-  'multichain',
-  'stargate',
-] as const
+// const BridgeNames = [
+//   'connext',
+//   'hop',
+//   'cbridge',
+//   'optimism',
+//   'arbitrum',
+//   'avalanche',
+//   'across',
+//   'hyphen',
+//   'omni',
+//   'gnosis',
+//   'multichain',
+//   'stargate',
+// ] as const
 
-const ExchangeNames = [
-  'dodo',
-  'paraswap',
-  '1inch',
-  'openocean',
-  '0x',
-  'uniswap',
-  'sushiswap',
-  'quickswap',
-  'honeyswap',
-  'lif3swap',
-  'pancakeswap',
-  'swapr',
-  'spookyswap',
-  'spiritswap',
-  'soulswap',
-  'tombswap',
-  'pangolin',
-  'solarbeam',
-  'jswap',
-  'okcswap',
-  'cronaswap',
-  'stellaswap',
-  'beamswap',
-  'voltage',
-  'ubeswap',
-  'trisolaris',
-  'wagyuswap',
-  'superfluid',
-  'stable',
-] as const
+// const ExchangeNames = [
+//   'dodo',
+//   'paraswap',
+//   '1inch',
+//   'openocean',
+//   '0x',
+//   'uniswap',
+//   'sushiswap',
+//   'quickswap',
+//   'honeyswap',
+//   'lif3swap',
+//   'pancakeswap',
+//   'swapr',
+//   'spookyswap',
+//   'spiritswap',
+//   'soulswap',
+//   'tombswap',
+//   'pangolin',
+//   'solarbeam',
+//   'jswap',
+//   'okcswap',
+//   'cronaswap',
+//   'stellaswap',
+//   'beamswap',
+//   'voltage',
+//   'ubeswap',
+//   'trisolaris',
+//   'wagyuswap',
+//   'superfluid',
+//   'stable',
+// ] as const
 
 // type AllowedBridges = {
 //   allow: typeof BridgeNames
@@ -164,31 +200,31 @@ const ExchangeNames = [
 //   steps: Step[]
 // }
 
-export interface RoutesRequest {
-  fromChainId: number
-  fromAmount: string
-  fromTokenAddress: string
-  fromAddress?: string
-  toChainId: number
-  toTokenAddress: string
-  toAddress?: string
-  options?: RouteOptions
-}
+// export interface RoutesRequest {
+//   fromChainId: number
+//   fromAmount: string
+//   fromTokenAddress: string
+//   fromAddress?: string
+//   toChainId: number
+//   toTokenAddress: string
+//   toAddress?: string
+//   options?: RouteOptions
+// }
 
-export interface RouteOptions {
-  order?: Order // 'RECOMMENDED' | 'FASTEST' | 'CHEAPEST' | 'SAFEST'
-  slippage?: number // expressed as decimal proportion: 0.03 represents 3%
-  infiniteApproval?: boolean
-  allowSwitchChain?: boolean
-  integrator?: string // string telling us who you are
-  referrer?: string // string telling us who referred you to us
-  fee?: number // expressed as decimal proportion: 0.03 represents 3%
-  bridges?: AllowDenyPrefer
-  exchanges?: AllowDenyPrefer
-}
+// export interface RouteOptions {
+//   order?: Order // 'RECOMMENDED' | 'FASTEST' | 'CHEAPEST' | 'SAFEST'
+//   slippage?: number // expressed as decimal proportion: 0.03 represents 3%
+//   infiniteApproval?: boolean
+//   allowSwitchChain?: boolean
+//   integrator?: string // string telling us who you are
+//   referrer?: string // string telling us who referred you to us
+//   fee?: number // expressed as decimal proportion: 0.03 represents 3%
+//   bridges?: AllowDenyPrefer
+//   exchanges?: AllowDenyPrefer
+// }
 
-interface AllowDenyPrefer {
-  allow?: string[]
-  deny?: string[]
-  prefer?: string[]
-}
+// interface AllowDenyPrefer {
+//   allow?: string[]
+//   deny?: string[]
+//   prefer?: string[]
+// }

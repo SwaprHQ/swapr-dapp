@@ -337,14 +337,13 @@ export class SocketBridge extends EcoBridgeChildBase {
       .toFixed(this._receiveAmountDecimalPlaces)
       .toString()
 
-    this.store.dispatch(this.commonActions.setActiveRouteId(routeId))
-
     this.store.dispatch(
       this.baseActions.setBridgeDetails({
         gas: `${totalGasFeesInUsd.toFixed(2).toString()}$`,
         estimateTime: `${(serviceTime / 60).toFixed(0).toString()} min`,
         receiveAmount: formattedToAmount,
         requestId,
+        routeId,
       })
     )
   }

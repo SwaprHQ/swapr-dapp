@@ -1,13 +1,19 @@
-import { ChainId } from '@swapr/sdk'
+import { ChainId as SwaprChainId } from '@swapr/sdk'
 
-// Add more chains keys on the go from
-//'https://li.quest/v1/chains';
+import { ChainId } from '@lifi/sdk'
+
+// // Add more chains keys on the go from
+// //'https://li.quest/v1/chains';
 
 export const LifiChainShortNames = new Map([
-  [ChainId.MAINNET, 'ETH'],
-  [ChainId.POLYGON, 'POL'],
-  [ChainId.GNOSIS, 'DAI'],
-  [ChainId.OPTIMISM_MAINNET, 'OPT'],
-  [ChainId.ARBITRUM_ONE, 'ARB'],
-  [ChainId.BSC_MAINNET, 'BSC'],
+  [SwaprChainId.MAINNET, 'ETH'],
+  [SwaprChainId.POLYGON, 'POL'],
+  [SwaprChainId.GNOSIS, 'DAI'],
+  [SwaprChainId.OPTIMISM_MAINNET, 'OPT'],
+  [SwaprChainId.ARBITRUM_ONE, 'ARB'],
+  [SwaprChainId.BSC_MAINNET, 'BSC'],
 ])
+
+export function isLifiChainId(value: any): value is ChainId {
+  return Object.values(ChainId).indexOf(value) > -1
+}

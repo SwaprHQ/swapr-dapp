@@ -73,4 +73,7 @@ export type BridgeTransactionSummary = Pick<
   toValue: string
 }
 
-export type BridgeTransactionLog = Pick<ArbitrumBridgeTxn, 'txHash' | 'chainId'>
+export type BridgeTransactionLog = { fromTxnLink?: string; toTxnLink?: string } & Pick<
+  ArbitrumBridgeTxn,
+  'txHash' | 'chainId'
+>
