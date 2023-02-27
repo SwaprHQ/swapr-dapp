@@ -58,11 +58,9 @@ export const calucalateGasFromAlchemyResponse = async (response: Promise<Respons
   const awaitedData = await data
   const gasUsed = awaitedData.result.map(item => {
     return item.calls.reduce((sum, call) => {
-      console.log('gasUsed', parseInt(call.gasUsed))
       return sum + parseInt(call.gasUsed)
     }, 0)
   })
-  console.log('gasUsed', gasUsed)
 
   const totalGasUsed = gasUsed.reduce((sum, value) => {
     return sum + value
