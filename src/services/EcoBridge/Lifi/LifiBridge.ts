@@ -1,6 +1,6 @@
 import { Currency } from '@swapr/sdk'
 
-import { Step, Token } from '@lifi/sdk'
+import { ERC20_ABI, Step, Token } from '@lifi/sdk'
 import { TokenInfo, TokenList } from '@uniswap/token-lists'
 import { BigNumber, Contract, ethers } from 'ethers'
 import { formatUnits, parseUnits } from 'ethers/lib/utils'
@@ -42,10 +42,10 @@ export class LifiBridge extends EcoBridgeChildBase {
   private pendingTxListener = async () => {
     const pendingTransactions = this.selectors.selectPendingTransactions(this.store.getState(), this._account)
 
-    await this.checkBridgingStatus(pendingTransactions)
+    await this.#checkBridgingStatus(pendingTransactions)
   }
 
-  private checkBridgingStatus = async (lifiExecutedRoutes: LifiTransactionStatus[]) => {
+  #checkBridgingStatus = async (lifiExecutedRoutes: LifiTransactionStatus[]) => {
     if (!lifiExecutedRoutes.length) return
 
     const promises = lifiExecutedRoutes.map(async tx => {
@@ -83,7 +83,30 @@ export class LifiBridge extends EcoBridgeChildBase {
   }
 
   public collect = () => undefined
-  public approve = () => undefined
+
+  public approve = async () => {
+    try {
+      const routeId = this.store.getState().ecoBridge.common.activeRouteId
+      const route = this.selectors.selectRoute(this.store.getState())
+      if (!routeId || !route || route.id !== routeId) return
+
+      const wallet = this._activeProvider?.getSigner()
+      const tokenAddress = route.action.fromToken.address
+      const approvalAddress = route.estimate.approvalAddress
+      const amount = route.estimate.fromAmount
+
+      const erc20 = new Contract(tokenAddress, ERC20_ABI, wallet)
+      this.ecoBridgeUtils.ui.statusButton.setStatus(ButtonStatus.APPROVING)
+
+      const approveTx = await erc20.approve(approvalAddress, amount)
+      const receipt = await approveTx.wait()
+      if (receipt) {
+        this.ecoBridgeUtils.ui.statusButton.setStatus(ButtonStatus.BRIDGE)
+      }
+    } catch (error) {
+      this.ecoBridgeUtils.ui.modal.setBridgeModalStatus(BridgeModalStatus.ERROR, this.bridgeId, error)
+    }
+  }
 
   public validate = async () => {
     const routeId = this.store.getState().ecoBridge.common.activeRouteId
@@ -92,99 +115,35 @@ export class LifiBridge extends EcoBridgeChildBase {
     //this shouldn't happen because validation on front not allowed to set bridge which status is "failed"
     if (!routeId || !route || route.id !== routeId) return
 
-    //build txn
-
     try {
       this.ecoBridgeUtils.ui.statusButton.setStatus(ButtonStatus.LOADING)
-      const ERC20_ABI = [
-        {
-          name: 'approve',
-          inputs: [
-            {
-              internalType: 'address',
-              name: 'spender',
-              type: 'address',
-            },
-            {
-              internalType: 'uint256',
-              name: 'amount',
-              type: 'uint256',
-            },
-          ],
-          outputs: [
-            {
-              internalType: 'bool',
-              name: '',
-              type: 'bool',
-            },
-          ],
-          stateMutability: 'nonpayable',
-          type: 'function',
-        },
-        {
-          name: 'allowance',
-          inputs: [
-            {
-              internalType: 'address',
-              name: 'owner',
-              type: 'address',
-            },
-            {
-              internalType: 'address',
-              name: 'spender',
-              type: 'address',
-            },
-          ],
-          outputs: [
-            {
-              internalType: 'uint256',
-              name: '',
-              type: 'uint256',
-            },
-          ],
-          stateMutability: 'view',
-          type: 'function',
-        },
-      ]
-
-      // Get the current the allowance and update if needed
-      const checkAndSetAllowance = async (
-        wallet: any,
-        tokenAddress: string,
-        approvalAddress: string,
-        amount: string
-      ) => {
-        // Transactions with the native token don't need approval
-        if (tokenAddress === ethers.constants.AddressZero) {
-          return
-        }
-
-        const erc20 = new Contract(tokenAddress, ERC20_ABI, wallet)
-        const allowance = await erc20.allowance(await wallet.getAddress(), approvalAddress)
-
-        if (allowance.lt(amount)) {
-          const approveTx = await erc20.approve(approvalAddress, amount)
-          await approveTx.wait()
-        }
-      }
-      try {
-        await checkAndSetAllowance(
-          this._activeProvider?.getSigner(),
-          route.action.fromToken.address,
-          route.estimate.approvalAddress,
-          route.estimate.fromAmount
-        )
-        this.ecoBridgeUtils.ui.statusButton.setStatus(ButtonStatus.BRIDGE)
-      } catch (e) {
-        this.ecoBridgeUtils.ui.statusButton.setError()
-
-        return
-      }
+      await this.#checkAndSetAllowance(
+        this._activeProvider?.getSigner(),
+        route.action.fromToken.address,
+        route.estimate.approvalAddress,
+        route.estimate.fromAmount
+      )
+      this.ecoBridgeUtils.ui.statusButton.setStatus(ButtonStatus.BRIDGE)
     } catch (e) {
+      this.ecoBridgeUtils.ui.statusButton.setError()
       this.ecoBridgeUtils.ui.modal.setBridgeModalStatus(BridgeModalStatus.ERROR, this.bridgeId, e)
     }
   }
 
+  #checkAndSetAllowance = async (wallet: any, tokenAddress: string, approvalAddress: string, amount: string) => {
+    // Transactions with the native token don't need approval
+    if (tokenAddress === ethers.constants.AddressZero) {
+      return
+    }
+
+    const erc20 = new Contract(tokenAddress, ERC20_ABI, wallet)
+    const allowance = await erc20.allowance(await wallet.getAddress(), approvalAddress)
+
+    if (allowance.lt(amount)) {
+      this.ecoBridgeUtils.ui.statusButton.setStatus(ButtonStatus.APPROVE)
+      return
+    }
+  }
   public fetchDynamicLists = async () => {
     const {
       from: { chainId: fromChainId },
