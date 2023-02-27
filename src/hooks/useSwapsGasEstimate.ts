@@ -56,6 +56,7 @@ export function useSwapsGasEstimations(
             //try to estimate gas from rpc function
             estimatedCall = await (library as Web3Provider).estimateGas(transactionObject)
           } catch {
+            //commented out for now since the alchemy api is not estimating gas correctly
             //else estimate withc alchemy api using execution bundle
             // try {
             //   //check if there user has inputted amount greate then max amount
