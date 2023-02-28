@@ -122,7 +122,6 @@ export function SwapPlatformSelector({
     setShowAllPlatformsTrades(false)
   }, [allPlatformTrades?.length])
 
-  //TODO: ADD EVAULATION IF ESTIMATIONS ARE OF LENGTH 0
   const showGasFees = chainId === ChainId.MAINNET
 
   const handleSelectedTradeOverride = useCallback(
