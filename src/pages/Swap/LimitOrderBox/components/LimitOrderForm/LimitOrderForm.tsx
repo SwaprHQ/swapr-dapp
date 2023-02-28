@@ -15,6 +15,7 @@ import { CurrencyInputPanel } from '../../../../../components/CurrencyInputPanel
 import { PageMetaData } from '../../../../../components/PageMetaData'
 import { REFETCH_DATA_INTERVAL } from '../../../../../constants/data'
 import { ApprovalState, useApproveCallback } from '../../../../../hooks/useApproveCallback'
+import { useHigherUSDValue } from '../../../../../hooks/useUSDValue'
 import { useNotificationPopup } from '../../../../../state/application/hooks'
 import { useSwapActionHandlers } from '../../../../../state/swap/hooks'
 import { Field } from '../../../../../state/swap/types'
@@ -71,10 +72,6 @@ export function LimitOrderForm({ account, provider, chainId }: LimitOrderFormPro
     expiresInUnit,
     inputFocus,
     setInputFocus,
-    fiatValueInput,
-    fiatValueOutput,
-    isFallbackFiatValueInput,
-    isFallbackFiatValueOutput,
   } = useContext(LimitOrderFormContext)
   const { onCurrencySelection } = useSwapActionHandlers()
 
@@ -86,6 +83,11 @@ export function LimitOrderForm({ account, provider, chainId }: LimitOrderFormPro
   const [isPossibleToOrder, setIsPossibleToOrder] = useState({
     status: false,
     value: 0,
+  })
+
+  const { fiatValueInput, fiatValueOutput, isFallbackFiatValueInput, isFallbackFiatValueOutput } = useHigherUSDValue({
+    inputCurrencyAmount: sellTokenAmount,
+    outputCurrencyAmount: buyTokenAmount,
   })
 
   const [fetchMarketPrice, setFetchMarketPrice] = useState<boolean>(true)
@@ -519,6 +521,8 @@ export function LimitOrderForm({ account, provider, chainId }: LimitOrderFormPro
           errorMessage={errorMessage}
           attemptingTxn={loading}
           marketPrices={marketPrices}
+          fiatValueInput={fiatValueInput}
+          fiatValueOutput={fiatValueOutput}
         />
         <AutoColumn gap="12px">
           <AutoColumn gap="3px">
