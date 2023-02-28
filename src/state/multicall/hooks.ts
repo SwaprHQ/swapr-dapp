@@ -5,13 +5,13 @@ import { Contract } from '@ethersproject/contracts'
 import { useEffect, useMemo } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 
+import { addMulticallListeners, ListenerOptions, removeMulticallListeners } from './actions'
+import { MulticallState } from './reducer'
+import { Call, parseCallKey, toCallKey } from './utils'
 import { AppState } from '..'
 import { useActiveWeb3React } from '../../hooks'
 import { debounce } from '../../utils/debounce'
 import { useBlockNumber } from '../application/hooks'
-import { addMulticallListeners, ListenerOptions, removeMulticallListeners } from './actions'
-import { MulticallState } from './reducer'
-import { Call, parseCallKey, toCallKey } from './utils'
 
 export interface Result extends ReadonlyArray<any> {
   readonly [key: string]: any

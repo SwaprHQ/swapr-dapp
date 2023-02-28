@@ -1,9 +1,9 @@
 import styled from 'styled-components'
 
-import { breakpoints, gradients } from '../../utils/theme'
-import { CommunityLinksContent } from '../../utils/ui-constants'
 import Button from './common/Button'
 import Layout from './layout/Layout'
+import { breakpoints, gradients } from '../../utils/theme'
+import { CommunityLinksContent } from '../../utils/ui-constants'
 
 const CommunityLinks = () => {
   return (

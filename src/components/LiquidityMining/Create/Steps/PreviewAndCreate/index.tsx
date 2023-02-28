@@ -11,15 +11,15 @@ import { useEffect, useState } from 'react'
 import { Box, Flex } from 'rebass'
 import styled from 'styled-components'
 
+import PoolSummary from './PoolSummary'
+import RewardSummary from './RewardSummary'
+import SimulateStaking from './SimulateStaking'
 import { useActiveWeb3React } from '../../../../../hooks'
 import { useNativeCurrencyUSDPrice } from '../../../../../hooks/useNativeCurrencyUSDPrice'
 import { getStakedAmountUSD } from '../../../../../utils/liquidityMining'
 import { ButtonPrimary } from '../../../../Button'
 import { CampaignCard } from '../../../../Pool/PairsList/CampaignCard'
 import { Card, Divider } from '../../../styleds'
-import PoolSummary from './PoolSummary'
-import RewardSummary from './RewardSummary'
-import SimulateStaking from './SimulateStaking'
 
 const FlexContainer = styled(Flex)`
   ${props => props.theme.mediaWidth.upToExtraSmall`

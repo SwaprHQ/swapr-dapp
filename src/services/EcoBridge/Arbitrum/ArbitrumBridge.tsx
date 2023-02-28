@@ -17,6 +17,12 @@ import { TokenList } from '@uniswap/token-lists'
 import { BigNumber, Signer } from 'ethers'
 import request from 'graphql-request'
 
+import { arbitrumTransactionsAdapter } from './ArbitrumBridge.adapter'
+import ARBITRUM_TOKEN_LISTS_CONFIG from './ArbitrumBridge.lists.json'
+import { arbitrumActions } from './ArbitrumBridge.reducer'
+import { arbitrumSelectors } from './ArbitrumBridge.selectors'
+import { hasArbitrumMetadata } from './ArbitrumBridge.types'
+import { migrateBridgeTransactions, QUERY_ETH_PRICE } from './ArbitrumBridge.utils'
 import { subgraphClientsUris } from '../../../apollo/client'
 import { ArbitrumBridgeTxn, BridgeAssetType, BridgeTransactionSummary } from '../../../state/bridgeTransactions/types'
 import { addTransaction } from '../../../state/transactions/actions'
@@ -32,12 +38,6 @@ import {
   SyncState,
 } from '../EcoBridge.types'
 import { ButtonStatus, EcoBridgeChildBase } from '../EcoBridge.utils'
-import { arbitrumTransactionsAdapter } from './ArbitrumBridge.adapter'
-import ARBITRUM_TOKEN_LISTS_CONFIG from './ArbitrumBridge.lists.json'
-import { arbitrumActions } from './ArbitrumBridge.reducer'
-import { arbitrumSelectors } from './ArbitrumBridge.selectors'
-import { hasArbitrumMetadata } from './ArbitrumBridge.types'
-import { migrateBridgeTransactions, QUERY_ETH_PRICE } from './ArbitrumBridge.utils'
 
 export class ArbitrumBridge extends EcoBridgeChildBase {
   private l1ChainId: ChainId

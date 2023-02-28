@@ -4,13 +4,13 @@ import contractNetworks from '@cowprotocol/contracts/networks.json'
 import { useCallback, useEffect, useMemo } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 
+import { checkedTransaction, finalizeTransaction } from './actions'
+import { SwapProtocol, TransactionState } from './reducer'
 import { useActiveWeb3React } from '../../hooks'
 import { retry, RetryableError, RetryOptions } from '../../utils/retry'
 import { updateBlockNumber } from '../application/actions'
 import { useAddPopup, useBlockNumber } from '../application/hooks'
 import { AppState } from '../index'
-import { checkedTransaction, finalizeTransaction } from './actions'
-import { SwapProtocol, TransactionState } from './reducer'
 
 interface TxInterface {
   addedTime: number

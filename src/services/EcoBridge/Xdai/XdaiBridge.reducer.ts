@@ -1,11 +1,11 @@
 import { EntityState, PayloadAction } from '@reduxjs/toolkit'
 import { TokenList } from '@uniswap/token-lists'
 
+import { xdaiBridgeTransactionAdapter } from './XdaiBridge.adapter'
+import { XdaiBridgeTransaction, XdaiMessage } from './XdaiBridge.types'
 import { BridgeTransactionStatus } from '../../../state/bridgeTransactions/types'
 import { BridgeDetails, SyncState, XdaiBridgeList } from '../EcoBridge.types'
 import { createEcoBridgeChildBaseSlice } from '../EcoBridge.utils'
-import { xdaiBridgeTransactionAdapter } from './XdaiBridge.adapter'
-import { XdaiBridgeTransaction, XdaiMessage } from './XdaiBridge.types'
 
 interface XdaiBridgeState {
   bridgingDetails: BridgeDetails

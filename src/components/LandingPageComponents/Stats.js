@@ -5,11 +5,11 @@ import TextyAnim from 'rc-texty'
 import { useEffect, useState } from 'react'
 import styled from 'styled-components'
 
+import { toClassName } from './../../utils/helper-functions'
+import Layout from './layout/Layout'
 import { immediateSubgraphClients } from '../../apollo/client'
 import { breakpoints, gradients } from '../../utils/theme'
 import { StatsContent } from '../../utils/ui-constants'
-import { toClassName } from './../../utils/helper-functions'
-import Layout from './layout/Layout'
 
 const subgraphApiClients = [
   immediateSubgraphClients[ChainId.ARBITRUM_ONE],

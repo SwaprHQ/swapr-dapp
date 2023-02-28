@@ -1,7 +1,7 @@
 import { ChainId } from '@swapr/sdk'
 
-import { BridgeTransactionStatus, BridgeTxnType } from '../state/bridgeTransactions/types'
 import { getNetworkInfo } from './networksList'
+import { BridgeTransactionStatus, BridgeTxnType } from '../state/bridgeTransactions/types'
 
 export type ChainIdPair = {
   l1ChainId: ChainId | undefined

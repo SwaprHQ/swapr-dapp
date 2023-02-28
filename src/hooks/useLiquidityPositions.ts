@@ -6,11 +6,11 @@ import { ethers } from 'ethers'
 import { DateTime, Duration } from 'luxon'
 import { useMemo } from 'react'
 
+import { useKpiTokens } from './useKpiTokens'
+import { useNativeCurrency } from './useNativeCurrency'
 import { SubgraphLiquidityMiningCampaign } from '../apollo'
 import { useGetUserLiquidityPositionsQuery } from '../graphql/generated/schema'
 import { getBestApyPairCampaign, toLiquidityMiningCampaign } from '../utils/liquidityMining'
-import { useKpiTokens } from './useKpiTokens'
-import { useNativeCurrency } from './useNativeCurrency'
 
 import { useActiveWeb3React } from './index'
 interface SubgraphToken {

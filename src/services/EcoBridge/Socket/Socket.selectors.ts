@@ -1,9 +1,9 @@
 import { createSelector } from 'reselect'
 
+import { SOCKET_PENDING_REASONS, SocketTx, SocketTxStatus } from './Socket.types'
 import { AppState } from '../../../state'
 import { BridgeTransactionStatus, BridgeTransactionSummary } from '../../../state/bridgeTransactions/types'
 import { SocketList } from '../EcoBridge.types'
-import { SOCKET_PENDING_REASONS, SocketTx, SocketTxStatus } from './Socket.types'
 
 const createSelectRoutes = (bridgeId: SocketList) =>
   createSelector([(state: AppState) => state.ecoBridge[bridgeId].routes], routes => routes)

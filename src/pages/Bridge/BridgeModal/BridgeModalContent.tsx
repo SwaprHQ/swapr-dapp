@@ -1,10 +1,6 @@
 import { AlertCircle, ArrowRightCircle } from 'react-feather'
 import { Trans, useTranslation } from 'react-i18next'
 
-import { ButtonPrimary } from '../../../components/Button'
-import Modal from '../../../components/Modal'
-import { ConfirmationPendingContent, TransactionErrorContent } from '../../../components/TransactionConfirmationModal'
-import { TYPE } from '../../../theme'
 import {
   ButtonAccept,
   ButtonCancel,
@@ -15,6 +11,10 @@ import {
   Wrapper,
 } from './BridgeModal.styles'
 import { BridgeModalContentProps } from './BridgeModal.types'
+import { ButtonPrimary } from '../../../components/Button'
+import Modal from '../../../components/Modal'
+import { ConfirmationPendingContent, TransactionErrorContent } from '../../../components/TransactionConfirmationModal'
+import { TYPE } from '../../../theme'
 
 export const BridgeModalContent = ({
   isOpen,

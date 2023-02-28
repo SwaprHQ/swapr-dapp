@@ -4,6 +4,7 @@ import { useEffect, useMemo, useState } from 'react'
 import { Box, Flex } from 'rebass'
 import styled from 'styled-components'
 
+import { AssetLogo } from './AssetLogo'
 import { useActiveWeb3React } from '../../../../../../hooks'
 import { ApprovalState, useApproveCallback } from '../../../../../../hooks/useApproveCallback'
 import { useStakingRewardsDistributionFactoryContract } from '../../../../../../hooks/useContract'
@@ -14,7 +15,6 @@ import { unwrappedToken } from '../../../../../../utils/wrappedCurrency'
 import { ButtonPrimary } from '../../../../../Button'
 import { NumericalInput } from '../../../../../Input/NumericalInput'
 import { SmoothGradientCard } from '../../../../styleds'
-import { AssetLogo } from './AssetLogo'
 
 const StyledNumericalInput = styled(NumericalInput)<{ value: string }>`
   border: 8px solid;

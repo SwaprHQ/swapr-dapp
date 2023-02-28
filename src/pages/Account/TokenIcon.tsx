@@ -2,13 +2,13 @@ import { ChainId, DXD, SWPR, WETH } from '@swapr/sdk'
 
 import { Box } from 'rebass'
 
+import { StyledLogo } from './Account.styles'
+import { getNetworkDefaultTokenUrl } from './utils/accountUtils'
 import DXDLogo from '../../assets/images/dxd.svg'
 import SWPRLogo from '../../assets/images/swpr-logo.png'
 import { getTokenLogoURL, NATIVE_CURRENCY_LOGO } from '../../components/CurrencyLogo/CurrencyLogo.utils'
 import { ZERO_ADDRESS } from '../../constants'
 import { useListsByAddress, useListsByToken } from '../../state/lists/hooks'
-import { StyledLogo } from './Account.styles'
-import { getNetworkDefaultTokenUrl } from './utils/accountUtils'
 
 interface TokenIconProps {
   symbol?: string

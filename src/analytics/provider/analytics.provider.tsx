@@ -3,6 +3,8 @@ import { Trade } from '@swapr/sdk'
 import debugFactory from 'debug'
 import { useEffect, useRef, useState } from 'react'
 
+import { AnalyticsContext, IAnalyticsContext } from './analytics.context'
+import { AnalyticsTradeQueueState, ItemStatus } from './analytics.state'
 import { useEnvironment } from '../../hooks/useEnvironment'
 import { BridgeTransactionSummary } from '../../state/bridgeTransactions/types'
 import { ChartOption } from '../../state/user/reducer'
@@ -11,8 +13,6 @@ import { siteEvents as siteEventsDev } from '../generated/dev'
 import { FathomSiteInformation, siteEvents as siteEventsProd } from '../generated/prod'
 import * as trackers from '../trackers'
 import { computeItemId } from '../utils'
-import { AnalyticsContext, IAnalyticsContext } from './analytics.context'
-import { AnalyticsTradeQueueState, ItemStatus } from './analytics.state'
 
 const debug = debugFactory('analytics')
 

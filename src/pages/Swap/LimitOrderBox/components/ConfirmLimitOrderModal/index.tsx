@@ -1,5 +1,7 @@
 import { useCallback, useContext } from 'react'
 
+import { ConfirmationFooter } from './ConfirmationFooter'
+import { ConfirmationHeader } from './ConfirmationHeader'
 import TransactionConfirmationModal, {
   ConfirmationModalContent,
   TransactionErrorContent,
@@ -7,8 +9,6 @@ import TransactionConfirmationModal, {
 import { LimitOrderFormContext } from '../../contexts/LimitOrderFormContext'
 import { LimitOrderKind, MarketPrices } from '../../interfaces'
 import { calculateMarketPriceDiffPercentage } from '../../utils'
-import { ConfirmationFooter } from './ConfirmationFooter'
-import { ConfirmationHeader } from './ConfirmationHeader'
 interface ConfirmLimitOrderModalProps {
   isOpen: boolean
   attemptingTxn: boolean

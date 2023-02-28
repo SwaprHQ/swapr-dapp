@@ -4,11 +4,6 @@ import { Dispatch, SetStateAction, useCallback, useContext, useEffect, useState 
 import { RefreshCw } from 'react-feather'
 import { useTranslation } from 'react-i18next'
 
-import { invalidChars } from '../../constants'
-import { LimitOrderFormContext } from '../../contexts/LimitOrderFormContext'
-import { InputFocus, LimitOrderKind, MarketPrices } from '../../interfaces'
-import { calculateMarketPriceDiffPercentage, computeNewAmount } from '../../utils'
-import { InputGroup } from '../InputGroup'
 import { MarketPriceButton } from './MarketPriceButton'
 import {
   LimitLabel,
@@ -18,6 +13,11 @@ import {
   SwapTokenWrapper,
   ToggleCurrencyButton,
 } from './styles'
+import { invalidChars } from '../../constants'
+import { LimitOrderFormContext } from '../../contexts/LimitOrderFormContext'
+import { InputFocus, LimitOrderKind, MarketPrices } from '../../interfaces'
+import { calculateMarketPriceDiffPercentage, computeNewAmount } from '../../utils'
+import { InputGroup } from '../InputGroup'
 
 export interface OrderLimitPriceFieldProps {
   id?: string

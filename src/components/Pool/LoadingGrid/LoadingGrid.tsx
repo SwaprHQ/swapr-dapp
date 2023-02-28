@@ -1,7 +1,7 @@
 import styled from 'styled-components'
 
-import { useResponsiveItemsPerPage } from '../../../hooks/useResponsiveItemsPerPage'
 import { LoadingCard } from './LoadingCard'
+import { useResponsiveItemsPerPage } from '../../../hooks/useResponsiveItemsPerPage'
 
 interface LoadingGridProps {
   itemsAmount?: number

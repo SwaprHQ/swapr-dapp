@@ -9,8 +9,8 @@ import styled, {
   ThemeProvider as StyledComponentsThemeProvider,
 } from 'styled-components'
 
-import { useIsDarkMode } from '../state/user/hooks'
 import { Colors } from './styled'
+import { useIsDarkMode } from '../state/user/hooks'
 
 export * from './components'
 

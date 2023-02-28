@@ -4,10 +4,10 @@ import { CurrencyAmount, USD } from '@swapr/sdk'
 import { BigNumber } from 'ethers'
 import { useMemo } from 'react'
 
+import { useNativeCurrencyUSDPrice } from './useNativeCurrencyUSDPrice'
 import { MainnetGasPrice } from '../state/application/actions'
 import { useMainnetGasPrices } from '../state/application/hooks'
 import { useUserPreferredGasPrice } from '../state/user/hooks'
-import { useNativeCurrencyUSDPrice } from './useNativeCurrencyUSDPrice'
 
 import { useActiveWeb3React } from './index'
 

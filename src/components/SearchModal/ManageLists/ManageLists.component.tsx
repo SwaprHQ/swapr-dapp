@@ -2,14 +2,6 @@ import { useContext } from 'react'
 import { CheckCircle, Settings } from 'react-feather'
 import { useTheme } from 'styled-components'
 
-import { ExternalLink, IconWrapper, TYPE } from '../../../theme'
-import { ButtonEmpty, ButtonPrimary } from '../../Button'
-import Card from '../../Card'
-import Column, { AutoColumn } from '../../Column'
-import ListLogo from '../../ListLogo'
-import Row, { RowBetween, RowFixed } from '../../Row'
-import ListToggle from '../../Toggle/ListToggle'
-import { PaddedColumn, SearchInput, Separator, SeparatorDark } from '../shared'
 import { ManageListsContext } from './ManageLists.context'
 import { useListRow } from './ManageLists.hooks'
 import {
@@ -23,6 +15,14 @@ import {
   Wrapper,
 } from './ManageLists.styles'
 import { ListRowProps } from './ManageLists.types'
+import { ExternalLink, IconWrapper, TYPE } from '../../../theme'
+import { ButtonEmpty, ButtonPrimary } from '../../Button'
+import Card from '../../Card'
+import Column, { AutoColumn } from '../../Column'
+import ListLogo from '../../ListLogo'
+import Row, { RowBetween, RowFixed } from '../../Row'
+import ListToggle from '../../Toggle/ListToggle'
+import { PaddedColumn, SearchInput, Separator, SeparatorDark } from '../shared'
 
 const listUrlRowHTMLId = (listUrl: string) => {
   return `list-row-${listUrl.replace(/\./g, '-')}`

@@ -5,11 +5,6 @@ import { BigNumber, Contract, ContractTransaction, Signer, utils } from 'ethers'
 import { BytesLike, formatUnits } from 'ethers/lib/utils'
 import { gql } from 'graphql-request'
 
-import { ZERO_ADDRESS } from '../../../constants'
-import { ERC20_BYTES32_ABI } from '../../../constants/abis/erc20'
-import ERC20_ABI from '../../../constants/abis/erc20.json'
-import { BridgeTransactionStatus } from '../../../state/bridgeTransactions/types'
-import { EcoBridgeProviders } from '../EcoBridge.types'
 import {
   AMB_INTERFACE_VERISON_ABI,
   DEDICATED_MEDIATOR_TOKEN_ABI,
@@ -38,6 +33,11 @@ import {
   OmnibridgeToken,
   OmnibridgeTokenWithAddressAndChain,
 } from './OmniBridge.types'
+import { ZERO_ADDRESS } from '../../../constants'
+import { ERC20_BYTES32_ABI } from '../../../constants/abis/erc20'
+import ERC20_ABI from '../../../constants/abis/erc20.json'
+import { BridgeTransactionStatus } from '../../../state/bridgeTransactions/types'
+import { EcoBridgeProviders } from '../EcoBridge.types'
 
 const bytesTerminator = '0x0000000000000000000000000000000000000000000000000000000000000020'
 

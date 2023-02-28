@@ -4,9 +4,9 @@ import { useEffect, useState } from 'react'
 
 // Eco Router modules
 // Web3 hooks
+import { getExactIn, getExactOut } from './api'
 import { useActiveWeb3React } from '../../hooks'
 import { useIsMultihop, useUserSlippageTolerance } from '../../state/user/hooks'
-import { getExactIn, getExactOut } from './api'
 // Types
 // eslint-disable-next-line
 import { EcoRouterHookResults } from './types'

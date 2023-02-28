@@ -2,11 +2,11 @@ import { isMobile } from 'react-device-detect'
 import { useTranslation } from 'react-i18next'
 import { Flex } from 'rebass'
 
+import { LoadingRow } from './LoadingRow'
 import { useResponsiveItemsPerPage } from '../../../../hooks/useResponsiveItemsPerPage'
 import { ListLayout } from '../../../../ui/StyledElements/ListLayout'
 import { TableHeader } from '../../../../ui/StyledElements/TableHeader'
 import { TableHeaderText } from '../../../../ui/StyledElements/TableHeaderText'
-import { LoadingRow } from './LoadingRow'
 
 export function LoadingList() {
   const responsiveItemsPerPage = useResponsiveItemsPerPage()

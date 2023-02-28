@@ -11,17 +11,6 @@ import { TokenInfo } from '@uniswap/token-lists'
 import { ethers, utils } from 'ethers'
 import { request } from 'graphql-request'
 
-import { subgraphClientsUris } from '../../../apollo/client'
-import { SWPRSupportedChains } from '../../../utils/chainSupportsSWPR'
-import {
-  BridgeModalStatus,
-  ConnextList,
-  EcoBridgeChangeHandler,
-  EcoBridgeChildBaseConstructor,
-  EcoBridgeChildBaseInit,
-  SyncState,
-} from '../EcoBridge.types'
-import { ButtonStatus, EcoBridgeChildBase } from '../EcoBridge.utils'
 import { connextSdkChainConfig } from './Connext.config'
 import { CONNEXT_TOKENS } from './Connext.lists'
 import { connextActions } from './Connext.reducer'
@@ -33,6 +22,17 @@ import {
   ConnextTransactionStatus,
 } from './Connext.types'
 import { getReceivingTransaction, getTransactionsQuery, QUERY_NATIVE_PRICE, SilentLogger } from './Connext.utils'
+import { subgraphClientsUris } from '../../../apollo/client'
+import { SWPRSupportedChains } from '../../../utils/chainSupportsSWPR'
+import {
+  BridgeModalStatus,
+  ConnextList,
+  EcoBridgeChangeHandler,
+  EcoBridgeChildBaseConstructor,
+  EcoBridgeChildBaseInit,
+  SyncState,
+} from '../EcoBridge.types'
+import { ButtonStatus, EcoBridgeChildBase } from '../EcoBridge.utils'
 
 export class Connext extends EcoBridgeChildBase {
   private _connextSdk: NxtpSdk | undefined

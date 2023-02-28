@@ -3,14 +3,14 @@ import { Currency } from '@swapr/sdk'
 import React, { useCallback, useContext, useLayoutEffect } from 'react'
 import { usePrevious } from 'react-use'
 
+import { CurrencySearchModalContext } from './CurrencySearchModal.context'
+import { CurrencyModalView, CurrencySearchModalProps } from './CurrencySearchModal.types'
 import useLast from '../../../hooks/useLast'
 import Modal from '../../Modal'
 import { CurrencySearch } from '../CurrencySearch'
 import { ImportList } from '../ImportList'
 import { ImportToken } from '../ImportToken'
 import { Manage } from '../Manage'
-import { CurrencySearchModalContext } from './CurrencySearchModal.context'
-import { CurrencyModalView, CurrencySearchModalProps } from './CurrencySearchModal.types'
 
 export function CurrencySearchModalComponent({
   isOpen,

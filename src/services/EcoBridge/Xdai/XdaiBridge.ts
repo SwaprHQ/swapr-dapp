@@ -7,21 +7,6 @@ import { TokenInfo, TokenList } from '@uniswap/token-lists'
 import { BigNumber } from 'ethers'
 import { request } from 'graphql-request'
 
-import { subgraphClientsUris } from '../../../apollo/client'
-import { ZERO_ADDRESS } from '../../../constants'
-import ERC20_ABI from '../../../constants/abis/erc20.json'
-import { BridgeTransactionStatus } from '../../../state/bridgeTransactions/types'
-import { SWPRSupportedChains } from '../../../utils/chainSupportsSWPR'
-import { QUERY_ETH_PRICE } from '../Arbitrum/ArbitrumBridge.utils'
-import {
-  BridgeModalStatus,
-  EcoBridgeChangeHandler,
-  EcoBridgeChildBaseConstructor,
-  EcoBridgeChildBaseInit,
-  SyncState,
-  XdaiBridgeList,
-} from '../EcoBridge.types'
-import { ButtonStatus, EcoBridgeChildBase } from '../EcoBridge.utils'
 import {
   XDAI_BRIDGE_EXECUTIONS,
   XDAI_BRIDGE_FOREIGN_REQUEST,
@@ -41,6 +26,21 @@ import {
   XDAI_BRIDGE_FOREIGN_SUBGRAPH_ENDPOINT,
   XDAI_BRIDGE_HOME_SUBGRAPH_ENDPOINT,
 } from './XdaiBridge.utils'
+import { subgraphClientsUris } from '../../../apollo/client'
+import { ZERO_ADDRESS } from '../../../constants'
+import ERC20_ABI from '../../../constants/abis/erc20.json'
+import { BridgeTransactionStatus } from '../../../state/bridgeTransactions/types'
+import { SWPRSupportedChains } from '../../../utils/chainSupportsSWPR'
+import { QUERY_ETH_PRICE } from '../Arbitrum/ArbitrumBridge.utils'
+import {
+  BridgeModalStatus,
+  EcoBridgeChangeHandler,
+  EcoBridgeChildBaseConstructor,
+  EcoBridgeChildBaseInit,
+  SyncState,
+  XdaiBridgeList,
+} from '../EcoBridge.types'
+import { ButtonStatus, EcoBridgeChildBase } from '../EcoBridge.utils'
 
 export class XdaiBridge extends EcoBridgeChildBase {
   private _homeChainId = ChainId.XDAI

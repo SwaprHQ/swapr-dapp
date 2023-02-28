@@ -4,8 +4,8 @@ import { Price, USD } from '@swapr/sdk'
 import Decimal from 'decimal.js-light'
 import { useMemo } from 'react'
 
-import { useGetBundleQuery } from '../graphql/generated/schema'
 import { useNativeCurrency } from './useNativeCurrency'
+import { useGetBundleQuery } from '../graphql/generated/schema'
 
 export function useNativeCurrencyUSDPrice(): { loading: boolean; nativeCurrencyUSDPrice: Price } {
   const nativeCurrency = useNativeCurrency()

@@ -16,12 +16,12 @@ import {
 
 import { useEffect, useMemo, useRef, useState } from 'react'
 
+import { useTradeExactInUniswapV2 } from './Trades'
 import { REFETCH_DATA_INTERVAL } from '../constants/data'
 import { tryParseAmount } from '../state/swap/hooks'
 import { getUSDPriceCurrencyQuote, getUSDPriceTokenQuote, toPriceInformation } from '../utils/coingecko'
 import { currencyId } from '../utils/currencyId'
 import { wrappedCurrencyAmount } from '../utils/wrappedCurrency'
-import { useTradeExactInUniswapV2 } from './Trades'
 
 import { useActiveWeb3React } from './index'
 

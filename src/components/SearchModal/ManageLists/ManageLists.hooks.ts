@@ -4,6 +4,8 @@ import { usePopper } from 'react-popper'
 import { useDispatch, useSelector } from 'react-redux'
 import { useToggle } from 'react-use'
 
+import { ListRowContext } from './ManageLists.context'
+import { ListRowContextType, ListRowProps, ManageListsContextType, ManageListsProps } from './ManageLists.types'
 import { UNSUPPORTED_LIST_URLS } from '../../../constants/lists'
 import { useActiveWeb3React } from '../../../hooks'
 import { useFetchListCallback } from '../../../hooks/useFetchListCallback'
@@ -15,8 +17,6 @@ import { useActiveListUrls, useAllLists } from '../../../state/lists/hooks'
 import { parseENSAddress } from '../../../utils/parseENSAddress'
 import uriToHttp from '../../../utils/uriToHttp'
 import { CurrencyModalView } from '../CurrencySearchModal'
-import { ListRowContext } from './ManageLists.context'
-import { ListRowContextType, ListRowProps, ManageListsContextType, ManageListsProps } from './ManageLists.types'
 
 export const useManageListsContextSwap = ({
   setListUrl,

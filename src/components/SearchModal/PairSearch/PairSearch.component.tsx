@@ -4,6 +4,8 @@ import { ChangeEvent, KeyboardEvent, RefObject, useCallback, useEffect, useMemo,
 import { useTranslation } from 'react-i18next'
 import { FixedSizeList } from 'react-window'
 
+import { Wrapper } from './PairSearch.styles'
+import { PairSearchProps } from './PairSearch.types'
 import { usePairAtAddress } from '../../../data/Reserves'
 import { useAllPairs } from '../../../hooks/useAllPairs'
 import { CloseIcon, TYPE } from '../../../theme'
@@ -15,8 +17,6 @@ import { PaddedColumn, SearchInput, Separator } from '../shared'
 import { SortButton } from '../SortButton'
 import { filterPairs as filterPairsBySearchQuery } from '../utils/filtering'
 import { usePairsComparator } from '../utils/sorting'
-import { Wrapper } from './PairSearch.styles'
-import { PairSearchProps } from './PairSearch.types'
 
 export const PairSearch = ({ selectedPair, onPairSelect, onDismiss, isOpen, filterPairs }: PairSearchProps) => {
   const { t } = useTranslation('common')

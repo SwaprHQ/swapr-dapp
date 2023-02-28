@@ -5,6 +5,8 @@ import { parseUnits } from 'ethers/lib/utils'
 import { gql } from 'graphql-request'
 import { useEffect, useMemo, useState } from 'react'
 
+import { useKpiTokens } from './useKpiTokens'
+import { useNativeCurrency } from './useNativeCurrency'
 import { immediateSubgraphClients } from '../apollo/client'
 import { useAllTokensFromActiveListsOnCurrentChain } from '../state/lists/hooks'
 import { chainSupportsSWPR, SWPRSupportedChains } from '../utils/chainSupportsSWPR'
@@ -14,8 +16,6 @@ import {
   getRewardTokenAddressFromPair,
   SubgraphPair,
 } from '../utils/liquidityMining'
-import { useKpiTokens } from './useKpiTokens'
-import { useNativeCurrency } from './useNativeCurrency'
 
 import { useActiveWeb3React } from './index'
 

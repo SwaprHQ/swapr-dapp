@@ -1,7 +1,7 @@
 import { ChainId, Currency, DAI, USDC, WETH } from '@swapr/sdk'
 
-import { MATIC, SOCKET_NATIVE_TOKEN_ADDRESS } from '../../../constants'
 import { overrideTokensAddresses } from './Socket.utils'
+import { MATIC, SOCKET_NATIVE_TOKEN_ADDRESS } from '../../../constants'
 
 describe('overrideTokensAddresses', () => {
   const ETH = Currency.getNative(ChainId.MAINNET) //Same for mainnet & arbitrum

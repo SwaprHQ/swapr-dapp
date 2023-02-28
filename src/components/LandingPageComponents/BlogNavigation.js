@@ -1,9 +1,9 @@
 import styled from 'styled-components'
 
-import { breakpoints } from '../../utils/theme'
-import { BlogContent } from '../../utils/ui-constants'
 import Button from './common/Button'
 import Layout from './layout/Layout'
+import { breakpoints } from '../../utils/theme'
+import { BlogContent } from '../../utils/ui-constants'
 
 const BlogNavigation = () => {
   return (

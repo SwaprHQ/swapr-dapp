@@ -3,6 +3,7 @@ import { Trade, UniswapV2Trade } from '@swapr/sdk'
 import { Settings } from 'react-feather'
 import styled from 'styled-components'
 
+import FormattedPriceImpact from './FormattedPriceImpact'
 import { AutoColumn } from '../../../components/Column'
 import QuestionHelper from '../../../components/QuestionHelper'
 import { AutoRow, RowBetween, RowFixed } from '../../../components/Row'
@@ -10,7 +11,6 @@ import { useToggleSettingsMenu } from '../../../state/application/hooks'
 import { useUserSlippageTolerance } from '../../../state/user/hooks'
 import { TYPE } from '../../../theme'
 import { computeTradePriceBreakdown } from '../../../utils/prices'
-import FormattedPriceImpact from './FormattedPriceImpact'
 
 const StyledMenuIcon = styled(Settings)`
   height: 12px;

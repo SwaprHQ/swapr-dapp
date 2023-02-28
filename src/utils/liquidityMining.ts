@@ -18,9 +18,9 @@ import Decimal from 'decimal.js-light'
 import { getAddress, parseUnits } from 'ethers/lib/utils'
 import { DateTime, Duration } from 'luxon'
 
+import { getLpTokenPrice } from './prices'
 import { SubgraphLiquidityMiningCampaign, SubgraphSingleSidedStakingCampaign } from '../apollo'
 import { ZERO_USD } from '../constants'
-import { getLpTokenPrice } from './prices'
 
 export function getRemainingRewardsUSD(
   campaign: LiquidityMiningCampaign,

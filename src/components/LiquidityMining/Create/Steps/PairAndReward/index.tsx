@@ -4,6 +4,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { Flex } from 'rebass/styled-components'
 import styled from 'styled-components'
 
+import AssetSelector from './AssetSelector'
 import { CampaignType } from '../../../../../pages/LiquidityMining/Create'
 import { tryParseAmount } from '../../../../../state/swap/hooks'
 import { TYPE } from '../../../../../theme'
@@ -12,7 +13,6 @@ import { NumericalInput } from '../../../../Input/NumericalInput'
 import { CurrencySearchModal } from '../../../../SearchModal/CurrencySearchModal'
 import { PairSearchModal } from '../../../../SearchModal/PairSearchModal'
 import { SmoothGradientCard } from '../../../styleds'
-import AssetSelector from './AssetSelector'
 
 const FlexContainer = styled(Flex)`
   justify-content: stretch;

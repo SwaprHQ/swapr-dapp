@@ -4,6 +4,8 @@ import { ChangeEvent, RefObject, useCallback, useMemo, useRef, useState } from '
 import { Box, Flex } from 'rebass'
 import { useTheme } from 'styled-components'
 
+import { Footer, TrashIcon, Wrapper } from './ManageTokens.styles'
+import { ManageTokensProps } from './ManageTokens.types'
 import { useActiveWeb3React } from '../../../hooks'
 import { useToken } from '../../../hooks/Tokens'
 import { useRemoveUserAddedToken, useUserAddedTokens } from '../../../state/user/hooks'
@@ -16,8 +18,6 @@ import Row, { RowBetween, RowFixed } from '../../Row'
 import { CurrencyModalView } from '../CurrencySearchModal'
 import { ImportRow } from '../ImportRow'
 import { PaddedColumn, SearchInput, Separator } from '../shared'
-import { Footer, TrashIcon, Wrapper } from './ManageTokens.styles'
-import { ManageTokensProps } from './ManageTokens.types'
 
 export const ManageTokens = ({ setModalView, setImportToken }: ManageTokensProps) => {
   const { chainId } = useActiveWeb3React()

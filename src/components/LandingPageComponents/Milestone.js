@@ -1,7 +1,7 @@
 import styled, { keyframes } from 'styled-components'
 
-import { breakpoints } from '../../utils/theme'
 import SwaprTimelineLogo from './../../assets/images/timeline-assets/swapr.svg'
+import { breakpoints } from '../../utils/theme'
 
 const fadeLeftIn = keyframes`
     0% {transform: translateX(0); opacity: 1;}
