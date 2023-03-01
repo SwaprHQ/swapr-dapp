@@ -1,17 +1,21 @@
-## Fixes: #issueNumber
+# Summary
 
-# Description
+<<if there's an issue>>Fixes #issueNumber
 
-_High-level description of what your changes are accomplishing_
+*High-level description of what your changes are accomplishing*
 
-_Add screenshots if applicable. Images are nice :)_
+*Add screenshots if applicable. Images are nice :)*
 
-# How to test the changes
+  # To Test
 
-How this changes can be tested and verified.
+1. <<Step one>> Open the page `about`
+- [ ] <<What to expect?>> Verify it contains about information...
+- [ ] Checkbox Style list of things a QA person could verify, i.e.
+- [ ] Should display Text Input our storybook
+- [ ] Input should not accept Numbers
+2. <<Step two>> ...
 
-# Is there any risks or changes of failure to be considered
+  # Background
 
-Mention any risks.
+*Optional: Give background information for changes you've made, that might be difficult to explain via comments*
 
-_Optional: Give background information for changes you've made, that might be difficult to explain via comments_

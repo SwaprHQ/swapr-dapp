@@ -1,4 +1,4 @@
-import { TokenAmount } from '@swapr/sdk'
+import { CurrencyAmount, TokenAmount } from '@swapr/sdk'
 
 import { createContext, Dispatch, SetStateAction } from 'react'
 
@@ -54,6 +54,11 @@ interface ILimitOrderFormContext {
    */
   inputFocus: InputFocus
   setInputFocus: Dispatch<SetStateAction<InputFocus>>
+
+  fiatValueInput: CurrencyAmount | null
+  fiatValueOutput: CurrencyAmount | null
+  isFallbackFiatValueInput: boolean
+  isFallbackFiatValueOutput: boolean
 }
 
 export const LimitOrderFormContext = createContext<ILimitOrderFormContext>({} as ILimitOrderFormContext)

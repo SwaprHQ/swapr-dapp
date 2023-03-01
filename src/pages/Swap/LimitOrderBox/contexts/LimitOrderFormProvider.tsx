@@ -7,6 +7,7 @@ import { ReactNode, useContext, useLayoutEffect, useRef, useState } from 'react'
 import { PRE_SELECT_OUTPUT_CURRENCY_ID } from '../../../../constants'
 import { useActiveWeb3React } from '../../../../hooks/index'
 import { useCurrency } from '../../../../hooks/Tokens'
+import { useHigherUSDValue } from '../../../../hooks/useUSDValue'
 import { useDefaultsFromURLSearch } from '../../../../state/swap/hooks'
 import { Field } from '../../../../state/swap/types'
 import { SwapContext } from '../../SwapBox/SwapContext'
@@ -61,6 +62,11 @@ export function LimitOrderFormBaseConditionalProvider({
   // Display formatted sell/buy amounts
   const [formattedLimitPrice, setFormattedLimitPrice] = useState('0')
 
+  const { fiatValueInput, fiatValueOutput, isFallbackFiatValueInput, isFallbackFiatValueOutput } = useHigherUSDValue({
+    inputCurrencyAmount: sellTokenAmount,
+    outputCurrencyAmount: buyTokenAmount,
+  })
+
   useLayoutEffect(() => {
     initialState.current = getInitialState(account, sellToken, buyToken as Token, sellTokenAmount)
     setSellTokenAmount(initialState.current.sellTokenAmount)
@@ -103,6 +109,10 @@ export function LimitOrderFormBaseConditionalProvider({
         setExpiresInUnit,
         inputFocus,
         setInputFocus,
+        fiatValueInput,
+        fiatValueOutput,
+        isFallbackFiatValueInput,
+        isFallbackFiatValueOutput,
       }}
     >
       {children}
