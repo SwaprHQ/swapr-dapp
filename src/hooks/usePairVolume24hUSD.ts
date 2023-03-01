@@ -63,7 +63,7 @@ function useBlockByTimestamp(timestamp: string) {
 
   return useMemo(() => {
     if (loading) return { loading: true, block: 0 }
-    if (!data?.blocks || data.blocks.length === 0 || error) return { loading: false, block: 0, error: error }
+    if (!data || error) return { loading: false, block: 0, error: error }
     return {
       loading,
       block: parseInt(data.blocks[0].number, 10),

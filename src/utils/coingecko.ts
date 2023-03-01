@@ -1,12 +1,10 @@
 import { ChainId, Currency, Trade } from '@swapr/sdk'
 
-import { queryClient } from '..'
-
 interface PriceInformation {
   token: string
-  amount: string
-  percentageAmountChange24h: number
-  isIncome24h: boolean
+  amount: string | null
+  percentageAmountChange24h: number | null
+  isIncome24h: boolean | undefined
 }
 
 // Defaults
@@ -42,7 +40,7 @@ const COINGECKO_ASSET_PLATFORM: { [chainId in ChainId]: string | null } = {
   [ChainId.BSC_TESTNET]: null,
 }
 
-export const COINGECKO_NATIVE_CURRENCY: Record<number, string> = {
+const COINGECKO_NATIVE_CURRENCY: Record<number, string> = {
   [ChainId.MAINNET]: 'ethereum',
   [ChainId.ARBITRUM_ONE]: 'ethereum',
   [ChainId.XDAI]: 'xdai',
@@ -73,20 +71,20 @@ export interface CoinGeckoUsdPriceCurrencyParams {
   chainId: ChainId
 }
 
-export interface CoinGeckoUsdQuote {
+interface CoinGeckoUsdQuote {
   [address: string]: {
     usd: number
     usd_24h_change: number
   }
 }
 
-export async function getUSDPriceTokenQuote(params: CoinGeckoUsdPriceTokenParams): Promise<CoinGeckoUsdQuote> {
+export async function getUSDPriceTokenQuote(params: CoinGeckoUsdPriceTokenParams): Promise<CoinGeckoUsdQuote | null> {
   const { chainId, tokenAddress } = params
 
   const assetPlatform = COINGECKO_ASSET_PLATFORM[chainId]
   if (!assetPlatform) {
     // Unsupported asset network
-    throw new Error('Unsupported asset network')
+    return null
   }
 
   const response = await _get(
@@ -100,13 +98,15 @@ export async function getUSDPriceTokenQuote(params: CoinGeckoUsdPriceTokenParams
   return response.json()
 }
 
-export async function getUSDPriceCurrencyQuote(params: CoinGeckoUsdPriceCurrencyParams): Promise<CoinGeckoUsdQuote> {
+export async function getUSDPriceCurrencyQuote(
+  params: CoinGeckoUsdPriceCurrencyParams
+): Promise<CoinGeckoUsdQuote | null> {
   const { chainId } = params
 
   const nativeCurrency = COINGECKO_NATIVE_CURRENCY[chainId]
   if (!nativeCurrency) {
     // Unsupported currency network
-    throw new Error('Unsupported currency network')
+    return null
   }
 
   const response = await _get(chainId, `/simple/price?ids=${nativeCurrency}&vs_currencies=usd`).catch(error => {
@@ -117,39 +117,31 @@ export async function getUSDPriceCurrencyQuote(params: CoinGeckoUsdPriceCurrency
   return response.json()
 }
 
-export function toPriceInformation(priceRaw: CoinGeckoUsdQuote): PriceInformation | null {
+export function toPriceInformation(priceRaw: CoinGeckoUsdQuote | null): PriceInformation | null {
   // We only receive/want the first key/value pair in the return object
   const token = priceRaw ? Object.keys(priceRaw)[0] : null
 
-  if (!token || !priceRaw?.[token].usd) {
+  if (!token || !priceRaw?.[token].usd || !priceRaw?.[token].usd_24h_change) {
     return null
   }
 
   const { usd, usd_24h_change } = priceRaw[token]
   return {
     amount: usd.toString(),
-    percentageAmountChange24h: usd_24h_change ? Math.abs(usd_24h_change) : 0,
-    isIncome24h: usd_24h_change ? usd_24h_change > 0 : false,
+    percentageAmountChange24h: Math.abs(usd_24h_change),
+    isIncome24h: usd_24h_change > 0,
     token,
   }
 }
 
 export async function getTradeUSDValue(trade: Trade): Promise<string | null> {
   const isNativeCurrency = Currency.isNative(trade.inputAmount.currency)
-  const queryKey = isNativeCurrency ? COINGECKO_NATIVE_CURRENCY[trade.chainId] : trade.inputAmount.currency.address
 
-  if (!queryKey) {
-    return null
-  }
+  const getUSDPriceQuote = isNativeCurrency
+    ? getUSDPriceCurrencyQuote({ chainId: trade.chainId })
+    : getUSDPriceTokenQuote({ tokenAddress: trade.inputAmount.currency.address, chainId: trade.chainId })
 
-  const getUSDPriceQuote = () =>
-    isNativeCurrency
-      ? getUSDPriceCurrencyQuote({ chainId: trade.chainId })
-      : getUSDPriceTokenQuote({ tokenAddress: trade.inputAmount.currency.address, chainId: trade.chainId })
-
-  const data = await queryClient.fetchQuery(['priceInfo', queryKey], getUSDPriceQuote, { staleTime: Infinity })
-
-  const priceInformation = toPriceInformation(data)
+  const priceInformation = toPriceInformation(await getUSDPriceQuote)
 
   if (priceInformation !== null && priceInformation.amount !== null) {
     const amount = trade.inputAmount.toSignificant(6)

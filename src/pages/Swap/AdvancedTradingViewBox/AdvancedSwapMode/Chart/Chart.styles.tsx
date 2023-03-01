@@ -19,7 +19,7 @@ export const AbsoluteWrapper = styled.div`
 export const DexScreenerIframe = styled.div`
   position: relative;
   width: 100%;
-  height: 100%;
+  height: 106.5%;
   user-select: none;
 
   iframe {
