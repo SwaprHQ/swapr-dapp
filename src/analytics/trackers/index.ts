@@ -30,6 +30,7 @@ export async function trackEcoRouterTradeVolume(
   debug('tracking EcoRouter trade USD volume', { trade, chartOption, site })
   // Get use value for input amount
   const tradeUSDValue = await getTradeUSDValue(trade)
+  //const data = await queryClient.fetchQuery({ queryKey, queryFn })
 
   if (tradeUSDValue === null) {
     throw new Error('Could not get trade USD value', {
@@ -72,7 +73,7 @@ export async function trackEcoBridgeTradeVolume(trade: BridgeTransactionSummary,
   if (rawTokenPriceInfo === null) {
     throw new Error('Could not get token price')
   }
-
+  console.log(Object.values(rawTokenPriceInfo))
   const tokenUSDPrice = Object.values(rawTokenPriceInfo)[0].usd
   const usdValue = (tokenUSDPrice * parseFloat(trade.fromValue)).toFixed(2)
   const tradeUSDValueInCents = (parseFloat(parseFloat(usdValue).toFixed(2)) * 100).toString() // convert to cents because fathom requires it

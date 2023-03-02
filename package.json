@@ -1,6 +1,6 @@
 {
   "name": "@swapr/frontend",
-  "version": "1.0.0-beta.19",
+  "version": "1.0.0-beta.19.1",
   "private": true,
   "description": "DXswap Decentralized Application",
   "license": "GPL-3.0-or-later",
@@ -45,6 +45,7 @@
     "@swapr/core": "^0.3.19",
     "@swapr/periphery": "^0.3.22",
     "@swapr/sdk": "ImpeccableHQ/swapr-sdk#gas-estimation-build",
+    "@tanstack/react-query": "4.24.6",
     "@types/react-helmet": "^6.1.6",
     "@uniswap/smart-order-router": "^2.9.3",
     "@uniswap/token-lists": "^1.0.0-beta.27",

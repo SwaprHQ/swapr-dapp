@@ -7687,6 +7687,7 @@ __metadata:
     "@swapr/periphery": ^0.3.22
     "@swapr/sdk": "ImpeccableHQ/swapr-sdk#gas-estimation-build"
     "@synthetixio/synpress": ^2.3.3
+    "@tanstack/react-query": 4.24.6
     "@testing-library/cypress": ^8.0.3
     "@types/aos": ^3.0.4
     "@types/debug": ^4.1.7
@@ -7939,6 +7940,32 @@ __metadata:
   dependencies:
     defer-to-connect: ^2.0.1
   checksum: fc9cb993e808806692e4a3337c90ece0ec00c89f4b67e3652a356b89730da98bc824273a6d67ca84d5f33cd85f317dcd5ce39d8cc0a2f060145a608a7cb8ce92
+  languageName: node
+  linkType: hard
+
+"@tanstack/query-core@npm:4.24.6":
+  version: 4.24.6
+  resolution: "@tanstack/query-core@npm:4.24.6"
+  checksum: 495dff04f27d72174051f97676fce0fbe322bca966edb7f174f0005a3363ac0300c31eb06255dafa7ee519a430840542379f5ec9f6846903b6bb878e46c33656
+  languageName: node
+  linkType: hard
+
+"@tanstack/react-query@npm:4.24.6":
+  version: 4.24.6
+  resolution: "@tanstack/react-query@npm:4.24.6"
+  dependencies:
+    "@tanstack/query-core": 4.24.6
+    use-sync-external-store: ^1.2.0
+  peerDependencies:
+    react: ^16.8.0 || ^17.0.0 || ^18.0.0
+    react-dom: ^16.8.0 || ^17.0.0 || ^18.0.0
+    react-native: "*"
+  peerDependenciesMeta:
+    react-dom:
+      optional: true
+    react-native:
+      optional: true
+  checksum: 250bc2cba8dd7da61680a8e360fac87ee057d079ee3be950c76dbc063f941119817634857c1cb0d9b12042dd5d4fbe847c02af5dfb89ae8daa0f9339f87ad605
   languageName: node
   linkType: hard
 
@@ -36962,7 +36989,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"use-sync-external-store@npm:^1.0.0":
+"use-sync-external-store@npm:^1.0.0, use-sync-external-store@npm:^1.2.0":
   version: 1.2.0
   resolution: "use-sync-external-store@npm:1.2.0"
   peerDependencies:
