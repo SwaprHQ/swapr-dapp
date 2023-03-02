@@ -230,8 +230,8 @@ export function useSwapCallback({
             let transactionRequest: any
             try {
               transactionRequest = await call.transactionParameters
-            } catch (e) {
-              console.log('Failed to get transaction parameters', e)
+            } catch (e: any) {
+              console.error('Failed to get transaction parameters', e)
             }
 
             // Ignore gas estimation if the request has gasLimit property

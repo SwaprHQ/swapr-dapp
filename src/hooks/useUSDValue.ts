@@ -16,8 +16,8 @@ import {
 
 import { useEffect, useMemo, useRef, useState } from 'react'
 
-import { REFETCH_DATA_INTERVAL } from '../constants/data'
 import { tryParseAmount } from '../state/swap/hooks'
+import { REFETCH_DATA_INTERVAL } from '../utils/alchemy'
 import { getUSDPriceCurrencyQuote, getUSDPriceTokenQuote, toPriceInformation } from '../utils/coingecko'
 import { currencyId } from '../utils/currencyId'
 import { wrappedCurrencyAmount } from '../utils/wrappedCurrency'
