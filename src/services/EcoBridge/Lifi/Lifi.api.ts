@@ -1,4 +1,6 @@
-import LIFI, { ExecutionSettings, RouteOptions, ChainId, QuoteRequest, GetStatusRequest } from '@lifi/sdk'
+import LIFI, { ExecutionSettings, RouteOptions, QuoteRequest, GetStatusRequest, RequestOptions } from '@lifi/sdk'
+
+import { GetTokenList } from './Lifi.types'
 
 type ConfigUpdate = {
   apiUrl?: string
@@ -17,8 +19,8 @@ const lifiConfig: ConfigUpdate = {
 const Lifi = new LIFI(lifiConfig)
 
 export const LifiApi = {
-  async getTokenList(fromChain: ChainId, toChain: ChainId) {
-    const { tokens } = await Lifi.getTokens({ chains: [fromChain, toChain] })
+  async getTokenList({ fromChain, toChain }: GetTokenList, requestOptions: RequestOptions) {
+    const { tokens } = await Lifi.getTokens({ chains: [fromChain, toChain] }, requestOptions)
     const fromChainTokens = tokens[fromChain]
     const toChainTokens = tokens[toChain]
     return {
@@ -27,10 +29,10 @@ export const LifiApi = {
     }
   },
 
-  async getStatus(statusRequest: GetStatusRequest) {
-    return await Lifi.getStatus(statusRequest)
+  async getStatus(statusRequest: GetStatusRequest, requestOptions: RequestOptions) {
+    return await Lifi.getStatus(statusRequest, requestOptions)
   },
-  async getQuote(routeRequest: QuoteRequest) {
-    return await Lifi.getQuote(routeRequest)
+  async getQuote(routeRequest: QuoteRequest, requestOptions: RequestOptions) {
+    return await Lifi.getQuote(routeRequest, requestOptions)
   },
 }
