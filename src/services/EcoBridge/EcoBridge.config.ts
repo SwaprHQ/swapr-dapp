@@ -10,6 +10,7 @@ import { SocketBridge } from './Socket/SocketBridge'
 import { XdaiBridge } from './Xdai/XdaiBridge'
 
 const socketBridgeId = 'socket'
+const lifiBridgeId = 'lifi'
 
 //supported chains are bidirectional
 export const ecoBridgeConfig: EcoBridgeChildBase[] = [
@@ -24,7 +25,7 @@ export const ecoBridgeConfig: EcoBridgeChildBase[] = [
     supportedChains: [{ from: ChainId.MAINNET, to: ChainId.ARBITRUM_ONE }],
   }),
   new SocketBridge({
-    bridgeId: 'socket',
+    bridgeId: socketBridgeId,
     displayName: 'Socket',
     supportedChains: bridgeSupportedChains([
       ChainId.ARBITRUM_ONE,
@@ -58,7 +59,7 @@ export const ecoBridgeConfig: EcoBridgeChildBase[] = [
     supportedChains: [{ from: ChainId.XDAI, to: ChainId.MAINNET }],
   }),
   new LifiBridge({
-    bridgeId: 'lifi',
+    bridgeId: lifiBridgeId,
     displayName: 'Lifi',
     supportedChains: bridgeSupportedChains([
       ChainId.ARBITRUM_ONE,
@@ -76,9 +77,11 @@ export const ecoBridgePersistedKeys = ecoBridgeConfig.map(
 )
 
 export const fixCorruptedEcoBridgeLocalStorageEntries = (persistenceNamespace: string) => {
-  const keysWithoutSocket = ecoBridgePersistedKeys.filter(key => !key.includes(socketBridgeId))
+  const keysWithoutSocketorLifi = ecoBridgePersistedKeys.filter(
+    key => !(key.includes(socketBridgeId) || key.includes(lifiBridgeId))
+  )
 
-  keysWithoutSocket.forEach(key => {
+  keysWithoutSocketorLifi.forEach(key => {
     const fullKey = `${persistenceNamespace}_${key}`
 
     const isEntityAdapter = window.localStorage.getItem(fullKey)?.includes('entities')

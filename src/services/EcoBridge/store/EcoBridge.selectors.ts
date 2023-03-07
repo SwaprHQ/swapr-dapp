@@ -25,6 +25,7 @@ import {
 import { omniBridgeSelectors } from '../OmniBridge/OmniBridge.selectors'
 import { socketSelectors } from '../Socket/Socket.selectors'
 import { xdaiSelectors } from '../Xdai/XdaiBridge.selectors'
+import { lifiSelectors } from './../Lifi/Lifi.selectors'
 
 /**
  * Each bridge declares in config which chainId pairs it supports.
@@ -91,7 +92,9 @@ export const selectSupportedBridges = createSelector(
       []
     )
 
-    return isBridgeSwapActive ? supportedBridges.filter(bridge => bridge.bridgeId === 'socket') : supportedBridges
+    return isBridgeSwapActive
+      ? supportedBridges.filter(bridge => ['socket', 'lifi'].includes(bridge.bridgeId))
+      : supportedBridges
   }
 )
 
@@ -104,6 +107,7 @@ export const selectBridgeTransactions = createSelector(
     omniBridgeSelectors['omnibridge:eth-xdai'].selectBridgeTransactionsSummary,
     connextSelectors['connext'].selectBridgeTransactionsSummary,
     xdaiSelectors['xdai'].selectBridgeTransactionsSummary,
+    lifiSelectors['lifi'].selectBridgeTransactionsSummary,
   ],
   (
     txsSummaryTestnet,
@@ -111,7 +115,8 @@ export const selectBridgeTransactions = createSelector(
     txsSummarySocket,
     txsOmnibridgeEthGnosis,
     txsSummaryConnext,
-    txsSummaryXdai
+    txsSummaryXdai,
+    txsSummaryLifi
   ) => {
     const txs = [
       ...txsSummaryTestnet,
@@ -120,6 +125,7 @@ export const selectBridgeTransactions = createSelector(
       ...txsOmnibridgeEthGnosis,
       ...txsSummaryConnext,
       ...txsSummaryXdai,
+      ...txsSummaryLifi,
     ]
 
     return txs
@@ -187,6 +193,7 @@ export const selectBridgeLists = createSelector(
     (state: AppState) => state.ecoBridge['connext'].lists,
     (state: AppState) => state.ecoBridge['omnibridge:eth-xdai'].lists,
     (state: AppState) => state.ecoBridge['xdai'].lists,
+    (state: AppState) => state.ecoBridge['lifi'].lists,
     (state: AppState) => state.lists.byUrl[DEFAULT_TOKEN_LIST].current,
   ],
   (
@@ -196,6 +203,7 @@ export const selectBridgeLists = createSelector(
     tokenListConnext,
     omnibridgeEthGnosisList,
     tokenListXdai,
+    tokenListLifi,
     swprDefaultList
   ) => {
     // Tmp solution to add swpr token list to arbitrum bridges
@@ -210,6 +218,7 @@ export const selectBridgeLists = createSelector(
       ...tokenListSocket,
       ...tokenListXdai,
       ...tokenListConnext,
+      ...tokenListLifi,
       ...omnibridgeEthGnosisList,
     }
 
