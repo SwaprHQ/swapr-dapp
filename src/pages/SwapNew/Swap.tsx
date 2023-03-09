@@ -27,6 +27,9 @@ export function Swapbox2() {
     handleInputSelect,
     handleOutputSelect,
 
+    // LOADING
+    loading,
+
     maxAmountInput,
     maxAmountOutput,
     isInputPanelDisabled,
@@ -52,7 +55,6 @@ export function Swapbox2() {
     trade,
     swapInputError,
     swapErrorMessage,
-    loading,
     onWrap,
     approveCallback,
     handleSwap,
@@ -75,7 +77,7 @@ export function Swapbox2() {
           onMax={handleMaxInput(Field.INPUT)}
           onCurrencySelect={handleInputSelect}
         />
-        <SwitchCurrenciesButton />
+        <SwitchCurrenciesButton loading={loading} />
         <CurrencyItem
           value={formattedAmounts[Field.OUTPUT]}
           currency={currencies[Field.OUTPUT]}
