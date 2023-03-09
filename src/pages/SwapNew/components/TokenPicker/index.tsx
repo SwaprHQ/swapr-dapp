@@ -10,6 +10,7 @@ import { CurrencySearchContext } from '../../../../components/SearchModal/Curren
 import { useAllTokens, useToken } from '../../../../hooks/Tokens'
 import { useAutoMaxBalance } from '../../../../hooks/useAutoMaxBalance'
 import useDebounce from '../../../../hooks/useDebounce'
+import { useCombinedActiveList } from '../../../../state/lists/hooks'
 import { isAddress } from '../../../../utils'
 import { CurrencySymbol } from '../../constants'
 import { CommonTokens } from './CommonTokens'
@@ -29,8 +30,8 @@ export function TokenPicker({ onMax, onCurrencySelect, isMaxAmount, closeTokenPi
   const debouncedQuery = useDebounce(tokenPickerInputValue, 200)
   const searchToken = useToken(debouncedQuery)
   const allTokens = useAllTokens()
-
-  const { allTokensOnSecondChain, selectedTokenList, showFallbackTokens } = useContext(CurrencySearchContext)
+  const selectedTokenList = useCombinedActiveList()
+  const showFallbackTokens = true
 
   useEffect(() => {
     tokenPickerContainer.classList.add('token-picker-root')
