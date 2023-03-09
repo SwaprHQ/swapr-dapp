@@ -1,13 +1,14 @@
-import styled from 'styled-components'
+import styled, { keyframes } from 'styled-components'
 
+import { ReactComponent as TwoArrowsSVG } from '../../../assets/images/swap-icon.svg'
 import { ReactComponent as DownArrowSVG } from '../../../assets/swapbox/swap-arrow.svg'
 
-export function SwitchCurrenciesButton() {
-  return (
-    <StyledButton>
-      <DownArrowSVG />
-    </StyledButton>
-  )
+type SwitchCurrenciesButtonProps = {
+  loading: boolean
+}
+
+export function SwitchCurrenciesButton({ loading }: SwitchCurrenciesButtonProps) {
+  return <StyledButton>{loading ? <RotatingArrows /> : <DownArrowSVG />}</StyledButton>
 }
 
 // TODO: PULL OUT THE CONSTANTS
@@ -28,4 +29,18 @@ const StyledButton = styled.button`
   box-shadow: 0px 0px 42px rgba(0, 0, 0, 0.42);
   backdrop-filter: blur(11px);
   cursor: pointer;
+`
+
+const Rotation = keyframes`
+  from {
+    transform: rotate(0deg);
+  }
+
+  to {
+    transform: rotate(360deg);
+  }
+`
+
+const RotatingArrows = styled(TwoArrowsSVG)`
+  animation: ${Rotation} 2s linear infinite;
 `
