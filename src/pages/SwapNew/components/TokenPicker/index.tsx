@@ -1,12 +1,14 @@
 import { Currency } from '@swapr/sdk'
 
 import { motion } from 'framer-motion'
-import { useCallback } from 'react'
-import { useEffect, useState } from 'react'
+import { useCallback, ChangeEvent } from 'react'
+import { useEffect, useState, useContext } from 'react'
 import { createPortal } from 'react-dom'
 import styled from 'styled-components'
 
+import { CurrencySearchContext } from '../../../../components/SearchModal/CurrencySearch/CurrencySearch.context'
 import { useAutoMaxBalance } from '../../../../hooks/useAutoMaxBalance'
+import { isAddress } from '../../../../utils'
 import { CurrencySymbol } from '../../constants'
 import { CommonTokens } from './CommonTokens'
 import { SearchTokenItem } from './SearchTokenItem'
@@ -21,6 +23,17 @@ type TokenPickerProps = {
 export function TokenPicker({ onMax, onCurrencySelect, isMaxAmount, closeTokenPicker }: TokenPickerProps) {
   const [tokenPickerContainer] = useState(() => document.createElement('div'))
   const [tokenPickerInputValue, setTokenPickerInputValue] = useState('')
+
+  const {
+    allTokens,
+    allTokensOnSecondChain,
+    searchToken,
+    searchQuery,
+    setSearchQuery,
+    debouncedQuery,
+    selectedTokenList,
+    showFallbackTokens,
+  } = useContext(CurrencySearchContext)
 
   useEffect(() => {
     tokenPickerContainer.classList.add('token-picker-root')
