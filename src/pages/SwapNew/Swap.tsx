@@ -1,6 +1,8 @@
 import { AnimatePresence } from 'framer-motion'
+import { useContext } from 'react'
 import styled from 'styled-components'
 
+import { CurrencySearchContext } from '../../components/SearchModal/CurrencySearch/CurrencySearch.context'
 import { Field } from '../../state/swap/types'
 import { CurrencyItem, SwapButton, SwapInfo, SwitchCurrenciesButton } from './components'
 import { SWAPBOX_WIDTH } from './constants'
@@ -62,7 +64,9 @@ export function Swapbox2() {
     setWrapState,
   } = useSwap()
 
-  console.log('AMOUNTS', formattedAmounts)
+  const ctx = useContext(CurrencySearchContext)
+
+  console.log('CTX', ctx)
 
   return (
     <>
