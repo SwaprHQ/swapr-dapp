@@ -12,9 +12,7 @@ type CurrencyAmountWorthProps = {
 }
 
 export function CurrencyAmountWorth({ fiatValue, priceImpact, isFallback }: CurrencyAmountWorthProps) {
-  console.log('VALUES', fiatValue, priceImpact, isFallback)
-
-  const value = fiatValue ? `${`${isFallback && '~'}`}$${fiatValue.toFixed(2, { groupSeparator: ',' })}` : ''
+  const value = fiatValue ? `${`${isFallback ? '~' : ''}`}$${fiatValue.toFixed(2, { groupSeparator: ',' })}` : ''
 
   return <Paragraph>{value}</Paragraph>
 }
