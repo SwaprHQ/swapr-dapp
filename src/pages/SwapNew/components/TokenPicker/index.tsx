@@ -7,7 +7,9 @@ import { createPortal } from 'react-dom'
 import styled from 'styled-components'
 
 import { CurrencySearchContext } from '../../../../components/SearchModal/CurrencySearch/CurrencySearch.context'
+import { useAllTokens, useToken } from '../../../../hooks/Tokens'
 import { useAutoMaxBalance } from '../../../../hooks/useAutoMaxBalance'
+import useDebounce from '../../../../hooks/useDebounce'
 import { isAddress } from '../../../../utils'
 import { CurrencySymbol } from '../../constants'
 import { CommonTokens } from './CommonTokens'
@@ -24,16 +26,11 @@ export function TokenPicker({ onMax, onCurrencySelect, isMaxAmount, closeTokenPi
   const [tokenPickerContainer] = useState(() => document.createElement('div'))
   const [tokenPickerInputValue, setTokenPickerInputValue] = useState('')
 
-  const {
-    allTokens,
-    allTokensOnSecondChain,
-    searchToken,
-    searchQuery,
-    setSearchQuery,
-    debouncedQuery,
-    selectedTokenList,
-    showFallbackTokens,
-  } = useContext(CurrencySearchContext)
+  const debouncedQuery = useDebounce(tokenPickerInputValue, 200)
+  const searchToken = useToken(debouncedQuery)
+  const allTokens = useAllTokens()
+
+  const { allTokensOnSecondChain, selectedTokenList, showFallbackTokens } = useContext(CurrencySearchContext)
 
   useEffect(() => {
     tokenPickerContainer.classList.add('token-picker-root')
@@ -64,6 +61,16 @@ export function TokenPicker({ onMax, onCurrencySelect, isMaxAmount, closeTokenPi
     [closeTokenPicker, onCurrencySelectWithoutDismiss]
   )
 
+  const handleInput = useCallback(
+    (event: ChangeEvent<HTMLInputElement>) => {
+      const input = event.target.value
+      const checksummedInput = isAddress(input)
+
+      setTokenPickerInputValue(checksummedInput || input)
+    },
+    [setTokenPickerInputValue]
+  )
+
   const onClose = (event: React.MouseEvent<HTMLDivElement>) => {
     if (event.target === event.currentTarget) {
       event.stopPropagation()
@@ -92,7 +99,7 @@ export function TokenPicker({ onMax, onCurrencySelect, isMaxAmount, closeTokenPi
     >
       <Input
         value={tokenPickerInputValue}
-        onChange={e => setTokenPickerInputValue(e.target.value)}
+        onChange={handleInput}
         placeholder="Search token by name or paste address"
         spellCheck={false}
       />
