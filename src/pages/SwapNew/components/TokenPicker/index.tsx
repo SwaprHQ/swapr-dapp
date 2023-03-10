@@ -56,6 +56,12 @@ export function TokenPicker({ onMax, onCurrencySelect, isMaxAmount, closeTokenPi
     return filterTokens(Object.values(allTokens ?? {}), debouncedQuery)
   }, [allTokens, debouncedQuery])
 
+  const sortedTokens: Token[] = useMemo(() => {
+    return filteredTokens.sort(tokenComparator)
+  }, [filteredTokens, tokenComparator])
+
+  const filteredSortedTokens = useSortedTokensByQuery(sortedTokens, debouncedQuery)
+
   const onCurrencySelectWithoutDismiss = useCallback(
     (currency: Currency) => {
       if (handleOnCurrencySelect && currency) handleOnCurrencySelect(currency, isMaxAmount)
