@@ -18,6 +18,7 @@ import { isAddress } from '../../../../utils'
 import { CurrencySymbol } from '../../constants'
 import { CommonTokens } from './CommonTokens'
 import { SearchTokenItem } from './SearchTokenItem'
+import { TokenItem } from './TokenItem'
 
 type TokenPickerProps = {
   onMax?: () => void
@@ -94,8 +95,6 @@ export function TokenPicker({
     return filteredTokensList
   }, [filteredSortedTokens, currencyOmitList, showNativeCurrency, nativeCurrency, debouncedQuery])
 
-  console.log('FILTERED :::', filteredSortedTokensWithNativeCurrency)
-
   const onCurrencySelectWithoutDismiss = useCallback(
     (currency: Currency) => {
       if (handleOnCurrencySelect && currency) handleOnCurrencySelect(currency, isMaxAmount)
@@ -160,9 +159,9 @@ export function TokenPicker({
         </>
       ) : (
         <SearchList>
-          <SearchTokenItem currencySymbol={CurrencySymbol.ETH} balance={0.4342} />
-          <SearchTokenItem currencySymbol={CurrencySymbol.SWPR} balance={1214.15} />
-          <SearchTokenItem currencySymbol={CurrencySymbol.DXD} balance={55532.1245} />
+          {filteredSortedTokensWithNativeCurrency.map(token => {
+            return <TokenItem token={token as Token} onClick={() => handleCurrencySelect(token)} />
+          })}
         </SearchList>
       )}
     </Container>,
