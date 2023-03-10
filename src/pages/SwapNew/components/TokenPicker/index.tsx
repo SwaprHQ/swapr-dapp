@@ -1,12 +1,14 @@
-import { Currency } from '@swapr/sdk'
+import { Currency, Token } from '@swapr/sdk'
 
 import { motion } from 'framer-motion'
 import { useCallback, ChangeEvent } from 'react'
-import { useEffect, useState, useContext } from 'react'
+import { useEffect, useState, useMemo } from 'react'
 import { createPortal } from 'react-dom'
 import styled from 'styled-components'
 
 import { CurrencySearchContext } from '../../../../components/SearchModal/CurrencySearch/CurrencySearch.context'
+import { useSortedTokensByQuery } from '../../../../components/SearchModal/utils/filtering'
+import { useTokenComparator } from '../../../../components/SearchModal/utils/sorting'
 import { useAllTokens, useToken } from '../../../../hooks/Tokens'
 import { useAutoMaxBalance } from '../../../../hooks/useAutoMaxBalance'
 import useDebounce from '../../../../hooks/useDebounce'
@@ -26,6 +28,7 @@ type TokenPickerProps = {
 export function TokenPicker({ onMax, onCurrencySelect, isMaxAmount, closeTokenPicker }: TokenPickerProps) {
   const [tokenPickerContainer] = useState(() => document.createElement('div'))
   const [tokenPickerInputValue, setTokenPickerInputValue] = useState('')
+  const [invertSearchOrder] = useState<boolean>(false)
 
   const debouncedQuery = useDebounce(tokenPickerInputValue, 200)
   const searchToken = useToken(debouncedQuery)
@@ -46,6 +49,8 @@ export function TokenPicker({ onMax, onCurrencySelect, isMaxAmount, closeTokenPi
     onMax,
     onCurrencySelect,
   })
+
+  const tokenComparator = useTokenComparator(invertSearchOrder)
 
   const onCurrencySelectWithoutDismiss = useCallback(
     (currency: Currency) => {
