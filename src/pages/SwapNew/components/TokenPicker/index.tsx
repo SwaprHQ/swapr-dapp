@@ -12,6 +12,7 @@ import { useTokenComparator } from '../../../../components/SearchModal/utils/sor
 import { useAllTokens, useToken } from '../../../../hooks/Tokens'
 import { useAutoMaxBalance } from '../../../../hooks/useAutoMaxBalance'
 import useDebounce from '../../../../hooks/useDebounce'
+import { useNativeCurrency } from '../../../../hooks/useNativeCurrency'
 import { useCombinedActiveList } from '../../../../state/lists/hooks'
 import { isAddress } from '../../../../utils'
 import { CurrencySymbol } from '../../constants'
@@ -23,9 +24,18 @@ type TokenPickerProps = {
   onCurrencySelect?: (currency: Currency, isMaxAmount?: boolean) => void
   isMaxAmount: boolean
   closeTokenPicker: () => void
+  showNativeCurrency?: boolean
+  currencyOmitList?: string[]
 }
 
-export function TokenPicker({ onMax, onCurrencySelect, isMaxAmount, closeTokenPicker }: TokenPickerProps) {
+export function TokenPicker({
+  onMax,
+  onCurrencySelect,
+  isMaxAmount,
+  closeTokenPicker,
+  showNativeCurrency,
+  currencyOmitList,
+}: TokenPickerProps) {
   const [tokenPickerContainer] = useState(() => document.createElement('div'))
   const [tokenPickerInputValue, setTokenPickerInputValue] = useState('')
   const [invertSearchOrder] = useState<boolean>(false)
@@ -61,6 +71,30 @@ export function TokenPicker({ onMax, onCurrencySelect, isMaxAmount, closeTokenPi
   }, [filteredTokens, tokenComparator])
 
   const filteredSortedTokens = useSortedTokensByQuery(sortedTokens, debouncedQuery)
+
+  const nativeCurrency = useNativeCurrency()
+
+  const filteredSortedTokensWithNativeCurrency: Currency[] = useMemo(() => {
+    let filteredTokensList = filteredSortedTokens
+    if ((currencyOmitList?.length ?? 0) > 0) {
+      filteredTokensList = filteredSortedTokens.filter(({ address }) =>
+        currencyOmitList?.some(addr => addr.toUpperCase() !== address.toUpperCase())
+      )
+    }
+
+    if (!showNativeCurrency || !nativeCurrency.symbol || !nativeCurrency.name) return filteredTokensList
+
+    if (
+      nativeCurrency &&
+      new RegExp(debouncedQuery.replace(/\s/g, ''), 'gi').test(`${nativeCurrency.symbol} ${nativeCurrency.name}`)
+    ) {
+      const tokensWithoutNativeCurrency = filteredTokensList.filter(token => token.address !== nativeCurrency.address)
+      return [nativeCurrency, ...tokensWithoutNativeCurrency]
+    }
+    return filteredTokensList
+  }, [filteredSortedTokens, currencyOmitList, showNativeCurrency, nativeCurrency, debouncedQuery])
+
+  console.log('FILTERED :::', filteredSortedTokensWithNativeCurrency)
 
   const onCurrencySelectWithoutDismiss = useCallback(
     (currency: Currency) => {
