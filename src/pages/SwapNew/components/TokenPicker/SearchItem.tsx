@@ -1,9 +1,21 @@
+import { Currency } from '@swapr/sdk'
+
 import styled from 'styled-components'
 
-type SearchItemProps = {}
+import { CurrencyLogo } from '../CurrencyLogo'
 
-export function SearchItem({}: SearchItemProps) {
-  return <Container>Currency</Container>
+type SearchItemProps = {
+  currency: Currency
+  onClick: () => void
+}
+
+export function SearchItem({ currency, onClick }: SearchItemProps) {
+  return (
+    <Container onClick={onClick}>
+      <CurrencyLogo currency={currency} />
+      {currency?.symbol}
+    </Container>
+  )
 }
 
 const Container = styled.div`
