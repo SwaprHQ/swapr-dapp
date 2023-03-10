@@ -7,7 +7,7 @@ import { createPortal } from 'react-dom'
 import styled from 'styled-components'
 
 import { CurrencySearchContext } from '../../../../components/SearchModal/CurrencySearch/CurrencySearch.context'
-import { useSortedTokensByQuery } from '../../../../components/SearchModal/utils/filtering'
+import { filterTokens, useSortedTokensByQuery } from '../../../../components/SearchModal/utils/filtering'
 import { useTokenComparator } from '../../../../components/SearchModal/utils/sorting'
 import { useAllTokens, useToken } from '../../../../hooks/Tokens'
 import { useAutoMaxBalance } from '../../../../hooks/useAutoMaxBalance'
@@ -51,6 +51,10 @@ export function TokenPicker({ onMax, onCurrencySelect, isMaxAmount, closeTokenPi
   })
 
   const tokenComparator = useTokenComparator(invertSearchOrder)
+
+  const filteredTokens: Token[] = useMemo(() => {
+    return filterTokens(Object.values(allTokens ?? {}), debouncedQuery)
+  }, [allTokens, debouncedQuery])
 
   const onCurrencySelectWithoutDismiss = useCallback(
     (currency: Currency) => {
