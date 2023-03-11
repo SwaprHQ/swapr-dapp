@@ -6,7 +6,6 @@ import { useEffect, useState, useMemo } from 'react'
 import { createPortal } from 'react-dom'
 import styled from 'styled-components'
 
-import { CurrencySearchContext } from '../../../../components/SearchModal/CurrencySearch/CurrencySearch.context'
 import { filterTokens, useSortedTokensByQuery } from '../../../../components/SearchModal/utils/filtering'
 import { useTokenComparator } from '../../../../components/SearchModal/utils/sorting'
 import { useAllTokens, useToken } from '../../../../hooks/Tokens'
@@ -15,10 +14,8 @@ import useDebounce from '../../../../hooks/useDebounce'
 import { useNativeCurrency } from '../../../../hooks/useNativeCurrency'
 import { useCombinedActiveList } from '../../../../state/lists/hooks'
 import { isAddress } from '../../../../utils'
-import { CurrencySymbol } from '../../constants'
 import { CommonTokens } from './CommonTokens'
-import { SearchTokenItem } from './SearchTokenItem'
-import { TokenItem } from './TokenItem'
+import { SearchItem } from './SearchItem'
 
 type TokenPickerProps = {
   onMax?: () => void
@@ -159,8 +156,8 @@ export function TokenPicker({
         </>
       ) : (
         <SearchList>
-          {filteredSortedTokensWithNativeCurrency.map(token => {
-            return <TokenItem token={token as Token} onClick={() => handleCurrencySelect(token)} />
+          {filteredSortedTokensWithNativeCurrency.map(currency => {
+            return <SearchItem currency={currency} onClick={() => handleCurrencySelect(currency)} />
           })}
         </SearchList>
       )}
@@ -202,58 +199,7 @@ const Input = styled.input`
   margin: 220px auto 74px;
 `
 
-const TokensSection = styled.div`
-  width: 478px;
-  text-align: center;
-  margin-bottom: 34px;
-`
-
 const SearchList = styled.div`
   max-width: 478px;
   width: 100%;
-`
-
-const CCC = styled.div`
-  margin-bottom: 16px;
-`
-
-const SearchTokenInfo = styled.div`
-  height: 20px;
-  display: flex;
-  justify-content: space-between;
-  margin-bottom: 4px;
-`
-
-const SearchTokenCurrencyInfo = styled.div`
-  display: flex;
-  align-items: center;
-  gap: 6px;
-`
-
-const SearchTokenCurrencySymbol = styled.p`
-  display: inline-block;
-`
-
-const SearchTokenCurrencyBalance = styled.p`
-  display: inline-block;
-  line-height: 18px;
-  font-size: 15px;
-  font-family: Inter;
-  font-weight: 500;
-  text-align: right;
-  text-transform: uppercase;
-  font-feature-settings: 'zero' on;
-  color: #bcb3f0;
-`
-
-const SearchTokenName = styled.p`
-  line-height: 12px;
-  font-size: 10px;
-  font-family: Inter;
-  font-weight: 600;
-  letter-spacing: 0.08em;
-  text-align: left;
-  text-transform: uppercase;
-  color: #dddaf8;
-  opacity: 0.8;
 `
