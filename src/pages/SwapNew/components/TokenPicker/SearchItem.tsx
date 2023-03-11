@@ -12,12 +12,29 @@ type SearchItemProps = {
 export function SearchItem({ currency, onClick }: SearchItemProps) {
   return (
     <Container onClick={onClick}>
-      <CurrencyLogo currency={currency} />
-      {currency?.symbol}
+      <Info>
+        <TokenInfo>
+          <CurrencyLogo currency={currency} />
+          {currency?.symbol}
+        </TokenInfo>
+      </Info>
     </Container>
   )
 }
 
 const Container = styled.div`
   margin-bottom: 16px;
+`
+
+const Info = styled.div`
+  height: 20px;
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 4px;
+`
+
+const TokenInfo = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 6px;
 `
