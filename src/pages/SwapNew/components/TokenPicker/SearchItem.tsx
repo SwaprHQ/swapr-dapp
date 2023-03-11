@@ -10,6 +10,7 @@ type SearchItemProps = {
 }
 
 export function SearchItem({ currency, onClick }: SearchItemProps) {
+  console.log()
   return (
     <Container onClick={onClick}>
       <Info>
@@ -18,6 +19,7 @@ export function SearchItem({ currency, onClick }: SearchItemProps) {
           {currency?.symbol}
         </TokenInfo>
       </Info>
+      <TokenName>{currency.name}</TokenName>
     </Container>
   )
 }
@@ -37,4 +39,16 @@ const TokenInfo = styled.div`
   display: flex;
   align-items: center;
   gap: 6px;
+`
+
+const TokenName = styled.p`
+  line-height: 12px;
+  font-size: 10px;
+  font-family: Inter;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-align: left;
+  text-transform: uppercase;
+  color: #dddaf8;
+  opacity: 0.8;
 `
