@@ -151,6 +151,7 @@ export class LifiBridge extends EcoBridgeChildBase {
       return
     }
   }
+
   fetchDynamicLists = async () => {
     const {
       from: { chainId: fromChainId },
@@ -214,7 +215,7 @@ export class LifiBridge extends EcoBridgeChildBase {
 
   getBridgingMetadata = async () => {
     const ecoBridgeState = this.store.getState().ecoBridge
-    const { from, to } = ecoBridgeState.ui
+    const { from, to, isBridgeSwapActive } = ecoBridgeState.ui
     const requestId = this.ecoBridgeUtils.metadataStatus.start()
 
     // reset previous data
@@ -240,61 +241,71 @@ export class LifiBridge extends EcoBridgeChildBase {
       this.ecoBridgeUtils.metadataStatus.fail('No available routes / details')
       return
     }
+    if (isBridgeSwapActive) {
+      await this.#getLifiRoutes({
+        fromChain: from.chainId.toString(),
+        fromToken: from.address === Currency.getNative(from.chainId).symbol ? NATIVE_TOKEN_ADDRESS : from.address,
+        toToken: to.address === Currency.getNative(to.chainId).symbol ? NATIVE_TOKEN_ADDRESS : to.address,
+        toChain: to.chainId.toString(),
+        fromAmount: value.toString(),
+        requestId,
+      })
+    } else {
+      const lifiTokens = this.store.getState().ecoBridge.lifi.lists[this.bridgeId]
+      const fromNativeCurrency = Currency.getNative(from.chainId)
 
-    const lifiTokens = this.store.getState().ecoBridge.lifi.lists[this.bridgeId]
-    const fromNativeCurrency = Currency.getNative(from.chainId)
+      let fromTokenAddress = ''
+      let toTokenAddress = ''
 
-    let fromTokenAddress = ''
-    let toTokenAddress = ''
+      const overrideTokens = overrideTokensAddresses({
+        toChainId: to.chainId,
+        fromChainId: from.chainId,
+        fromAddress: from.address,
+      })
 
-    const overrideTokens = overrideTokensAddresses({
-      toChainId: to.chainId,
-      fromChainId: from.chainId,
-      fromAddress: from.address,
-    })
+      if (overrideTokens) {
+        const { fromTokenAddressOverride, toTokenAddressOverride } = overrideTokens
 
-    if (overrideTokens) {
-      const { fromTokenAddressOverride, toTokenAddressOverride } = overrideTokens
-
-      fromTokenAddress = fromTokenAddressOverride
-      toTokenAddress = toTokenAddressOverride
-    }
-
-    // Default pairing
-    if (!toTokenAddress && !fromTokenAddress) {
-      if (from.address === fromNativeCurrency.symbol) {
-        fromTokenAddress = NATIVE_TOKEN_ADDRESS
-        toTokenAddress = NATIVE_TOKEN_ADDRESS
-      } else {
-        const fromToken = lifiTokens.tokens.find(token => token.address.toLowerCase() === from.address.toLowerCase())
-
-        if (!fromToken) {
-          this.ecoBridgeUtils.metadataStatus.fail('No available routes / details')
-          return
-        }
-
-        const toToken = lifiTokens.tokens.find(
-          token => token.symbol === fromToken.symbol && token.chainId === to.chainId
-        )
-
-        if (!toToken) {
-          this.ecoBridgeUtils.metadataStatus.fail('No available routes / details')
-          return
-        }
-
-        fromTokenAddress = fromToken.address
-        toTokenAddress = toToken.address
+        fromTokenAddress = fromTokenAddressOverride
+        toTokenAddress = toTokenAddressOverride
       }
-    }
 
-    await this.#getLifiRoutes({
-      fromChain: from.chainId.toString(),
-      fromToken: fromTokenAddress,
-      toToken: toTokenAddress,
-      toChain: to.chainId.toString(),
-      fromAmount: value.toString(),
-      requestId,
-    })
+      // Default pairing
+      if (!toTokenAddress && !fromTokenAddress) {
+        if (from.address === fromNativeCurrency.symbol) {
+          fromTokenAddress = NATIVE_TOKEN_ADDRESS
+          toTokenAddress = NATIVE_TOKEN_ADDRESS
+        } else {
+          const fromToken = lifiTokens.tokens.find(token => token.address.toLowerCase() === from.address.toLowerCase())
+
+          if (!fromToken) {
+            this.ecoBridgeUtils.metadataStatus.fail('No available routes / details')
+            return
+          }
+
+          const toToken = lifiTokens.tokens.find(
+            token => token.symbol === fromToken.symbol && token.chainId === to.chainId
+          )
+
+          if (!toToken) {
+            this.ecoBridgeUtils.metadataStatus.fail('No available routes / details')
+            return
+          }
+
+          fromTokenAddress = fromToken.address
+          toTokenAddress = toToken.address
+        }
+      }
+
+      await this.#getLifiRoutes({
+        fromChain: from.chainId.toString(),
+        fromToken: fromTokenAddress,
+        toToken: toTokenAddress,
+        toChain: to.chainId.toString(),
+        fromAmount: value.toString(),
+        requestId,
+      })
+    }
   }
 
   #getLifiRoutes = async (request: LifiQuoteRequest) => {
@@ -311,7 +322,6 @@ export class LifiBridge extends EcoBridgeChildBase {
       this.ecoBridgeUtils.metadataStatus.fail('No available routes / details')
       return
     }
-
     if (!step) {
       this.ecoBridgeUtils.metadataStatus.fail('No available routes / details')
       return
@@ -320,7 +330,11 @@ export class LifiBridge extends EcoBridgeChildBase {
     this.store.dispatch(this.#actions().setRoute(step))
 
     const { id: routeId, action, estimate } = step
-    const { executionDuration, toAmount, gasCosts } = estimate
+    const { executionDuration, toAmount, gasCosts, feeCosts } = estimate
+    const totalFees = feeCosts?.reduce((cost, costs) => {
+      cost += Number(costs?.amountUSD ?? 0)
+      return cost
+    }, 0)
     const { toToken } = action
     const { amountUSD: totalGasFeeUSD } = gasCosts?.[0] ?? {}
     const formattedToAmount = Number(formatUnits(toAmount, toToken.decimals))
@@ -330,6 +344,7 @@ export class LifiBridge extends EcoBridgeChildBase {
     this.store.dispatch(
       this.baseActions.setBridgeDetails({
         gas: `${Number(totalGasFeeUSD ?? 0).toFixed(2)}$`,
+        fee: `${totalFees}$`,
         estimateTime: executionDuration ? `${(executionDuration / 60).toFixed(0).toString()} min` : undefined,
         receiveAmount: formattedToAmount,
         requestId,
