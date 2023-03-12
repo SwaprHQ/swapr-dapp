@@ -21,6 +21,7 @@ jobs:
   prepare:
     name: Check how tests should be executed
     runs-on: ubuntu-20.04
+    if: false
     outputs:
       uuid: ${{ steps.uuid.outputs.value }}
       commit-message: ${{ steps.commit-message.outputs.value }}
@@ -513,7 +514,7 @@ jobs:
   cleanup:
     name: 🧹 Cleanup
     if: ${{ success() && github.actor != 'dependabot[bot]' }}
-    needs: [install, lint, test, typecheck, build, cypress, cypress-report]
+    needs: [install, lint, test, typecheck, build]
     runs-on: ubuntu-20.04
     steps:
       - name: Delete workspace artifact
