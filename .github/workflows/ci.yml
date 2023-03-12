@@ -357,7 +357,6 @@ jobs:
 
   cypress:
     name: 🎡 ・Cypress (${{ matrix.containers }})
-    needs: prepare
     runs-on: ubuntu-20.04
     strategy:
       fail-fast: false
