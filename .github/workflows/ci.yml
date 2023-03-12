@@ -357,6 +357,7 @@ jobs:
 
   cypress:
     name: 🎡 ・Cypress (${{ matrix.containers }})
+    if: ${{ github.actor != 'dependabot[bot]' }}
     runs-on: ubuntu-20.04
     strategy:
       fail-fast: false
@@ -392,8 +393,8 @@ jobs:
       - name: Codegen GraphQl
         run: yarn codegen:graphql
 
-      - name: Install dependencies
-        run: yarn install --immutable
+      # - name: Install dependencies
+      #   run: yarn install --immutable
 
       - name: Verify Cypress
         run: yarn cypress install
