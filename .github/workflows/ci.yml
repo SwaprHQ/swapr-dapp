@@ -356,13 +356,13 @@ jobs:
             docker/videos-ci
 
   cypress:
-    name: 🎡 ・Cypress (${{ matrix.containers }})
+    name: 🎡 ・Cypress
     if: ${{ github.actor != 'dependabot[bot]' }}
     runs-on: ubuntu-20.04
-    strategy:
-      fail-fast: false
-      matrix:
-        containers: [Container01, Container02, Container03, Container04]
+    # strategy:
+    #   fail-fast: false
+    # matrix:
+    #   containers: [Container01, Container02, Container03, Container04]
     steps:
       - name: ⬇️ ・Checkout repo
         uses: actions/checkout@v3
@@ -401,105 +401,105 @@ jobs:
 
       - name: Run cypress tests
         if: ${{ !(github.event_name == 'push') }}
-        run: yarn cypress:ci 'yarn cypress run -r mochawesome --record --group electron --key=${{ secrets.CYPRESS_DASHBOARD_KEY }} --parallel --tag TESTS_FROM_PR --ci-build-id=${{ needs.prepare.outputs.uuid }}'
+        run: yarn cypress:ci 'yarn cypress run -r mochawesome --record --group electron --key=${{ secrets.CYPRESS_DASHBOARD_KEY }} --parallel --tag TESTS_FROM_PR --ci-build-id=sha-$GITHUB_SHA-time-$(date +"%s")'
         continue-on-error: true
         env:
           COMMIT_INFO_MESSAGE: ${{github.event.pull_request.title}}
-          COMMIT_INFO_SHA: ${{ needs.prepare.outputs.uuid }}
+          COMMIT_INFO_SHA: sha-$GITHUB_SHA-time-$(date +"%s")
 
       - name: Run cypress tests after merge
         if: ${{ (github.event_name == 'push') }}
-        run: yarn cypress:ci './node_modules/.bin/cypress run -r mochawesome --record --group electron --key=${{ secrets.CYPRESS_DASHBOARD_KEY }} --parallel }} --tag SMOKE_TESTS --ci-build-id=${{ needs.prepare.outputs.uuid }}'
+        run: yarn cypress:ci './node_modules/.bin/cypress run -r mochawesome --record --group electron --key=${{ secrets.CYPRESS_DASHBOARD_KEY }} --parallel }} --tag SMOKE_TESTS --ci-build-id=sha-$GITHUB_SHA-time-$(date +"%s")'
         continue-on-error: true
         env:
           COMMIT_INFO_MESSAGE: ${{github.event.pull_request.title}}
-          COMMIT_INFO_SHA: ${{ needs.prepare.outputs.uuid }}
+          COMMIT_INFO_SHA: sha-$GITHUB_SHA-time-$(date +"%s")
 
-      - name: Merge test results into one
-        run: |
-          yarn run report:merge
-          mv index.json ${{ matrix.containers }}.json
-        continue-on-error: true
+      # - name: Merge test results into one
+      #   run: |
+      #     yarn run report:merge
+      #     mv index.json ${{ matrix.containers }}.json
+      #   continue-on-error: true
 
-      - name: Save code coverage results
-        uses: actions/upload-artifact@v3
-        with:
-          name: ${{ matrix.containers }}
-          path: |
-            ${{ matrix.containers }}.json
-            tests/screenshots
+      # - name: Save code coverage results
+      #   uses: actions/upload-artifact@v3
+      #   with:
+      #     name: ${{ matrix.containers }}
+      #     path: |
+      #       ${{ matrix.containers }}.json
+      #       tests/screenshots
 
-  cypress-report:
-    name: ⬡・Merge and generate cypress reports
-    needs: [install, cypress]
-    runs-on: ubuntu-20.04
-    steps:
-      - name: 📥 ・Download workspace artifact
-        uses: actions/download-artifact@v3
-        with:
-          name: workspace
-      - name: Extract workspace artifact
-        run: tar --extract --use-compress-program='zstd -d' --file=workspace.tar.zst
+  # cypress-report:
+  #   name: ⬡・Merge and generate cypress reports
+  #   needs: [install, cypress]
+  #   runs-on: ubuntu-20.04
+  #   steps:
+  #     - name: 📥 ・Download workspace artifact
+  #       uses: actions/download-artifact@v3
+  #       with:
+  #         name: workspace
+  #     - name: Extract workspace artifact
+  #       run: tar --extract --use-compress-program='zstd -d' --file=workspace.tar.zst
 
-      - uses: actions/download-artifact@v3
-        with:
-          name: Container01
-          path: mochawesome-report
-      - uses: actions/download-artifact@v3
-        with:
-          name: Container02
-          path: mochawesome-report
-      - uses: actions/download-artifact@v3
-        with:
-          name: Container03
-          path: mochawesome-report
-      - uses: actions/download-artifact@v3
-        with:
-          name: Container04
-          path: mochawesome-report
-      - uses: actions/download-artifact@v3
-        if: false
-        continue-on-error: true
-        with:
-          name: 01transactionless
-          path: mochawesome-report
+  #     - uses: actions/download-artifact@v3
+  #       with:
+  #         name: Container01
+  #         path: mochawesome-report
+  #     - uses: actions/download-artifact@v3
+  #       with:
+  #         name: Container02
+  #         path: mochawesome-report
+  #     - uses: actions/download-artifact@v3
+  #       with:
+  #         name: Container03
+  #         path: mochawesome-report
+  #     - uses: actions/download-artifact@v3
+  #       with:
+  #         name: Container04
+  #         path: mochawesome-report
+  #     - uses: actions/download-artifact@v3
+  #       if: false
+  #       continue-on-error: true
+  #       with:
+  #         name: 01transactionless
+  #         path: mochawesome-report
 
-      - uses: actions/download-artifact@v3
-        if: false
-        continue-on-error: true
-        with:
-          name: 02transactionfull
-          path: mochawesome-report
+  #     - uses: actions/download-artifact@v3
+  #       if: false
+  #       continue-on-error: true
+  #       with:
+  #         name: 02transactionfull
+  #         path: mochawesome-report
 
-      - name: Setup Node
-        uses: actions/setup-node@v3
-        with:
-          node-version: '16'
+  #     - name: Setup Node
+  #       uses: actions/setup-node@v3
+  #       with:
+  #         node-version: '16'
 
-      - name: Merge test results into one
-        run: yarn run report:merge
+  #     - name: Merge test results into one
+  #       run: yarn run report:merge
 
-      - name: Generate HTML report
-        run: yarn run report:generate
+  #     - name: Generate HTML report
+  #       run: yarn run report:generate
 
-      - name: Save code coverage results
-        uses: actions/upload-artifact@v3
-        with:
-          name: test-report
-          path: |
-            public-report
-            mochawesome-report/public-report/screenshots/**
-            mochawesome-report/public-report/videos/**
-          retention-days: 3
+  #     - name: Save code coverage results
+  #       uses: actions/upload-artifact@v3
+  #       with:
+  #         name: test-report
+  #         path: |
+  #           public-report
+  #           mochawesome-report/public-report/screenshots/**
+  #           mochawesome-report/public-report/videos/**
+  #         retention-days: 3
 
-      - name: Delete merged artifacts
-        uses: geekyeggo/delete-artifact@v2
-        with:
-          name: |
-            Container01
-            Container02
-            Container03
-            Container04
+  #     - name: Delete merged artifacts
+  #       uses: geekyeggo/delete-artifact@v2
+  #       with:
+  #         name: |
+  #           Container01
+  #           Container02
+  #           Container03
+  #           Container04
 
   depcleanup:
     name: 🧹 Dependabot Cleanup
