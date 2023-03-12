@@ -26,6 +26,7 @@ export function SearchItem({ currency, onClick }: SearchItemProps) {
 
 const Container = styled.div`
   margin-bottom: 16px;
+  cursor: pointer;
 `
 
 const Info = styled.div`
