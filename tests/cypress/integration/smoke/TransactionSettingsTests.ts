@@ -2,7 +2,7 @@ import { SwapPage } from '../../../pages/SwapPage'
 import { TransactionSettings } from '../../../pages/TransactionSettings'
 
 describe('Transactions Settings Smoke Test', () => {
-  before(() => {
+  beforeEach(() => {
     SwapPage.visitSwapPage()
   })
   it('Open Transaction settings modal window', () => {

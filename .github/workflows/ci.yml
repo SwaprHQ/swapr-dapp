@@ -359,7 +359,6 @@ jobs:
     name: 🎡 ・Cypress (${{ matrix.containers }})
     needs: prepare
     runs-on: ubuntu-20.04
-    if: ${{ needs.prepare.outputs.cypress }}
     strategy:
       fail-fast: false
       matrix:
@@ -432,7 +431,7 @@ jobs:
 
   cypress-report:
     name: ⬡・Merge and generate cypress reports
-    needs: [install, cypress, synpress]
+    needs: [install, cypress]
     runs-on: ubuntu-20.04
     steps:
       - name: 📥 ・Download workspace artifact
@@ -459,12 +458,14 @@ jobs:
           name: Container04
           path: mochawesome-report
       - uses: actions/download-artifact@v3
+        if: false
         continue-on-error: true
         with:
           name: 01transactionless
           path: mochawesome-report
 
       - uses: actions/download-artifact@v3
+        if: false
         continue-on-error: true
         with:
           name: 02transactionfull
@@ -514,7 +515,7 @@ jobs:
   cleanup:
     name: 🧹 Cleanup
     if: ${{ success() && github.actor != 'dependabot[bot]' }}
-    needs: [install, lint, test, typecheck, build]
+    needs: [install, lint, test, typecheck, build, cypress]
     runs-on: ubuntu-20.04
     steps:
       - name: Delete workspace artifact

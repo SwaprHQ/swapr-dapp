@@ -3,7 +3,7 @@ import { NetworkSwitcher } from '../../../pages/NetworkSwitcher'
 import { SettingsDialog } from '../../../pages/SettingsDialog'
 
 describe('Menu bar smoke tests', () => {
-  before(() => {
+  beforeEach(() => {
     cy.visit('/')
   })
   it('Should display nav items on every page [TC-16]', () => {

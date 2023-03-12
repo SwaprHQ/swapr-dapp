@@ -3,7 +3,7 @@ import { NetworkSwitcher } from '../../../pages/NetworkSwitcher'
 import { RewardsPage } from '../../../pages/RewardsPage'
 
 describe('Rewards Page Smoke Test', () => {
-  before(() => {
+  beforeEach(() => {
     RewardsPage.visitRewardsPage()
   })
   it('Check My pairs toggle switch on Rewards Page', () => {

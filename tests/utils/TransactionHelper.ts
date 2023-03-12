@@ -1,4 +1,4 @@
-import 'etherscan-api/dist/bundle.js'
+import 'etherscan-api/index.js'
 import { AddressesEnum } from './enums/AddressesEnum'
 import { ScannerFacade } from './facades/ScannerFacade'
 import { SubgraphFacade } from './facades/SubgraphFacade'
@@ -118,7 +118,7 @@ export class TransactionHelper {
     cy.intercept('GET', 'https://ipfs.io/ipfs/**').as('somere')
     cy.wait('@somere').then(req => {
       try {
-        expect(req.response).to.not.be.undefined
+        expect(req.response).not.to.be('undefined')
         expect(req.response!.body.name).to.be.eq('Swapr token list')
       } catch (err) {
         if (retries > 100) {
