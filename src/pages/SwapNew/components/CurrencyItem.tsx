@@ -95,6 +95,10 @@ const CurrencyContainer = styled.div<{ lowerItem?: boolean }>`
   }
 `
 
-const CurrencyAmountContainer = styled.div``
+const CurrencyAmountContainer = styled.div`
+  width: 40%;
+`
 
-const CurrencyInfoContainer = styled.div``
+const CurrencyInfoContainer = styled.div`
+  width: 60%;
+`
