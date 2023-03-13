@@ -43,5 +43,5 @@ export function CommonTokens({ onCurrencySelect, selectedCurrency }: CommonToken
 const Container = styled.div`
   width: 478px;
   text-align: center;
-  margin-bottom: 34px;
+  margin: 74px 0 34px;
 `

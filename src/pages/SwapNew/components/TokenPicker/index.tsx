@@ -196,10 +196,13 @@ const Input = styled.input`
   text-shadow: 0px 0px 10px rgba(255, 255, 255, 0.15);
   padding: 15px 20px;
   backdrop-filter: blur(12.5px);
-  margin: 220px auto 74px;
+  margin: 220px auto 0;
 `
 
 const SearchList = styled.div`
   max-width: 478px;
   width: 100%;
+  max-height: 450px;
+  overflow-y: scroll;
+  margin-top: 36px;
 `
