@@ -12,8 +12,6 @@ type CurrencyTypeProps = {
 }
 
 export function CurrencyType({ currency, onClick }: CurrencyTypeProps) {
-  console.log('CURRENCY: ', currency)
-
   return (
     <Container onClick={onClick}>
       <CurrencyLogo currency={currency!} />
