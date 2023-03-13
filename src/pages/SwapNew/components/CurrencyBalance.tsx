@@ -31,7 +31,6 @@ export function CurrencyBalance({ currency }: CurrencyBalanceProps) {
 }
 
 const Paragraph = styled.p`
-  width: fit-content;
   line-height: 12px;
   font-size: 10px;
   ${FontFamily}
@@ -39,6 +38,7 @@ const Paragraph = styled.p`
   letter-spacing: 0.08em;
   text-transform: uppercase;
   color: ${TEXT_COLOR_SECONDARY};
+  text-align: right;
 
   & span {
     text-decoration: underline;

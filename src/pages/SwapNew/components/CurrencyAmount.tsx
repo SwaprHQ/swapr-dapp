@@ -70,7 +70,7 @@ export function CurrencyAmount({ value, onUserInput, setIsMaxAmount, maxAmount }
 }
 
 const StyledInput = styled.input`
-  width: 250px;
+  width: 100%;
   height: 34px;
   line-height: 34px;
   font-size: 28px;
