@@ -71,4 +71,5 @@ export function CurrencyLogo({ currency, currencyWrapperSource = CurrencyWrapper
 const StyledLogo = styled(Logo)`
   width: 20px;
   height: 20px;
+  border-radius: 50%;
 `
