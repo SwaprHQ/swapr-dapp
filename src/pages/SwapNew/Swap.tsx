@@ -94,7 +94,10 @@ export function Swapbox2() {
           lowerItem
         />
         <SwapInfo />
-        <SwapButton />
+        <SwapButton
+          priceImpactSeverity={priceImpactSeverity}
+          amountInCurrencySymbol={currencies[Field.INPUT]?.symbol}
+        />
       </Container>
     </>
   )

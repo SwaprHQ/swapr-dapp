@@ -1,12 +1,36 @@
+import { useTranslation } from 'react-i18next'
 import styled from 'styled-components'
 
 import { ReactComponent as CowSVG } from '../../../assets/swapbox/dex-logo-cow.svg'
+import { SWAP_INPUT_ERRORS } from '../../../constants'
+import { useIsExpertMode } from '../../../state/user/hooks'
 import { getSwapButtonActiveColor, getSwapButtonHoverColor, TEXT_COLOR_PRIMARY } from '../constants'
 import { FontFamily } from './styles'
 
 const COW_SWAP_COLOR = 'linear-gradient(93.39deg, #2b00a4 -8.9%, #d67b5a 114.08%)'
 
-export function SwapButton() {
+type SwapButtonProps = {
+  platformName?: string
+  swapInputError?: number
+  priceImpactSeverity: number
+  amountInCurrencySymbol?: string
+}
+
+export function SwapButton({ amountInCurrencySymbol }: SwapButtonProps) {
+  const { t } = useTranslation('swap')
+  const isExpertMode = useIsExpertMode()
+
+  const SWAP_INPUT_ERRORS_MESSAGE = {
+    [SWAP_INPUT_ERRORS.CONNECT_WALLET]: t('button.connectWallet'),
+    [SWAP_INPUT_ERRORS.ENTER_AMOUNT]: t('button.enterAmount'),
+    [SWAP_INPUT_ERRORS.SELECT_TOKEN]: t('button.selectToken'),
+    [SWAP_INPUT_ERRORS.ENTER_RECIPIENT]: t('button.enterRecipient'),
+    [SWAP_INPUT_ERRORS.INVALID_RECIPIENT]: t('button.invalidRecipient'),
+    [SWAP_INPUT_ERRORS.INSUFFICIENT_BALANCE]: t('button.insufficientCurrencyBalance', {
+      currency: amountInCurrencySymbol,
+    }),
+  }
+
   return (
     <StyledButton>
       <SwapButtonLabel>Swap With</SwapButtonLabel>
