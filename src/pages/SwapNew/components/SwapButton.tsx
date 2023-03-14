@@ -13,10 +13,11 @@ type SwapButtonProps = {
   platformName?: string
   swapInputError?: number
   priceImpactSeverity: number
+  loading: boolean
   amountInCurrencySymbol?: string
 }
 
-export function SwapButton({ swapInputError, amountInCurrencySymbol }: SwapButtonProps) {
+export function SwapButton({ swapInputError, loading, amountInCurrencySymbol }: SwapButtonProps) {
   const { t } = useTranslation('swap')
   const isExpertMode = useIsExpertMode()
 
@@ -33,15 +34,18 @@ export function SwapButton({ swapInputError, amountInCurrencySymbol }: SwapButto
 
   return (
     <StyledButton>
-      {swapInputError ? (
-        <SwapButtonLabel>{SWAP_INPUT_ERRORS_MESSAGE[swapInputError]}</SwapButtonLabel>
-      ) : (
-        <>
-          <SwapButtonLabel>Swap With</SwapButtonLabel>
-          <CowSVG />
-          <SwapButtonLabel>Cow</SwapButtonLabel>
-        </>
-      )}
+      {(() => {
+        if (loading) return <SwapButtonLabel>LOADING...</SwapButtonLabel>
+        if (swapInputError) return <SwapButtonLabel>{SWAP_INPUT_ERRORS_MESSAGE[swapInputError]}</SwapButtonLabel>
+
+        return (
+          <>
+            <SwapButtonLabel>Swap With</SwapButtonLabel>
+            <CowSVG />
+            <SwapButtonLabel>Cow</SwapButtonLabel>
+          </>
+        )
+      })()}
     </StyledButton>
   )
 }
