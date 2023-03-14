@@ -16,7 +16,7 @@ type SwapButtonProps = {
   amountInCurrencySymbol?: string
 }
 
-export function SwapButton({ amountInCurrencySymbol }: SwapButtonProps) {
+export function SwapButton({ swapInputError, amountInCurrencySymbol }: SwapButtonProps) {
   const { t } = useTranslation('swap')
   const isExpertMode = useIsExpertMode()
 
@@ -33,9 +33,15 @@ export function SwapButton({ amountInCurrencySymbol }: SwapButtonProps) {
 
   return (
     <StyledButton>
-      <SwapButtonLabel>Swap With</SwapButtonLabel>
-      <CowSVG />
-      <SwapButtonLabel>Cow</SwapButtonLabel>
+      {swapInputError ? (
+        SWAP_INPUT_ERRORS_MESSAGE[swapInputError]
+      ) : (
+        <>
+          <SwapButtonLabel>Swap With</SwapButtonLabel>
+          <CowSVG />
+          <SwapButtonLabel>Cow</SwapButtonLabel>
+        </>
+      )}
     </StyledButton>
   )
 }
