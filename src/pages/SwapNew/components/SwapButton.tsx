@@ -15,9 +15,10 @@ type SwapButtonProps = {
   priceImpactSeverity: number
   loading: boolean
   amountInCurrencySymbol?: string
+  handleSwap: () => void
 }
 
-export function SwapButton({ swapInputError, loading, amountInCurrencySymbol }: SwapButtonProps) {
+export function SwapButton({ swapInputError, loading, amountInCurrencySymbol, handleSwap }: SwapButtonProps) {
   const { t } = useTranslation('swap')
   const isExpertMode = useIsExpertMode()
 
@@ -33,7 +34,7 @@ export function SwapButton({ swapInputError, loading, amountInCurrencySymbol }: 
   }
 
   return (
-    <StyledButton>
+    <StyledButton onClick={handleSwap}>
       {(() => {
         if (loading) return <SwapButtonLabel>LOADING...</SwapButtonLabel>
         if (swapInputError) return <SwapButtonLabel>{SWAP_INPUT_ERRORS_MESSAGE[swapInputError]}</SwapButtonLabel>

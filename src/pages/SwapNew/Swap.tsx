@@ -32,6 +32,10 @@ export function Swapbox2() {
     // LOADING
     loading,
 
+    // SWAP BUTTON
+    swapInputError,
+    handleSwap,
+
     maxAmountInput,
     maxAmountOutput,
     isInputPanelDisabled,
@@ -55,18 +59,12 @@ export function Swapbox2() {
     wrapType,
     approvalsSubmitted,
     trade,
-    swapInputError,
     swapErrorMessage,
     onWrap,
     approveCallback,
-    handleSwap,
     wrapState,
     setWrapState,
   } = useSwap()
-
-  const ctx = useContext(CurrencySearchContext)
-
-  console.log('CTX', ctx)
 
   return (
     <>
@@ -99,6 +97,7 @@ export function Swapbox2() {
           amountInCurrencySymbol={currencies[Field.INPUT]?.symbol}
           swapInputError={swapInputError}
           loading={loading}
+          handleSwap={handleSwap}
         />
       </Container>
     </>
