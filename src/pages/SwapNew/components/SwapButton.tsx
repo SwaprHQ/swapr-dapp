@@ -34,7 +34,7 @@ export function SwapButton({ swapInputError, amountInCurrencySymbol }: SwapButto
   return (
     <StyledButton>
       {swapInputError ? (
-        SWAP_INPUT_ERRORS_MESSAGE[swapInputError]
+        <SwapButtonLabel>{SWAP_INPUT_ERRORS_MESSAGE[swapInputError]}</SwapButtonLabel>
       ) : (
         <>
           <SwapButtonLabel>Swap With</SwapButtonLabel>
