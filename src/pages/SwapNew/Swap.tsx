@@ -35,6 +35,7 @@ export function Swapbox2() {
     // SWAP BUTTON
     swapInputError,
     handleSwap,
+    trade,
 
     maxAmountInput,
     maxAmountOutput,
@@ -58,7 +59,6 @@ export function Swapbox2() {
     swapCallbackError,
     wrapType,
     approvalsSubmitted,
-    trade,
     swapErrorMessage,
     onWrap,
     approveCallback,
@@ -97,6 +97,7 @@ export function Swapbox2() {
           amountInCurrencySymbol={currencies[Field.INPUT]?.symbol}
           swapInputError={swapInputError}
           loading={loading}
+          trade={trade}
           handleSwap={handleSwap}
         />
       </Container>

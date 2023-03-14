@@ -1,8 +1,12 @@
+import { Trade, ChainId } from '@swapr/sdk'
+
 import { useTranslation } from 'react-i18next'
 import styled from 'styled-components'
 
 import { ReactComponent as CowSVG } from '../../../assets/swapbox/dex-logo-cow.svg'
 import { SWAP_INPUT_ERRORS } from '../../../constants'
+import { ROUTABLE_PLATFORM_STYLE, RoutablePlatformKeysByNetwork } from '../../../constants'
+import { useActiveWeb3React } from '../../../hooks'
 import { useIsExpertMode } from '../../../state/user/hooks'
 import { getSwapButtonActiveColor, getSwapButtonHoverColor, TEXT_COLOR_PRIMARY } from '../constants'
 import { FontFamily } from './styles'
@@ -15,11 +19,13 @@ type SwapButtonProps = {
   priceImpactSeverity: number
   loading: boolean
   amountInCurrencySymbol?: string
+  trade?: Trade
   handleSwap: () => void
 }
 
-export function SwapButton({ swapInputError, loading, amountInCurrencySymbol, handleSwap }: SwapButtonProps) {
+export function SwapButton({ swapInputError, loading, amountInCurrencySymbol, trade, handleSwap }: SwapButtonProps) {
   const { t } = useTranslation('swap')
+  const { chainId } = useActiveWeb3React()
   const isExpertMode = useIsExpertMode()
 
   const SWAP_INPUT_ERRORS_MESSAGE = {
@@ -33,11 +39,19 @@ export function SwapButton({ swapInputError, loading, amountInCurrencySymbol, ha
     }),
   }
 
+  const routablePlatforms = chainId
+    ? RoutablePlatformKeysByNetwork[chainId]
+    : RoutablePlatformKeysByNetwork[ChainId.MAINNET]
+
+  const platformName = trade?.platform.name
+
   return (
     <StyledButton onClick={handleSwap}>
       {(() => {
         if (loading) return <SwapButtonLabel>LOADING...</SwapButtonLabel>
         if (swapInputError) return <SwapButtonLabel>{SWAP_INPUT_ERRORS_MESSAGE[swapInputError]}</SwapButtonLabel>
+
+        return <SwapButtonLabel>Swap With {ROUTABLE_PLATFORM_STYLE[platformName!].name}</SwapButtonLabel>
 
         return (
           <>
