@@ -347,5 +347,7 @@ export const useSwap = () => {
     handleSwap,
     wrapState,
     setWrapState,
+
+    allPlatformTrades,
   }
 }
