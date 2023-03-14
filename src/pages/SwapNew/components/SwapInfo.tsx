@@ -1,3 +1,5 @@
+import { Trade } from '@swapr/sdk'
+
 import { AnimatePresence, motion } from 'framer-motion'
 import { useState } from 'react'
 import styled from 'styled-components'
@@ -15,8 +17,14 @@ import { Indicator } from './Indicator'
 import { BorderStyle, FontFamily } from './styles'
 import { SwapDexInfoItem } from './SwapDexInfoItem'
 
-export function SwapInfo() {
+type SwapInfoProps = {
+  allPlatformTrades?: (Trade | undefined)[]
+}
+
+export function SwapInfo({ allPlatformTrades }: SwapInfoProps) {
   const [showSwapInfoDetails, setShowSwapInfoDetails] = useState(false)
+
+  console.log('trades', allPlatformTrades)
 
   return (
     <SwapInfoContainer>
