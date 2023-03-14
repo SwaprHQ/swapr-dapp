@@ -20,7 +20,7 @@ import { LifiApi } from './Lifi.api'
 import { NATIVE_TOKEN_ADDRESS, VERSION } from './Lifi.constants'
 import { lifiActions } from './Lifi.reducer'
 import { lifiSelectors } from './Lifi.selectors'
-import { LifiQuoteRequest, LifiTransactionStatus } from './Lifi.types'
+import { LifiQuoteRequest, LifiTransactionStatus, LifiTxStatus } from './Lifi.types'
 import { isLifiChainId, LifiChainShortNames } from './Lifi.utils'
 
 export class LifiBridge extends EcoBridgeChildBase {
@@ -61,15 +61,16 @@ export class LifiBridge extends EcoBridgeChildBase {
     const promises = lifiExecutedRoutes.map(async tx => {
       try {
         const { statusRequest, statusResponse } = tx
-        if (statusResponse.status !== 'DONE' && statusResponse.status !== 'FAILED') {
+        if (statusResponse.status !== LifiTxStatus.DONE && statusResponse.status !== LifiTxStatus.FAILED) {
           const result = await LifiApi.getStatus(statusRequest, { signal: this.#renewAbortController('status') })
-          if (result.status === 'DONE') {
+          if (result.status === LifiTxStatus.DONE) {
+            // TODO: Need to fetch the timeResolved from toToken transaction hash onChain. Its not available from API.
             this.store.dispatch(this.#actions().updateTx({ ...result, timeResolved: Date.now() }))
           } else {
             this.store.dispatch(this.#actions().updateTx(result))
           }
 
-          if (result.status === 'FAILED' || result.status === 'INVALID' || result.status === 'NOT_FOUND') {
+          if (result.status === LifiTxStatus.INVALID || result.status === LifiTxStatus.NOT_FOUND) {
             this.ecoBridgeUtils.ui.modal.setBridgeModalStatus(
               BridgeModalStatus.ERROR,
               this.bridgeId,
@@ -379,7 +380,6 @@ export class LifiBridge extends EcoBridgeChildBase {
         toChain: toChainId,
       }
       const statusResponse = await LifiApi.getStatus(statusRequest, { signal: this.#renewAbortController('status') })
-      console.log({ statusResponse })
 
       this.ecoBridgeUtils.ui.modal.setBridgeModalStatus(BridgeModalStatus.INITIATED)
 

@@ -77,11 +77,11 @@ export const ecoBridgePersistedKeys = ecoBridgeConfig.map(
 )
 
 export const fixCorruptedEcoBridgeLocalStorageEntries = (persistenceNamespace: string) => {
-  const keysWithoutSocketorLifi = ecoBridgePersistedKeys.filter(
+  const keysWithoutSocketOrLifi = ecoBridgePersistedKeys.filter(
     key => !(key.includes(socketBridgeId) || key.includes(lifiBridgeId))
   )
 
-  keysWithoutSocketorLifi.forEach(key => {
+  keysWithoutSocketOrLifi.forEach(key => {
     const fullKey = `${persistenceNamespace}_${key}`
 
     const isEntityAdapter = window.localStorage.getItem(fullKey)?.includes('entities')

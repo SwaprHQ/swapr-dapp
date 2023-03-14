@@ -39,7 +39,7 @@ const createSelectOwnedTransactions = (bridgeId: LifiList) =>
 const createSelectPendingTransactions = (selectOwnedTxs: ReturnType<typeof createSelectOwnedTransactions>) =>
   createSelector(selectOwnedTxs, ownedTxs => {
     const pendingTxs = ownedTxs.filter(
-      ({ statusResponse }) => statusResponse.status !== 'FAILED' && !statusResponse.receiving?.txHash
+      ({ statusResponse }) => statusResponse.status !== LifiTxStatus.FAILED && !statusResponse.receiving?.txHash
     )
 
     return pendingTxs
@@ -48,7 +48,7 @@ const createSelectPendingTransactions = (selectOwnedTxs: ReturnType<typeof creat
 const createSelectFailedTransactions = (selectOwnedTxs: ReturnType<typeof createSelectOwnedTransactions>) =>
   createSelector(selectOwnedTxs, ownedTxs => {
     const failedTxs = ownedTxs.filter(
-      ({ statusResponse }) => statusResponse.status === 'FAILED' && !statusResponse.receiving?.txHash
+      ({ statusResponse }) => statusResponse.status === LifiTxStatus.FAILED && !statusResponse.receiving?.txHash
     )
 
     return failedTxs
@@ -86,7 +86,6 @@ const createSelectBridgeTransactionsSummary = (
         toValue,
         txHash: statusResponse.receiving?.txHash!,
         pendingReason,
-        // TODO: need to fix this
         timestampResolved: timeResolved,
         log: [
           {

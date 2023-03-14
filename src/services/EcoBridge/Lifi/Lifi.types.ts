@@ -31,6 +31,7 @@ export enum LifiTxStatus {
   ERROR = 'ERROR',
   FAILED = 'FAILED',
   DONE = 'DONE',
+  NOT_FOUND = 'NOT_FOUND',
 }
 
 export const LIFI_PENDING_REASONS = {
