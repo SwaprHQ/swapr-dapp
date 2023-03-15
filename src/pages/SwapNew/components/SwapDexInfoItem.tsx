@@ -1,9 +1,11 @@
-import { Trade } from '@swapr/sdk'
+import { Trade, TradeType } from '@swapr/sdk'
 
 import styled from 'styled-components'
 
-import { ReactComponent as SushiSVG } from '../../../assets/swapbox/dex-logo-sushi.svg'
 import { ROUTABLE_PLATFORM_LOGO } from '../../../constants'
+import { Field } from '../../../state/swap/types'
+import { limitNumberOfDecimalPlaces } from '../../../utils/prices'
+import { computeSlippageAdjustedAmounts } from '../../../utils/prices'
 import {
   DEX_SELECTED_BORDER,
   DEX_UNSELECTED_BORDER,
@@ -20,11 +22,17 @@ type SwapDexInfoItemProps = {
 }
 
 export function SwapDexInfoItem({ isSelected = false, trade }: SwapDexInfoItemProps) {
+  const isExactIn = trade.tradeType === TradeType.EXACT_INPUT
+  const slippageAdjustedAmounts = computeSlippageAdjustedAmounts(trade)
+
+  const tokenAmount = limitNumberOfDecimalPlaces(
+    isExactIn ? slippageAdjustedAmounts[Field.OUTPUT] : slippageAdjustedAmounts[Field.INPUT]
+  )
+
   return (
     <Container isSelected={isSelected}>
       <DexInfo isSelected={isSelected}>
         <Dex>
-          {/* <SushiSVG /> */}
           {ROUTABLE_PLATFORM_LOGO[trade.platform.name]}
           <TextLabel>{trade.platform.name}</TextLabel>
         </Dex>
@@ -34,7 +42,7 @@ export function SwapDexInfoItem({ isSelected = false, trade }: SwapDexInfoItemPr
         <IndicatorsContainer>
           <Indicator color={IndicatorColorVariant.WARNING} icon={IndicatorIconVariant.GAS} />
         </IndicatorsContainer>
-        <TransactionCost>3989 USDT</TransactionCost>
+        <TransactionCost>{tokenAmount === '0' ? '<0.0000001' : tokenAmount || '-'}</TransactionCost>
       </TransactionInfo>
     </Container>
   )
