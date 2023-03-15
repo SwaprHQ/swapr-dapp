@@ -1,4 +1,4 @@
-import { Trade } from '@swapr/sdk'
+import { Trade, TradeType } from '@swapr/sdk'
 
 import { motion } from 'framer-motion'
 import styled from 'styled-components'
@@ -27,7 +27,13 @@ export function SwapInfoDetailed({ loading, allPlatformTrades }: SwapInfoDetaile
         },
       }}
     >
-      {!loading && allPlatformTrades?.length !== 0 && allPlatformTrades?.map(trade => <SwapDexInfoItem />)}
+      {!loading &&
+        allPlatformTrades?.length !== 0 &&
+        allPlatformTrades?.map(trade => {
+          if (!trade) return null
+
+          return <SwapDexInfoItem trade={trade} />
+        })}
     </Container>
   )
 }

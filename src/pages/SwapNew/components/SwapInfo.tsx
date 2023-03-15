@@ -15,7 +15,6 @@ import {
 } from '../constants'
 import { Indicator } from './Indicator'
 import { BorderStyle, FontFamily } from './styles'
-import { SwapDexInfoItem } from './SwapDexInfoItem'
 import { SwapInfoDetailed } from './SwapInfoDetailed'
 
 type SwapInfoProps = {
