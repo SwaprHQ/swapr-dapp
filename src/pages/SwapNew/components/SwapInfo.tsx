@@ -16,6 +16,7 @@ import {
 import { Indicator } from './Indicator'
 import { BorderStyle, FontFamily } from './styles'
 import { SwapDexInfoItem } from './SwapDexInfoItem'
+import { SwapInfoDetailed } from './SwapInfoDetailed'
 
 type SwapInfoProps = {
   loading: boolean
@@ -45,25 +46,7 @@ export function SwapInfo({ loading, allPlatformTrades }: SwapInfoProps) {
       </SwapInfoBasics>
 
       <AnimatePresence>
-        {showSwapInfoDetails && (
-          <SwapInfoDetailed
-            initial={{ height: 0 }}
-            animate={{
-              height: 'auto',
-              transition: {
-                duration: 0.2,
-              },
-            }}
-            exit={{
-              height: 0,
-              transition: {
-                duration: 0.1,
-              },
-            }}
-          >
-            {!loading && allPlatformTrades?.length !== 0 && allPlatformTrades?.map(trade => <SwapDexInfoItem />)}
-          </SwapInfoDetailed>
-        )}
+        {showSwapInfoDetails && <SwapInfoDetailed loading={loading} allPlatformTrades={allPlatformTrades} />}
       </AnimatePresence>
     </SwapInfoContainer>
   )
@@ -104,10 +87,6 @@ const SwapInfoBasics = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
-`
-
-const SwapInfoDetailed = styled(motion.div)`
-  margin-top: 9px;
 `
 
 const SwapCostInfo = styled.div``
