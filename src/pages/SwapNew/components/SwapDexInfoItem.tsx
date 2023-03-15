@@ -1,6 +1,9 @@
+import { Trade } from '@swapr/sdk'
+
 import styled from 'styled-components'
 
 import { ReactComponent as SushiSVG } from '../../../assets/swapbox/dex-logo-sushi.svg'
+import { ROUTABLE_PLATFORM_LOGO } from '../../../constants'
 import {
   DEX_SELECTED_BORDER,
   DEX_UNSELECTED_BORDER,
@@ -12,16 +15,18 @@ import { Indicator } from './Indicator'
 import { BorderStyle, FontFamily } from './styles'
 
 type SwapDexInfoItemProps = {
+  trade: Trade
   isSelected?: boolean
 }
 
-export function SwapDexInfoItem({ isSelected = false }: SwapDexInfoItemProps) {
+export function SwapDexInfoItem({ isSelected = false, trade }: SwapDexInfoItemProps) {
   return (
     <Container isSelected={isSelected}>
       <DexInfo isSelected={isSelected}>
         <Dex>
-          <SushiSVG />
-          <TextLabel>Sushi</TextLabel>
+          {/* <SushiSVG /> */}
+          {ROUTABLE_PLATFORM_LOGO[trade.platform.name]}
+          <TextLabel>{trade.platform.name}</TextLabel>
         </Dex>
         {isSelected && <BestRouteLabel>Best Route Selected</BestRouteLabel>}
       </DexInfo>
