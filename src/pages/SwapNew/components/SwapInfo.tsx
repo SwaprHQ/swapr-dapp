@@ -18,10 +18,11 @@ import { BorderStyle, FontFamily } from './styles'
 import { SwapDexInfoItem } from './SwapDexInfoItem'
 
 type SwapInfoProps = {
+  loading: boolean
   allPlatformTrades?: (Trade | undefined)[]
 }
 
-export function SwapInfo({ allPlatformTrades }: SwapInfoProps) {
+export function SwapInfo({ loading, allPlatformTrades }: SwapInfoProps) {
   const [showSwapInfoDetails, setShowSwapInfoDetails] = useState(false)
 
   console.log('trades', allPlatformTrades)
@@ -60,9 +61,7 @@ export function SwapInfo({ allPlatformTrades }: SwapInfoProps) {
               },
             }}
           >
-            <SwapDexInfoItem />
-            <SwapDexInfoItem isSelected />
-            <SwapDexInfoItem />
+            {!loading && allPlatformTrades?.length !== 0 && allPlatformTrades?.map(trade => <SwapDexInfoItem />)}
           </SwapInfoDetailed>
         )}
       </AnimatePresence>
