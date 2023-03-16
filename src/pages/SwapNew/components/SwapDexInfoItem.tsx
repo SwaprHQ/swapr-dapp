@@ -1,5 +1,6 @@
 import { Trade, TradeType } from '@swapr/sdk'
 
+import { useCallback } from 'react'
 import styled from 'styled-components'
 
 import { ROUTABLE_PLATFORM_LOGO } from '../../../constants'
@@ -19,9 +20,10 @@ import { BorderStyle, FontFamily } from './styles'
 type SwapDexInfoItemProps = {
   trade: Trade
   isSelected?: boolean
+  onClick: () => void
 }
 
-export function SwapDexInfoItem({ isSelected = false, trade }: SwapDexInfoItemProps) {
+export function SwapDexInfoItem({ isSelected = false, trade, onClick }: SwapDexInfoItemProps) {
   const isExactIn = trade.tradeType === TradeType.EXACT_INPUT
   const slippageAdjustedAmounts = computeSlippageAdjustedAmounts(trade)
 
@@ -30,7 +32,7 @@ export function SwapDexInfoItem({ isSelected = false, trade }: SwapDexInfoItemPr
   )
 
   return (
-    <Container isSelected={isSelected}>
+    <Container isSelected={isSelected} onClick={onClick}>
       <DexInfo isSelected={isSelected}>
         <Dex>
           {ROUTABLE_PLATFORM_LOGO[trade.platform.name]}
