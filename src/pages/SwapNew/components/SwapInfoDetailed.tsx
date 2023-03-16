@@ -43,11 +43,13 @@ export function SwapInfoDetailed({ loading, allPlatformTrades, selectedTrade }: 
     >
       {!loading &&
         allPlatformTrades?.length !== 0 &&
-        allPlatformTrades?.map(trade => {
+        allPlatformTrades?.map((trade, index) => {
           if (!trade) return null
 
           return (
             <SwapDexInfoItem
+              key={trade.platform.name}
+              bestRoute={index === 0}
               isSelected={selectedTrade?.platform.name === trade.platform.name}
               trade={trade}
               onClick={() => handleSelectedTradeOverride(trade.platform.name)}

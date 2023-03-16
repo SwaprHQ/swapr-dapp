@@ -18,12 +18,13 @@ import { Indicator } from './Indicator'
 import { BorderStyle, FontFamily } from './styles'
 
 type SwapDexInfoItemProps = {
-  trade: Trade
+  bestRoute: boolean
   isSelected?: boolean
+  trade: Trade
   onClick: () => void
 }
 
-export function SwapDexInfoItem({ isSelected = false, trade, onClick }: SwapDexInfoItemProps) {
+export function SwapDexInfoItem({ bestRoute, isSelected = false, trade, onClick }: SwapDexInfoItemProps) {
   const isExactIn = trade.tradeType === TradeType.EXACT_INPUT
   const slippageAdjustedAmounts = computeSlippageAdjustedAmounts(trade)
 
@@ -38,7 +39,7 @@ export function SwapDexInfoItem({ isSelected = false, trade, onClick }: SwapDexI
           {ROUTABLE_PLATFORM_LOGO[trade.platform.name]}
           <TextLabel>{trade.platform.name}</TextLabel>
         </Dex>
-        {isSelected && <BestRouteLabel>Best Route Selected</BestRouteLabel>}
+        {bestRoute && isSelected && <BestRouteLabel>Best Route Selected</BestRouteLabel>}
       </DexInfo>
       <TransactionInfo isSelected={isSelected}>
         <IndicatorsContainer>
