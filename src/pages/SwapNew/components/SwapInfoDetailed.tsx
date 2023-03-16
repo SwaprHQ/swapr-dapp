@@ -1,8 +1,10 @@
 import { Trade, TradeType } from '@swapr/sdk'
 
 import { motion } from 'framer-motion'
+import { useCallback, useContext } from 'react'
 import styled from 'styled-components'
 
+import { SwapContext } from '../../Swap/SwapBox/SwapContext'
 import { SwapDexInfoItem } from './SwapDexInfoItem'
 
 type SwapInfoDetailedProps = {
@@ -12,6 +14,17 @@ type SwapInfoDetailedProps = {
 }
 
 export function SwapInfoDetailed({ loading, allPlatformTrades, selectedTrade }: SwapInfoDetailedProps) {
+  const { setPlatformOverride } = useContext(SwapContext)
+
+  const handleSelectedTradeOverride = useCallback(
+    (platformName: string) => {
+      const newTrade = allPlatformTrades?.find(trade => trade?.platform.name === platformName)
+      if (!newTrade) return
+      setPlatformOverride(newTrade.platform)
+    },
+    [allPlatformTrades, setPlatformOverride]
+  )
+
   return (
     <Container
       initial={{ height: 0 }}
@@ -33,7 +46,13 @@ export function SwapInfoDetailed({ loading, allPlatformTrades, selectedTrade }: 
         allPlatformTrades?.map(trade => {
           if (!trade) return null
 
-          return <SwapDexInfoItem isSelected={selectedTrade?.platform.name === trade.platform.name} trade={trade} />
+          return (
+            <SwapDexInfoItem
+              isSelected={selectedTrade?.platform.name === trade.platform.name}
+              trade={trade}
+              onClick={() => handleSelectedTradeOverride(trade.platform.name)}
+            />
+          )
         })}
     </Container>
   )
