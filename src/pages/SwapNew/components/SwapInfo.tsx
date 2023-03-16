@@ -21,9 +21,10 @@ type SwapInfoProps = {
   loading: boolean
   allPlatformTrades?: (Trade | undefined)[]
   selectedTrade?: Trade
+  outputCurrencySymbol?: string
 }
 
-export function SwapInfo({ loading, allPlatformTrades, selectedTrade }: SwapInfoProps) {
+export function SwapInfo({ loading, allPlatformTrades, selectedTrade, outputCurrencySymbol }: SwapInfoProps) {
   const [showSwapInfoDetails, setShowSwapInfoDetails] = useState(false)
 
   console.log('trades', allPlatformTrades)
@@ -47,7 +48,12 @@ export function SwapInfo({ loading, allPlatformTrades, selectedTrade }: SwapInfo
 
       <AnimatePresence>
         {showSwapInfoDetails && (
-          <SwapInfoDetailed loading={loading} allPlatformTrades={allPlatformTrades} selectedTrade={selectedTrade} />
+          <SwapInfoDetailed
+            loading={loading}
+            allPlatformTrades={allPlatformTrades}
+            selectedTrade={selectedTrade}
+            outputCurrencySymbol={outputCurrencySymbol}
+          />
         )}
       </AnimatePresence>
     </SwapInfoContainer>

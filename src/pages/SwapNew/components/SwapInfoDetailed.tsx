@@ -11,9 +11,15 @@ type SwapInfoDetailedProps = {
   loading: boolean
   allPlatformTrades?: (Trade | undefined)[]
   selectedTrade?: Trade
+  outputCurrencySymbol?: string
 }
 
-export function SwapInfoDetailed({ loading, allPlatformTrades, selectedTrade }: SwapInfoDetailedProps) {
+export function SwapInfoDetailed({
+  loading,
+  allPlatformTrades,
+  selectedTrade,
+  outputCurrencySymbol,
+}: SwapInfoDetailedProps) {
   const { setPlatformOverride } = useContext(SwapContext)
 
   const handleSelectedTradeOverride = useCallback(
@@ -53,6 +59,7 @@ export function SwapInfoDetailed({ loading, allPlatformTrades, selectedTrade }: 
               isSelected={selectedTrade?.platform.name === trade.platform.name}
               trade={trade}
               onClick={() => handleSelectedTradeOverride(trade.platform.name)}
+              outputCurrencySymbol={outputCurrencySymbol}
             />
           )
         })}

@@ -93,7 +93,12 @@ export function Swapbox2() {
           onCurrencySelect={handleOutputSelect}
           lowerItem
         />
-        <SwapInfo loading={loading} allPlatformTrades={allPlatformTrades} selectedTrade={trade} />
+        <SwapInfo
+          loading={loading}
+          allPlatformTrades={allPlatformTrades}
+          selectedTrade={trade}
+          outputCurrencySymbol={currencies[Field.OUTPUT]?.symbol}
+        />
         <SwapButton
           priceImpactSeverity={priceImpactSeverity}
           amountInCurrencySymbol={currencies[Field.INPUT]?.symbol}
