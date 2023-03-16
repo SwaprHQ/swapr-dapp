@@ -3,7 +3,6 @@ import { Trade, ChainId } from '@swapr/sdk'
 import { useTranslation } from 'react-i18next'
 import styled from 'styled-components'
 
-import { ReactComponent as CowSVG } from '../../../assets/swapbox/dex-logo-cow.svg'
 import { SWAP_INPUT_ERRORS } from '../../../constants'
 import { ROUTABLE_PLATFORM_STYLE, RoutablePlatformKeysByNetwork } from '../../../constants'
 import { useActiveWeb3React } from '../../../hooks'
@@ -51,13 +50,14 @@ export function SwapButton({ swapInputError, loading, amountInCurrencySymbol, tr
         if (loading) return <SwapButtonLabel>LOADING...</SwapButtonLabel>
         if (swapInputError) return <SwapButtonLabel>{SWAP_INPUT_ERRORS_MESSAGE[swapInputError]}</SwapButtonLabel>
 
-        return <SwapButtonLabel>Swap With {ROUTABLE_PLATFORM_STYLE[platformName!].name}</SwapButtonLabel>
-
         return (
           <>
             <SwapButtonLabel>Swap With</SwapButtonLabel>
-            <CowSVG />
-            <SwapButtonLabel>Cow</SwapButtonLabel>
+            <PlatformLogo
+              src={ROUTABLE_PLATFORM_STYLE[platformName!].logo}
+              alt={ROUTABLE_PLATFORM_STYLE[platformName!].alt}
+            />
+            <SwapButtonLabel>{ROUTABLE_PLATFORM_STYLE[platformName!].name}</SwapButtonLabel>
           </>
         )
       })()}
@@ -96,4 +96,9 @@ const SwapButtonLabel = styled.p`
   letter-spacing: 0.08em;
   text-transform: uppercase;
   color: ${TEXT_COLOR_PRIMARY};
+`
+
+const PlatformLogo = styled.img`
+  width: 21px;
+  height: 21px;
 `
