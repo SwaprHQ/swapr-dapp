@@ -14,8 +14,8 @@ import {
   IndicatorIconVariant,
   TEXT_COLOR_PRIMARY,
 } from '../constants'
-import { Indicator } from './Indicator'
 import { BorderStyle, FontFamily } from './styles'
+import { Indicator } from './SwapInfo/Indicator'
 
 type SwapDexInfoItemProps = {
   bestRoute: boolean

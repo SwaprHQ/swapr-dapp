@@ -1,10 +1,10 @@
 import { Trade } from '@swapr/sdk'
 
-import { AnimatePresence, motion } from 'framer-motion'
+import { AnimatePresence } from 'framer-motion'
 import { useState } from 'react'
 import styled from 'styled-components'
 
-import { ReactComponent as DownArrowSmallSVG } from '../../../assets/swapbox/down-arrow-small.svg'
+import { ReactComponent as DownArrowSmallSVG } from '../../../../assets/swapbox/down-arrow-small.svg'
 import {
   ELEMENTS_BACKGROUND_SECONDARY,
   ELEMENTS_BORDER_SECONDARY,
@@ -12,9 +12,9 @@ import {
   IndicatorColorVariant,
   IndicatorIconVariant,
   TEXT_COLOR_PRIMARY,
-} from '../constants'
+} from '../../constants'
+import { BorderStyle, FontFamily } from '../styles'
 import { Indicator } from './Indicator'
-import { BorderStyle, FontFamily } from './styles'
 import { SwapInfoDetailed } from './SwapInfoDetailed'
 
 type SwapInfoProps = {
@@ -47,7 +47,7 @@ export function SwapInfo({ loading, allPlatformTrades, selectedTrade, outputCurr
       </SwapInfoBasics>
 
       <AnimatePresence>
-        {showSwapInfoDetails && (
+        {showSwapInfoDetails && allPlatformTrades?.length !== 0 && (
           <SwapInfoDetailed
             loading={loading}
             allPlatformTrades={allPlatformTrades}
