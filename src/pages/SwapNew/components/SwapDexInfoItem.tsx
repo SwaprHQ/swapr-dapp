@@ -19,12 +19,19 @@ import { BorderStyle, FontFamily } from './styles'
 
 type SwapDexInfoItemProps = {
   bestRoute: boolean
-  isSelected?: boolean
+  isSelected: boolean
   trade: Trade
+  outputCurrencySymbol?: string
   onClick: () => void
 }
 
-export function SwapDexInfoItem({ bestRoute, isSelected = false, trade, onClick }: SwapDexInfoItemProps) {
+export function SwapDexInfoItem({
+  bestRoute,
+  isSelected = false,
+  trade,
+  outputCurrencySymbol,
+  onClick,
+}: SwapDexInfoItemProps) {
   const isExactIn = trade.tradeType === TradeType.EXACT_INPUT
   const slippageAdjustedAmounts = computeSlippageAdjustedAmounts(trade)
 
@@ -45,7 +52,9 @@ export function SwapDexInfoItem({ bestRoute, isSelected = false, trade, onClick 
         <IndicatorsContainer>
           <Indicator color={IndicatorColorVariant.WARNING} icon={IndicatorIconVariant.GAS} />
         </IndicatorsContainer>
-        <TransactionCost>{tokenAmount === '0' ? '<0.0000001' : tokenAmount || '-'}</TransactionCost>
+        <TransactionCost>
+          {tokenAmount === '0' ? '<0.0000001' : `${tokenAmount} ${outputCurrencySymbol}` || '-'}
+        </TransactionCost>
       </TransactionInfo>
     </Container>
   )
