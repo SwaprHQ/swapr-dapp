@@ -8,9 +8,10 @@ import { SwapDexInfoItem } from './SwapDexInfoItem'
 type SwapInfoDetailedProps = {
   loading: boolean
   allPlatformTrades?: (Trade | undefined)[]
+  selectedTrade?: Trade
 }
 
-export function SwapInfoDetailed({ loading, allPlatformTrades }: SwapInfoDetailedProps) {
+export function SwapInfoDetailed({ loading, allPlatformTrades, selectedTrade }: SwapInfoDetailedProps) {
   return (
     <Container
       initial={{ height: 0 }}
@@ -32,7 +33,7 @@ export function SwapInfoDetailed({ loading, allPlatformTrades }: SwapInfoDetaile
         allPlatformTrades?.map(trade => {
           if (!trade) return null
 
-          return <SwapDexInfoItem trade={trade} />
+          return <SwapDexInfoItem isSelected={selectedTrade?.platform.name === trade.platform.name} trade={trade} />
         })}
     </Container>
   )

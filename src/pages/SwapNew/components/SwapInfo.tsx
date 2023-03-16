@@ -20,9 +20,10 @@ import { SwapInfoDetailed } from './SwapInfoDetailed'
 type SwapInfoProps = {
   loading: boolean
   allPlatformTrades?: (Trade | undefined)[]
+  selectedTrade?: Trade
 }
 
-export function SwapInfo({ loading, allPlatformTrades }: SwapInfoProps) {
+export function SwapInfo({ loading, allPlatformTrades, selectedTrade }: SwapInfoProps) {
   const [showSwapInfoDetails, setShowSwapInfoDetails] = useState(false)
 
   console.log('trades', allPlatformTrades)
@@ -45,7 +46,9 @@ export function SwapInfo({ loading, allPlatformTrades }: SwapInfoProps) {
       </SwapInfoBasics>
 
       <AnimatePresence>
-        {showSwapInfoDetails && <SwapInfoDetailed loading={loading} allPlatformTrades={allPlatformTrades} />}
+        {showSwapInfoDetails && (
+          <SwapInfoDetailed loading={loading} allPlatformTrades={allPlatformTrades} selectedTrade={selectedTrade} />
+        )}
       </AnimatePresence>
     </SwapInfoContainer>
   )
