@@ -2,11 +2,11 @@ import { Currency, _10000 } from '@swapr/sdk'
 
 import styled from 'styled-components'
 
-import { useActiveWeb3React } from '../../../hooks'
-import { useCurrencyBalance } from '../../../state/wallet/hooks'
-import { limitNumberOfDecimalPlaces } from '../../../utils/prices'
-import { TEXT_COLOR_SECONDARY } from '../constants'
-import { FontFamily } from './styles'
+import { useActiveWeb3React } from '../../../../hooks'
+import { useCurrencyBalance } from '../../../../state/wallet/hooks'
+import { limitNumberOfDecimalPlaces } from '../../../../utils/prices'
+import { TEXT_COLOR_SECONDARY } from '../../constants'
+import { FontFamily } from '../styles'
 
 type CurrencyBalanceProps = {
   currency?: Currency

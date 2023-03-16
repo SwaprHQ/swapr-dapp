@@ -2,8 +2,8 @@ import { CurrencyAmount, Percent } from '@swapr/sdk'
 
 import styled from 'styled-components'
 
-import { TEXT_COLOR_SECONDARY } from '../constants'
-import { FontFamily } from './styles'
+import { TEXT_COLOR_SECONDARY } from '../../constants'
+import { FontFamily } from '../styles'
 
 type CurrencyAmountWorthProps = {
   fiatValue?: CurrencyAmount | null

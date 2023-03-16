@@ -3,10 +3,10 @@ import { CurrencyAmount as CurrencyAmountType } from '@swapr/sdk'
 import { ChangeEvent, useState, useMemo, useCallback, useEffect } from 'react'
 import styled from 'styled-components'
 
-import { escapeRegExp, normalizeInputValue } from '../../../utils'
-import { debounce } from '../../../utils/debounce'
-import { TEXT_COLOR_PRIMARY } from '../constants'
-import { FontFamily } from './styles'
+import { escapeRegExp, normalizeInputValue } from '../../../../utils'
+import { debounce } from '../../../../utils/debounce'
+import { TEXT_COLOR_PRIMARY } from '../../constants'
+import { FontFamily } from '../styles'
 
 const inputRegex = RegExp(`^\\d*(?:\\\\[.])?\\d*$`)
 
