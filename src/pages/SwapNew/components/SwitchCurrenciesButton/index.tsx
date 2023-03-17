@@ -22,6 +22,7 @@ const StyledButton = styled.button`
   position: absolute;
   left: 50%;
   top: 84px;
+  z-index: 1;
   transform: translateX(-50%);
   background: #06060a;
   border-radius: 12px;
