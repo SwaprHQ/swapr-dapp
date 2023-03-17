@@ -27,7 +27,7 @@ export function CurrencyAmount({ value, onUserInput, setIsMaxAmount, maxAmount }
 
       onUserInput(value)
     },
-    [maxAmount, onUserInput]
+    [maxAmount, onUserInput, setIsMaxAmount]
   )
 
   const debouncedUserInput = useMemo(() => {
@@ -77,7 +77,7 @@ const StyledInput = styled.input`
   ${FontFamily}
   font-weight: 600;
   letter-spacing: 0.02em;
-  text-shadow: 0px 0px 12px rgba(255, 255, 255, 0.14);
+  /* text-shadow: 0px 0px 12px rgba(255, 255, 255, 0.14); */
   color: ${TEXT_COLOR_PRIMARY};
   background-color: transparent;
   border: none;
