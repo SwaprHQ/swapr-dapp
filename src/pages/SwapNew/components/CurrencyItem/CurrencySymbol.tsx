@@ -3,8 +3,8 @@ import { Currency } from '@swapr/sdk'
 import { useTranslation } from 'react-i18next'
 import styled from 'styled-components'
 
-import { TEXT_COLOR_PRIMARY } from '../constants'
-import { FontFamily } from './styles'
+import { TEXT_COLOR_PRIMARY } from '../../constants'
+import { FontFamily } from '../styles'
 
 type CurrencySymbolProps = {
   currency?: Currency | null

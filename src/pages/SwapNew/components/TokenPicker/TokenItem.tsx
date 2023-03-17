@@ -2,7 +2,7 @@ import { Token } from '@swapr/sdk'
 
 import styled from 'styled-components'
 
-import { CurrencyLogo } from '../CurrencyLogo'
+import { CurrencyLogo } from '../CurrencyItem/CurrencyLogo'
 
 type TokenItemProps = {
   token?: Token

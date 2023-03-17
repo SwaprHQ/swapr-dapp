@@ -10,12 +10,12 @@ import {
   ELEMENTS_BORDER_SECONDARY,
   ELEMENTS_SPACING,
 } from '../../constants'
-import { CurrencyType } from '../CurrencyType'
 import { BorderStyle } from '../styles'
 import { TokenPicker } from '../TokenPicker'
 import { CurrencyAmount } from './CurrencyAmount'
 import { CurrencyAmountWorth } from './CurrencyAmountWorth'
 import { CurrencyBalance } from './CurrencyBalance'
+import { CurrencyType } from './CurrencyType'
 
 type CurrencyItemProps = {
   currency?: Currency

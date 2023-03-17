@@ -2,7 +2,7 @@ import { Currency } from '@swapr/sdk'
 
 import styled from 'styled-components'
 
-import { ReactComponent as DownArrowLargeSVG } from '../../../assets/swapbox/down-arrow-large.svg'
+import { ReactComponent as DownArrowLargeSVG } from '../../../../assets/swapbox/down-arrow-large.svg'
 import { CurrencyLogo } from './CurrencyLogo'
 import { CurrencySymbol } from './CurrencySymbol'
 
