@@ -1,8 +1,6 @@
 import { AnimatePresence } from 'framer-motion'
-import { useContext } from 'react'
 import styled from 'styled-components'
 
-import { CurrencySearchContext } from '../../components/SearchModal/CurrencySearch/CurrencySearch.context'
 import { Field } from '../../state/swap/types'
 import { CurrencyItem, SwapInfo, SwitchCurrenciesButton } from './components'
 import { SwapButton } from './components'

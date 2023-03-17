@@ -36,7 +36,7 @@ export function CurrencyItem({
   fiatValue,
   isFallbackFiatValue,
   priceImpact,
-  onMax,
+  // onMax,
   onCurrencySelect,
   lowerItem,
 }: CurrencyItemProps) {
