@@ -1,7 +1,7 @@
 import styled, { keyframes } from 'styled-components'
 
-import { ReactComponent as TwoArrowsSVG } from '../../../assets/images/swap-icon.svg'
-import { ReactComponent as DownArrowSVG } from '../../../assets/swapbox/swap-arrow.svg'
+import { ReactComponent as TwoArrowsSVG } from '../../../../assets/images/swap-icon.svg'
+import { ReactComponent as DownArrowSVG } from '../../../../assets/swapbox/swap-arrow.svg'
 
 type SwitchCurrenciesButtonProps = {
   loading: boolean

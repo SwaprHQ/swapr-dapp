@@ -3,12 +3,12 @@ import { Trade, ChainId } from '@swapr/sdk'
 import { useTranslation } from 'react-i18next'
 import styled from 'styled-components'
 
-import { SWAP_INPUT_ERRORS } from '../../../constants'
-import { ROUTABLE_PLATFORM_STYLE, RoutablePlatformKeysByNetwork } from '../../../constants'
-import { useActiveWeb3React } from '../../../hooks'
-import { useIsExpertMode } from '../../../state/user/hooks'
-import { getSwapButtonActiveColor, getSwapButtonHoverColor, TEXT_COLOR_PRIMARY } from '../constants'
-import { FontFamily } from './styles'
+import { SWAP_INPUT_ERRORS } from '../../../../constants'
+import { ROUTABLE_PLATFORM_STYLE, RoutablePlatformKeysByNetwork } from '../../../../constants'
+import { useActiveWeb3React } from '../../../../hooks'
+import { useIsExpertMode } from '../../../../state/user/hooks'
+import { getSwapButtonActiveColor, getSwapButtonHoverColor, TEXT_COLOR_PRIMARY } from '../../constants'
+import { FontFamily } from '../styles'
 
 const COW_SWAP_COLOR = 'linear-gradient(93.39deg, #2b00a4 -8.9%, #d67b5a 114.08%)'
 

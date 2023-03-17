@@ -1,21 +1,20 @@
 import { Trade, TradeType } from '@swapr/sdk'
 
-import { useCallback } from 'react'
 import styled from 'styled-components'
 
-import { ROUTABLE_PLATFORM_LOGO } from '../../../constants'
-import { Field } from '../../../state/swap/types'
-import { limitNumberOfDecimalPlaces } from '../../../utils/prices'
-import { computeSlippageAdjustedAmounts } from '../../../utils/prices'
+import { ROUTABLE_PLATFORM_LOGO } from '../../../../constants'
+import { Field } from '../../../../state/swap/types'
+import { limitNumberOfDecimalPlaces } from '../../../../utils/prices'
+import { computeSlippageAdjustedAmounts } from '../../../../utils/prices'
 import {
   DEX_SELECTED_BORDER,
   DEX_UNSELECTED_BORDER,
   IndicatorColorVariant,
   IndicatorIconVariant,
   TEXT_COLOR_PRIMARY,
-} from '../constants'
-import { BorderStyle, FontFamily } from './styles'
-import { Indicator } from './SwapInfo/Indicator'
+} from '../../constants'
+import { BorderStyle, FontFamily } from '../styles'
+import { Indicator } from './Indicator'
 
 type SwapDexInfoItemProps = {
   bestRoute: boolean

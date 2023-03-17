@@ -4,7 +4,8 @@ import styled from 'styled-components'
 
 import { CurrencySearchContext } from '../../components/SearchModal/CurrencySearch/CurrencySearch.context'
 import { Field } from '../../state/swap/types'
-import { CurrencyItem, SwapButton, SwapInfo, SwitchCurrenciesButton } from './components'
+import { CurrencyItem, SwapInfo, SwitchCurrenciesButton } from './components'
+import { SwapButton } from './components'
 import { SWAPBOX_WIDTH } from './constants'
 import { useSwap } from './useSwap'
 

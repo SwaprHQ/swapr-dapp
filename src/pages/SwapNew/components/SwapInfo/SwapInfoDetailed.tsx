@@ -5,7 +5,7 @@ import { useCallback, useContext } from 'react'
 import styled from 'styled-components'
 
 import { SwapContext } from '../../../Swap/SwapBox/SwapContext'
-import { SwapDexInfoItem } from '../SwapDexInfoItem'
+import { SwapDexInfoItem } from './SwapDexInfoItem'
 
 type SwapInfoDetailedProps = {
   loading: boolean
