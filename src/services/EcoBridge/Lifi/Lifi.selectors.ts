@@ -1,3 +1,4 @@
+import { formatUnits } from 'ethers/lib/utils'
 import { createSelector } from 'reselect'
 
 import { AppState } from '../../../state'
@@ -65,11 +66,13 @@ const createSelectBridgeTransactionsSummary = (
           ? LIFI_PENDING_REASONS[statusResponse.substatus]!
           : 'We cannot determine the status of the transfer.'
 
-      const fromValue = Number(statusResponse.sending.amount).toString()
-      const toValue = Number(statusResponse.receiving?.amount ?? 0).toString()
-
+      const fromValueRaw = Number(statusResponse.sending.amount).toString()
+      const fromValue = (formatUnits(fromValueRaw ?? '0', statusResponse.sending.token?.decimals) ?? 0).toString()
+      const toValueRaw = Number(statusResponse.receiving?.amount ?? 0).toString()
+      const toValue = (formatUnits(toValueRaw ?? '0', statusResponse.receiving?.token?.decimals) ?? 0).toString()
       const summary: BridgeTransactionSummary = {
-        assetName: statusResponse.sending.token?.name!,
+        assetName: statusResponse.sending.token?.symbol!,
+        toAssetName: statusResponse.receiving?.token?.symbol,
         assetAddressL1: statusResponse.sending.token?.address,
         assetAddressL2: statusResponse.receiving?.token?.address,
         // @ts-ignore ChainId type missmatch.'

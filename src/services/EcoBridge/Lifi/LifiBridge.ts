@@ -379,7 +379,9 @@ export class LifiBridge extends EcoBridgeChildBase {
         fromChain: fromChainId,
         toChain: toChainId,
       }
-      const statusResponse = await LifiApi.getStatus(statusRequest, { signal: this.#renewAbortController('status') })
+      const statusResponse = await LifiApi.getStatus(statusRequest, {
+        signal: this.#renewAbortController('status'),
+      })
 
       this.ecoBridgeUtils.ui.modal.setBridgeModalStatus(BridgeModalStatus.INITIATED)
 
