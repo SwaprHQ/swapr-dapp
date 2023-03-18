@@ -316,7 +316,7 @@ export class LifiBridge extends EcoBridgeChildBase {
     const { requestId, ...rest } = request
     try {
       step = await LifiApi.getQuote(
-        { ...rest, fromAddress: this._account },
+        { ...rest, fromAddress: this._account, order: 'RECOMMENDED' },
         { signal: this.#renewAbortController('quote') }
       )
     } catch (e) {
