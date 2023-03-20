@@ -28,6 +28,7 @@ export function SwapInfo({ loading, allPlatformTrades, selectedTrade, outputCurr
     >
       <SwapInfoBasics
         allPlatformTrades={allPlatformTrades}
+        showSwapInfoDetails={showSwapInfoDetails}
         toggleShowInfoDetails={() => setShowSwapInfoDetails(value => !value)}
       />
 

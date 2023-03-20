@@ -9,10 +9,11 @@ import { Indicator } from './Indicator'
 
 type SwapInfoBasicsProps = {
   allPlatformTrades?: (Trade | undefined)[]
+  showSwapInfoDetails: boolean
   toggleShowInfoDetails: () => void
 }
 
-export function SwapInfoBasics({ allPlatformTrades, toggleShowInfoDetails }: SwapInfoBasicsProps) {
+export function SwapInfoBasics({ allPlatformTrades, showSwapInfoDetails, toggleShowInfoDetails }: SwapInfoBasicsProps) {
   const getNumberOfPlatforms = () => `${allPlatformTrades!.filter(Boolean).length}/${allPlatformTrades!.length}`
 
   return (
@@ -33,7 +34,7 @@ export function SwapInfoBasics({ allPlatformTrades, toggleShowInfoDetails }: Swa
         </CurrencyCourseInfo>
       </SwapCostInfo>
       <ExpandButton onClick={toggleShowInfoDetails}>
-        <DownArrowSmallSVG />
+        <DownArrowSmall showSwapInfoDetails={showSwapInfoDetails} />
       </ExpandButton>
     </Container>
   )
@@ -82,4 +83,9 @@ const CurrencyCourseInfo = styled.p`
     opacity: 1;
     font-weight: 700;
   }
+`
+
+const DownArrowSmall = styled(DownArrowSmallSVG)<{ showSwapInfoDetails: boolean }>`
+  transition: all 0.2s ease;
+  transform: ${({ showSwapInfoDetails }) => (showSwapInfoDetails ? 'rotate(180deg)' : 'rotate(0deg)')};
 `
