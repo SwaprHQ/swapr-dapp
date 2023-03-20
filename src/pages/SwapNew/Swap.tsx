@@ -1,6 +1,8 @@
 import styled from 'styled-components'
 
+import Hero from '../../components/LandingPageComponents/layout/Hero'
 import { Field } from '../../state/swap/types'
+import { LandingSections } from '../Swap/LandingSections'
 import { CurrencyItem, SwapInfo, SwitchCurrenciesButton } from './components'
 import { SwapButton } from './components'
 import { SWAPBOX_WIDTH } from './constants'
@@ -68,7 +70,7 @@ export function Swapbox2() {
   } = useSwap()
 
   return (
-    <>
+    <Hero showMarquee={true}>
       <Container>
         <CurrencyItem
           value={formattedAmounts[Field.INPUT]}
@@ -106,7 +108,8 @@ export function Swapbox2() {
           handleSwap={handleSwap}
         />
       </Container>
-    </>
+      <LandingSections />
+    </Hero>
   )
 }
 
