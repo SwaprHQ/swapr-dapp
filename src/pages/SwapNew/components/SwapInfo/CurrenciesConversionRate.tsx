@@ -13,7 +13,7 @@ type CurrenciesConversionRateProps = {
 }
 
 export function CurrenciesConversionRate({ price }: CurrenciesConversionRateProps) {
-  const [showInvertedConversionRate, setShowInvertedConversionRate] = useState(false)
+  const [showInvertedConversionRate, setShowInvertedConversionRate] = useState(true)
 
   const isMobileByMedia = useIsMobileByMedia()
   const significantDigits = isMobileByMedia ? 6 : 14
@@ -25,15 +25,12 @@ export function CurrenciesConversionRate({ price }: CurrenciesConversionRateProp
   const show = Boolean(price?.baseCurrency && price?.quoteCurrency)
   const quoteCurrenxy = price?.quoteCurrency.symbol?.slice(0, 6)
   const baseCurrency = price?.baseCurrency.symbol?.slice(0, 6)
-  const label = showInvertedConversionRate
-    ? `${quoteCurrenxy} ${isMobileByMedia ? `/` : `per`} ${baseCurrency}`
-    : `${baseCurrency} ${isMobileByMedia ? `/` : `per`}  ${quoteCurrenxy}`
 
   if (show)
     return (
       <Paragraph onClick={() => setShowInvertedConversionRate(value => !value)}>
-        {formattedPrice}
-        <span>1</span> ETH = <span>3007</span> USDT
+        <span>1</span> {showInvertedConversionRate ? baseCurrency : quoteCurrenxy} = <span>{formattedPrice}</span>{' '}
+        {showInvertedConversionRate ? quoteCurrenxy : baseCurrency}
       </Paragraph>
     )
 
@@ -55,6 +52,9 @@ const Paragraph = styled.p`
   opacity: 0.8;
   color: ${TEXT_COLOR_PRIMARY};
   background: rgba(104, 110, 148, 0.1);
+  user-select: none;
+  -webkit-user-select: none;
+  -ms-user-select: none;
   cursor: pointer;
 
   & span {
