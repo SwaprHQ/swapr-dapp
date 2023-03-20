@@ -21,7 +21,10 @@ export function SwapInfo({ loading, allPlatformTrades, selectedTrade, outputCurr
 
   return (
     <SwapInfoContainer>
-      <SwapInfoBasics toggleShowInfoDetails={() => setShowSwapInfoDetails(value => !value)} />
+      <SwapInfoBasics
+        allPlatformTrades={allPlatformTrades}
+        toggleShowInfoDetails={() => setShowSwapInfoDetails(value => !value)}
+      />
 
       <AnimatePresence>
         {showSwapInfoDetails && allPlatformTrades?.length !== 0 && (

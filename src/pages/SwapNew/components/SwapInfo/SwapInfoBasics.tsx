@@ -1,3 +1,5 @@
+import { Trade } from '@swapr/sdk'
+
 import styled from 'styled-components'
 
 import { ReactComponent as DownArrowSmallSVG } from '../../../../assets/swapbox/down-arrow-small.svg'
@@ -5,11 +7,24 @@ import { IndicatorColorVariant, IndicatorIconVariant, TEXT_COLOR_PRIMARY } from 
 import { FontFamily } from '../styles'
 import { Indicator } from './Indicator'
 
-export function SwapInfoBasics({ toggleShowInfoDetails }: { toggleShowInfoDetails: () => void }) {
+type SwapInfoBasicsProps = {
+  allPlatformTrades?: (Trade | undefined)[]
+  toggleShowInfoDetails: () => void
+}
+
+export function SwapInfoBasics({ allPlatformTrades, toggleShowInfoDetails }: SwapInfoBasicsProps) {
+  const getNumberOfPlatforms = () => `${allPlatformTrades!.filter(Boolean).length}/${allPlatformTrades!.length}`
+
   return (
     <Container>
       <SwapCostInfo>
-        <Indicator color={IndicatorColorVariant.POSITIVE} icon={IndicatorIconVariant.DEXES} text="92/92" />
+        {allPlatformTrades?.length !== 0 && (
+          <Indicator
+            color={IndicatorColorVariant.POSITIVE}
+            icon={IndicatorIconVariant.DEXES}
+            text={getNumberOfPlatforms()}
+          />
+        )}
         <Indicator color={IndicatorColorVariant.WARNING} icon={IndicatorIconVariant.GAS} />
         <Indicator color={IndicatorColorVariant.NEGATIVE} icon={IndicatorIconVariant.BANANA} />
         <Indicator color={IndicatorColorVariant.UNDEFINED} icon={IndicatorIconVariant.SHIELD} />
