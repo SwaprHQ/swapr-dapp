@@ -125,31 +125,48 @@ export class LifiBridge extends EcoBridgeChildBase {
 
     try {
       this.ecoBridgeUtils.ui.statusButton.setStatus(ButtonStatus.LOADING)
-      await this.#checkAndSetAllowance(
+
+      const allowanceStatus = await this.#checkAndSetAllowance(
         this._activeProvider?.getSigner(),
         route.action.fromToken.address,
         route.estimate.approvalAddress,
         route.estimate.fromAmount
       )
-      this.ecoBridgeUtils.ui.statusButton.setStatus(ButtonStatus.BRIDGE)
+      if (allowanceStatus) {
+        this.ecoBridgeUtils.ui.statusButton.setStatus(ButtonStatus.BRIDGE)
+      }
     } catch (e) {
       this.ecoBridgeUtils.ui.statusButton.setError()
       this.ecoBridgeUtils.ui.modal.setBridgeModalStatus(BridgeModalStatus.ERROR, this.bridgeId, e)
     }
   }
 
-  #checkAndSetAllowance = async (wallet: any, tokenAddress: string, approvalAddress: string, amount: string) => {
+  #checkAndSetAllowance = async (
+    wallet: any,
+    tokenAddress: string,
+    approvalAddress: string,
+    amount: string
+  ): Promise<boolean> => {
     // Transactions with the native token don't need approval
     if (tokenAddress === ethers.constants.AddressZero) {
-      return
+      return true
     }
 
     const erc20 = new Contract(tokenAddress, ERC20_ABI, wallet)
-    const allowance = await erc20.allowance(await wallet.getAddress(), approvalAddress)
+    const signerAddress = await wallet.getAddress()
 
-    if (allowance.lt(amount)) {
+    try {
+      const approved = await erc20.allowance(signerAddress, approvalAddress)
+      const allowance = BigNumber.from(approved.toString())
+      if (allowance.lt(amount)) {
+        this.ecoBridgeUtils.ui.statusButton.setStatus(ButtonStatus.APPROVE)
+        return false
+      } else {
+        return true
+      }
+    } catch (e) {
       this.ecoBridgeUtils.ui.statusButton.setStatus(ButtonStatus.APPROVE)
-      return
+      return false
     }
   }
 
@@ -316,7 +333,22 @@ export class LifiBridge extends EcoBridgeChildBase {
     const { requestId, ...rest } = request
     try {
       step = await LifiApi.getQuote(
-        { ...rest, fromAddress: this._account, order: 'RECOMMENDED' },
+        {
+          ...rest,
+          fromAddress: this._account,
+          order: 'RECOMMENDED',
+          allowBridges: [
+            'hop',
+            'multichain',
+            'cbridge',
+            'connext',
+            'hyphen',
+            'optimism',
+            'polygon',
+            'arbitrum',
+            'avalanche',
+          ],
+        },
         { signal: this.#renewAbortController('quote') }
       )
     } catch (e) {
@@ -353,6 +385,7 @@ export class LifiBridge extends EcoBridgeChildBase {
       })
     )
   }
+
   triggerBridging = async () => {
     try {
       this.ecoBridgeUtils.ui.modal.setBridgeModalStatus(BridgeModalStatus.PENDING)
@@ -362,8 +395,11 @@ export class LifiBridge extends EcoBridgeChildBase {
       const checkRoute = route.id === routeId
 
       if (!this._account || !checkRoute || !this._activeProvider || !route.transactionRequest) return
+      const signer = this._activeProvider.getSigner()
+      // const checkTransaction = await signer.populateTransaction(route.transactionRequest)
+      // const signTransaction = await signer.signTransaction(route.transactionRequest)
 
-      const transaction = await this._activeProvider.getSigner().sendTransaction(route.transactionRequest)
+      const transaction = await signer.sendTransaction(route.transactionRequest)
       const transactionReceipt = await transaction.wait()
 
       if (!transactionReceipt) return
