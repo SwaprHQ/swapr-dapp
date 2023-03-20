@@ -3,17 +3,23 @@ import { Trade } from '@swapr/sdk'
 import styled from 'styled-components'
 
 import { ReactComponent as DownArrowSmallSVG } from '../../../../assets/swapbox/down-arrow-small.svg'
-import { IndicatorColorVariant, IndicatorIconVariant, TEXT_COLOR_PRIMARY } from '../../constants'
-import { FontFamily } from '../styles'
+import { IndicatorColorVariant, IndicatorIconVariant } from '../../constants'
+import { CurrenciesConversionRate } from './CurrenciesConversionRate'
 import { Indicator } from './Indicator'
 
 type SwapInfoBasicsProps = {
+  selectedTrade?: Trade
   allPlatformTrades?: (Trade | undefined)[]
   showSwapInfoDetails: boolean
   toggleShowInfoDetails: () => void
 }
 
-export function SwapInfoBasics({ allPlatformTrades, showSwapInfoDetails, toggleShowInfoDetails }: SwapInfoBasicsProps) {
+export function SwapInfoBasics({
+  selectedTrade,
+  allPlatformTrades,
+  showSwapInfoDetails,
+  toggleShowInfoDetails,
+}: SwapInfoBasicsProps) {
   const getNumberOfPlatforms = () => `${allPlatformTrades!.filter(Boolean).length}/${allPlatformTrades!.length}`
 
   return (
@@ -29,9 +35,7 @@ export function SwapInfoBasics({ allPlatformTrades, showSwapInfoDetails, toggleS
         <Indicator color={IndicatorColorVariant.WARNING} icon={IndicatorIconVariant.GAS} />
         <Indicator color={IndicatorColorVariant.NEGATIVE} icon={IndicatorIconVariant.BANANA} />
         <Indicator color={IndicatorColorVariant.UNDEFINED} icon={IndicatorIconVariant.SHIELD} />
-        <CurrencyCourseInfo>
-          <span>1</span> ETH = <span>3007</span> USDT
-        </CurrencyCourseInfo>
+        <CurrenciesConversionRate price={selectedTrade?.executionPrice} />
       </SwapCostInfo>
       <ExpandButton onClick={toggleShowInfoDetails}>
         <DownArrowSmall showSwapInfoDetails={showSwapInfoDetails} />
@@ -61,28 +65,6 @@ const ExpandButton = styled.button`
   border-radius: 4px;
   border: none;
   cursor: pointer;
-`
-
-const CurrencyCourseInfo = styled.p`
-  height: 20px;
-  line-height: 20px;
-  display: inline-block;
-  vertical-align: top;
-  padding: 5px 6px;
-  border-radius: 4px;
-  line-height: 10px;
-  font-size: 10px;
-  ${FontFamily}
-  font-weight: 500;
-  text-transform: uppercase;
-  opacity: 0.8;
-  color: ${TEXT_COLOR_PRIMARY};
-  background: rgba(104, 110, 148, 0.1);
-
-  & span {
-    opacity: 1;
-    font-weight: 700;
-  }
 `
 
 const DownArrowSmall = styled(DownArrowSmallSVG)<{ showSwapInfoDetails: boolean }>`
