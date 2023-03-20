@@ -1,3 +1,4 @@
+import { AnimatePresence } from 'framer-motion'
 import styled from 'styled-components'
 
 import { Field } from '../../state/swap/types'
@@ -90,12 +91,16 @@ export function Swapbox() {
         onCurrencySelect={handleOutputSelect}
         lowerItem
       />
-      <SwapInfo
-        loading={loading}
-        allPlatformTrades={allPlatformTrades}
-        selectedTrade={trade}
-        outputCurrencySymbol={currencies[Field.OUTPUT]?.symbol}
-      />
+      <AnimatePresence>
+        {allPlatformTrades?.length !== 0 && (
+          <SwapInfo
+            loading={loading}
+            allPlatformTrades={allPlatformTrades}
+            selectedTrade={trade}
+            outputCurrencySymbol={currencies[Field.OUTPUT]?.symbol}
+          />
+        )}
+      </AnimatePresence>
       <SwapButton
         priceImpactSeverity={priceImpactSeverity}
         amountInCurrencySymbol={currencies[Field.INPUT]?.symbol}
