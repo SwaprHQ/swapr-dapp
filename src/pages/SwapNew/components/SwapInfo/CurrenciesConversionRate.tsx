@@ -3,6 +3,8 @@ import { Price } from '@swapr/sdk'
 import { useState } from 'react'
 import styled from 'styled-components'
 
+import { useIsMobileByMedia } from '../../../../hooks/useIsMobileByMedia'
+import { limitNumberOfDecimalPlaces } from '../../../../utils/prices'
 import { TEXT_COLOR_PRIMARY } from '../../constants'
 import { FontFamily } from '../styles'
 
@@ -13,11 +15,29 @@ type CurrenciesConversionRateProps = {
 export function CurrenciesConversionRate({ price }: CurrenciesConversionRateProps) {
   const [showInvertedConversionRate, setShowInvertedConversionRate] = useState(false)
 
-  return (
-    <Paragraph onClick={() => setShowInvertedConversionRate(value => !value)}>
-      <span>1</span> ETH = <span>3007</span> USDT
-    </Paragraph>
+  const isMobileByMedia = useIsMobileByMedia()
+  const significantDigits = isMobileByMedia ? 6 : 14
+  const formattedPrice = limitNumberOfDecimalPlaces(
+    showInvertedConversionRate ? price : price?.invert(),
+    significantDigits
   )
+
+  const show = Boolean(price?.baseCurrency && price?.quoteCurrency)
+  const quoteCurrenxy = price?.quoteCurrency.symbol?.slice(0, 6)
+  const baseCurrency = price?.baseCurrency.symbol?.slice(0, 6)
+  const label = showInvertedConversionRate
+    ? `${quoteCurrenxy} ${isMobileByMedia ? `/` : `per`} ${baseCurrency}`
+    : `${baseCurrency} ${isMobileByMedia ? `/` : `per`}  ${quoteCurrenxy}`
+
+  if (show)
+    return (
+      <Paragraph onClick={() => setShowInvertedConversionRate(value => !value)}>
+        {formattedPrice}
+        <span>1</span> ETH = <span>3007</span> USDT
+      </Paragraph>
+    )
+
+  return null
 }
 
 const Paragraph = styled.p`
