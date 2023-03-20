@@ -1,4 +1,3 @@
-import { AnimatePresence } from 'framer-motion'
 import styled from 'styled-components'
 
 import { Field } from '../../state/swap/types'
@@ -64,13 +63,13 @@ export function Swapbox2() {
     wrapState,
     setWrapState,
 
+    // SWAP INFO
     allPlatformTrades,
   } = useSwap()
 
   return (
     <>
       <Container>
-        <AnimatePresence></AnimatePresence>
         <CurrencyItem
           value={formattedAmounts[Field.INPUT]}
           currency={currencies[Field.INPUT]}
