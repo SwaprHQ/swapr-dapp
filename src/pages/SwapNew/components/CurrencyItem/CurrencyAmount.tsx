@@ -49,7 +49,8 @@ export function CurrencyAmount({ value, onUserInput, setIsMaxAmount, maxAmount }
     if (inputValue !== value) {
       setInputValue(value)
     }
-  }, [value, inputValue])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [value])
 
   return (
     <StyledInput
