@@ -5,7 +5,7 @@ import { Field } from '../../state/swap/types'
 import { CurrencyItem, SwapInfo, SwitchCurrenciesButton } from './components'
 import { SwapButton } from './components'
 import { SWAPBOX_WIDTH } from './constants'
-import { useSwap } from './useSwap'
+import { useSwapbox } from './useSwapbox'
 
 export function Swapbox() {
   const {
@@ -66,7 +66,7 @@ export function Swapbox() {
 
     // SWAP INFO
     allPlatformTrades,
-  } = useSwap()
+  } = useSwapbox()
 
   return (
     <Container>
