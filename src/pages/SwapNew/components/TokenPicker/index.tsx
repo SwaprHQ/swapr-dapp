@@ -14,8 +14,8 @@ import useDebounce from '../../../../hooks/useDebounce'
 import { useNativeCurrency } from '../../../../hooks/useNativeCurrency'
 import { useCombinedActiveList } from '../../../../state/lists/hooks'
 import { isAddress } from '../../../../utils'
+import { CloseButton } from './CloseButton'
 import { CommonTokens } from './CommonTokens'
-import { SearchItem } from './SearchItem'
 import { SearchList } from './SearchList'
 
 type TokenPickerProps = {
@@ -158,6 +158,7 @@ export function TokenPicker({
           handleCurrencySelect={handleCurrencySelect}
         />
       )}
+      <CloseButton />
     </Container>,
     tokenPickerContainer
   )
