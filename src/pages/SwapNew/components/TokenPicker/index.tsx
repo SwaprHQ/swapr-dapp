@@ -16,6 +16,7 @@ import { useCombinedActiveList } from '../../../../state/lists/hooks'
 import { isAddress } from '../../../../utils'
 import { CommonTokens } from './CommonTokens'
 import { SearchItem } from './SearchItem'
+import { SearchList } from './SearchList'
 
 type TokenPickerProps = {
   onMax?: () => void
@@ -150,16 +151,12 @@ export function TokenPicker({
         spellCheck={false}
       />
       {!tokenPickerInputValue.trim() ? (
-        <>
-          {/* <YourBalance onCurrencySelect={() => console.log('TODO!')} /> */}
-          <CommonTokens onCurrencySelect={handleCurrencySelect} />
-        </>
+        <CommonTokens onCurrencySelect={handleCurrencySelect} />
       ) : (
-        <SearchList>
-          {filteredSortedTokensWithNativeCurrency.map(currency => {
-            return <SearchItem currency={currency} onClick={() => handleCurrencySelect(currency)} />
-          })}
-        </SearchList>
+        <SearchList
+          filteredSortedTokensWithNativeCurrency={filteredSortedTokensWithNativeCurrency}
+          handleCurrencySelect={handleCurrencySelect}
+        />
       )}
     </Container>,
     tokenPickerContainer
@@ -197,12 +194,4 @@ const Input = styled.input`
   padding: 15px 20px;
   backdrop-filter: blur(12.5px);
   margin: 220px auto 0;
-`
-
-const SearchList = styled.div`
-  max-width: 478px;
-  width: 100%;
-  max-height: 450px;
-  overflow-y: scroll;
-  margin-top: 36px;
 `
