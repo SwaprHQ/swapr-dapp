@@ -38,6 +38,7 @@ const Container = styled.div<{ color: IndicatorColorVariant }>`
   height: 20px;
   display: inline-flex;
   align-items: center;
+  gap: 4px;
   padding: 5px;
   line-height: 11px;
   font-size: 10px;
