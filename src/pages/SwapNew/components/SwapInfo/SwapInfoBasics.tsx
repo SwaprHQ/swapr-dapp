@@ -3,6 +3,7 @@ import { Trade, CoWTrade } from '@swapr/sdk'
 import styled from 'styled-components'
 
 import { ReactComponent as DownArrowSmallSVG } from '../../../../assets/swapbox/down-arrow-small.svg'
+import { useUserSlippageTolerance } from '../../../../state/user/hooks'
 import { IndicatorColorVariant, IndicatorIconVariant } from '../../constants'
 import { CurrenciesConversionRate } from './CurrenciesConversionRate'
 import { Indicator } from './Indicator'
@@ -22,6 +23,8 @@ export function SwapInfoBasics({
 }: SwapInfoBasicsProps) {
   const getNumberOfPlatforms = () => `${allPlatformTrades!.filter(Boolean).length}/${allPlatformTrades!.length}`
 
+  const userSlippageTolerance = useUserSlippageTolerance()
+
   return (
     <Container>
       <SwapCostInfo>
@@ -33,7 +36,11 @@ export function SwapInfoBasics({
           />
         )}
         <Indicator color={IndicatorColorVariant.WARNING} icon={IndicatorIconVariant.GAS} />
-        <Indicator color={IndicatorColorVariant.NEGATIVE} icon={IndicatorIconVariant.BANANA} />
+        <Indicator
+          color={!!userSlippageTolerance ? IndicatorColorVariant.POSITIVE : IndicatorColorVariant.NEGATIVE}
+          icon={IndicatorIconVariant.BANANA}
+          text={`${(userSlippageTolerance / 100).toFixed(1)}%`}
+        />
         <Indicator
           color={selectedTrade instanceof CoWTrade ? IndicatorColorVariant.POSITIVE : IndicatorColorVariant.UNDEFINED}
           icon={IndicatorIconVariant.SHIELD}
