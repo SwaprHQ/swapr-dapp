@@ -7,9 +7,13 @@ import {
   TOKEN_PICKER_CLOSE_BUTTON_BACKGROUND_COLOR,
 } from '../../constants'
 
-export function CloseButton() {
+type CloseButtonProps = {
+  onClick: (event: React.MouseEvent<HTMLButtonElement>) => void
+}
+
+export function CloseButton({ onClick }: CloseButtonProps) {
   return (
-    <Button>
+    <Button onClick={onClick}>
       <CloseSVG />
     </Button>
   )

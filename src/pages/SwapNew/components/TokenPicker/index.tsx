@@ -118,7 +118,7 @@ export function TokenPicker({
     [setTokenPickerInputValue]
   )
 
-  const onClose = (event: React.MouseEvent<HTMLDivElement>) => {
+  const onClose = (event: React.MouseEvent<HTMLDivElement | HTMLButtonElement>) => {
     if (event.target === event.currentTarget) {
       event.stopPropagation()
       closeTokenPicker()
@@ -158,7 +158,7 @@ export function TokenPicker({
           handleCurrencySelect={handleCurrencySelect}
         />
       )}
-      <CloseButton />
+      <CloseButton onClick={onClose} />
     </Container>,
     tokenPickerContainer
   )
