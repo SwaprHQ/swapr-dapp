@@ -1,5 +1,6 @@
 import { Currency, CurrencyAmount as CurrencyAmountType, Percent } from '@swapr/sdk'
 
+import { AnimatePresence } from 'framer-motion'
 import { useState } from 'react'
 import styled from 'styled-components'
 
@@ -54,13 +55,15 @@ export function CurrencyItem({
         <CurrencyType onClick={() => setTokenPickerOpened(true)} currency={currency} />
         <CurrencyBalance currency={currency} />
       </CurrencyInfoContainer>
-      {tokenPickerOpened && (
-        <TokenPicker
-          isMaxAmount={isMaxAmount}
-          onCurrencySelect={onCurrencySelect}
-          closeTokenPicker={() => setTokenPickerOpened(false)}
-        />
-      )}
+      <AnimatePresence>
+        {tokenPickerOpened && (
+          <TokenPicker
+            isMaxAmount={isMaxAmount}
+            onCurrencySelect={onCurrencySelect}
+            closeTokenPicker={() => setTokenPickerOpened(false)}
+          />
+        )}
+      </AnimatePresence>
     </CurrencyContainer>
   )
 }
