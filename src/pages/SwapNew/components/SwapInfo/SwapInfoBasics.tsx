@@ -1,4 +1,4 @@
-import { Trade } from '@swapr/sdk'
+import { Trade, CoWTrade } from '@swapr/sdk'
 
 import styled from 'styled-components'
 
@@ -34,7 +34,10 @@ export function SwapInfoBasics({
         )}
         <Indicator color={IndicatorColorVariant.WARNING} icon={IndicatorIconVariant.GAS} />
         <Indicator color={IndicatorColorVariant.NEGATIVE} icon={IndicatorIconVariant.BANANA} />
-        <Indicator color={IndicatorColorVariant.UNDEFINED} icon={IndicatorIconVariant.SHIELD} />
+        <Indicator
+          color={selectedTrade instanceof CoWTrade ? IndicatorColorVariant.POSITIVE : IndicatorColorVariant.UNDEFINED}
+          icon={IndicatorIconVariant.SHIELD}
+        />
         <CurrenciesConversionRate price={selectedTrade?.executionPrice} />
       </SwapCostInfo>
       <ExpandButton onClick={toggleShowInfoDetails}>
