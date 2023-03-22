@@ -29,6 +29,7 @@ export enum IndicatorIconVariant {
   GAS = 'GAS',
   BANANA = 'BANANA',
   SHIELD = 'SHIELD',
+  MAGNIFYING_GLASS = 'MAGNIFYING_GLASS',
 }
 
 export const INDICATOR_COLOR = {

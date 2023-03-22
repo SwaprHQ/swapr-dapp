@@ -31,7 +31,7 @@ export function SwapInfoBasics({
         {allPlatformTrades?.length !== 0 && (
           <Indicator
             color={IndicatorColorVariant.POSITIVE}
-            icon={IndicatorIconVariant.DEXES}
+            icon={IndicatorIconVariant.MAGNIFYING_GLASS}
             text={getNumberOfPlatforms()}
           />
         )}

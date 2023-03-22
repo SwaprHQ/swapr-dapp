@@ -3,6 +3,7 @@ import styled from 'styled-components'
 import { ReactComponent as BananaSVG } from '../../../../assets/swapbox/banana.svg'
 import { ReactComponent as DexesSVG } from '../../../../assets/swapbox/dexes.svg'
 import { ReactComponent as GasSVG } from '../../../../assets/swapbox/gas.svg'
+import { ReactComponent as MagnifyingGlassSVG } from '../../../../assets/swapbox/magnifying-glass.svg'
 import { ReactComponent as ShieldSVG } from '../../../../assets/swapbox/shield.svg'
 import {
   INDICATOR_BACKGROUND_COLOR,
@@ -17,6 +18,7 @@ export const INDICATOR_ICON = {
   [IndicatorIconVariant.GAS]: <GasSVG />,
   [IndicatorIconVariant.BANANA]: <BananaSVG />,
   [IndicatorIconVariant.SHIELD]: <ShieldSVG />,
+  [IndicatorIconVariant.MAGNIFYING_GLASS]: <MagnifyingGlassSVG />,
 }
 
 type IndicatorProps = {
