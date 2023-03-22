@@ -109,6 +109,9 @@ export function Swapbox() {
         trade={trade}
         handleSwap={handleSwap}
         showWrap={showWrap}
+        wrapInputError={wrapInputError}
+        wrapState={wrapState}
+        onWrap={onWrap}
       />
     </Container>
   )
