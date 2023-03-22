@@ -20,9 +20,17 @@ type SwapButtonProps = {
   amountInCurrencySymbol?: string
   trade?: Trade
   handleSwap: () => void
+  showWrap?: boolean
 }
 
-export function SwapButton({ swapInputError, loading, amountInCurrencySymbol, trade, handleSwap }: SwapButtonProps) {
+export function SwapButton({
+  swapInputError,
+  loading,
+  amountInCurrencySymbol,
+  trade,
+  handleSwap,
+  showWrap,
+}: SwapButtonProps) {
   const { t } = useTranslation('swap')
   const { chainId } = useActiveWeb3React()
   const isExpertMode = useIsExpertMode()
@@ -43,6 +51,13 @@ export function SwapButton({ swapInputError, loading, amountInCurrencySymbol, tr
     : RoutablePlatformKeysByNetwork[ChainId.MAINNET]
 
   const platformName = trade?.platform.name
+
+  if (showWrap)
+    return (
+      <StyledButton>
+        <SwapButtonLabel>Wrap</SwapButtonLabel>
+      </StyledButton>
+    )
 
   return (
     <StyledButton onClick={handleSwap} disabled={loading || swapInputError ? true : false}>

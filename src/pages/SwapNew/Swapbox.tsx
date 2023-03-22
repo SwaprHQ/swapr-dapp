@@ -108,6 +108,7 @@ export function Swapbox() {
         loading={loading}
         trade={trade}
         handleSwap={handleSwap}
+        showWrap={showWrap}
       />
     </Container>
   )
