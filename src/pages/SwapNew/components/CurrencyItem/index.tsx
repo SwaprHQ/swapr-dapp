@@ -37,7 +37,7 @@ export function CurrencyItem({
   fiatValue,
   isFallbackFiatValue,
   priceImpact,
-  // onMax,
+  onMax,
   onCurrencySelect,
   lowerItem,
 }: CurrencyItemProps) {
@@ -53,7 +53,7 @@ export function CurrencyItem({
 
       <CurrencyInfoContainer>
         <CurrencyType onClick={() => setTokenPickerOpened(true)} currency={currency} />
-        <CurrencyBalance currency={currency} />
+        <CurrencyBalance currency={currency} onMax={onMax} />
       </CurrencyInfoContainer>
       <AnimatePresence>
         {tokenPickerOpened && (

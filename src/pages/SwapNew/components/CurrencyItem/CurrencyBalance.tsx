@@ -10,9 +10,10 @@ import { FontFamily } from '../styles'
 
 type CurrencyBalanceProps = {
   currency?: Currency
+  onMax?: () => void
 }
 
-export function CurrencyBalance({ currency }: CurrencyBalanceProps) {
+export function CurrencyBalance({ currency, onMax }: CurrencyBalanceProps) {
   const { account } = useActiveWeb3React()
 
   const selectedCurrencyBalance = useCurrencyBalance(account ?? undefined, currency ?? undefined)
@@ -25,7 +26,7 @@ export function CurrencyBalance({ currency }: CurrencyBalanceProps) {
 
   return (
     <Paragraph>
-      Balance: <span>{trimmedBalance}</span>
+      Balance: <span onClick={onMax}>{trimmedBalance}</span>
     </Paragraph>
   )
 }
@@ -42,5 +43,6 @@ const Paragraph = styled.p`
 
   & span {
     text-decoration: underline;
+    cursor: pointer;
   }
 `
