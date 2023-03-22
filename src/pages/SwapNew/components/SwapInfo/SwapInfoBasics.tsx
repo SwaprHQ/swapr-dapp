@@ -21,6 +21,10 @@ export function SwapInfoBasics({
   showSwapInfoDetails,
   toggleShowInfoDetails,
 }: SwapInfoBasicsProps) {
+  const getPlatformsColor = () =>
+    allPlatformTrades!.filter(Boolean).length / allPlatformTrades!.length > 0.5
+      ? IndicatorColorVariant.POSITIVE
+      : IndicatorColorVariant.NEGATIVE
   const getNumberOfPlatforms = () => `${allPlatformTrades!.filter(Boolean).length}/${allPlatformTrades!.length}`
 
   const userSlippageTolerance = useUserSlippageTolerance()
@@ -30,7 +34,7 @@ export function SwapInfoBasics({
       <SwapCostInfo>
         {allPlatformTrades?.length !== 0 && (
           <Indicator
-            color={IndicatorColorVariant.POSITIVE}
+            color={getPlatformsColor()}
             icon={IndicatorIconVariant.MAGNIFYING_GLASS}
             text={getNumberOfPlatforms()}
           />
