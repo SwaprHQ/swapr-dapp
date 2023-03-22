@@ -39,7 +39,7 @@ export function SwapInfoBasics({
             text={getNumberOfPlatforms()}
           />
         )}
-        <Indicator color={IndicatorColorVariant.WARNING} icon={IndicatorIconVariant.GAS} />
+        {/* <Indicator color={IndicatorColorVariant.WARNING} icon={IndicatorIconVariant.GAS} /> */}
         <Indicator
           color={!!userSlippageTolerance ? IndicatorColorVariant.POSITIVE : IndicatorColorVariant.NEGATIVE}
           icon={IndicatorIconVariant.BANANA}

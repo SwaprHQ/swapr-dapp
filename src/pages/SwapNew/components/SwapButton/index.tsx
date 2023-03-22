@@ -45,10 +45,11 @@ export function SwapButton({ swapInputError, loading, amountInCurrencySymbol, tr
   const platformName = trade?.platform.name
 
   return (
-    <StyledButton onClick={handleSwap}>
+    <StyledButton onClick={handleSwap} disabled={loading || swapInputError ? true : false}>
       {(() => {
-        if (loading) return <SwapButtonLabel>LOADING...</SwapButtonLabel>
-        if (swapInputError) return <SwapButtonLabel>{SWAP_INPUT_ERRORS_MESSAGE[swapInputError]}</SwapButtonLabel>
+        if (loading) return <SwapButtonLabel light={true}>LOADING...</SwapButtonLabel>
+        if (swapInputError)
+          return <SwapButtonLabel light={true}>{SWAP_INPUT_ERRORS_MESSAGE[swapInputError]}</SwapButtonLabel>
 
         return (
           <>
@@ -85,9 +86,14 @@ const StyledButton = styled.button`
   &:active {
     background: ${getSwapButtonActiveColor(COW_SWAP_COLOR)};
   }
+
+  &:disabled {
+    background: rgba(60, 56, 100, 0.1);
+    cursor: default;
+  }
 `
 
-const SwapButtonLabel = styled.p`
+const SwapButtonLabel = styled.p<{ light?: boolean }>`
   display: inline-block;
   line-height: 16px;
   font-size: 13px;
@@ -95,7 +101,7 @@ const SwapButtonLabel = styled.p`
   font-weight: 600;
   letter-spacing: 0.08em;
   text-transform: uppercase;
-  color: ${TEXT_COLOR_PRIMARY};
+  color: ${({ light }) => (light ? '#8e89c6' : TEXT_COLOR_PRIMARY)};
 `
 
 const PlatformLogo = styled.img`
