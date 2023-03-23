@@ -1,9 +1,9 @@
-import { Trade, ChainId } from '@swapr/sdk'
+import { Trade } from '@swapr/sdk'
 
 import { useTranslation } from 'react-i18next'
 
 import { SWAP_INPUT_ERRORS } from '../../../../constants'
-import { ROUTABLE_PLATFORM_STYLE, RoutablePlatformKeysByNetwork } from '../../../../constants'
+import { ROUTABLE_PLATFORM_STYLE } from '../../../../constants'
 import { useActiveWeb3React } from '../../../../hooks'
 import { WrapState, WrapType } from '../../../../hooks/useWrapCallback'
 import { ConnectWalletButton } from './ConnectWalletButton'
@@ -39,7 +39,7 @@ export function SwapButton({
   wrapType,
 }: SwapButtonProps) {
   const { t } = useTranslation('swap')
-  const { account, chainId } = useActiveWeb3React()
+  const { account } = useActiveWeb3React()
 
   const SWAP_INPUT_ERRORS_MESSAGE = {
     [SWAP_INPUT_ERRORS.CONNECT_WALLET]: t('button.connectWallet'),
@@ -51,10 +51,6 @@ export function SwapButton({
       currency: amountInCurrencySymbol,
     }),
   }
-
-  const routablePlatforms = chainId
-    ? RoutablePlatformKeysByNetwork[chainId]
-    : RoutablePlatformKeysByNetwork[ChainId.MAINNET]
 
   const platformName = trade?.platform.name
 
