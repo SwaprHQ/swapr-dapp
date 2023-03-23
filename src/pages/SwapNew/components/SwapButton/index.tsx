@@ -7,6 +7,7 @@ import { ROUTABLE_PLATFORM_STYLE, RoutablePlatformKeysByNetwork } from '../../..
 import { useActiveWeb3React } from '../../../../hooks'
 import { WrapState, WrapType } from '../../../../hooks/useWrapCallback'
 import { ConnectWalletButton } from './ConnectWalletButton'
+import { LoadingButton } from './LoadingButton'
 import { StyledButton, SwapButtonLabel, PlatformLogo } from './styles'
 import { WrapButton } from './WrapButton'
 
@@ -57,14 +58,16 @@ export function SwapButton({
 
   const platformName = trade?.platform.name
 
+  if (loading) return <LoadingButton />
+
   if (!account) return <ConnectWalletButton />
 
   if (showWrap)
     return <WrapButton wrapInputError={wrapInputError} wrapState={wrapState} onWrap={onWrap} wrapType={wrapType} />
+
   return (
-    <StyledButton disabled={loading || swapInputError ? true : false} onClick={handleSwap}>
+    <StyledButton disabled={swapInputError ? true : false} onClick={handleSwap}>
       {(() => {
-        if (loading) return <SwapButtonLabel light={true}>LOADING...</SwapButtonLabel>
         if (swapInputError)
           return <SwapButtonLabel light={true}>{SWAP_INPUT_ERRORS_MESSAGE[swapInputError]}</SwapButtonLabel>
 
