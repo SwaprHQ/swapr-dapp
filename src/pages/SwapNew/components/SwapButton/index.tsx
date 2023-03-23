@@ -8,6 +8,7 @@ import { useActiveWeb3React } from '../../../../hooks'
 import { WrapState, WrapType } from '../../../../hooks/useWrapCallback'
 import { ConnectWalletButton } from './ConnectWalletButton'
 import { StyledButton, SwapButtonLabel, PlatformLogo } from './styles'
+import { WrapButton } from './WrapButton'
 
 type SwapButtonProps = {
   platformName?: string
@@ -56,23 +57,10 @@ export function SwapButton({
 
   const platformName = trade?.platform.name
 
-  const getWrapButtonLabel = () => {
-    if (wrapState === WrapState.PENDING) {
-      return wrapType === WrapType.WRAP ? 'Wrapping' : 'Unwrapping'
-    } else {
-      return wrapType === WrapType.WRAP ? 'Wrap' : 'Unwrap'
-    }
-  }
-
   if (!account) return <ConnectWalletButton />
 
   if (showWrap)
-    return (
-      <StyledButton disabled={Boolean(wrapInputError) || wrapState === WrapState.PENDING} onClick={onWrap}>
-        <SwapButtonLabel>{wrapInputError ?? getWrapButtonLabel()}</SwapButtonLabel>
-      </StyledButton>
-    )
-
+    return <WrapButton wrapInputError={wrapInputError} wrapState={wrapState} onWrap={onWrap} wrapType={wrapType} />
   return (
     <StyledButton disabled={loading || swapInputError ? true : false} onClick={handleSwap}>
       {(() => {
