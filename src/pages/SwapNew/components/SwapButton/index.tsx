@@ -7,7 +7,6 @@ import { SWAP_INPUT_ERRORS } from '../../../../constants'
 import { ROUTABLE_PLATFORM_STYLE, RoutablePlatformKeysByNetwork } from '../../../../constants'
 import { useActiveWeb3React } from '../../../../hooks'
 import { WrapState, WrapType } from '../../../../hooks/useWrapCallback'
-import { useIsExpertMode } from '../../../../state/user/hooks'
 import { getSwapButtonActiveColor, getSwapButtonHoverColor, TEXT_COLOR_PRIMARY } from '../../constants'
 import { FontFamily } from '../styles'
 
@@ -41,7 +40,7 @@ export function SwapButton({
   wrapType,
 }: SwapButtonProps) {
   const { t } = useTranslation('swap')
-  const { chainId } = useActiveWeb3React()
+  const { account, chainId } = useActiveWeb3React()
 
   const SWAP_INPUT_ERRORS_MESSAGE = {
     [SWAP_INPUT_ERRORS.CONNECT_WALLET]: t('button.connectWallet'),
@@ -66,6 +65,14 @@ export function SwapButton({
     } else {
       return wrapType === WrapType.WRAP ? 'Wrap' : 'Unwrap'
     }
+  }
+
+  if (!account) {
+    return (
+      <StyledButton>
+        <SwapButtonLabel>Connect Wallet</SwapButtonLabel>
+      </StyledButton>
+    )
   }
 
   if (showWrap)

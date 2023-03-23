@@ -147,8 +147,6 @@ export function SwapButtons({
     )
   }
 
-  console.log('SAF', showApproveFlow)
-
   if (showApproveFlow) {
     return (
       <>
