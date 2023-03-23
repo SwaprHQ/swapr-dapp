@@ -6,6 +6,7 @@ import { SWAP_INPUT_ERRORS } from '../../../../constants'
 import { ROUTABLE_PLATFORM_STYLE, RoutablePlatformKeysByNetwork } from '../../../../constants'
 import { useActiveWeb3React } from '../../../../hooks'
 import { WrapState, WrapType } from '../../../../hooks/useWrapCallback'
+import { ConnectWalletButton } from './ConnectWalletButton'
 import { StyledButton, SwapButtonLabel, PlatformLogo } from './styles'
 
 type SwapButtonProps = {
@@ -90,14 +91,6 @@ export function SwapButton({
           </>
         )
       })()}
-    </StyledButton>
-  )
-}
-
-function ConnectWalletButton() {
-  return (
-    <StyledButton>
-      <SwapButtonLabel>Connect Wallet</SwapButtonLabel>
     </StyledButton>
   )
 }
