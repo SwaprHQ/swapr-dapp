@@ -42,13 +42,11 @@ export function Swapbox() {
 
     onSwitchTokens,
 
-    showWrap,
     bestPricedTrade,
     showAdvancedSwapDetails,
     setShowAdvancedSwapDetails,
     recipient,
 
-    wrapInputError,
     showApproveFlow,
     userHasSpecifiedInputOutput,
     approval,
@@ -56,16 +54,20 @@ export function Swapbox() {
     priceImpact,
     priceImpactSeverity,
     swapCallbackError,
-    wrapType,
     approvalsSubmitted,
     swapErrorMessage,
-    onWrap,
     approveCallback,
-    wrapState,
     setWrapState,
 
     // SWAP INFO
     allPlatformTrades,
+
+    // WRAPPING
+    showWrap,
+    wrapInputError,
+    wrapState,
+    onWrap,
+    wrapType,
   } = useSwapbox()
 
   return (
@@ -112,6 +114,7 @@ export function Swapbox() {
         wrapInputError={wrapInputError}
         wrapState={wrapState}
         onWrap={onWrap}
+        wrapType={wrapType}
       />
     </Container>
   )

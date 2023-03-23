@@ -6,6 +6,7 @@ import styled from 'styled-components'
 import { SWAP_INPUT_ERRORS } from '../../../../constants'
 import { ROUTABLE_PLATFORM_STYLE, RoutablePlatformKeysByNetwork } from '../../../../constants'
 import { useActiveWeb3React } from '../../../../hooks'
+import { WrapState, WrapType } from '../../../../hooks/useWrapCallback'
 import { useIsExpertMode } from '../../../../state/user/hooks'
 import { getSwapButtonActiveColor, getSwapButtonHoverColor, TEXT_COLOR_PRIMARY } from '../../constants'
 import { FontFamily } from '../styles'
@@ -21,6 +22,10 @@ type SwapButtonProps = {
   trade?: Trade
   handleSwap: () => void
   showWrap?: boolean
+  wrapInputError: string | undefined
+  wrapState?: WrapState | undefined
+  onWrap: (() => Promise<void>) | undefined
+  wrapType: WrapType
 }
 
 export function SwapButton({
@@ -30,10 +35,13 @@ export function SwapButton({
   trade,
   handleSwap,
   showWrap,
+  wrapInputError,
+  wrapState,
+  onWrap,
+  wrapType,
 }: SwapButtonProps) {
   const { t } = useTranslation('swap')
   const { chainId } = useActiveWeb3React()
-  const isExpertMode = useIsExpertMode()
 
   const SWAP_INPUT_ERRORS_MESSAGE = {
     [SWAP_INPUT_ERRORS.CONNECT_WALLET]: t('button.connectWallet'),
@@ -52,15 +60,23 @@ export function SwapButton({
 
   const platformName = trade?.platform.name
 
+  const getWrapButtonLabel = () => {
+    if (wrapState === WrapState.PENDING) {
+      return wrapType === WrapType.WRAP ? 'Wrapping' : 'Unwrapping'
+    } else {
+      return wrapType === WrapType.WRAP ? 'Wrap' : 'Unwrap'
+    }
+  }
+
   if (showWrap)
     return (
-      <StyledButton>
-        <SwapButtonLabel>Wrap</SwapButtonLabel>
+      <StyledButton disabled={Boolean(wrapInputError) || wrapState === WrapState.PENDING} onClick={onWrap}>
+        <SwapButtonLabel>{wrapInputError ?? getWrapButtonLabel()}</SwapButtonLabel>
       </StyledButton>
     )
 
   return (
-    <StyledButton onClick={handleSwap} disabled={loading || swapInputError ? true : false}>
+    <StyledButton disabled={loading || swapInputError ? true : false} onClick={handleSwap}>
       {(() => {
         if (loading) return <SwapButtonLabel light={true}>LOADING...</SwapButtonLabel>
         if (swapInputError)
