@@ -1,3 +1,4 @@
+import { Loader } from '../../../../components/Loader'
 import { ApprovalState } from '../../../../hooks/useApproveCallback'
 import { StyledButton, SwapButtonLabel } from './styles'
 
@@ -16,16 +17,23 @@ export function ApproveButton({
   approveCallback,
   handleSwap,
 }: ApproveButtonProps) {
+  console.log('APPROVAL:', approval)
   return (
     <StyledButton
       onClick={approval !== ApprovalState.APPROVED ? approveCallback : handleSwap}
       disabled={approval === ApprovalState.PENDING}
     >
-      {approval !== ApprovalState.APPROVED ? (
-        <SwapButtonLabel>Approve {amountInCurrencySymbol}</SwapButtonLabel>
-      ) : (
-        <SwapButtonLabel>Swap</SwapButtonLabel>
-      )}
+      {(() => {
+        if (approval === ApprovalState.PENDING)
+          return (
+            <SwapButtonLabel>
+              Approving <Loader />
+            </SwapButtonLabel>
+          )
+        if (approval === ApprovalState.APPROVED) return <SwapButtonLabel>Swap</SwapButtonLabel>
+
+        return <SwapButtonLabel>Approve {amountInCurrencySymbol}</SwapButtonLabel>
+      })()}
     </StyledButton>
   )
 }
