@@ -6,6 +6,7 @@ type ApproveButtonProps = {
   approval: ApprovalState
   approvalSubmitted: boolean
   approveCallback: () => Promise<void>
+  handleSwap: () => void
 }
 
 export function ApproveButton({
@@ -13,10 +14,18 @@ export function ApproveButton({
   approval,
   approvalSubmitted,
   approveCallback,
+  handleSwap,
 }: ApproveButtonProps) {
   return (
-    <StyledButton onClick={approveCallback}>
-      <SwapButtonLabel>Approve {amountInCurrencySymbol}</SwapButtonLabel>
+    <StyledButton
+      onClick={approval !== ApprovalState.APPROVED ? approveCallback : handleSwap}
+      disabled={approval === ApprovalState.PENDING}
+    >
+      {approval !== ApprovalState.APPROVED ? (
+        <SwapButtonLabel>Approve {amountInCurrencySymbol}</SwapButtonLabel>
+      ) : (
+        <SwapButtonLabel>Swap</SwapButtonLabel>
+      )}
     </StyledButton>
   )
 }

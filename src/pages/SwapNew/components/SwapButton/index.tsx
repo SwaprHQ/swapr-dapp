@@ -78,6 +78,7 @@ export function SwapButton({
         approveCallback={approveCallback}
         approval={approval}
         approvalSubmitted={approvalSubmitted}
+        handleSwap={handleSwap}
       />
     )
 
