@@ -6,6 +6,7 @@ import { SWAP_INPUT_ERRORS } from '../../../../constants'
 import { ROUTABLE_PLATFORM_STYLE } from '../../../../constants'
 import { useActiveWeb3React } from '../../../../hooks'
 import { WrapState, WrapType } from '../../../../hooks/useWrapCallback'
+import { ApproveButton } from './ApproveButton'
 import { ConnectWalletButton } from './ConnectWalletButton'
 import { LoadingButton } from './LoadingButton'
 import { StyledButton, SwapButtonLabel, PlatformLogo } from './styles'
@@ -63,12 +64,7 @@ export function SwapButton({
   if (showWrap)
     return <WrapButton wrapInputError={wrapInputError} wrapState={wrapState} onWrap={onWrap} wrapType={wrapType} />
 
-  if (showApproveFlow)
-    return (
-      <StyledButton>
-        <SwapButtonLabel>Approve</SwapButtonLabel>
-      </StyledButton>
-    )
+  if (showApproveFlow) return <ApproveButton />
 
   return (
     <StyledButton disabled={swapInputError ? true : false} onClick={handleSwap}>
