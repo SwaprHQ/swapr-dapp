@@ -34,7 +34,6 @@ export function Swapbox() {
     // SWAP BUTTON
     swapInputError,
     handleSwap,
-    trade,
 
     maxAmountInput,
     maxAmountOutput,
@@ -47,7 +46,6 @@ export function Swapbox() {
     setShowAdvancedSwapDetails,
     recipient,
 
-    showApproveFlow,
     userHasSpecifiedInputOutput,
     approval,
     setSwapState,
@@ -61,6 +59,7 @@ export function Swapbox() {
 
     // SWAP INFO
     allPlatformTrades,
+    trade,
 
     // WRAPPING
     showWrap,
@@ -68,6 +67,9 @@ export function Swapbox() {
     wrapState,
     onWrap,
     wrapType,
+
+    // APPROVE FLOW
+    showApproveFlow,
   } = useSwapbox()
 
   return (
@@ -115,6 +117,7 @@ export function Swapbox() {
         wrapState={wrapState}
         onWrap={onWrap}
         wrapType={wrapType}
+        showApproveFlow={showApproveFlow}
       />
     </Container>
   )

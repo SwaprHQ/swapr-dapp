@@ -24,6 +24,7 @@ type SwapButtonProps = {
   wrapState?: WrapState | undefined
   onWrap: (() => Promise<void>) | undefined
   wrapType: WrapType
+  showApproveFlow: boolean
 }
 
 export function SwapButton({
@@ -37,6 +38,7 @@ export function SwapButton({
   wrapState,
   onWrap,
   wrapType,
+  showApproveFlow,
 }: SwapButtonProps) {
   const { t } = useTranslation('swap')
   const { account } = useActiveWeb3React()
@@ -60,6 +62,13 @@ export function SwapButton({
 
   if (showWrap)
     return <WrapButton wrapInputError={wrapInputError} wrapState={wrapState} onWrap={onWrap} wrapType={wrapType} />
+
+  if (showApproveFlow)
+    return (
+      <StyledButton>
+        <SwapButtonLabel>Approve</SwapButtonLabel>
+      </StyledButton>
+    )
 
   return (
     <StyledButton disabled={swapInputError ? true : false} onClick={handleSwap}>
