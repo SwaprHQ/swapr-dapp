@@ -5,6 +5,7 @@ import { useTranslation } from 'react-i18next'
 import { SWAP_INPUT_ERRORS } from '../../../../constants'
 import { ROUTABLE_PLATFORM_STYLE } from '../../../../constants'
 import { useActiveWeb3React } from '../../../../hooks'
+import { ApprovalState } from '../../../../hooks/useApproveCallback'
 import { WrapState, WrapType } from '../../../../hooks/useWrapCallback'
 import { ApproveButton } from './ApproveButton'
 import { ConnectWalletButton } from './ConnectWalletButton'
@@ -26,6 +27,9 @@ type SwapButtonProps = {
   onWrap: (() => Promise<void>) | undefined
   wrapType: WrapType
   showApproveFlow: boolean
+  approveCallback: () => Promise<void>
+  approval: ApprovalState
+  approvalSubmitted: boolean
 }
 
 export function SwapButton({
@@ -64,7 +68,7 @@ export function SwapButton({
   if (showWrap)
     return <WrapButton wrapInputError={wrapInputError} wrapState={wrapState} onWrap={onWrap} wrapType={wrapType} />
 
-  if (showApproveFlow) return <ApproveButton />
+  if (showApproveFlow) return <ApproveButton amountInCurrencySymbol={amountInCurrencySymbol} />
 
   return (
     <StyledButton disabled={swapInputError ? true : false} onClick={handleSwap}>

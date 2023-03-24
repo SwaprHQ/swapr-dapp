@@ -47,14 +47,11 @@ export function Swapbox() {
     recipient,
 
     userHasSpecifiedInputOutput,
-    approval,
     setSwapState,
     priceImpact,
     priceImpactSeverity,
     swapCallbackError,
-    approvalsSubmitted,
     swapErrorMessage,
-    approveCallback,
     setWrapState,
 
     // SWAP INFO
@@ -70,6 +67,9 @@ export function Swapbox() {
 
     // APPROVE FLOW
     showApproveFlow,
+    approveCallback,
+    approval,
+    approvalSubmitted,
   } = useSwapbox()
 
   return (
@@ -118,6 +118,9 @@ export function Swapbox() {
         onWrap={onWrap}
         wrapType={wrapType}
         showApproveFlow={showApproveFlow}
+        approveCallback={approveCallback}
+        approval={approval}
+        approvalSubmitted={approvalSubmitted}
       />
     </Container>
   )
