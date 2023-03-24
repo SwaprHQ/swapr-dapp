@@ -10,7 +10,6 @@ type SearchItemProps = {
 }
 
 export function SearchItem({ currency, onClick }: SearchItemProps) {
-  console.log()
   return (
     <Container onClick={onClick}>
       <Info>
