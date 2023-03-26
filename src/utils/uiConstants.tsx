@@ -379,7 +379,7 @@ export const CommunityLinksContent = {
       },
     },
   ],
-}
+} as const
 
 export const BlogContent = {
   readBlogPost: 'READ BLOG POST',
@@ -405,7 +405,7 @@ export const BlogContent = {
       postLink: 'https://medium.com/swapr/introducing-swpr-token-farming-rewards-7fbdcc9507ae',
     },
   ],
-}
+} as const
 
 export const FooterContent = {
   linkColumns: [
@@ -479,18 +479,6 @@ export const FooterContent = {
           label: 'DXstats',
           href: 'https://dxstats.eth.limo/#/home',
         },
-        // {
-        //     label: 'Roadmap',
-        //     href: '#'
-        // },
-        // {
-        //     label: 'We\'re hiring',
-        //     href: '#'
-        // },
-        // {
-        //     label: 'Token',
-        //     href: '#'
-        // },
       ],
     },
   ],
@@ -498,9 +486,29 @@ export const FooterContent = {
     label: 'GO TO SWAPR',
     href: '#',
   },
+} as const
+
+type Company = {
+  name: string
+  image: string
+  href: string
 }
 
-export const StatsContent = {
+type Status = {
+  title: 'TOTAL VOLUME' | 'TRADES' | 'TOTAL FEES COLLECTED' | 'SWPR PRICE' | 'TVL' | 'ROUTING THROUGH'
+  value?: JSX.Element
+  externalSource?: boolean
+  headingDollar?: boolean
+  moreLabel?: string
+  companies?: readonly Company[]
+}
+
+type StatusContent = {
+  title: string
+  stats: readonly Status[]
+}
+
+export const StatsContent: Readonly<StatusContent> = {
   title: 'Swapr Stats',
   stats: [
     {
@@ -574,4 +582,4 @@ export const StatsContent = {
       moreLabel: '+ 3 more',
     },
   ],
-}
+} as const
