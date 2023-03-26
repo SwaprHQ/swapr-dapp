@@ -1,4 +1,5 @@
 import { darken } from 'polished'
+import { Check } from 'react-feather'
 import styled from 'styled-components'
 
 import { ButtonPrimary, ButtonSecondary } from '../../../components/Button'
@@ -65,4 +66,11 @@ export const ButtonAccept = styled(ButtonPrimary)<{ isWarning: boolean }>`
     background-color: ${({ theme, isWarning }) =>
       isWarning ? darken(0.05, theme.red1) : darken(0.05, theme.primary1)};
   }
+`
+
+export const SuccessCheck = styled(Check)`
+  background-color: #8cc63f;
+  border-radius: 50%;
+  padding: 10px;
+  stroke-width: 2px;
 `
