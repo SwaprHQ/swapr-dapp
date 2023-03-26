@@ -1,4 +1,12 @@
-export const TimelineData = [
+export type MileStone = {
+  content: string[]
+  title: string
+  releaseTag: string
+  past?: boolean
+  current?: boolean
+}
+
+export const TimelineData: MileStone[] = [
   {
     title: '2021 Q1',
     content: [

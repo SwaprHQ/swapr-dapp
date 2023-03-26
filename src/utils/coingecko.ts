@@ -11,20 +11,13 @@ interface PriceInformation {
 
 // Defaults
 const API_NAME = 'Coingecko'
-const API_BASE_URL = 'https://api.coingecko.com/api'
-const API_VERSION = 'v3'
+const API_BASE_URL = 'https://api.coingecko.com/api/v3'
 const DEFAULT_HEADERS = {
   'Content-Type': 'application/json',
 }
 
-function _getApiBaseUrl(chainId: ChainId): string {
-  const baseUrl = API_BASE_URL
-
-  if (!baseUrl) {
-    throw new Error(`Unsupported Network. The ${API_NAME} API is not deployed in the Network ${chainId}`)
-  } else {
-    return baseUrl + '/' + API_VERSION
-  }
+function getApiUrl(subString: string) {
+  return new URL(`${API_BASE_URL}${subString}`)
 }
 
 const COINGECKO_ASSET_PLATFORM: { [chainId in ChainId]: string | null } = {
@@ -51,17 +44,18 @@ export const COINGECKO_NATIVE_CURRENCY: Record<number, string> = {
   [ChainId.BSC_MAINNET]: 'binancecoin',
 }
 
-function _fetch(chainId: ChainId, url: string, method: 'GET' | 'POST' | 'DELETE', data?: any): Promise<Response> {
-  const baseUrl = _getApiBaseUrl(chainId)
-  return fetch(baseUrl + url, {
+type GetDataProps = {
+  url: URL
+  method?: 'GET' | 'POST' | 'DELETE'
+  data?: BodyInit
+}
+
+function getData({ url, method = 'GET', data }: GetDataProps) {
+  return fetch(url, {
     headers: DEFAULT_HEADERS,
     method,
     body: data !== undefined ? JSON.stringify(data) : data,
   })
-}
-
-function _get(chainId: ChainId, url: string): Promise<Response> {
-  return _fetch(chainId, url, 'GET')
 }
 
 export interface CoinGeckoUsdPriceTokenParams {
@@ -89,10 +83,11 @@ export async function getUSDPriceTokenQuote(params: CoinGeckoUsdPriceTokenParams
     throw new Error('Unsupported asset network')
   }
 
-  const response = await _get(
-    chainId,
+  const priceURL = getApiUrl(
     `/simple/token_price/${assetPlatform}?contract_addresses=${tokenAddress}&vs_currencies=usd&include_24hr_change=true`
-  ).catch(error => {
+  )
+
+  const response = await getData({ url: priceURL }).catch(error => {
     console.error(`Error getting ${API_NAME} USD price quote:`, error)
     throw new Error(error)
   })
@@ -108,8 +103,9 @@ export async function getUSDPriceCurrencyQuote(params: CoinGeckoUsdPriceCurrency
     // Unsupported currency network
     throw new Error('Unsupported currency network')
   }
+  const priceURL = getApiUrl(`/simple/price?ids=${nativeCurrency}&vs_currencies=usd`)
 
-  const response = await _get(chainId, `/simple/price?ids=${nativeCurrency}&vs_currencies=usd`).catch(error => {
+  const response = await getData({ url: priceURL }).catch(error => {
     console.error(`Error getting ${API_NAME} USD price quote:`, error)
     throw new Error(error)
   })

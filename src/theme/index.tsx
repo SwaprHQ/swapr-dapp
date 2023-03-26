@@ -113,6 +113,7 @@ export function colors(darkMode: boolean): Colors {
     darkest: '#161721',
     dark1: '#191824',
     dark2: '#2A2F42',
+    blueGray: '#708fae',
   }
 }
 
@@ -143,6 +144,7 @@ export function theme(darkMode: boolean): DefaultTheme {
       display: flex;
       flex-flow: row nowrap;
     `,
+    background: 'rgba(0,0,0,.425)',
   }
 }
 

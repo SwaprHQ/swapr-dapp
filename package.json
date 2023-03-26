@@ -149,6 +149,7 @@
     "@types/styled-components": "^5.1.26",
     "@types/testing-library__cypress": "^5.0.9",
     "@types/wcag-contrast": "^3.0.0",
+    "@types/webpack-env": "1.18.0",
     "@typescript-eslint/eslint-plugin": "^5.49.0",
     "@typescript-eslint/parser": "^5.49.0",
     "assert": "^2.0.0",

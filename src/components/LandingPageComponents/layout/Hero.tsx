@@ -1,11 +1,11 @@
-import { Fragment, useEffect, useState } from 'react'
+import { Fragment, ReactNode, useEffect, useState } from 'react'
 import Marquee from 'react-fast-marquee'
 import styled, { keyframes } from 'styled-components'
 
 import { breakpoints } from '../../../utils/theme'
+import { HeroContent, RoutingThroughContent } from '../../../utils/uiConstants'
+import Button from '../common/Button'
 import Arrow from './../../../assets/images/arrow-down-hero.svg'
-import { HeroContent, RoutingThroughContent } from './../../../utils/ui-constants'
-import Button from './../common/Button'
 import Layout from './Layout'
 
 const arrowIndicatorAnimation = keyframes`
@@ -44,9 +44,20 @@ const RoutingThroughImage = styled.img`
   height: 20px;
 `
 
-const Hero = props => {
+type Logo = {
+  img: string
+  title: string
+}
+
+interface HeroProps {
+  showMarquee: boolean
+  children: ReactNode
+}
+
+const Hero = ({ children, showMarquee }: HeroProps) => {
   const [isHeroActive, setIsHeroActive] = useState(true)
-  const [logosArrays, setLogosArrays] = useState([])
+  const [logos, setLogos] = useState<Logo[][]>([])
+
   useEffect(() => {
     const options = {
       root: null,
@@ -54,44 +65,46 @@ const Hero = props => {
       threshold: [0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1],
     }
 
-    const callback = entries => {
+    const observer = new IntersectionObserver(entries => {
       entries.forEach(entry => {
         const elementHeight = entry.boundingClientRect.height
         const pixelsShown = entry.boundingClientRect.top < 0 ? -entry.boundingClientRect.top : 0
         const showElement = pixelsShown < elementHeight / 4
         setIsHeroActive(showElement)
       })
-    }
-
-    const observer = new IntersectionObserver(callback, options)
+    }, options)
 
     const target = document.querySelector('#index-hero')
-    observer.observe(target)
+    if (target !== null) {
+      observer.observe(target)
+    }
+
+    return () => {
+      observer.disconnect()
+    }
   }, [])
 
   useEffect(() => {
-    let i,
-      j,
-      temporary,
-      chunk = 2
-    const temporaryArray = []
-    for (i = 0, j = HeroContent.heroLogos.length; i < j; i += chunk) {
-      temporary = HeroContent.heroLogos.slice(i, i + chunk)
-      temporaryArray.push(temporary)
+    const chunk = 2
+    const logos = []
+
+    for (let i = 0, j = HeroContent.heroLogos.length; i < j; i += chunk) {
+      const temporary = HeroContent.heroLogos.slice(i, i + chunk)
+      logos.push(temporary)
     }
-    setLogosArrays(temporaryArray)
+    setLogos(logos)
   }, [])
 
   return (
-    <StyledHero id={'index-hero'} className={isHeroActive ? 'hero-active' : ''}>
+    <StyledHero id={'index-hero'} className={isHeroActive ? 'hero-active' : ''} width="full-width">
       <Layout width="main-width" className={'inner-hero'}>
-        {HeroContent ? (
-          props.children
+        {children ? (
+          children
         ) : (
           <div className="hero-content" data-aos="fade-up">
             <h1>{HeroContent.mainText}</h1>
             <ul className="hero-logos-list">
-              {logosArrays.map((item, key) => (
+              {logos.map((item, key) => (
                 <div key={key + '-hero'} className="hero-logo-group">
                   {item.map((logo, key) => (
                     <li key={`${logo.title}-${key}`}>
@@ -110,7 +123,7 @@ const Hero = props => {
             </ul>
           </div>
         )}
-        {props.showMarquee && (
+        {showMarquee && (
           <>
             <div className="routing-through desktop" data-aos="fade-up">
               <div className="routing-through-header">

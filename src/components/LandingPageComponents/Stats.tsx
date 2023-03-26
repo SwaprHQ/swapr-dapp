@@ -1,19 +1,19 @@
 import { ChainId } from '@swapr/sdk'
 
-import { gql } from 'graphql-request'
+import { gql, GraphQLClient } from 'graphql-request'
 import TextyAnim from 'rc-texty'
 import { useEffect, useState } from 'react'
 import styled from 'styled-components'
 
 import { immediateSubgraphClients } from '../../apollo/client'
+import { toClassName } from '../../utils/helperFunctions'
 import { breakpoints, gradients } from '../../utils/theme'
-import { StatsContent } from '../../utils/ui-constants'
-import { toClassName } from './../../utils/helper-functions'
+import { StatsContent } from '../../utils/uiConstants'
 import Layout from './layout/Layout'
 
 const subgraphApiClients = [
   immediateSubgraphClients[ChainId.ARBITRUM_ONE],
-  immediateSubgraphClients[ChainId.XDAI],
+  immediateSubgraphClients[ChainId.GNOSIS],
   immediateSubgraphClients[ChainId.MAINNET],
 ]
 
@@ -26,7 +26,7 @@ const tokensQuery = gql`
   }
 `
 
-const retrieveData = async client => {
+const retrieveData = async (client: GraphQLClient) => {
   return await client
     .request(tokensQuery)
     .then(data => {
@@ -39,7 +39,7 @@ const retrieveData = async client => {
 
 const Stats = () => {
   const [failedToUpdate, setFailedToUpdate] = useState(false)
-  const [tvl, setTvl] = useState(0)
+  const [tvl, setTvl] = useState('0')
   const [swaprPrice, setSwaprPrice] = useState(0)
   let [tx, setTx] = useState(0)
   let [totalVolumeUSD, setTotalVolumeUSD] = useState(0)
@@ -90,7 +90,7 @@ const Stats = () => {
           // eslint-disable-next-line
           setTx((tx += floatTx))
           // eslint-disable-next-line
-          setTotalVolumeUSD(((totalVolumeUSD += floatVolume) / 1000000).toFixed(0))
+          setTotalVolumeUSD(Number(((totalVolumeUSD += floatVolume) / 1000000).toFixed(0) ?? '0'))
         } else {
           setFailedToUpdate(true)
         }
@@ -105,16 +105,16 @@ const Stats = () => {
       threshold: 0.5,
     }
 
-    const callback = entries => {
+    const observer = new IntersectionObserver(entries => {
       entries.forEach(entry => {
         setIsChartActive(entry.isIntersecting)
       })
-    }
-
-    const observer = new IntersectionObserver(callback, options)
+    }, options)
 
     const target = document.querySelector('#stats')
-    observer.observe(target)
+    if (target) {
+      observer.observe(target)
+    }
   }, [])
 
   const statsData = {
@@ -145,6 +145,7 @@ const Stats = () => {
                     <>{statsItem.headingDollar && <TextyAnim type="flash">$</TextyAnim>}</>
                     <>
                       {statsItem.externalSource ? (
+                        // @ts-ignore
                         <TextyAnim type="flash">{statsData[statsItem.title].toString()}</TextyAnim>
                       ) : (
                         statsItem.value
