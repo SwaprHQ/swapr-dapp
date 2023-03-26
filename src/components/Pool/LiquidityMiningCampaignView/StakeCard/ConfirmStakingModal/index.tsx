@@ -1,4 +1,4 @@
-import { Pair, Token, TokenAmount } from '@swapr/sdk'
+import { JSBI, Pair, Token, TokenAmount } from '@swapr/sdk'
 
 import { useCallback, useState } from 'react'
 
@@ -41,11 +41,15 @@ export default function ConfirmStakingModal({
 }: ConfirmStakingModalProps) {
   const [stakedAmount, setStakedAmount] = useState<TokenAmount | null>(null)
   const [approvalState, approveCallback] = useApproveCallback(
-    stakablePair
-      ? new TokenAmount(isSingleSide ? stakablePair : stakablePair.liquidityToken, '100000000000000000000000')
+    stakablePair && stakableTokenBalance
+      ? new TokenAmount(
+          isSingleSide ? stakablePair : stakablePair.liquidityToken,
+          JSBI.BigInt(stakableTokenBalance?.raw.toString())
+        )
       : undefined,
     distributionContractAddress
   )
+
   const transactionModalText =
     stakablePair instanceof Token
       ? `${stakablePair.symbol}`
