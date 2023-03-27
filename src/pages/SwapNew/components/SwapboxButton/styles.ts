@@ -1,6 +1,11 @@
 import styled from 'styled-components'
 
-import { getSwapButtonActiveColor, getSwapButtonHoverColor, TEXT_COLOR_PRIMARY } from '../../constants'
+import {
+  getSwapButtonActiveColor,
+  getSwapButtonHoverColor,
+  TEXT_COLOR_PRIMARY,
+  ELEMENTS_BACKGROUND_PRIMARY,
+} from '../../constants'
 import { FontFamily } from '../styles'
 
 const COW_SWAP_COLOR = 'linear-gradient(93.39deg, #2b00a4 -8.9%, #d67b5a 114.08%)'
@@ -27,7 +32,7 @@ export const StyledButton = styled.button`
   }
 
   &:disabled {
-    background: rgba(60, 56, 100, 0.1);
+    background: ${ELEMENTS_BACKGROUND_PRIMARY};
     cursor: default;
   }
 `
