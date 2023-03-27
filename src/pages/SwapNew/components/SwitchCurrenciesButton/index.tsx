@@ -5,10 +5,11 @@ import { ReactComponent as DownArrowSVG } from '../../../../assets/swapbox/swap-
 
 type SwitchCurrenciesButtonProps = {
   loading: boolean
+  onClick: () => void
 }
 
-export function SwitchCurrenciesButton({ loading }: SwitchCurrenciesButtonProps) {
-  return <StyledButton>{loading ? <RotatingArrows /> : <DownArrowSVG />}</StyledButton>
+export function SwitchCurrenciesButton({ loading, onClick }: SwitchCurrenciesButtonProps) {
+  return <StyledButton onClick={onClick}>{loading ? <RotatingArrows /> : <DownArrowSVG />}</StyledButton>
 }
 
 // TODO: PULL OUT THE CONSTANTS

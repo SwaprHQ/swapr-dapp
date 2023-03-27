@@ -38,6 +38,7 @@ export function Swapbox() {
     maxAmountOutput,
     isInputPanelDisabled,
 
+    // SWITCH CURRENCIES
     onSwitchTokens,
 
     bestPricedTrade,
@@ -82,7 +83,7 @@ export function Swapbox() {
         onMax={handleMaxInput(Field.INPUT)}
         onCurrencySelect={handleInputSelect}
       />
-      <SwitchCurrenciesButton loading={loading} />
+      <SwitchCurrenciesButton loading={loading} onClick={onSwitchTokens} />
       <CurrencyItem
         value={formattedAmounts[Field.OUTPUT]}
         currency={currencies[Field.OUTPUT]}
