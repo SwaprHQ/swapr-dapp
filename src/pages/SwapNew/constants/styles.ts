@@ -12,6 +12,9 @@ export const DEX_UNSELECTED_BORDER =
 export const DEX_SELECTED_BORDER =
   'linear-gradient(0deg, rgba(14, 159, 110, 0.3), rgba(14, 159, 110, 0.3)) border-box, radial-gradient(102.67% 104.54% at 50.11% -12.63%, rgba(14, 159, 110, 0.5) 0%, rgba(37, 35, 57, 0.05) 100%) border-box'
 export const TOKEN_PICKER_CLOSE_BUTTON_BACKGROUND_COLOR = 'rgba(60, 56, 100, 0.1)'
+export const SWITCH_CURRENCIES_BUTTON_BACKGROUND_COLOR = '#06060a'
+export const SWITCH_CURRENCIES_BUTTON_BORDER = '1px solid #0c0c14'
+export const SWITCH_CURRENCIES_BUTTON_BOX_SHADOW = '0px 0px 42px rgba(0, 0, 0, 0.42)'
 
 export const ELEMENTS_SPACING = '6px'
 export const TEXT_COLOR_PRIMARY = '#fff'
