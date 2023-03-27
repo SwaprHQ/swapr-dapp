@@ -103,7 +103,7 @@
     "react-window": "^1.8.5",
     "rebass": "^4.0.7",
     "redux-localstorage-simple": "^2.4.1",
-    "start-server-and-test": "^1.15.3",
+    "start-server-and-test": "^2.0.0",
     "styled-components": "5.3.6",
     "toformat": "^2.0.0",
     "wcag-contrast": "^3.0.0"
