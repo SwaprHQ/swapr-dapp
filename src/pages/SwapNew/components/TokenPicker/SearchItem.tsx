@@ -18,9 +18,9 @@ export function SearchItem({ currency, balance, onClick }: SearchItemProps) {
           <CurrencyLogo currency={currency} />
           {currency?.symbol}
         </TokenInfo>
+        <TokenBalance>{balance?.toSignificant(4)}</TokenBalance>
       </Info>
       <TokenName>{currency.name}</TokenName>
-      <div>{balance?.toSignificant(4)}</div>
     </Container>
   )
 }
@@ -53,4 +53,12 @@ const TokenName = styled.p`
   text-transform: uppercase;
   color: #dddaf8;
   opacity: 0.8;
+`
+
+const TokenBalance = styled.p`
+  line-height: 18px;
+  font-size: 15px;
+  font-weight: 500;
+  font-feature-settings: 'zero' on;
+  color: #bcb3f0;
 `
