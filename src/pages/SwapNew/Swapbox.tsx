@@ -52,7 +52,6 @@ export function Swapbox() {
     priceImpactSeverity,
     swapCallbackError,
     swapErrorMessage,
-    setWrapState,
 
     // SWAP INFO
     allPlatformTrades,
@@ -64,6 +63,7 @@ export function Swapbox() {
     wrapState,
     onWrap,
     wrapType,
+    setWrapState,
 
     // APPROVE FLOW
     showApproveFlow,
@@ -120,7 +120,6 @@ export function Swapbox() {
         showApproveFlow={showApproveFlow}
         approveCallback={approveCallback}
         approval={approval}
-        approvalSubmitted={approvalSubmitted}
       />
     </Container>
   )

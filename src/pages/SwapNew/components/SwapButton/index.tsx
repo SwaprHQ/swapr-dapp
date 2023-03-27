@@ -28,7 +28,6 @@ type SwapButtonProps = {
   wrapType: WrapType
   showApproveFlow: boolean
   approval: ApprovalState
-  approvalSubmitted: boolean
   approveCallback: () => Promise<void>
 }
 
@@ -45,7 +44,6 @@ export function SwapButton({
   wrapType,
   showApproveFlow,
   approval,
-  approvalSubmitted,
   approveCallback,
 }: SwapButtonProps) {
   const { t } = useTranslation('swap')
@@ -77,8 +75,8 @@ export function SwapButton({
         amountInCurrencySymbol={amountInCurrencySymbol}
         approveCallback={approveCallback}
         approval={approval}
-        approvalSubmitted={approvalSubmitted}
         handleSwap={handleSwap}
+        swapInputError={swapInputError}
       />
     )
 

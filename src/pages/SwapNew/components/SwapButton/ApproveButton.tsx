@@ -5,23 +5,23 @@ import { StyledButton, SwapButtonLabel } from './styles'
 type ApproveButtonProps = {
   amountInCurrencySymbol?: string
   approval: ApprovalState
-  approvalSubmitted: boolean
   approveCallback: () => Promise<void>
   handleSwap: () => void
+  swapInputError?: number
 }
 
 export function ApproveButton({
   amountInCurrencySymbol,
   approval,
-  approvalSubmitted,
   approveCallback,
   handleSwap,
+  swapInputError,
 }: ApproveButtonProps) {
   console.log('APPROVAL:', approval)
   return (
     <StyledButton
       onClick={approval !== ApprovalState.APPROVED ? approveCallback : handleSwap}
-      disabled={approval === ApprovalState.PENDING}
+      disabled={approval === ApprovalState.PENDING || !!swapInputError}
     >
       {(() => {
         if (approval === ApprovalState.PENDING)
