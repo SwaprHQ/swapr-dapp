@@ -2,6 +2,11 @@ import styled, { keyframes } from 'styled-components'
 
 import { ReactComponent as TwoArrowsSVG } from '../../../../assets/images/swap-icon.svg'
 import { ReactComponent as DownArrowSVG } from '../../../../assets/swapbox/swap-arrow.svg'
+import {
+  SWITCH_CURRENCIES_BUTTON_BACKGROUND_COLOR,
+  SWITCH_CURRENCIES_BUTTON_BORDER,
+  SWITCH_CURRENCIES_BUTTON_BOX_SHADOW,
+} from '../../constants'
 
 type SwitchCurrenciesButtonProps = {
   loading: boolean
@@ -11,8 +16,6 @@ type SwitchCurrenciesButtonProps = {
 export function SwitchCurrenciesButton({ loading, onClick }: SwitchCurrenciesButtonProps) {
   return <StyledButton onClick={onClick}>{loading ? <RotatingArrows /> : <DownArrowSVG />}</StyledButton>
 }
-
-// TODO: PULL OUT THE CONSTANTS
 
 const StyledButton = styled.button`
   width: 36px;
@@ -25,10 +28,10 @@ const StyledButton = styled.button`
   top: 84px;
   z-index: 1;
   transform: translateX(-50%);
-  background: #06060a;
+  background: ${SWITCH_CURRENCIES_BUTTON_BACKGROUND_COLOR};
   border-radius: 12px;
-  border: 1px solid #0c0c14;
-  box-shadow: 0px 0px 42px rgba(0, 0, 0, 0.42);
+  border: ${SWITCH_CURRENCIES_BUTTON_BORDER};
+  box-shadow: ${SWITCH_CURRENCIES_BUTTON_BOX_SHADOW};
   backdrop-filter: blur(11px);
   cursor: pointer;
 `
