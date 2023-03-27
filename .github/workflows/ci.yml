@@ -237,7 +237,7 @@ jobs:
     if: ${{ !(github.event_name == 'schedule' || github.actor == 'dependabot[bot]') }}
     steps:
       - name: Inject slug variables
-        uses: rlespinasse/github-slug-action@v4.4.0
+        uses: rlespinasse/github-slug-action@v4.4.1
 
       - name: 📥 ・Download workspace artifact
         uses: actions/download-artifact@v3

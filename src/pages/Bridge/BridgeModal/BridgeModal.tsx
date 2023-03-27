@@ -2,11 +2,12 @@ import { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 
+import Modal from '../../../components/Modal'
 import { BridgeModalState, BridgeModalStatus } from '../../../services/EcoBridge/EcoBridge.types'
 import { AppState } from '../../../state'
 import { getNetworkInfo } from '../../../utils/networksList'
 import { BridgeModalType } from './BridgeModal.types'
-import { BridgeModalContent } from './BridgeModalContent'
+import BridgeModalContent from './BridgeModalContent'
 
 export interface BridgeModalProps {
   handleResetBridge: () => void
@@ -106,19 +107,24 @@ export const BridgeModal = ({
     }
   }
 
+  if (modalType === null) {
+    return null
+  }
+
   return (
-    <BridgeModalContent
-      isOpen
-      modalType={modalType}
-      text={text}
-      heading={heading}
-      onDismiss={onDismiss}
-      onConfirm={handleSubmit}
-      error={error}
-      disableConfirm={disableConfirm}
-      setDisableConfirm={setDisableConfirm}
-      bridgeName={bridgeName}
-      isWarning={isWarning}
-    />
+    <Modal isOpen={true} onDismiss={onDismiss}>
+      <BridgeModalContent
+        modalType={modalType}
+        text={text}
+        heading={heading}
+        onDismiss={onDismiss}
+        onConfirm={handleSubmit}
+        error={error ?? ''}
+        disableConfirm={disableConfirm}
+        setDisableConfirm={setDisableConfirm}
+        bridgeName={bridgeName}
+        isWarning={isWarning}
+      />
+    </Modal>
   )
 }
