@@ -17,7 +17,6 @@ export function ApproveButton({
   handleSwap,
   swapInputError,
 }: ApproveButtonProps) {
-  console.log('APPROVAL:', approval)
   return (
     <StyledButton
       onClick={approval !== ApprovalState.APPROVED ? approveCallback : handleSwap}

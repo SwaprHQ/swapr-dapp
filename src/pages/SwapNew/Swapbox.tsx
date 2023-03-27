@@ -2,8 +2,7 @@ import { AnimatePresence } from 'framer-motion'
 import styled from 'styled-components'
 
 import { Field } from '../../state/swap/types'
-import { CurrencyItem, SwapInfo, SwitchCurrenciesButton } from './components'
-import { SwapButton } from './components'
+import { CurrencyItem, SwapInfo, SwitchCurrenciesButton, SwapboxButton } from './components'
 import { SWAPBOX_WIDTH } from './constants'
 import { useSwapbox } from './useSwapbox'
 
@@ -105,7 +104,7 @@ export function Swapbox() {
           />
         )}
       </AnimatePresence>
-      <SwapButton
+      <SwapboxButton
         priceImpactSeverity={priceImpactSeverity}
         amountInCurrencySymbol={currencies[Field.INPUT]?.symbol}
         swapInputError={swapInputError}

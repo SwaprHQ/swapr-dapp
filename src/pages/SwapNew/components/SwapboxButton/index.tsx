@@ -13,7 +13,7 @@ import { LoadingButton } from './LoadingButton'
 import { StyledButton, SwapButtonLabel, PlatformLogo } from './styles'
 import { WrapButton } from './WrapButton'
 
-type SwapButtonProps = {
+type SwapboxButtonProps = {
   platformName?: string
   swapInputError?: number
   priceImpactSeverity: number
@@ -31,7 +31,7 @@ type SwapButtonProps = {
   approveCallback: () => Promise<void>
 }
 
-export function SwapButton({
+export function SwapboxButton({
   swapInputError,
   loading,
   amountInCurrencySymbol,
@@ -45,7 +45,7 @@ export function SwapButton({
   showApproveFlow,
   approval,
   approveCallback,
-}: SwapButtonProps) {
+}: SwapboxButtonProps) {
   const { t } = useTranslation('swap')
   const { account } = useActiveWeb3React()
 
