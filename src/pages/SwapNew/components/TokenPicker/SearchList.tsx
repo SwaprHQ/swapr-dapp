@@ -13,7 +13,7 @@ export function SearchList({ filteredSortedTokensWithNativeCurrency, handleCurre
   return (
     <Container>
       {filteredSortedTokensWithNativeCurrency.map(currency => {
-        return <SearchItem currency={currency} onClick={() => handleCurrencySelect(currency)} />
+        return <SearchItem key={currency.address} currency={currency} onClick={() => handleCurrencySelect(currency)} />
       })}
     </Container>
   )
