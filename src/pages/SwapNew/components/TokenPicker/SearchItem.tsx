@@ -1,4 +1,4 @@
-import { Currency } from '@swapr/sdk'
+import { Currency, CurrencyAmount } from '@swapr/sdk'
 
 import styled from 'styled-components'
 
@@ -6,10 +6,11 @@ import { CurrencyLogo } from '../CurrencyItem/CurrencyLogo'
 
 type SearchItemProps = {
   currency: Currency
+  balance?: CurrencyAmount
   onClick: () => void
 }
 
-export function SearchItem({ currency, onClick }: SearchItemProps) {
+export function SearchItem({ currency, balance, onClick }: SearchItemProps) {
   return (
     <Container onClick={onClick}>
       <Info>
@@ -19,6 +20,7 @@ export function SearchItem({ currency, onClick }: SearchItemProps) {
         </TokenInfo>
       </Info>
       <TokenName>{currency.name}</TokenName>
+      <div>{balance?.toSignificant(4)}</div>
     </Container>
   )
 }
