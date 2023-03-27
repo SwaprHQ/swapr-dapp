@@ -1,7 +1,10 @@
 import { Currency } from '@swapr/sdk'
 
+import { useState } from 'react'
 import styled from 'styled-components'
 
+import { useActiveWeb3React } from '../../../../hooks'
+import { useCurrencyBalances } from '../../../../state/wallet/hooks'
 import { SearchItem } from './SearchItem'
 
 type SearchListProps = {
@@ -10,10 +13,21 @@ type SearchListProps = {
 }
 
 export function SearchList({ filteredSortedTokensWithNativeCurrency, handleCurrencySelect }: SearchListProps) {
+  const { account } = useActiveWeb3React()
+
+  const balances = useCurrencyBalances(account || undefined, filteredSortedTokensWithNativeCurrency)
+
   return (
     <Container>
-      {filteredSortedTokensWithNativeCurrency.map(currency => {
-        return <SearchItem key={currency.address} currency={currency} onClick={() => handleCurrencySelect(currency)} />
+      {filteredSortedTokensWithNativeCurrency.map((currency, index) => {
+        return (
+          <SearchItem
+            key={currency.address}
+            currency={currency}
+            balance={balances[index]}
+            onClick={() => handleCurrencySelect(currency)}
+          />
+        )
       })}
     </Container>
   )
