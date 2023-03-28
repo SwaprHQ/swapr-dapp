@@ -119,6 +119,8 @@ export function TokenPicker({
     [setTokenPickerInputValue]
   )
 
+  const clearInput = () => setTokenPickerInputValue('')
+
   const onClose = (event: React.MouseEvent<HTMLDivElement | HTMLButtonElement>) => {
     if (event.target === event.currentTarget) {
       event.stopPropagation()
@@ -145,7 +147,12 @@ export function TokenPicker({
         },
       }}
     >
-      <Input value={tokenPickerInputValue} onChange={handleInput} placeholder="Search token by name or paste address" />
+      <Input
+        placeholder="Search token by name or paste address"
+        value={tokenPickerInputValue}
+        onChange={handleInput}
+        clearInput={clearInput}
+      />
       {!tokenPickerInputValue.trim() ? (
         <CommonTokens onCurrencySelect={handleCurrencySelect} />
       ) : (

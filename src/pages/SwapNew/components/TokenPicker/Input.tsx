@@ -4,17 +4,18 @@ import styled from 'styled-components'
 import { ReactComponent as CloseSmallSVG } from '../../../../assets/swapbox/close-small.svg'
 
 type InputProps = {
-  value: string
   placeholder: string
+  value: string
   onChange: (event: ChangeEvent<HTMLInputElement>) => void
+  clearInput: () => void
 }
 
-export function Input({ value, placeholder, onChange }: InputProps) {
+export function Input({ placeholder, value, onChange, clearInput }: InputProps) {
   return (
     <InputContainer>
       <StyledInput value={value} onChange={onChange} placeholder={placeholder} spellCheck={false} />
       {value.trim() && (
-        <ClearInputButton>
+        <ClearInputButton onClick={clearInput}>
           <CloseSVG />
         </ClearInputButton>
       )}
