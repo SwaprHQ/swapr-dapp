@@ -179,7 +179,8 @@ const Container = styled(motion.div)`
 `
 
 const Input = styled.input`
-  width: 478px;
+  max-width: 536px;
+  width: 100%;
   height: 48px;
   box-sizing: border-box;
   background: rgba(20, 18, 31, 0.5);

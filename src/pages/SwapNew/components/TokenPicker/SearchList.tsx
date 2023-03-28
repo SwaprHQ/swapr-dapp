@@ -1,6 +1,5 @@
 import { Currency } from '@swapr/sdk'
 
-import { useState } from 'react'
 import styled from 'styled-components'
 
 import { useActiveWeb3React } from '../../../../hooks'
