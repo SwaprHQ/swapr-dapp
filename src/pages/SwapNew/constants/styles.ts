@@ -43,10 +43,10 @@ export const INDICATOR_COLOR = {
 }
 
 export const INDICATOR_BACKGROUND_COLOR = {
-  [IndicatorColorVariant.POSITIVE]: '#0e9f6e14',
-  [IndicatorColorVariant.WARNING]: '#f2994a14',
-  [IndicatorColorVariant.NEGATIVE]: '#f02e5114',
-  [IndicatorColorVariant.UNDEFINED]: '#8780bf14',
+  [IndicatorColorVariant.POSITIVE]: 'rgba(14, 159, 110, 0.15)',
+  [IndicatorColorVariant.WARNING]: 'rgba(242, 153, 74, 0.15)',
+  [IndicatorColorVariant.NEGATIVE]: 'rgba(240, 46, 81, 0.15)',
+  [IndicatorColorVariant.UNDEFINED]: 'rgba(104, 110, 148, 0.1)',
 }
 
 export const INDICATOR_COLOR_POSITIVE = '#0E9F6E'
