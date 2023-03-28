@@ -16,6 +16,7 @@ import { useCombinedActiveList } from '../../../../state/lists/hooks'
 import { isAddress } from '../../../../utils'
 import { CloseButton } from './CloseButton'
 import { CommonTokens } from './CommonTokens'
+import { Input } from './Input'
 import { SearchList } from './SearchList'
 
 type TokenPickerProps = {
@@ -144,12 +145,7 @@ export function TokenPicker({
         },
       }}
     >
-      <Input
-        value={tokenPickerInputValue}
-        onChange={handleInput}
-        placeholder="Search token by name or paste address"
-        spellCheck={false}
-      />
+      <Input value={tokenPickerInputValue} onChange={handleInput} placeholder="Search token by name or paste address" />
       {!tokenPickerInputValue.trim() ? (
         <CommonTokens onCurrencySelect={handleCurrencySelect} />
       ) : (
@@ -176,24 +172,4 @@ const Container = styled(motion.div)`
   flex-direction: column;
   background: rgba(255, 255, 255, 0.01);
   backdrop-filter: blur(7px);
-`
-
-const Input = styled.input`
-  max-width: 536px;
-  width: 100%;
-  height: 48px;
-  box-sizing: border-box;
-  background: rgba(20, 18, 31, 0.5);
-  border-radius: 12px;
-  border: 2px solid #8c83c0;
-  outline: none;
-  line-height: 14px;
-  font-size: 16px;
-  font-family: Inter;
-  font-weight: 500;
-  color: #dddaf8;
-  text-shadow: 0px 0px 10px rgba(255, 255, 255, 0.15);
-  padding: 15px 20px;
-  backdrop-filter: blur(12.5px);
-  margin: 220px auto 0;
 `
