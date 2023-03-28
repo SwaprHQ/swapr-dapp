@@ -1,4 +1,4 @@
-import { Trade, TradeType } from '@swapr/sdk'
+import { CoWTrade, Trade, TradeType } from '@swapr/sdk'
 
 import styled from 'styled-components'
 
@@ -50,6 +50,13 @@ export function SwapDexInfoItem({
       <TransactionInfo isSelected={isSelected}>
         <IndicatorsContainer>
           <Indicator color={IndicatorColorVariant.WARNING} icon={IndicatorIconVariant.GAS} />
+          {trade instanceof CoWTrade && (
+            <Indicator
+              color={IndicatorColorVariant.POSITIVE}
+              icon={IndicatorIconVariant.SHIELD}
+              text={isSelected ? 'PROTECTED' : ''}
+            />
+          )}
         </IndicatorsContainer>
         <TransactionCost>
           {tokenAmount === '0' ? '<0.0000001' : `${tokenAmount} ${outputCurrencySymbol}` || '-'}
