@@ -21,7 +21,9 @@ export function Input({ value, placeholder, onChange }: InputProps) {
 const InputContainer = styled.div`
   max-width: 536px;
   width: 100%;
+  height: 48px;
   position: relative;
+  margin: 220px auto 0;
 `
 
 const StyledInput = styled.input`
@@ -40,12 +42,15 @@ const StyledInput = styled.input`
   text-shadow: 0px 0px 10px rgba(255, 255, 255, 0.15);
   padding: 15px 20px;
   backdrop-filter: blur(12.5px);
-  margin: 220px auto 0;
 `
 
 const ClearInputButton = styled.button`
   width: 17px;
   height: 17px;
+  position: absolute;
+  top: 50%;
+  right: 20px;
+  transform: translateY(-50%);
   background: rgba(60, 56, 100, 0.1);
   border: 1px solid #2a2f42;
   border-radius: 1000px;
