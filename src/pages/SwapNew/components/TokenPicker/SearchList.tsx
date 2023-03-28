@@ -39,4 +39,8 @@ const Container = styled.div`
   max-height: 450px;
   overflow-y: scroll;
   margin-top: 36px;
+
+  &::-webkit-scrollbar {
+    background-color: transparent;
+  }
 `
