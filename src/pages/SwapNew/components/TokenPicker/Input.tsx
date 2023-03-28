@@ -13,7 +13,11 @@ export function Input({ value, placeholder, onChange }: InputProps) {
   return (
     <InputContainer>
       <StyledInput value={value} onChange={onChange} placeholder={placeholder} spellCheck={false} />
-      <ClearInputButton />
+      {value.trim() && (
+        <ClearInputButton>
+          <CloseSVG />
+        </ClearInputButton>
+      )}
     </InputContainer>
   )
 }
@@ -57,4 +61,13 @@ const ClearInputButton = styled.button`
   box-shadow: inset 0px 1.11185px 6.6711px rgba(165, 164, 255, 0.08),
     inset 6.6711px 2.2237px 11.1185px rgba(143, 141, 255, 0.1);
   backdrop-filter: blur(5px);
+  text-align: center;
+  cursor: pointer;
+`
+
+const CloseSVG = styled(CloseSmallSVG)`
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
 `
