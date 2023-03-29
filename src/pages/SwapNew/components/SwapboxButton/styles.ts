@@ -8,29 +8,38 @@ import {
 } from '../../constants'
 import { FontFamily } from '../styles'
 
+const OX_COLOR = 'linear-gradient(93.39deg, #fff -8.9%, #000 114.08%)'
 const COW_SWAP_COLOR = 'linear-gradient(93.39deg, #2b00a4 -8.9%, #d67b5a 114.08%)'
 const SUSHI_SWAP_COLOR = 'linear-gradient(93.39deg, #2B00A4 -8.9%, #CD45B4 114.08%)'
 const ONE_INCH_COLOR = 'linear-gradient(93.39deg, #D82122 -8.9%, #1B314F 114.08%)'
 const CURVE_COLOR = 'linear-gradient(93.39deg, #24FFD3 -8.9%, #D10000 114.08%)'
+const SWAPR_COLOR = 'linear-gradient(93.39deg, #4626A1 -8.9%, #0C192B 114.08%)'
 const UNISWAP_COLOR = 'linear-gradient(93.39deg, #FF007A -8.9%, #0C192B 114.08%)'
+const VELODROME_COLOR = 'linear-gradient(93.39deg, #007FFF -8.9%, #FF1100 114.08%)'
 
 const getBackgroundColor = (platformName?: string) => {
   console.log('PLATFORM', platformName)
   if (!platformName) return 'rgb(46, 23, 242)'
 
   switch (platformName) {
-    case 'CoW':
-      return COW_SWAP_COLOR
-    case 'Sushiswap':
-      return SUSHI_SWAP_COLOR
+    case '0x':
+      return OX_COLOR
     case '1Inch':
       return ONE_INCH_COLOR
+    case 'CoW':
+      return COW_SWAP_COLOR
     case 'Curve':
       return CURVE_COLOR
+    case 'Sushiswap':
+      return SUSHI_SWAP_COLOR
+    case 'Swapr':
+      return SWAPR_COLOR
     case 'Uniswap':
       return UNISWAP_COLOR
     case 'Uniswap v2':
       return UNISWAP_COLOR
+    case 'Velodrome':
+      return VELODROME_COLOR
     default:
       return 'rgb(46, 23, 242)'
   }
