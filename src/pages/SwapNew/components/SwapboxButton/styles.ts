@@ -10,6 +10,7 @@ import { FontFamily } from '../styles'
 
 const COW_SWAP_COLOR = 'linear-gradient(93.39deg, #2b00a4 -8.9%, #d67b5a 114.08%)'
 const SUSHI_SWAP_COLOR = 'linear-gradient(93.39deg, #2B00A4 -8.9%, #CD45B4 114.08%)'
+const ONE_INCH_COLOR = 'linear-gradient(93.39deg, #D82122 -8.9%, #1B314F 114.08%)'
 
 const getBackgroundColor = (platformName?: string) => {
   console.log('PLATFORM', platformName)
@@ -20,6 +21,8 @@ const getBackgroundColor = (platformName?: string) => {
       return COW_SWAP_COLOR
     case 'Sushiswap':
       return SUSHI_SWAP_COLOR
+    case '1Inch':
+      return ONE_INCH_COLOR
     default:
       return 'rgb(46, 23, 242)'
   }
