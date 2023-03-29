@@ -24,7 +24,6 @@ const UNISWAP_COLOR = 'linear-gradient(93.39deg, #FF007A -8.9%, #0C192B 114.08%)
 const VELODROME_COLOR = 'linear-gradient(93.39deg, #007FFF -8.9%, #FF1100 114.08%)'
 
 const getBackgroundColor = (platformName?: string) => {
-  console.log('PLATFORM', platformName)
   if (!platformName) return 'rgb(46, 23, 242)'
 
   switch (platformName) {
