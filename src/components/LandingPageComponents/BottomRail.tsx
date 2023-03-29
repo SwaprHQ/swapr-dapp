@@ -2,12 +2,17 @@ import styled from 'styled-components'
 
 import { breakpoints } from '../../utils/theme'
 
-const BottomRail = props => {
+interface BottomRailProps {
+  isCurrentPost: boolean | undefined
+  currentMilestoneGroupPosition: number
+}
+
+const BottomRail = ({ isCurrentPost, currentMilestoneGroupPosition }: BottomRailProps) => {
   return (
     <>
       <StyledBottomRail
         className={`bottom-rail-container ${
-          props.isCurrentPost ? 'future-steps-' + (8 - props.currentMilestoneGroupPosition) : 'is-prev'
+          isCurrentPost ? 'future-steps-' + (8 - currentMilestoneGroupPosition) : 'is-prev'
         }`}
       >
         <div className="bottom-rail">

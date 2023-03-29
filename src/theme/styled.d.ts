@@ -66,6 +66,7 @@ export interface Colors {
   lightPurple2: Color
   purple6: Color
   boxShadow: Color
+  blueGray: Color
 
   // darkest // dark1.1
   darkest: Color
@@ -99,5 +100,6 @@ declare module 'styled-components' {
     // css snippets
     flexColumnNoWrap: FlattenSimpleInterpolation
     flexRowNoWrap: FlattenSimpleInterpolation
+    background: Color
   }
 }

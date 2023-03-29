@@ -1,5 +1,6 @@
 import styled, { keyframes } from 'styled-components'
 
+import { MileStone } from '../../utils/milestones'
 import { breakpoints } from '../../utils/theme'
 import SwaprTimelineLogo from './../../assets/images/timeline-assets/swapr.svg'
 
@@ -43,16 +44,20 @@ const fadeDownOut = keyframes`
     100% {transform: translateY(0px); opacity: 1;}
 `
 
-const Milestone = props => {
-  let { milestoneData, milestoneIndex } = props
+interface MilestoneProps {
+  milestoneData: MileStone
+  milestoneIndex: number
+}
+
+export default function Milestone({ milestoneData, milestoneIndex }: MilestoneProps) {
   return (
     <StyledMilestone className={`milestone ${milestoneData.past ? 'past-milestone' : 'future-milestone'}`}>
       <div className="milestone-content" data-aos="fade" data-aos-delay={milestoneIndex * 100}>
         <span className="title">{milestoneData.title}</span>
         <ul className="milestone-features">
           <div className="feature-list-underlay" />
-          {milestoneData.content.map((contentItem, key2) => (
-            <li className="milestone-feature" key={key2}>
+          {milestoneData.content.map((contentItem, index) => (
+            <li className="milestone-feature" key={index}>
               {contentItem}
             </li>
           ))}
@@ -427,5 +432,3 @@ const StyledMilestone = styled.li`
     }
   }
 `
-
-export default Milestone

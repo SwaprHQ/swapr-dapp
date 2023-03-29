@@ -1,15 +1,14 @@
-import { ModalProps } from '../../../components/Modal'
-
 export type BridgeModalType = 'pending' | 'disclaimer' | 'error' | 'success' | 'initiated' | 'collecting' | null
 
-export interface BridgeModalContentProps extends ModalProps {
+export interface BridgeModalContentProps {
   modalType: BridgeModalType
-  onConfirm: () => void
-  setDisableConfirm: (val: boolean) => void
-  disableConfirm: boolean
-  bridgeName: string
+  onDismiss: () => void
+  text: string
+  error: string
   heading: string
-  text?: string
-  error?: string
   isWarning: boolean
+  onConfirm: () => void
+  disableConfirm: boolean
+  setDisableConfirm: (val: boolean) => void
+  bridgeName: string
 }

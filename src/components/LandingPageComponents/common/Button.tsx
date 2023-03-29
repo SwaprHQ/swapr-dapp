@@ -1,12 +1,36 @@
-import PropTypes from 'prop-types'
 import styled from 'styled-components'
 
 import { breakpoints, gradients } from '../../../utils/theme'
 
-const Button = props => {
-  const { to, label, type, size, dataAOS, dataAOSDelay, iconImage, title, className, onClick, external, elementTag } =
-    props
+export interface ButtonProps {
+  type: 'primary' | 'secondary' | 'outline' | 'icon' | 'dark' | 'dark-outline'
+  size?: 'regular' | 'small'
+  elementTag?: 'a' | 'button'
+  label: string
+  iconImage?: string
+  title?: string
+  className?: string
+  to?: string
+  dataAOS?: string
+  dataAOSDelay?: string
+  onClick?: () => void
+  external?: boolean
+}
 
+const Button = ({
+  type = 'primary',
+  size = 'regular',
+  elementTag = 'a',
+  className = '',
+  to,
+  label,
+  dataAOS,
+  dataAOSDelay,
+  iconImage,
+  title,
+  onClick,
+  external,
+}: ButtonProps) => {
   return (
     <StyledButtonWrapper
       data-aos={dataAOS}
@@ -14,13 +38,7 @@ const Button = props => {
       className={`button ${type} ${size} ${className}`}
     >
       {elementTag === 'a' && (
-        <a
-          href={to && to}
-          onClick={onClick && onClick}
-          title={title}
-          target={external ? '_blank' : ''}
-          rel="noreferrer"
-        >
+        <a href={to} onClick={onClick} title={title} target={external ? '_blank' : ''} rel="noreferrer">
           {type === 'dark' && (
             <>
               <svg width="0" height="0">
@@ -69,23 +87,6 @@ const Button = props => {
       )}
     </StyledButtonWrapper>
   )
-}
-
-Button.propTypes = {
-  type: PropTypes.oneOf(['primary', 'secondary', 'outline', 'icon', 'dark', 'dark-outline']),
-  size: PropTypes.oneOf(['regular', 'small']),
-  label: PropTypes.string,
-  iconImage: PropTypes.string,
-  title: PropTypes.string,
-  className: PropTypes.string,
-  elementTag: PropTypes.oneOf(['a', 'button']),
-}
-
-Button.defaultProps = {
-  type: 'primary',
-  size: 'regular',
-  className: '',
-  elementTag: 'a',
 }
 
 const StyledButtonWrapper = styled.div`

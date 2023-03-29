@@ -14,20 +14,7 @@ import {
   TitleWrapper,
   Wrapper,
 } from './BridgeModal.styles'
-import { BridgeModalType } from './BridgeModal.types'
-
-interface BridgeModalContentProps {
-  modalType: BridgeModalType
-  onDismiss: () => void
-  text: string
-  error: string
-  heading: string
-  isWarning: boolean
-  onConfirm: () => void
-  disableConfirm: boolean
-  setDisableConfirm: (val: boolean) => void
-  bridgeName: string
-}
+import { BridgeModalContentProps } from './BridgeModal.types'
 
 export default function BridgeModalContent({
   onDismiss,
