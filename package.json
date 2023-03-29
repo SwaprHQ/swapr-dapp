@@ -44,7 +44,7 @@
     "@reduxjs/toolkit": "^1.9.2",
     "@swapr/core": "^0.3.19",
     "@swapr/periphery": "^0.3.22",
-    "@swapr/sdk": "1.8.1",
+    "@swapr/sdk": "https://github.com/ImpeccableHQ/swapr-sdk.git#commit=305b72a3a75aee6fa96defffc23a9b96f546d4fa",
     "@tanstack/react-query": "4.24.6",
     "@types/react-helmet": "^6.1.6",
     "@uniswap/smart-order-router": "^2.9.3",
