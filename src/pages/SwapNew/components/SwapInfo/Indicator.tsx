@@ -49,7 +49,6 @@ const Container = styled.div<{ color: IndicatorColorVariant }>`
   color: ${({ color }) => INDICATOR_COLOR[color]};
   background: ${({ color }) => INDICATOR_BACKGROUND_COLOR[color]};
   border-radius: 4px;
-  border: 1px solid ${({ color }) => INDICATOR_COLOR[color]};
   box-shadow: 0px 0px 8px rgba(16, 158, 110, 0.15);
   margin-right: 4px;
 
