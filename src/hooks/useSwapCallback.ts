@@ -53,7 +53,7 @@ interface FailedCall {
   error: Error
 }
 
-type EstimatedSwapCall = SuccessfulCall | FailedCall
+export type EstimatedSwapCall = SuccessfulCall | FailedCall
 
 /**
  * Returns the swap calls that can be used to make the trade
@@ -227,7 +227,13 @@ export function useSwapCallback({
 
         const estimatedCalls: EstimatedSwapCall[] = await Promise.all(
           swapCalls.map(async call => {
-            const transactionRequest = await call.transactionParameters
+            let transactionRequest: any
+            try {
+              transactionRequest = await call.transactionParameters
+            } catch (e: any) {
+              console.error('Failed to get transaction parameters', e)
+            }
+
             // Ignore gas estimation if the request has gasLimit property
             if (transactionRequest.gasLimit) {
               return {
