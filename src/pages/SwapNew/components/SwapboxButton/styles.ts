@@ -9,8 +9,23 @@ import {
 import { FontFamily } from '../styles'
 
 const COW_SWAP_COLOR = 'linear-gradient(93.39deg, #2b00a4 -8.9%, #d67b5a 114.08%)'
+const SUSHI_SWAP_COLOR = 'linear-gradient(93.39deg, #2B00A4 -8.9%, #CD45B4 114.08%)'
 
-export const StyledButton = styled.button`
+const getBackgroundColor = (platformName?: string) => {
+  console.log('PLATFORM', platformName)
+  if (!platformName) return 'rgb(46, 23, 242)'
+
+  switch (platformName) {
+    case 'CoW':
+      return COW_SWAP_COLOR
+    case 'Sushiswap':
+      return SUSHI_SWAP_COLOR
+    default:
+      return 'rgb(46, 23, 242)'
+  }
+}
+
+export const StyledButton = styled.button<{ platformName?: string }>`
   width: 100%;
   height: 70px;
   display: flex;
@@ -19,16 +34,16 @@ export const StyledButton = styled.button`
   gap: 10px;
   border: none;
   border-radius: 12px;
-  background: ${COW_SWAP_COLOR};
+  background: ${({ platformName }) => getBackgroundColor(platformName)};
   box-shadow: 0px 0px 42px rgba(129, 62, 127, 0.32);
   cursor: pointer;
 
   &:hover {
-    background: ${getSwapButtonHoverColor(COW_SWAP_COLOR)};
+    background: ${({ platformName }) => getSwapButtonHoverColor(getBackgroundColor(platformName))};
   }
 
   &:active {
-    background: ${getSwapButtonActiveColor(COW_SWAP_COLOR)};
+    background: ${({ platformName }) => getSwapButtonActiveColor(getBackgroundColor(platformName))};
   }
 
   &:disabled {
