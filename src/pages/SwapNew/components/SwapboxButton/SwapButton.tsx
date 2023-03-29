@@ -28,8 +28,10 @@ export function SwapButton({ amountInCurrencySymbol, swapInputError, trade, hand
 
   const platformName = trade?.platform.name
 
+  console.log('RPS', ROUTABLE_PLATFORM_STYLE)
+
   return (
-    <StyledButton disabled={swapInputError ? true : false} onClick={handleSwap}>
+    <StyledButton disabled={swapInputError ? true : false} onClick={handleSwap} platformName={platformName}>
       {(() => {
         if (swapInputError)
           return <SwapButtonLabel light={true}>{SWAP_INPUT_ERRORS_MESSAGE[swapInputError]}</SwapButtonLabel>
