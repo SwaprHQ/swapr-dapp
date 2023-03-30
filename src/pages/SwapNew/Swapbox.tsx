@@ -41,9 +41,6 @@ export function Swapbox() {
     // SWITCH CURRENCIES
     onSwitchTokens,
 
-    bestPricedTrade,
-    showAdvancedSwapDetails,
-    setShowAdvancedSwapDetails,
     recipient,
 
     userHasSpecifiedInputOutput,

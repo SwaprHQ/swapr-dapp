@@ -11,7 +11,7 @@ import { useHigherUSDValue } from '../../hooks/useUSDValue'
 import { useWrapCallback, WrapState, WrapType } from '../../hooks/useWrapCallback'
 import { useDefaultsFromURLSearch, useSwapActionHandlers, useSwapState } from '../../state/swap/hooks'
 import { Field } from '../../state/swap/types'
-import { useAdvancedSwapDetails, useIsExpertMode, useUserSlippageTolerance } from '../../state/user/hooks'
+import { useIsExpertMode, useUserSlippageTolerance } from '../../state/user/hooks'
 import { computeFiatValuePriceImpact } from '../../utils/computeFiatValuePriceImpact'
 import { maxAmountSpend } from '../../utils/maxAmountSpend'
 import { computeTradePriceBreakdown, warningSeverity } from '../../utils/prices'
@@ -22,7 +22,6 @@ import { CoWTradeState, SwapData } from './SwapBox.types'
 export const useSwapbox = () => {
   const loadedUrlParams = useDefaultsFromURLSearch()
   const allTokens = useAllTokens()
-  const [showAdvancedSwapDetails, setShowAdvancedSwapDetails] = useAdvancedSwapDetails()
 
   const {
     trade: potentialTrade,
@@ -82,7 +81,6 @@ export const useSwapbox = () => {
     potentialTrade?.inputAmount?.toSignificant(6) ?? typedValue
   )
 
-  const bestPricedTrade = allPlatformTrades?.[0]
   const showWrap = wrapType !== WrapType.NOT_APPLICABLE && !(potentialTrade instanceof CoWTrade)
 
   const trade = showWrap ? undefined : potentialTrade
@@ -322,9 +320,6 @@ export const useSwapbox = () => {
     onSwitchTokens,
 
     showWrap,
-    bestPricedTrade,
-    showAdvancedSwapDetails,
-    setShowAdvancedSwapDetails,
     recipient,
 
     wrapInputError,
