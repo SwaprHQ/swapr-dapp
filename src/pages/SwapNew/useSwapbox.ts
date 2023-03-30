@@ -131,9 +131,6 @@ export const useSwapbox = () => {
   }
 
   const hasBothCurrenciesInput = !!(currencies[Field.INPUT] && currencies[Field.OUTPUT])
-  const userHasSpecifiedInputOutput = Boolean(
-    hasBothCurrenciesInput && parsedAmounts[independentField]?.greaterThan(JSBI.BigInt(0))
-  )
 
   // CHECK WHETHER the USER HAS APPROVED the ROUTER on the INPUT TOKEN
   const [approval, approveCallback] = useApproveCallbackFromTrade(trade)
@@ -324,9 +321,7 @@ export const useSwapbox = () => {
 
     wrapInputError,
     showApproveFlow,
-    userHasSpecifiedInputOutput,
     approval,
-    setSwapState,
     priceImpact,
     priceImpactSeverity,
     swapCallbackError,

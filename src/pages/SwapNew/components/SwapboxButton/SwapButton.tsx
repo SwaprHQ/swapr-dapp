@@ -10,9 +10,16 @@ type SwapButtonProps = {
   swapInputError?: number
   trade?: Trade
   handleSwap: () => void
+  swapCallbackError: string | null
 }
 
-export function SwapButton({ amountInCurrencySymbol, swapInputError, trade, handleSwap }: SwapButtonProps) {
+export function SwapButton({
+  amountInCurrencySymbol,
+  swapInputError,
+  trade,
+  handleSwap,
+  swapCallbackError,
+}: SwapButtonProps) {
   const { t } = useTranslation('swap')
 
   const SWAP_INPUT_ERRORS_MESSAGE = {
@@ -29,7 +36,7 @@ export function SwapButton({ amountInCurrencySymbol, swapInputError, trade, hand
   const platformName = trade?.platform.name
 
   return (
-    <StyledButton disabled={swapInputError ? true : false} onClick={handleSwap} platformName={platformName}>
+    <StyledButton disabled={!!swapInputError || !!swapCallbackError} onClick={handleSwap} platformName={platformName}>
       {(() => {
         if (swapInputError)
           return <SwapButtonLabel light={true}>{SWAP_INPUT_ERRORS_MESSAGE[swapInputError]}</SwapButtonLabel>

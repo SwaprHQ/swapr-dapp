@@ -17,6 +17,7 @@ type SwapboxButtonProps = {
   amountInCurrencySymbol?: string
   trade?: Trade
   handleSwap: () => void
+  swapCallbackError: string | null
   showWrap?: boolean
   wrapInputError: string | undefined
   wrapState?: WrapState | undefined
@@ -33,6 +34,7 @@ export function SwapboxButton({
   amountInCurrencySymbol,
   trade,
   handleSwap,
+  swapCallbackError,
   showWrap,
   wrapInputError,
   wrapState,
@@ -68,6 +70,7 @@ export function SwapboxButton({
       swapInputError={swapInputError}
       trade={trade}
       handleSwap={handleSwap}
+      swapCallbackError={swapCallbackError}
     />
   )
 }

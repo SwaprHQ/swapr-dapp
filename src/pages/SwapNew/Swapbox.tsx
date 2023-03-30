@@ -43,16 +43,16 @@ export function Swapbox() {
 
     recipient,
 
-    userHasSpecifiedInputOutput,
-    setSwapState,
     priceImpact,
     priceImpactSeverity,
-    swapCallbackError,
+
+    // CONFIRM SWAP MODAL
     swapErrorMessage,
 
     // SWAP INFO
     allPlatformTrades,
     trade,
+    swapCallbackError,
 
     // WRAPPING
     showWrap,
@@ -111,6 +111,7 @@ export function Swapbox() {
         loading={loading}
         trade={trade}
         handleSwap={handleSwap}
+        swapCallbackError={swapCallbackError}
         showWrap={showWrap}
         wrapInputError={wrapInputError}
         wrapState={wrapState}
