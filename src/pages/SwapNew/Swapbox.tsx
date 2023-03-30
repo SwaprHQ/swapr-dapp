@@ -66,7 +66,6 @@ export function Swapbox() {
     showApproveFlow,
     approveCallback,
     approval,
-    approvalSubmitted,
   } = useSwapbox()
 
   return (

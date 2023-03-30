@@ -326,7 +326,6 @@ export const useSwapbox = () => {
     priceImpactSeverity,
     swapCallbackError,
     wrapType,
-    approvalSubmitted: approvalsSubmitted[currentTradeIndex],
     trade,
     swapInputError,
     swapErrorMessage,
