@@ -41,13 +41,12 @@ export function Swapbox() {
     // SWITCH CURRENCIES
     onSwitchTokens,
 
-    recipient,
-
     priceImpact,
     priceImpactSeverity,
 
     // CONFIRM SWAP MODAL
     swapErrorMessage,
+    recipient,
 
     // SWAP INFO
     allPlatformTrades,

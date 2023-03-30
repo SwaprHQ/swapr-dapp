@@ -49,7 +49,12 @@ export function CurrencyItem({
   return (
     <CurrencyContainer lowerItem={lowerItem}>
       <CurrencyAmountContainer>
-        <CurrencyAmount value={value} onUserInput={onUserInput} setIsMaxAmount={setIsMaxAmount} />
+        <CurrencyAmount
+          value={value}
+          onUserInput={onUserInput}
+          setIsMaxAmount={setIsMaxAmount}
+          isInputPanelDisabled={isInputPanelDisabled}
+        />
         <CurrencyAmountWorth fiatValue={fiatValue} priceImpact={priceImpact} isFallback={isFallbackFiatValue} />
       </CurrencyAmountContainer>
 
