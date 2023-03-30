@@ -15,9 +15,16 @@ type CurrencyAmountProps = {
   onUserInput: (value: string) => void
   setIsMaxAmount: (value: boolean) => void
   maxAmount?: CurrencyAmountType
+  isInputPanelDisabled?: boolean
 }
 
-export function CurrencyAmount({ value, onUserInput, setIsMaxAmount, maxAmount }: CurrencyAmountProps) {
+export function CurrencyAmount({
+  value,
+  onUserInput,
+  setIsMaxAmount,
+  maxAmount,
+  isInputPanelDisabled,
+}: CurrencyAmountProps) {
   const [inputValue, setInputValue] = useState(value)
 
   const handleOnUserInput = useCallback(
@@ -65,6 +72,7 @@ export function CurrencyAmount({ value, onUserInput, setIsMaxAmount, maxAmount }
       minLength={1}
       maxLength={79}
       spellCheck="false"
+      disabled={isInputPanelDisabled}
     />
   )
 }

@@ -12,6 +12,7 @@ export function Swapbox() {
     formattedAmounts,
     handleTypeInput,
     handleTypeOutput,
+    isInputPanelDisabled,
 
     // CURRENCIES
     currencies,
@@ -36,7 +37,6 @@ export function Swapbox() {
 
     maxAmountInput,
     maxAmountOutput,
-    isInputPanelDisabled,
 
     // SWITCH CURRENCIES
     onSwitchTokens,
@@ -82,6 +82,7 @@ export function Swapbox() {
         isFallbackFiatValue={isFallbackFiatValueInput}
         onMax={handleMaxInput(Field.INPUT)}
         onCurrencySelect={handleInputSelect}
+        isInputPanelDisabled={isInputPanelDisabled}
       />
       <SwitchCurrenciesButton loading={loading} onClick={onSwitchTokens} />
       <CurrencyItem
@@ -93,6 +94,7 @@ export function Swapbox() {
         priceImpact={priceImpact}
         onMax={handleMaxInput(Field.OUTPUT)}
         onCurrencySelect={handleOutputSelect}
+        isInputPanelDisabled={isInputPanelDisabled}
         lowerItem
       />
       <AnimatePresence>

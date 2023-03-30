@@ -27,6 +27,7 @@ type CurrencyItemProps = {
   priceImpact?: Percent
   onMax?: () => void
   onCurrencySelect?: (currency: Currency, isMaxAmount?: boolean) => void
+  isInputPanelDisabled?: boolean
   lowerItem?: boolean
 }
 
@@ -39,6 +40,7 @@ export function CurrencyItem({
   priceImpact,
   onMax,
   onCurrencySelect,
+  isInputPanelDisabled,
   lowerItem,
 }: CurrencyItemProps) {
   const [isMaxAmount, setIsMaxAmount] = useState(false)
