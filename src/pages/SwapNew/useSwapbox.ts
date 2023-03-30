@@ -17,7 +17,7 @@ import { maxAmountSpend } from '../../utils/maxAmountSpend'
 import { computeTradePriceBreakdown, warningSeverity } from '../../utils/prices'
 import { SwapContext } from '../Swap/SwapBox/SwapContext'
 import confirmPriceImpactWithoutFee from './confirmPriceImpactWithoutFee'
-import { CoWTradeState, SwapData } from './SwapBox.types'
+import { CoWTradeState, SwapData } from './models'
 
 export const useSwapbox = () => {
   const loadedUrlParams = useDefaultsFromURLSearch()

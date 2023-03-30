@@ -9,7 +9,7 @@ export type SwapData = {
 }
 
 export enum CoWTradeState {
-  UNKNOWN, // default
+  UNKNOWN,
   WRAP,
   APPROVAL,
   SWAP,
