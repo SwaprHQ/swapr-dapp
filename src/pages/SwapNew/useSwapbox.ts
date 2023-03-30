@@ -15,8 +15,8 @@ import { useIsExpertMode, useUserSlippageTolerance } from '../../state/user/hook
 import { computeFiatValuePriceImpact } from '../../utils/computeFiatValuePriceImpact'
 import { maxAmountSpend } from '../../utils/maxAmountSpend'
 import { computeTradePriceBreakdown, warningSeverity } from '../../utils/prices'
+import confirmPriceImpactWithoutFee from '../Swap/Components/confirmPriceImpactWithoutFee'
 import { SwapContext } from '../Swap/SwapBox/SwapContext'
-import confirmPriceImpactWithoutFee from './confirmPriceImpactWithoutFee'
 import { CoWTradeState, SwapData } from './models'
 
 export const useSwapbox = () => {
