@@ -4,8 +4,12 @@ import { AnimatePresence, motion } from 'framer-motion'
 import { useState } from 'react'
 import styled from 'styled-components'
 
-import { ELEMENTS_BACKGROUND_SECONDARY, ELEMENTS_BORDER_SECONDARY, ELEMENTS_SPACING } from '../../constants'
-import { BorderStyle } from '../styles'
+import {
+  ELEMENTS_BACKGROUND_SECONDARY,
+  ELEMENTS_BORDER_SECONDARY,
+  ELEMENTS_SPACING,
+  BorderStyle,
+} from '../../constants'
 import { SwapInfoBasics } from './SwapInfoBasics'
 import { SwapInfoDetailed } from './SwapInfoDetailed'
 

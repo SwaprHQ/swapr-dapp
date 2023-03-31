@@ -12,8 +12,9 @@ import {
   IndicatorColorVariant,
   IndicatorIconVariant,
   TEXT_COLOR_PRIMARY,
+  BorderStyle,
+  FontFamily,
 } from '../../constants'
-import { BorderStyle, FontFamily } from '../styles'
 import { Indicator } from './Indicator'
 
 type SwapDexInfoItemProps = {

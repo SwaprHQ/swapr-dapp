@@ -7,7 +7,7 @@ import {
   TEXT_COLOR_PRIMARY,
   ELEMENTS_BACKGROUND_PRIMARY,
 } from '../../constants'
-import { FontFamily } from '../styles'
+import { FontFamily } from '../../constants'
 
 export const StyledButton = styled.button<{ platformName?: string }>`
   width: 100%;

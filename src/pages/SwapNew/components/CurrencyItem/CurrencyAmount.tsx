@@ -6,7 +6,7 @@ import styled from 'styled-components'
 import { escapeRegExp, normalizeInputValue } from '../../../../utils'
 import { debounce } from '../../../../utils/debounce'
 import { TEXT_COLOR_PRIMARY } from '../../constants'
-import { FontFamily } from '../styles'
+import { FontFamily } from '../../constants'
 
 const inputRegex = RegExp(`^\\d*(?:\\\\[.])?\\d*$`)
 

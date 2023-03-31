@@ -5,8 +5,7 @@ import styled from 'styled-components'
 import { useActiveWeb3React } from '../../../../hooks'
 import { useCurrencyBalance } from '../../../../state/wallet/hooks'
 import { limitNumberOfDecimalPlaces } from '../../../../utils/prices'
-import { TEXT_COLOR_SECONDARY } from '../../constants'
-import { FontFamily } from '../styles'
+import { TEXT_COLOR_SECONDARY, FontFamily } from '../../constants'
 
 type CurrencyBalanceProps = {
   currency?: Currency

@@ -1,3 +1,18 @@
+import { css } from 'styled-components'
+
+// FONT
+export const TEXT_COLOR_PRIMARY = '#fff'
+export const TEXT_COLOR_SECONDARY = '#8780bf'
+
+export const FontFamily = css`
+  font-family: Inter;
+`
+
+// BORDER
+export const BorderStyle = css`
+  border-radius: 12px;
+`
+
 // DIMENSIONS
 export const SWAPBOX_WIDTH = 'min(467px, 100%)'
 
@@ -24,10 +39,6 @@ export const SWITCH_CURRENCIES_BUTTON_BOX_SHADOW = '0px 0px 42px rgba(0, 0, 0, 0
 
 // TOKEN PICKER COLORS
 export const TOKEN_PICKER_CLOSE_BUTTON_BACKGROUND_COLOR = 'rgba(60, 56, 100, 0.1)'
-
-// TEXT COLORS
-export const TEXT_COLOR_PRIMARY = '#fff'
-export const TEXT_COLOR_SECONDARY = '#8780bf'
 
 // INDICATOR VARIANTS AND COLORS
 export enum IndicatorColorVariant {

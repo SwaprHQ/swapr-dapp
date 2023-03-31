@@ -10,8 +10,8 @@ import {
   ELEMENTS_BORDER_PRIMARY,
   ELEMENTS_BORDER_SECONDARY,
   ELEMENTS_SPACING,
+  BorderStyle,
 } from '../../constants'
-import { BorderStyle } from '../styles'
 import { TokenPicker } from '../TokenPicker'
 import { CurrencyAmount } from './CurrencyAmount'
 import { CurrencyAmountWorth } from './CurrencyAmountWorth'

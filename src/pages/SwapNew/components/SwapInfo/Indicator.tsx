@@ -10,8 +10,8 @@ import {
   INDICATOR_COLOR,
   IndicatorColorVariant,
   IndicatorIconVariant,
+  FontFamily,
 } from '../../constants'
-import { FontFamily } from '../styles'
 
 export const INDICATOR_ICON = {
   [IndicatorIconVariant.DEXES]: <DexesSVG />,

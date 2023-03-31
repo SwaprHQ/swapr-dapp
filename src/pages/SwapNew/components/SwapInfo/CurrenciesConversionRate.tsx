@@ -6,7 +6,7 @@ import styled from 'styled-components'
 import { useIsMobileByMedia } from '../../../../hooks/useIsMobileByMedia'
 import { limitNumberOfDecimalPlaces } from '../../../../utils/prices'
 import { TEXT_COLOR_PRIMARY } from '../../constants'
-import { FontFamily } from '../styles'
+import { FontFamily } from '../../constants'
 
 type CurrenciesConversionRateProps = {
   price?: Price
