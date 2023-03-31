@@ -2,7 +2,7 @@
 
 Welcome friend! 👋
 
-This folder contains new, re-designed swapbox, `Swapbox 2023` by `dxDAO`. Current version is the first iteration and further plan is to continue working on this, designing new things, update the current ones, adding new features and improve the existing ones.
+This folder contains a new, re-designed swapbox, `Swapbox 2023` by `dxDAO`. Current version is the first iteration and further plan is to continue working on this, designing new things, updating the current ones, adding new features and improving the existing ones.
 
 ## Folder Structure
 
@@ -22,7 +22,7 @@ type SwapContextType = {
 }
 ```
 
-The folder contains few other folders and files, I'll go through them and try to explain the responsibility of each and the idea behind it. Folder tree presented below:
+The folder contains a few other folders and files, I'll go through them and try to explain the responsibility of each and the idea behind it. Folder tree presented below:
 
 ```
 .
@@ -41,7 +41,7 @@ This folder contains some of the models that are being used in the swapbox.
 
 ### `useSwapbox.ts`
 
-`useSwapbox.ts` is the hook which powers the `Swapbox 2023`; it contains 90% of the implementation logic that is being used to operate the swapbox. This hook is derived from the previous swapbox implementation with the idea to group the logic, keep it on the same place and in that way enable modularity, readability, maintainability and further development by isolation.
+`useSwapbox.ts` is the hook which powers the `Swapbox 2023`; it contains 90% of the implementation logic that is being used to operate the swapbox. This hook is derived from the previous swapbox implementation with the idea to group the logic, keep it in the same place and in that way enable modularity, readability, maintainability and further development by isolation.
 
 The hook keeps track of some state values in itself, it uses the values from above mentioned `SwapContext`, extends them, derives new values from them and uses other external hooks to create functionalities through the functions which are exported from the hook for further usage in the `Swapbox 2023`. Exported values / functions presented below:
 
@@ -113,13 +113,13 @@ export const useSwapbox = () => {
 
 ### `constants`
 
-This folder currently contains only UI related stuff. The idea behind is to extract UI values which provide styling for the `Swapbox 2023` into the variables. Those are the colors that are being used across the components, the swapbox dimensions, border stylings, elements spacing, indicator types and styling helper functions. If necessary in the future, since all of these are on the same place and all values are being referenced from it, it is really easy to change the looks of the swapbox and it would be really easy to introduce theming with minimal amount of work.
+This folder currently contains only UI related stuff. The idea behind is to extract UI values which provide styling for the `Swapbox 2023` into the variables. Those are the colors that are being used across the components, the swapbox dimensions, border stylings, elements spacing, indicator types and styling helper functions. If necessary in the future, since all of these are in the same place and all values are being referenced from it, it is really easy to change the looks of the swapbox and it would be really easy to introduce theming with minimal amount of work.
 
 ### `components`
 
-`components` folder contains all of the components that are being used in the `Swapbox 2023`. The components are split by the functionalities they are responsible for. Root level components are assigned its own folder and their sub-components are kept inside it. Root level components are `CurrencyItem`, `SwitchCurrenciesButton`, `SwapInfo`, `SwapboxButton` and `TokenPicker`. As mentioned above, the idea for the components is to mainly focus them on the UI part and keep as little logic as possible inside them. The only logic that can be kept inside is something specific for them and only used on that one place. The components should receive everything necessary for their functioning through the props.
+`components` folder contains all of the components that are being used in the `Swapbox 2023`. The components are split by the functionalities they are responsible for. Root level components are assigned its own folder and their sub-components are kept inside it. Root level components are `CurrencyItem`, `SwitchCurrenciesButton`, `SwapInfo`, `SwapboxButton` and `TokenPicker`. As mentioned above, the idea for the components is to mainly focus them on the UI part and keep as little logic as possible inside them. The only logic that can be kept inside is something specific for them and only used in that one place. The components should receive everything necessary for their functioning through the props.
 
-In future, in order to avoid prop drilling with values and functions, everything can be taken to the next level with dedicated state management solution. We should keep track both of the values and functions on one place and in that case ensure that each of the components can be independent and take everything they need directly from the centralized storage.
+In future, in order to avoid prop drilling with values and functions, everything can be taken to the next level with dedicated state management solution. We should keep track both of the values and functions in one place and in that case ensure that each of the components can be independent and take everything they need directly from the centralized storage.
 
 ### `Swapbox.tsx`
 
