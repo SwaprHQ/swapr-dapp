@@ -8,14 +8,16 @@ import { useSwapbox } from './useSwapbox'
 
 export function Swapbox() {
   const {
+    // CURRENCIES
+    currencies,
+    priceImpact,
+    priceImpactSeverity,
+
     // AMOUNT of CURRENCIES
     formattedAmounts,
     handleTypeInput,
     handleTypeOutput,
     isInputPanelDisabled,
-
-    // CURRENCIES
-    currencies,
 
     // AMOUNT WORTH
     fiatValueInput,
@@ -27,31 +29,23 @@ export function Swapbox() {
     handleMaxInput,
     handleInputSelect,
     handleOutputSelect,
-
-    // LOADING
-    loading,
-
-    // SWAP BUTTON
-    swapInputError,
-    handleSwap,
-
     maxAmountInput,
     maxAmountOutput,
 
     // SWITCH CURRENCIES
     onSwitchTokens,
 
-    priceImpact,
-    priceImpactSeverity,
-
-    // CONFIRM SWAP MODAL
-    swapErrorMessage,
-    recipient,
+    // LOADING
+    loading,
 
     // SWAP INFO
     allPlatformTrades,
     trade,
     swapCallbackError,
+
+    // SWAP BUTTON
+    swapInputError,
+    handleSwap,
 
     // WRAPPING
     showWrap,
@@ -65,6 +59,10 @@ export function Swapbox() {
     showApproveFlow,
     approveCallback,
     approval,
+
+    // CONFIRM SWAP MODAL
+    swapErrorMessage,
+    recipient,
   } = useSwapbox()
 
   return (

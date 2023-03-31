@@ -35,3 +35,75 @@ The folder contains few other folders and files, I'll go through them and try to
 ├── index.ts
 └── useSwapbox.ts
 ```
+
+### `useSwapbox.ts`
+
+`useSwapbox.ts` is the hook which powers `Swapbox 2023`; it contains 90% of the implementation logic that is being used to operate the swapbox. This hook is derived from the previous swapbox implementation with the idea to group the logic, keep it on the same place and in that way enable modularity, readability, maintainability and further development by isolation.
+
+The hook keeps track of some state values in itself, it uses the values from above mentioned `SwapContext`, extends them, derives new values from them and uses other external hooks to create functionalities through the functions which are exported from the hook for further usage in `Swapbox 2023`. Exported values / functions presented below:
+
+```typescript
+export const useSwapbox = () => {
+  // ...
+  // IMPLEMENTATION LOGIC
+  // ...
+
+  return {
+    // CURRENCIES
+    currencies,
+    priceImpact,
+    priceImpactSeverity,
+
+    // AMOUNT of CURRENCIES
+    formattedAmounts,
+    handleTypeInput,
+    handleTypeOutput,
+    isInputPanelDisabled,
+
+    // AMOUNT WORTH
+    fiatValueInput,
+    fiatValueOutput,
+    isFallbackFiatValueInput,
+    isFallbackFiatValueOutput,
+
+    // CURRENCY SELECT
+    handleMaxInput,
+    handleInputSelect,
+    handleOutputSelect,
+    maxAmountInput,
+    maxAmountOutput,
+
+    // SWITCH CURRENCIES
+    onSwitchTokens,
+
+    // LOADING
+    loading,
+
+    // SWAP INFO
+    allPlatformTrades,
+    trade,
+    swapCallbackError,
+
+    // SWAP BUTTON
+    swapInputError,
+    handleSwap,
+
+    // WRAPPING
+    showWrap,
+    wrapInputError,
+    wrapState,
+    onWrap,
+    wrapType,
+    setWrapState,
+
+    // APPROVE FLOW
+    showApproveFlow,
+    approveCallback,
+    approval,
+
+    // CONFIRM SWAP MODAL
+    swapErrorMessage,
+    recipient,
+  }
+}
+```

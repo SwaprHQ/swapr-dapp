@@ -299,43 +299,60 @@ export const useSwapbox = () => {
     trade instanceof CoWTrade
 
   return {
-    formattedAmounts,
+    // CURRENCIES
     currencies,
+    priceImpact,
+    priceImpactSeverity,
+
+    // AMOUNT of CURRENCIES
+    formattedAmounts,
     handleTypeInput,
     handleTypeOutput,
-    handleMaxInput,
-    handleInputSelect,
-    handleOutputSelect,
+    isInputPanelDisabled,
+
+    // AMOUNT WORTH
     fiatValueInput,
     fiatValueOutput,
     isFallbackFiatValueInput,
     isFallbackFiatValueOutput,
+
+    // CURRENCY SELECT
+    handleMaxInput,
+    handleInputSelect,
+    handleOutputSelect,
     maxAmountInput,
     maxAmountOutput,
-    isInputPanelDisabled,
 
+    // SWITCH CURRENCIES
     onSwitchTokens,
 
-    showWrap,
-    recipient,
-
-    wrapInputError,
-    showApproveFlow,
-    approval,
-    priceImpact,
-    priceImpactSeverity,
-    swapCallbackError,
-    wrapType,
-    trade,
-    swapInputError,
-    swapErrorMessage,
+    // LOADING
     loading,
-    onWrap,
-    approveCallback,
+
+    // SWAP INFO
+    allPlatformTrades,
+    trade,
+    swapCallbackError,
+
+    // SWAP BUTTON
+    swapInputError,
     handleSwap,
+
+    // WRAPPING
+    showWrap,
+    wrapInputError,
     wrapState,
+    onWrap,
+    wrapType,
     setWrapState,
 
-    allPlatformTrades,
+    // APPROVE FLOW
+    showApproveFlow,
+    approveCallback,
+    approval,
+
+    // CONFIRM SWAP MODAL
+    swapErrorMessage,
+    recipient,
   }
 }
