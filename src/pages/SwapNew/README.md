@@ -27,17 +27,13 @@ The folder contains few other folders and files, I'll go through them and try to
 ```
 .
 ├── 📁 components
-├── 📁 constants ✅
-├── 📁 models ✅
-├── 📄 index.ts ✅
-├── 📄 README.md ✅
+├── 📁 constants
+├── 📁 models
+├── 📄 index.ts
+├── 📄 README.md
 ├── 📄 Swapbox.tsx
-└── 📄 useSwapbox.ts ✅
+└── 📄 useSwapbox.ts
 ```
-
-### `index.tsx`
-
-`index.tsx` is the main file exported from this folder. It doesn't contain much, the only functionality it has is the composition of the `Swapbox 2023` with `Hero` and `LandingSections` components into the page. This page is exported as the main component.
 
 ### `models`
 
@@ -124,3 +120,11 @@ This folder currently contains only UI related stuff. The idea behind is to extr
 `components` folder contains all of the components that are being used in the `Swapbox 2023`. The components are split by the functionalities they are responsible for. Root level components are assigned its own folder and their sub-components are kept inside it. Root level components are `CurrencyItem`, `SwitchCurrenciesButton`, `SwapInfo`, `SwapboxButton` and `TokenPicker`. As mentioned above, the idea for the components is to mainly focus them on the UI part and keep as little logic as possible inside them. The only logic that can be kept inside is something specific for them and only used on that one place. The components should receive everything necessary for their functioning through the props.
 
 In future, in order to avoid prop drilling with values and functions, everything can be taken to the next level with dedicated state management solution. We should keep track both of the values and functions on one place and in that case ensure that each of the components can be independent and take everything they need directly from the centralized storage.
+
+### `Swapbox.tsx`
+
+`Swapbox.tsx` is the root component which basically assembles the `Swapbox 2023`. This is where the references from `useSwapbox.ts` hook are being unpacked and further fed to the components which need them for functioning.
+
+### `index.tsx`
+
+`index.tsx` is the main file exported from this folder. It doesn't contain much, the only functionality it has is the composition of the `Swapbox 2023` with `Hero` and `LandingSections` components into the page. This page is exported as the main component.
