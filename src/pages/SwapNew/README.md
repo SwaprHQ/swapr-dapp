@@ -30,11 +30,15 @@ The folder contains few other folders and files, I'll go through them and try to
 ├── constants
 ├── models
 ├── utils
-├── README.md
+├── README.md ✅
 ├── Swapbox.tsx
-├── index.ts
-└── useSwapbox.ts
+├── index.ts ✅
+└── useSwapbox.ts ✅
 ```
+
+### `index.tsx`
+
+`index.tsx` is the main file exported from this folder. It doesn't contain much, the only functionality it has is the composition of `Swapbox 2023` with `Hero` and `LandingSections` components into the page. This page is exported as the main component.
 
 ### `useSwapbox.ts`
 
