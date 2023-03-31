@@ -40,6 +40,14 @@ The folder contains few other folders and files, I'll go through them and try to
 
 `index.tsx` is the main file exported from this folder. It doesn't contain much, the only functionality it has is the composition of `Swapbox 2023` with `Hero` and `LandingSections` components into the page. This page is exported as the main component.
 
+### `models`
+
+This folder contains some of the models that are being used in the swapbox.
+
+### `constants`
+
+This folder currently contains only UI related stuff. The idea behind is to extract UI values which provide styling for `Swapbox 2023` into the variables. Those are the colors that are being used across the components, the swapbox dimensions, border stylings, elements spacing, indicator types and styling helper functions. If necessary in the future, since all of these are on the same place and all values are being referenced from it, it is really easy to change the looks of the swapbox and it would be really easy to introduce theming with minimal amount of work.
+
 ### `useSwapbox.ts`
 
 `useSwapbox.ts` is the hook which powers `Swapbox 2023`; it contains 90% of the implementation logic that is being used to operate the swapbox. This hook is derived from the previous swapbox implementation with the idea to group the logic, keep it on the same place and in that way enable modularity, readability, maintainability and further development by isolation.
