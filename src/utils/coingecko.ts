@@ -1,28 +1,23 @@
 import { ChainId, Currency, Trade } from '@swapr/sdk'
 
+import { queryClient } from '..'
+
 interface PriceInformation {
   token: string
-  amount: string | null
-  percentageAmountChange24h: number | null
-  isIncome24h: boolean | undefined
+  amount: string
+  percentageAmountChange24h: number
+  isIncome24h: boolean
 }
 
 // Defaults
 const API_NAME = 'Coingecko'
-const API_BASE_URL = 'https://api.coingecko.com/api'
-const API_VERSION = 'v3'
+const API_BASE_URL = 'https://api.coingecko.com/api/v3'
 const DEFAULT_HEADERS = {
   'Content-Type': 'application/json',
 }
 
-function _getApiBaseUrl(chainId: ChainId): string {
-  const baseUrl = API_BASE_URL
-
-  if (!baseUrl) {
-    throw new Error(`Unsupported Network. The ${API_NAME} API is not deployed in the Network ${chainId}`)
-  } else {
-    return baseUrl + '/' + API_VERSION
-  }
+function getApiUrl(subString: string) {
+  return new URL(`${API_BASE_URL}${subString}`)
 }
 
 const COINGECKO_ASSET_PLATFORM: { [chainId in ChainId]: string | null } = {
@@ -40,7 +35,7 @@ const COINGECKO_ASSET_PLATFORM: { [chainId in ChainId]: string | null } = {
   [ChainId.BSC_TESTNET]: null,
 }
 
-const COINGECKO_NATIVE_CURRENCY: Record<number, string> = {
+export const COINGECKO_NATIVE_CURRENCY: Record<number, string> = {
   [ChainId.MAINNET]: 'ethereum',
   [ChainId.ARBITRUM_ONE]: 'ethereum',
   [ChainId.XDAI]: 'xdai',
@@ -49,17 +44,18 @@ const COINGECKO_NATIVE_CURRENCY: Record<number, string> = {
   [ChainId.BSC_MAINNET]: 'binancecoin',
 }
 
-function _fetch(chainId: ChainId, url: string, method: 'GET' | 'POST' | 'DELETE', data?: any): Promise<Response> {
-  const baseUrl = _getApiBaseUrl(chainId)
-  return fetch(baseUrl + url, {
+type GetDataProps = {
+  url: URL
+  method?: 'GET' | 'POST' | 'DELETE'
+  data?: BodyInit
+}
+
+function getData({ url, method = 'GET', data }: GetDataProps) {
+  return fetch(url, {
     headers: DEFAULT_HEADERS,
     method,
     body: data !== undefined ? JSON.stringify(data) : data,
   })
-}
-
-function _get(chainId: ChainId, url: string): Promise<Response> {
-  return _fetch(chainId, url, 'GET')
 }
 
 export interface CoinGeckoUsdPriceTokenParams {
@@ -71,26 +67,27 @@ export interface CoinGeckoUsdPriceCurrencyParams {
   chainId: ChainId
 }
 
-interface CoinGeckoUsdQuote {
+export interface CoinGeckoUsdQuote {
   [address: string]: {
     usd: number
     usd_24h_change: number
   }
 }
 
-export async function getUSDPriceTokenQuote(params: CoinGeckoUsdPriceTokenParams): Promise<CoinGeckoUsdQuote | null> {
+export async function getUSDPriceTokenQuote(params: CoinGeckoUsdPriceTokenParams): Promise<CoinGeckoUsdQuote> {
   const { chainId, tokenAddress } = params
 
   const assetPlatform = COINGECKO_ASSET_PLATFORM[chainId]
   if (!assetPlatform) {
     // Unsupported asset network
-    return null
+    throw new Error('Unsupported asset network')
   }
 
-  const response = await _get(
-    chainId,
+  const priceURL = getApiUrl(
     `/simple/token_price/${assetPlatform}?contract_addresses=${tokenAddress}&vs_currencies=usd&include_24hr_change=true`
-  ).catch(error => {
+  )
+
+  const response = await getData({ url: priceURL }).catch(error => {
     console.error(`Error getting ${API_NAME} USD price quote:`, error)
     throw new Error(error)
   })
@@ -98,18 +95,17 @@ export async function getUSDPriceTokenQuote(params: CoinGeckoUsdPriceTokenParams
   return response.json()
 }
 
-export async function getUSDPriceCurrencyQuote(
-  params: CoinGeckoUsdPriceCurrencyParams
-): Promise<CoinGeckoUsdQuote | null> {
+export async function getUSDPriceCurrencyQuote(params: CoinGeckoUsdPriceCurrencyParams): Promise<CoinGeckoUsdQuote> {
   const { chainId } = params
 
   const nativeCurrency = COINGECKO_NATIVE_CURRENCY[chainId]
   if (!nativeCurrency) {
     // Unsupported currency network
-    return null
+    throw new Error('Unsupported currency network')
   }
+  const priceURL = getApiUrl(`/simple/price?ids=${nativeCurrency}&vs_currencies=usd`)
 
-  const response = await _get(chainId, `/simple/price?ids=${nativeCurrency}&vs_currencies=usd`).catch(error => {
+  const response = await getData({ url: priceURL }).catch(error => {
     console.error(`Error getting ${API_NAME} USD price quote:`, error)
     throw new Error(error)
   })
@@ -117,31 +113,39 @@ export async function getUSDPriceCurrencyQuote(
   return response.json()
 }
 
-export function toPriceInformation(priceRaw: CoinGeckoUsdQuote | null): PriceInformation | null {
+export function toPriceInformation(priceRaw: CoinGeckoUsdQuote): PriceInformation | null {
   // We only receive/want the first key/value pair in the return object
   const token = priceRaw ? Object.keys(priceRaw)[0] : null
 
-  if (!token || !priceRaw?.[token].usd || !priceRaw?.[token].usd_24h_change) {
+  if (!token || !priceRaw?.[token].usd) {
     return null
   }
 
   const { usd, usd_24h_change } = priceRaw[token]
   return {
     amount: usd.toString(),
-    percentageAmountChange24h: Math.abs(usd_24h_change),
-    isIncome24h: usd_24h_change > 0,
+    percentageAmountChange24h: usd_24h_change ? Math.abs(usd_24h_change) : 0,
+    isIncome24h: usd_24h_change ? usd_24h_change > 0 : false,
     token,
   }
 }
 
 export async function getTradeUSDValue(trade: Trade): Promise<string | null> {
   const isNativeCurrency = Currency.isNative(trade.inputAmount.currency)
+  const queryKey = isNativeCurrency ? COINGECKO_NATIVE_CURRENCY[trade.chainId] : trade.inputAmount.currency.address
 
-  const getUSDPriceQuote = isNativeCurrency
-    ? getUSDPriceCurrencyQuote({ chainId: trade.chainId })
-    : getUSDPriceTokenQuote({ tokenAddress: trade.inputAmount.currency.address, chainId: trade.chainId })
+  if (!queryKey) {
+    return null
+  }
 
-  const priceInformation = toPriceInformation(await getUSDPriceQuote)
+  const getUSDPriceQuote = () =>
+    isNativeCurrency
+      ? getUSDPriceCurrencyQuote({ chainId: trade.chainId })
+      : getUSDPriceTokenQuote({ tokenAddress: trade.inputAmount.currency.address, chainId: trade.chainId })
+
+  const data = await queryClient.fetchQuery(['priceInfo', queryKey], getUSDPriceQuote, { staleTime: Infinity })
+
+  const priceInformation = toPriceInformation(data)
 
   if (priceInformation !== null && priceInformation.amount !== null) {
     const amount = trade.inputAmount.toSignificant(6)

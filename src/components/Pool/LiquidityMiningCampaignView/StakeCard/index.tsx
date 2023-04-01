@@ -215,12 +215,12 @@ export default function StakeCard({
     setTransactionHash('')
   }, [])
 
-  const handleStakingRequest = useCallback(() => {
-    setShowStakingConfirmationModal(true)
+  const handleStakingRequest = () => {
+    setShowStakingConfirmationModal(!showStakingConfirmationModal)
     setShowWithdrawalConfirmationModal(false)
     setShowClaimConfirmationModal(false)
     setShowExitConfirmationModal(false)
-  }, [])
+  }
 
   const handleWithdrawalRequest = useCallback(() => {
     setShowWithdrawalConfirmationModal(true)
@@ -470,7 +470,7 @@ export default function StakeCard({
           </ButtonsRow>
         </AutoColumn>
       </StyledPositionCard>
-      {campaign && campaign.address && normalizedStakableTokenBalance && (
+      {!!campaign && !!campaign.address && !!normalizedStakableTokenBalance && showStakingConfirmationModal && (
         <ConfirmStakingModal
           isOpen={showStakingConfirmationModal}
           isSingleSide={isSingleSided}

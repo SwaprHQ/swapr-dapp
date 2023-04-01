@@ -33,7 +33,11 @@ const ConfirmedIcon = styled(ColumnCenter)`
   padding: 10px 0;
 `
 
-export function ConfirmationPendingContent({ onDismiss, pendingText }: { onDismiss: () => void; pendingText: string }) {
+interface ConfirmationPendingContentProps {
+  onDismiss: () => void
+  pendingText: string
+}
+export function ConfirmationPendingContent({ onDismiss, pendingText }: ConfirmationPendingContentProps) {
   return (
     <Wrapper>
       <Section>
@@ -142,8 +146,14 @@ export function ConfirmationModalContent({
   )
 }
 
-export function TransactionErrorContent({ message, onDismiss }: { message: string; onDismiss: () => void }) {
+interface TransactionErrorContentProps {
+  message: string
+  onDismiss: () => void
+}
+
+export function TransactionErrorContent({ message, onDismiss }: TransactionErrorContentProps) {
   const theme = useTheme()
+
   return (
     <Wrapper data-testid="transaction-error-modal">
       <Section>

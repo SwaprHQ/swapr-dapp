@@ -34,7 +34,7 @@ import RoutingPancakeSwap from './../assets/images/routing-pancakeswap.svg'
 import RoutingQuickSwap from './../assets/images/routing-Quickswap.svg'
 import RoutingSushiSwap from './../assets/images/routing-SushiSwap.svg'
 import RoutingUniswap from './../assets/images/routing-Uniswap.svg'
-import { scrollTo } from './helper-functions'
+import { scrollTo } from './helperFunctions'
 
 export const mainNavigation = [
   {
@@ -97,7 +97,7 @@ export const HeroContent = {
       href: '#',
     },
   ],
-}
+} as const
 
 export const RoutingThroughContent = {
   title: 'ROUTING THROUGH',
@@ -143,8 +143,10 @@ export const RoutingThroughContent = {
   ],
 }
 
-function importAll(folderArray) {
-  const images = {}
+type Images = { [key: string]: string }
+
+function importAll(folderArray: __WebpackModuleApi.RequireContext) {
+  const images: Images = {}
   folderArray.keys().forEach(item => {
     const name = item.substring(item.indexOf('./') + 2, item.lastIndexOf('.'))
     images[name] = folderArray(item)
@@ -154,7 +156,33 @@ function importAll(folderArray) {
 
 const animations = importAll(require.context('./../assets/images/animations', false, /\.(svg)$/))
 
-export const FeaturesContent = {
+export type FeatureButton = {
+  label: string
+  type: 'primary' | 'dark'
+  external: boolean
+  onClick?: () => void
+  href?: string
+}
+
+export type Feature = {
+  title: string
+  content: string
+  image: string
+  animation: string
+  buttons: readonly FeatureButton[]
+}
+
+export type FeatureContent = {
+  topBanner: {
+    title: string
+    logos: readonly string[]
+  }
+  preHeader: string
+  sectionTitle: string
+  features: readonly Feature[]
+}
+
+export const FeaturesContent: Readonly<FeatureContent> = {
   topBanner: {
     title: 'Swap, Farm, Bridge & Vote. DeFi unchained.',
     logos: [EthereumLogo, ArbitrumLogo, gnosisChainLogo, PolygonLogo, OptimismLogo, BNBLogo],
@@ -174,6 +202,7 @@ export const FeaturesContent = {
             scrollTo('app-wrapper')
           },
           type: 'primary',
+          external: false,
         },
         {
           label: 'READ MORE',
@@ -195,6 +224,7 @@ export const FeaturesContent = {
             scrollTo('app-wrapper')
           },
           type: 'primary',
+          external: false,
         },
         {
           label: 'READ MORE',
@@ -234,6 +264,7 @@ export const FeaturesContent = {
           label: 'FARM',
           href: '/#/rewards',
           type: 'primary',
+          external: false,
         },
         {
           label: 'READ MORE',
@@ -253,6 +284,7 @@ export const FeaturesContent = {
           label: 'CREATE CAMPAIGN',
           href: '/#/liquidity-mining/create',
           type: 'primary',
+          external: false,
         },
         {
           label: 'READ MORE',
@@ -272,6 +304,7 @@ export const FeaturesContent = {
           label: 'BRIDGE',
           href: '/#/bridge',
           type: 'primary',
+          external: false,
         },
         {
           label: 'READ MORE',
@@ -282,7 +315,7 @@ export const FeaturesContent = {
       ],
     },
   ],
-}
+} as const
 
 export const CommunityBannerContent = {
   preHeader: 'A DXdao Product',
@@ -299,7 +332,7 @@ export const CommunityBannerContent = {
       type: 'dark',
     },
   ],
-}
+} as const
 
 export const CommunityLinksContent = {
   preHeader: 'Swapr Protocol',
@@ -346,7 +379,7 @@ export const CommunityLinksContent = {
       },
     },
   ],
-}
+} as const
 
 export const BlogContent = {
   readBlogPost: 'READ BLOG POST',
@@ -372,7 +405,7 @@ export const BlogContent = {
       postLink: 'https://medium.com/swapr/introducing-swpr-token-farming-rewards-7fbdcc9507ae',
     },
   ],
-}
+} as const
 
 export const FooterContent = {
   linkColumns: [
@@ -446,18 +479,6 @@ export const FooterContent = {
           label: 'DXstats',
           href: 'https://dxstats.eth.limo/#/home',
         },
-        // {
-        //     label: 'Roadmap',
-        //     href: '#'
-        // },
-        // {
-        //     label: 'We\'re hiring',
-        //     href: '#'
-        // },
-        // {
-        //     label: 'Token',
-        //     href: '#'
-        // },
       ],
     },
   ],
@@ -465,9 +486,29 @@ export const FooterContent = {
     label: 'GO TO SWAPR',
     href: '#',
   },
+} as const
+
+type Company = {
+  name: string
+  image: string
+  href: string
 }
 
-export const StatsContent = {
+type Status = {
+  title: 'TOTAL VOLUME' | 'TRADES' | 'TOTAL FEES COLLECTED' | 'SWPR PRICE' | 'TVL' | 'ROUTING THROUGH'
+  value?: JSX.Element
+  externalSource?: boolean
+  headingDollar?: boolean
+  moreLabel?: string
+  companies?: readonly Company[]
+}
+
+type StatusContent = {
+  title: string
+  stats: readonly Status[]
+}
+
+export const StatsContent: Readonly<StatusContent> = {
   title: 'Swapr Stats',
   stats: [
     {
@@ -541,4 +582,4 @@ export const StatsContent = {
       moreLabel: '+ 3 more',
     },
   ],
-}
+} as const

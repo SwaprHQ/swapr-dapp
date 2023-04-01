@@ -1,24 +1,24 @@
 import { useEffect, useRef, useState } from 'react'
 import styled from 'styled-components'
 
-import { TimelineData } from './../../utils/milestones'
-import { breakpoints, gradients } from './../../utils/theme'
+import { MileStone, TimelineData } from '../../utils/milestones'
+import { breakpoints, gradients } from '../../utils/theme'
 import BottomRail from './BottomRail'
 import Layout from './layout/Layout'
 import Milestone from './Milestone'
 import TimelineControls from './TimelineControls'
 
 const Timeline = () => {
-  const [currentMilestoneGroup, setCurrentMilestoneGroup] = useState([])
-  const [currentMilestonePosition, setCurrentMilestonePosition] = useState(null)
-  const [currentMilestoneGroupPosition, setCurrentMilestoneGroupPosition] = useState(null)
-  const [isCurrentPost, setIsCurrentPost] = useState(null)
+  const [currentMilestoneGroup, setCurrentMilestoneGroup] = useState<MileStone[]>([])
+  const [currentMilestonePosition, setCurrentMilestonePosition] = useState(0)
+  const [currentMilestoneGroupPosition, setCurrentMilestoneGroupPosition] = useState(0)
+  const [isCurrentPost, setIsCurrentPost] = useState<boolean>()
 
   const [stepNumber, setStepNumber] = useState(1)
-  const [timelineDirection, setTimelineDirection] = useState(null)
+  const [timelineDirection, setTimelineDirection] = useState<string>()
   const [isMobileTimeline, setIsMobileTimeline] = useState(false)
 
-  const timelineContentRef = useRef(null)
+  const timelineContentRef = useRef<HTMLDivElement>(null)
 
   const buildGroup = () => {
     if (!isMobileTimeline) {
@@ -29,35 +29,42 @@ const Timeline = () => {
   }
 
   const handleElementsAnimation = () => {
-    const milestones = timelineContentRef.current.querySelectorAll('.milestone')
-    milestones.forEach(el => {
-      const animableElements = el.querySelector('.milestone-content')
-      let newGroup = buildGroup()
-      if (timelineDirection != null) {
-        animableElements.classList.add(`to-${timelineDirection}`)
-        setTimeout(() => {
-          animableElements.classList.remove(`to-${timelineDirection}`)
-          setCurrentMilestoneGroup(newGroup)
-          animableElements.classList.add(`from-${timelineDirection}`)
-        }, 250)
+    if (timelineContentRef.current != null) {
+      const milestones = timelineContentRef.current.querySelectorAll('.milestone')
+      milestones.forEach(el => {
+        const animatableElements = el.querySelector('.milestone-content')
+        const newGroup = buildGroup()
+        if (timelineDirection !== undefined && animatableElements !== null) {
+          animatableElements.classList.add(`to-${timelineDirection}`)
+          setTimeout(() => {
+            animatableElements.classList.remove(`to-${timelineDirection}`)
+            setCurrentMilestoneGroup(newGroup)
+            animatableElements.classList.add(`from-${timelineDirection}`)
+          }, 250)
 
-        setTimeout(() => {
-          animableElements.classList.remove(`from-${timelineDirection}`)
-        }, 500)
-      }
-    })
+          setTimeout(() => {
+            animatableElements.classList.remove(`from-${timelineDirection}`)
+          }, 500)
+        }
+      })
+    }
 
-    setTimelineDirection(null)
+    setTimelineDirection(undefined)
+  }
+
+  const resizeHandler = (e: Event) => {
+    if (e.target != null) {
+      const innerWidth = window.innerWidth
+      setIsMobileTimeline(innerWidth < 960)
+    }
   }
 
   useEffect(() => {
-    window.addEventListener('resize', e => {
-      setIsMobileTimeline(e.target.innerWidth < 960)
-    })
-  }, [])
-
-  useEffect(() => {
+    window.addEventListener('resize', resizeHandler)
     setIsMobileTimeline(window.innerWidth < 960)
+    return () => {
+      window.removeEventListener('resize', resizeHandler)
+    }
   }, [])
 
   useEffect(() => {

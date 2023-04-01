@@ -13,11 +13,13 @@ const basicPalette = {
   white: '#FFFFFF',
   background: 'rgba(12, 11, 18, 1)',
   accent: themeConfig.randomAccent ? colorList[getRandomInt(colorList.length - 1)] : themeConfig.accent,
+  blue: '#0000FF',
+  purple: '#A020F0',
   blueGray: 'rgba(135, 128, 191, 1)',
   gray: 'rgba(183, 181, 203, 1)',
 }
 
-function getRandomInt(max) {
+function getRandomInt(max: number) {
   return Math.floor(Math.random() * max)
 }
 
