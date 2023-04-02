@@ -2,9 +2,11 @@ import { formatUnits } from 'ethers/lib/utils'
 import { createSelector } from 'reselect'
 
 import { AppState } from '../../../state'
-import { BridgeTransactionStatus, BridgeTransactionSummary } from '../../../state/bridgeTransactions/types'
+import { BridgeTransactionSummary } from '../../../state/bridgeTransactions/types'
 import { LifiList } from '../EcoBridge.types'
-import { LifiTransactionStatus, LifiTxStatus, LIFI_PENDING_REASONS } from './Lifi.types'
+import { LIFI_TXN_STATUS, LIFI_PENDING_REASONS } from './Lifi.constants'
+import { LifiTransactionStatus } from './Lifi.types'
+import { getStatus } from './Lifi.utils'
 
 const createSelectRoute = (bridgeId: LifiList) =>
   createSelector([(state: AppState) => state.ecoBridge[bridgeId].route], route => route)
@@ -40,7 +42,7 @@ const createSelectOwnedTransactions = (bridgeId: LifiList) =>
 const createSelectPendingTransactions = (selectOwnedTxs: ReturnType<typeof createSelectOwnedTransactions>) =>
   createSelector(selectOwnedTxs, ownedTxs => {
     const pendingTxs = ownedTxs.filter(
-      ({ statusResponse }) => statusResponse.status !== LifiTxStatus.FAILED && !statusResponse.receiving?.txHash
+      ({ statusResponse }) => statusResponse.status !== LIFI_TXN_STATUS.FAILED && !statusResponse.receiving?.txHash
     )
 
     return pendingTxs
@@ -49,7 +51,7 @@ const createSelectPendingTransactions = (selectOwnedTxs: ReturnType<typeof creat
 const createSelectFailedTransactions = (selectOwnedTxs: ReturnType<typeof createSelectOwnedTransactions>) =>
   createSelector(selectOwnedTxs, ownedTxs => {
     const failedTxs = ownedTxs.filter(
-      ({ statusResponse }) => statusResponse.status === LifiTxStatus.FAILED && !statusResponse.receiving?.txHash
+      ({ statusResponse }) => statusResponse.status === LIFI_TXN_STATUS.FAILED && !statusResponse.receiving?.txHash
     )
 
     return failedTxs
@@ -62,29 +64,26 @@ const createSelectBridgeTransactionsSummary = (
   createSelector([selectOwnedTxs], txs => {
     const summaries = txs.map(({ statusResponse, timeResolved }) => {
       const pendingReason =
-        statusResponse.status === LifiTxStatus.PENDING && statusResponse.substatus
+        statusResponse.status === LIFI_TXN_STATUS.PENDING && statusResponse.substatus
           ? LIFI_PENDING_REASONS[statusResponse.substatus]!
           : 'We cannot determine the status of the transfer.'
 
-      const fromValueRaw = Number(statusResponse.sending.amount).toString()
-      const fromValue = (formatUnits(fromValueRaw ?? '0', statusResponse.sending.token?.decimals) ?? 0).toString()
+      const fromValueRaw = Number(statusResponse.sending.amount ?? 0).toString()
+      const fromValue = formatUnits(fromValueRaw, statusResponse.sending.token?.decimals) ?? '0'
+
       const toValueRaw = Number(statusResponse.receiving?.amount ?? 0).toString()
-      const toValue = (formatUnits(toValueRaw ?? '0', statusResponse.receiving?.token?.decimals) ?? 0).toString()
+      const toValue = formatUnits(toValueRaw, statusResponse.receiving?.token?.decimals) ?? '0'
+
       const summary: BridgeTransactionSummary = {
         assetName: statusResponse.sending.token?.symbol!,
         toAssetName: statusResponse.receiving?.token?.symbol,
         assetAddressL1: statusResponse.sending.token?.address,
         assetAddressL2: statusResponse.receiving?.token?.address,
-        // @ts-ignore ChainId type missmatch.'
-        fromChainId: statusResponse.sending.chainId!,
-        // @ts-ignore ChainId type missmatch.'
-        toChainId: statusResponse.receiving?.chainId!,
-        status:
-          statusResponse.status === LifiTxStatus.DONE
-            ? BridgeTransactionStatus.CONFIRMED
-            : statusResponse.status === LifiTxStatus.FAILED || statusResponse.status === LifiTxStatus.INVALID
-            ? BridgeTransactionStatus.FAILED
-            : BridgeTransactionStatus.PENDING,
+        // @ts-expect-error ChainId type miss match
+        fromChainId: statusResponse.sending.chainId,
+        // @ts-expect-error ChainId type miss match
+        toChainId: statusResponse.receiving?.chainId,
+        status: getStatus(statusResponse.status),
         fromValue,
         toValue,
         txHash: statusResponse.receiving?.txHash!,
