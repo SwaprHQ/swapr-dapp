@@ -29,6 +29,12 @@ export function CommonTokens({ onCurrencySelect, selectedCurrency }: CommonToken
     <Container>
       <Heading>Common Tokens</Heading>
       <TokenList>
+        <TokenItem
+          key={nativeCurrency.address}
+          token={nativeCurrency as Token}
+          onClick={handleClick}
+          disabled={selectedCurrency === nativeCurrency || selectedCurrency === undefined}
+        />
         {chainId &&
           SUGGESTED_BASES[chainId]?.map((token: Token) => {
             const selected = selectedCurrency instanceof Token && selectedCurrency.address === token.address
