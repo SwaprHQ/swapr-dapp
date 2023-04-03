@@ -163,7 +163,7 @@ export function TokenPicker({
           handleCurrencySelect={handleCurrencySelect}
         />
       )}
-      <CloseButton onClick={onClose} />
+      <CloseButton onClick={closeTokenPicker} />
     </Container>,
     tokenPickerContainer
   )
