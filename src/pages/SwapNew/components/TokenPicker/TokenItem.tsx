@@ -7,11 +7,12 @@ import { CurrencyLogo } from '../CurrencyItem/CurrencyLogo'
 type TokenItemProps = {
   token?: Token
   onClick: () => void
+  disabled?: boolean
 }
 
-export function TokenItem({ token, onClick }: TokenItemProps) {
+export function TokenItem({ token, onClick, disabled }: TokenItemProps) {
   return (
-    <Button onClick={onClick}>
+    <Button onClick={onClick} disabled={disabled}>
       {token?.symbol}
       <CurrencyLogo currency={token} />
     </Button>
@@ -40,4 +41,9 @@ const Button = styled.button`
   background-blend-mode: normal, overlay, normal;
   backdrop-filter: blur(12.5px);
   cursor: pointer;
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: default;
+  }
 `
