@@ -65,6 +65,7 @@ export function CurrencyItem({
       <AnimatePresence>
         {tokenPickerOpened && (
           <TokenPicker
+            selectedCurrency={currency}
             isMaxAmount={isMaxAmount}
             onCurrencySelect={onCurrencySelect}
             closeTokenPicker={() => setTokenPickerOpened(false)}

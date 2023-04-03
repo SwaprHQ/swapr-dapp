@@ -26,6 +26,7 @@ type TokenPickerProps = {
   closeTokenPicker: () => void
   showNativeCurrency?: boolean
   currencyOmitList?: string[]
+  selectedCurrency?: Currency | null
 }
 
 export function TokenPicker({
@@ -35,6 +36,7 @@ export function TokenPicker({
   closeTokenPicker,
   showNativeCurrency,
   currencyOmitList,
+  selectedCurrency,
 }: TokenPickerProps) {
   const [tokenPickerContainer] = useState(() => document.createElement('div'))
   const [tokenPickerInputValue, setTokenPickerInputValue] = useState('')
@@ -154,7 +156,7 @@ export function TokenPicker({
         clearInput={clearInput}
       />
       {!tokenPickerInputValue.trim() ? (
-        <CommonTokens onCurrencySelect={handleCurrencySelect} />
+        <CommonTokens onCurrencySelect={handleCurrencySelect} selectedCurrency={selectedCurrency} />
       ) : (
         <SearchList
           filteredSortedTokensWithNativeCurrency={filteredSortedTokensWithNativeCurrency}
