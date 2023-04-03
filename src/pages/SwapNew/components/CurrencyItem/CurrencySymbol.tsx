@@ -4,7 +4,6 @@ import { useTranslation } from 'react-i18next'
 import styled from 'styled-components'
 
 import { TEXT_COLOR_PRIMARY } from '../../constants'
-import { FontFamily } from '../../constants'
 
 type CurrencySymbolProps = {
   currency?: Currency | null
@@ -28,7 +27,6 @@ const Paragraph = styled.p`
   display: inline-block;
   line-height: 24px;
   font-size: 20px;
-  ${FontFamily}
   font-weight: 600;
   text-transform: uppercase;
   color: ${TEXT_COLOR_PRIMARY};

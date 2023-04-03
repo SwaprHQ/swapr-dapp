@@ -5,7 +5,7 @@ import styled from 'styled-components'
 import { useActiveWeb3React } from '../../../../hooks'
 import { useCurrencyBalance } from '../../../../state/wallet/hooks'
 import { limitNumberOfDecimalPlaces } from '../../../../utils/prices'
-import { TEXT_COLOR_SECONDARY, FontFamily } from '../../constants'
+import { TEXT_COLOR_SECONDARY } from '../../constants'
 
 type CurrencyBalanceProps = {
   currency?: Currency
@@ -33,7 +33,6 @@ export function CurrencyBalance({ currency, onMax }: CurrencyBalanceProps) {
 const Paragraph = styled.p`
   line-height: 12px;
   font-size: 10px;
-  ${FontFamily}
   font-weight: 600;
   letter-spacing: 0.08em;
   text-transform: uppercase;

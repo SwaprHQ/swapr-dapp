@@ -130,7 +130,6 @@ const BestRouteLabel = styled.p`
   display: inline-block;
   padding: 3px 5px;
   font-size: 9px;
-  ${FontFamily}
   font-weight: 600;
   line-height: 11px;
   letter-spacing: 0.08em;
@@ -144,7 +143,6 @@ const TextLabel = styled.p`
   display: inline-block;
   line-height: 15px;
   font-size: 14px;
-  ${FontFamily}
   font-weight: 600;
   font-feature-settings: 'zero' on;
   color: ${TEXT_COLOR_PRIMARY};
@@ -170,7 +168,6 @@ const TransactionCost = styled.p`
   display: inline-block;
   padding: 4px;
   font-size: 14px;
-  ${FontFamily}
   background: rgba(104, 110, 148, 0.1);
   border-radius: 4px;
 `

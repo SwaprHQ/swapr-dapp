@@ -6,7 +6,6 @@ import styled from 'styled-components'
 import { useIsMobileByMedia } from '../../../../hooks/useIsMobileByMedia'
 import { limitNumberOfDecimalPlaces } from '../../../../utils/prices'
 import { TEXT_COLOR_PRIMARY } from '../../constants'
-import { FontFamily } from '../../constants'
 
 type CurrenciesConversionRateProps = {
   price?: Price
@@ -46,7 +45,6 @@ const Paragraph = styled.p`
   border-radius: 4px;
   line-height: 10px;
   font-size: 10px;
-  ${FontFamily}
   font-weight: 500;
   text-transform: uppercase;
   opacity: 0.8;

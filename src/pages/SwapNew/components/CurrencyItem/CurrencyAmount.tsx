@@ -6,7 +6,6 @@ import styled from 'styled-components'
 import { escapeRegExp, normalizeInputValue } from '../../../../utils'
 import { debounce } from '../../../../utils/debounce'
 import { TEXT_COLOR_PRIMARY } from '../../constants'
-import { FontFamily } from '../../constants'
 
 const inputRegex = RegExp(`^\\d*(?:\\\\[.])?\\d*$`)
 
@@ -82,7 +81,6 @@ const StyledInput = styled.input`
   height: 34px;
   line-height: 34px;
   font-size: 28px;
-  ${FontFamily}
   font-weight: 600;
   letter-spacing: 0.02em;
   /* text-shadow: 0px 0px 12px rgba(255, 255, 255, 0.14); */

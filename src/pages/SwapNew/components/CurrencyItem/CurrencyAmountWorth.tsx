@@ -3,7 +3,6 @@ import { CurrencyAmount, Percent } from '@swapr/sdk'
 import styled from 'styled-components'
 
 import { TEXT_COLOR_SECONDARY } from '../../constants'
-import { FontFamily } from '../../constants'
 
 type CurrencyAmountWorthProps = {
   fiatValue?: CurrencyAmount | null
@@ -20,7 +19,6 @@ export function CurrencyAmountWorth({ fiatValue, priceImpact, isFallback }: Curr
 const Paragraph = styled.p`
   line-height: 12px;
   font-size: 10px;
-  ${FontFamily}
   font-weight: 600;
   letter-spacing: 0.08em;
   color: ${TEXT_COLOR_SECONDARY};

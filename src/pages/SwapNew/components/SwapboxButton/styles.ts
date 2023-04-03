@@ -7,7 +7,6 @@ import {
   TEXT_COLOR_PRIMARY,
   ELEMENTS_BACKGROUND_PRIMARY,
 } from '../../constants'
-import { FontFamily } from '../../constants'
 
 export const StyledButton = styled.button<{ platformName?: string }>`
   width: 100%;
@@ -40,7 +39,6 @@ export const SwapButtonLabel = styled.p<{ light?: boolean }>`
   display: inline-block;
   line-height: 16px;
   font-size: 13px;
-  ${FontFamily}
   font-weight: 600;
   letter-spacing: 0.08em;
   text-transform: uppercase;

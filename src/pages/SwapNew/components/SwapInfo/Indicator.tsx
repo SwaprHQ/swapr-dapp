@@ -10,7 +10,6 @@ import {
   INDICATOR_COLOR,
   IndicatorColorVariant,
   IndicatorIconVariant,
-  FontFamily,
 } from '../../constants'
 
 export const INDICATOR_ICON = {
@@ -44,7 +43,6 @@ const Container = styled.div<{ color: IndicatorColorVariant }>`
   padding: 5px;
   line-height: 11px;
   font-size: 10px;
-  ${FontFamily}
   font-weight: 600;
   color: ${({ color }) => INDICATOR_COLOR[color]};
   background: ${({ color }) => INDICATOR_BACKGROUND_COLOR[color]};
