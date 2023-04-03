@@ -21,7 +21,6 @@ type CurrencyLogoProps = {
 }
 
 export function CurrencyLogo({ currency, currencyWrapperSource = CurrencyWrapperSource.SWAP }: CurrencyLogoProps) {
-  // TODO: MIRKO CHECK THIS LOGIC!!!
   const { chainId } = useActiveWeb3React()
   const selectedChainId = chainId
 

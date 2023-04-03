@@ -51,8 +51,6 @@ export function SwapInfo({ loading, allPlatformTrades, selectedTrade, outputCurr
   )
 }
 
-// TODO: PULL OUT THE CONSTANTS
-
 const Container = styled(motion.div)`
   padding: 9px 12px;
   ${BorderStyle}
