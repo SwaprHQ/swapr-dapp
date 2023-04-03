@@ -59,7 +59,7 @@ export function SwapDexInfoItem({
           )}
         </IndicatorsContainer>
         <TransactionCost>
-          {tokenAmount === '0' ? '<0.0000001' : `${tokenAmount} ${outputCurrencySymbol}` || '-'}
+          {tokenAmount === '0' ? '<0.0000001' : `${tokenAmount} ${outputCurrencySymbol}`}
         </TransactionCost>
       </TransactionInfo>
     </Container>
