@@ -13,7 +13,6 @@ import {
   IndicatorIconVariant,
   TEXT_COLOR_PRIMARY,
   BorderStyle,
-  FontFamily,
 } from '../../constants'
 import { Indicator } from './Indicator'
 
