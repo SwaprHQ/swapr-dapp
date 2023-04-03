@@ -14,7 +14,7 @@ export function CurrencySymbol({ currency }: CurrencySymbolProps) {
 
   return (
     <Paragraph>
-      {(currency && currency.symbol && currency.symbol.length > 20
+      {(currency && currency.symbol && currency.symbol.length > 15
         ? currency.symbol.slice(0, 4) +
           '...' +
           currency.symbol.slice(currency.symbol.length - 5, currency.symbol.length)
