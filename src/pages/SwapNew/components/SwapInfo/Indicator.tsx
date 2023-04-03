@@ -18,7 +18,7 @@ export const INDICATOR_ICON = {
   [IndicatorIconVariant.BANANA]: <BananaSVG />,
   [IndicatorIconVariant.SHIELD]: <ShieldSVG />,
   [IndicatorIconVariant.MAGNIFYING_GLASS]: <MagnifyingGlassSVG />,
-}
+} as const
 
 type IndicatorProps = {
   color: IndicatorColorVariant
