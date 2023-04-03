@@ -61,14 +61,14 @@ export const INDICATOR_COLOR = {
   [IndicatorColorVariant.WARNING]: '#F2994A',
   [IndicatorColorVariant.NEGATIVE]: '#F02E51',
   [IndicatorColorVariant.UNDEFINED]: '#8780BF',
-}
+} as const
 
 export const INDICATOR_BACKGROUND_COLOR = {
   [IndicatorColorVariant.POSITIVE]: 'rgba(14, 159, 110, 0.15)',
   [IndicatorColorVariant.WARNING]: 'rgba(242, 153, 74, 0.15)',
   [IndicatorColorVariant.NEGATIVE]: 'rgba(240, 46, 81, 0.15)',
   [IndicatorColorVariant.UNDEFINED]: 'rgba(104, 110, 148, 0.1)',
-}
+} as const
 
 export const INDICATOR_COLOR_POSITIVE = '#0E9F6E'
 export const INDICATOR_COLOR_WARNING = '#F2994A'
