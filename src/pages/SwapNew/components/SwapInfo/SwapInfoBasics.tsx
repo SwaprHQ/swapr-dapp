@@ -58,7 +58,7 @@ export function SwapInfoBasics({
         <CurrenciesConversionRate price={selectedTrade?.executionPrice} />
       </SwapCostInfo>
       <ExpandButton onClick={toggleShowInfoDetails}>
-        <DownArrowSmall showSwapInfoDetails={showSwapInfoDetails} />
+        <DownArrowSmall $showSwapInfoDetails={showSwapInfoDetails} />
       </ExpandButton>
     </Container>
   )
@@ -87,7 +87,7 @@ const ExpandButton = styled.button`
   cursor: pointer;
 `
 
-const DownArrowSmall = styled(DownArrowSmallSVG)<{ showSwapInfoDetails: boolean }>`
+const DownArrowSmall = styled(DownArrowSmallSVG)<{ $showSwapInfoDetails: boolean }>`
   transition: all 0.2s ease;
-  transform: ${({ showSwapInfoDetails }) => (showSwapInfoDetails ? 'rotate(180deg)' : 'rotate(0deg)')};
+  transform: ${({ $showSwapInfoDetails }) => ($showSwapInfoDetails ? 'rotate(180deg)' : 'rotate(0deg)')};
 `
