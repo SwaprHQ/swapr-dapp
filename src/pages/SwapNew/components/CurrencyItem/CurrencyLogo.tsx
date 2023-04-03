@@ -64,7 +64,7 @@ export function CurrencyLogo({ currency, currencyWrapperSource = CurrencyWrapper
   }, [currency, nativeCurrencyLogo, selectedChainId, uriLocations])
 
   return (
-    <StyledLogo alt={`${currency?.symbol ?? 'token'} logo`} sources={sources} defaultText={currency?.symbol || '?'} />
+    <StyledLogo alt={`${currency?.symbol ?? 'token'} logo`} sources={sources} defaultText={currency?.symbol ?? '?'} />
   )
 }
 
