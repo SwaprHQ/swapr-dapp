@@ -22,14 +22,14 @@ export function CurrenciesConversionRate({ price }: CurrenciesConversionRateProp
   )
 
   const show = Boolean(price?.baseCurrency && price?.quoteCurrency)
-  const quoteCurrenxy = price?.quoteCurrency.symbol?.slice(0, 6)
+  const quoteCurrency = price?.quoteCurrency.symbol?.slice(0, 6)
   const baseCurrency = price?.baseCurrency.symbol?.slice(0, 6)
 
   if (show)
     return (
       <Paragraph onClick={() => setShowInvertedConversionRate(value => !value)}>
-        <span>1</span> {showInvertedConversionRate ? baseCurrency : quoteCurrenxy} = <span>{formattedPrice}</span>{' '}
-        {showInvertedConversionRate ? quoteCurrenxy : baseCurrency}
+        <span>1</span> {showInvertedConversionRate ? baseCurrency : quoteCurrency} = <span>{formattedPrice}</span>{' '}
+        {showInvertedConversionRate ? quoteCurrency : baseCurrency}
       </Paragraph>
     )
 
