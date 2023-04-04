@@ -17,23 +17,25 @@ export function ApproveButton({
   handleSwap,
   swapInputError,
 }: ApproveButtonProps) {
+  const buttonLabel = (() => {
+    if (approval === ApprovalState.PENDING)
+      return (
+        <SwapButtonLabel>
+          Approving <Loader />
+        </SwapButtonLabel>
+      )
+
+    if (approval === ApprovalState.APPROVED) return <SwapButtonLabel>Swap</SwapButtonLabel>
+
+    return <SwapButtonLabel>Approve {amountInCurrencySymbol}</SwapButtonLabel>
+  })()
+
   return (
     <StyledButton
       onClick={approval !== ApprovalState.APPROVED ? approveCallback : handleSwap}
       disabled={approval === ApprovalState.PENDING || !!swapInputError}
     >
-      {(() => {
-        if (approval === ApprovalState.PENDING)
-          return (
-            <SwapButtonLabel>
-              Approving <Loader />
-            </SwapButtonLabel>
-          )
-
-        if (approval === ApprovalState.APPROVED) return <SwapButtonLabel>Swap</SwapButtonLabel>
-
-        return <SwapButtonLabel>Approve {amountInCurrencySymbol}</SwapButtonLabel>
-      })()}
+      {buttonLabel}
     </StyledButton>
   )
 }
