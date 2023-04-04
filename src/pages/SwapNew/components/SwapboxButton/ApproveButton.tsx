@@ -29,6 +29,7 @@ export function ApproveButton({
               Approving <Loader />
             </SwapButtonLabel>
           )
+
         if (approval === ApprovalState.APPROVED) return <SwapButtonLabel>Swap</SwapButtonLabel>
 
         return <SwapButtonLabel>Approve {amountInCurrencySymbol}</SwapButtonLabel>

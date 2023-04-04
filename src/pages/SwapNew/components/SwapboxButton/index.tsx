@@ -5,6 +5,7 @@ import { ApprovalState } from '../../../../hooks/useApproveCallback'
 import { WrapState, WrapType } from '../../../../hooks/useWrapCallback'
 import { ApproveButton } from './ApproveButton'
 import { ConnectWalletButton } from './ConnectWalletButton'
+import { ErrorButton } from './ErrorButton'
 import { LoadingButton } from './LoadingButton'
 import { SwapButton } from './SwapButton'
 import { WrapButton } from './WrapButton'
@@ -63,6 +64,9 @@ export function SwapboxButton({
         swapInputError={swapInputError}
       />
     )
+
+  if (swapInputError)
+    return <ErrorButton swapInputError={swapInputError} amountInCurrencySymbol={amountInCurrencySymbol} />
 
   return (
     <SwapButton
