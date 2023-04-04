@@ -1,4 +1,4 @@
-import { Trade, TradeType } from '@swapr/sdk'
+import { Trade } from '@swapr/sdk'
 
 import { motion } from 'framer-motion'
 import { useCallback, useContext } from 'react'
