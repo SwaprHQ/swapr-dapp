@@ -2,7 +2,7 @@ import { AnimatePresence } from 'framer-motion'
 import styled from 'styled-components'
 
 import { Field } from '../../state/swap/types'
-import { CurrencyItem, SwapInfo, SwitchCurrenciesButton, SwapboxButton } from './components'
+import { CurrencyItem, Notification, SwapInfo, SwitchCurrenciesButton, SwapboxButton } from './components'
 import { SWAPBOX_WIDTH } from './constants'
 import { useSwapbox } from './useSwapbox'
 
@@ -117,6 +117,7 @@ export function Swapbox() {
         approveCallback={approveCallback}
         approval={approval}
       />
+      {!!swapErrorMessage && <Notification swapErrorMessage={swapErrorMessage} />}
     </Container>
   )
 }
