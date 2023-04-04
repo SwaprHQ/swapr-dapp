@@ -13,7 +13,10 @@ export function Notification({ swapErrorMessage }: NotificationProps) {
       <SwapCallbackErrorInnerAlertTriangle>
         <AlertTriangle size={18} />
       </SwapCallbackErrorInnerAlertTriangle>
-      <Text>{swapErrorMessage}</Text>
+      <Text>
+        {swapErrorMessage}
+        asdbdsbgkhjasdbgkdajsbghajlbdsghjbdasghjlbasdgljasdbghjbasdhgblsajgbdsahjlgbdalshjgbjhasgdbahjsldbgljsadbgjlbgasdhjl
+      </Text>
     </Container>
   )
 }
@@ -46,6 +49,7 @@ const Text = styled.p`
   font-size: 12px;
   color: #f02e51;
   text-transform: uppercase;
+  word-break: break-all;
   user-select: none;
   -webkit-user-select: none;
   -ms-user-select: none;
