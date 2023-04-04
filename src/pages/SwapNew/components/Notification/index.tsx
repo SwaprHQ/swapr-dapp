@@ -31,17 +31,18 @@ const Container = styled.div`
 const SwapCallbackErrorInnerAlertTriangle = styled.div`
   height: 32px;
   width: 32px;
+  min-width: 32px;
   display: flex;
   justify-content: center;
   align-items: center;
   border-radius: 6px;
   color: red;
   background-color: rgba(240, 46, 81, 0.1);
-  margin-right: 8px;
+  margin-right: 12px;
 `
 
 const Text = styled.p`
-  line-height: 24px;
+  line-height: 16px;
   font-size: 12px;
   color: #f02e51;
   text-transform: uppercase;
