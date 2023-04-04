@@ -68,13 +68,5 @@ export function SwapboxButton({
   if (swapInputError)
     return <ErrorButton swapInputError={swapInputError} amountInCurrencySymbol={amountInCurrencySymbol} />
 
-  return (
-    <SwapButton
-      amountInCurrencySymbol={amountInCurrencySymbol}
-      swapInputError={swapInputError}
-      trade={trade}
-      handleSwap={handleSwap}
-      swapCallbackError={swapCallbackError}
-    />
-  )
+  return <SwapButton trade={trade} handleSwap={handleSwap} swapCallbackError={swapCallbackError} />
 }
