@@ -3,13 +3,17 @@ import styled from 'styled-components'
 
 import { BorderStyle, ELEMENTS_SPACING } from '../../constants'
 
-export function Notification() {
+type NotificationProps = {
+  swapErrorMessage?: string
+}
+
+export function Notification({ swapErrorMessage }: NotificationProps) {
   return (
     <Container>
       <SwapCallbackErrorInnerAlertTriangle>
         <AlertTriangle size={18} />
       </SwapCallbackErrorInnerAlertTriangle>
-      <Text>This is a notification!</Text>
+      <Text>{swapErrorMessage}</Text>
     </Container>
   )
 }
