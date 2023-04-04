@@ -1,6 +1,6 @@
 import { Trade } from '@swapr/sdk'
 
-import { AnimatePresence, motion } from 'framer-motion'
+import { AnimatePresence } from 'framer-motion'
 import { useState } from 'react'
 import styled from 'styled-components'
 
@@ -24,12 +24,7 @@ export function SwapInfo({ loading, allPlatformTrades, selectedTrade, outputCurr
   const [showSwapInfoDetails, setShowSwapInfoDetails] = useState(false)
 
   return (
-    <Container
-      initial={{ height: 0 }}
-      animate={{
-        height: 'auto',
-      }}
-    >
+    <Container>
       <SwapInfoBasics
         selectedTrade={selectedTrade}
         allPlatformTrades={allPlatformTrades}
@@ -51,7 +46,7 @@ export function SwapInfo({ loading, allPlatformTrades, selectedTrade, outputCurr
   )
 }
 
-const Container = styled(motion.div)`
+const Container = styled.div`
   padding: 9px 12px;
   ${BorderStyle}
   background: ${ELEMENTS_BACKGROUND_SECONDARY};
