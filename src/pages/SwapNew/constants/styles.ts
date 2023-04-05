@@ -37,6 +37,14 @@ export const SWITCH_CURRENCIES_BUTTON_BACKGROUND_COLOR = '#06060a'
 export const SWITCH_CURRENCIES_BUTTON_BORDER = '1px solid #0c0c14'
 export const SWITCH_CURRENCIES_BUTTON_BOX_SHADOW = '0px 0px 42px rgba(0, 0, 0, 0.42)'
 
+// SWAP INFO
+export const SWAP_PLATFORM_INFO_ITEM_COLOR_DEFAULT =
+  'linear-gradient(180deg, rgba(68, 65, 99, 0.1) -16.91%, rgba(68, 65, 99, 0) 116.18%), linear-gradient(113.18deg, rgba(255, 255, 255, 0.2) -0.1%, rgba(0, 0, 0, 0) 98.9%), #171621'
+export const SWAP_PLATFORM_INFO_ITEM_COLOR_POSITIVE =
+  'linear-gradient(180deg, rgba(15, 152, 106, 0.2) -16.91%, rgba(15, 152, 106, 0) 116.18%), linear-gradient(113.18deg, rgba(255, 255, 255, 0.15) -0.1%, rgba(0, 0, 0, 0) 98.9%), rgba(23, 22, 33, 0.6)'
+export const SWAP_PLATFORM_INFO_ITEM_COLOR_NEGATIVE =
+  'linear-gradient(180deg, rgba(240, 46, 81, 0.2) -16.91%, rgba(240, 46, 81, 0) 116.18%), linear-gradient(113.18deg, rgba(255, 255, 255, 0.15) -0.1%, rgba(0, 0, 0, 0) 98.9%), rgba(23, 22, 33, 0.6)'
+
 // TOKEN PICKER COLORS
 export const TOKEN_PICKER_CLOSE_BUTTON_BACKGROUND_COLOR = 'rgba(60, 56, 100, 0.1)'
 
