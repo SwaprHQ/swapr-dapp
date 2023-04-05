@@ -34,7 +34,7 @@ export function TokenPicker({
   onCurrencySelect,
   isMaxAmount,
   closeTokenPicker,
-  showNativeCurrency,
+  showNativeCurrency = true,
   currencyOmitList,
   selectedCurrency,
 }: TokenPickerProps) {
