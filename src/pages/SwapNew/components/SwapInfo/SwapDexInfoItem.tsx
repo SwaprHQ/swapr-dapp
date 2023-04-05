@@ -57,7 +57,11 @@ export function SwapDexInfoItem({
           {ROUTABLE_PLATFORM_LOGO[trade.platform.name]}
           <TextLabel>{trade.platform.name}</TextLabel>
         </Dex>
-        {bestRoute && isSelected && <BestRouteLabel>Best Route Selected</BestRouteLabel>}
+        {isSelected && (
+          <BestRouteLabel danger={simpleWarningSeverity(priceImpactWithoutFee) >= PRICE_IMPACT_MEDIUM}>
+            {bestRoute ? 'Best Route ' : ''}Selected
+          </BestRouteLabel>
+        )}
       </DexInfo>
       <TransactionInfo isSelected={isSelected}>
         <IndicatorsContainer>
@@ -150,7 +154,7 @@ const Dex = styled.div`
   align-items: center;
 `
 
-const BestRouteLabel = styled.p`
+const BestRouteLabel = styled.p<{ danger?: boolean }>`
   height: 17px;
   display: inline-block;
   padding: 3px 5px;
@@ -159,8 +163,8 @@ const BestRouteLabel = styled.p`
   line-height: 11px;
   letter-spacing: 0.08em;
   text-transform: uppercase;
-  color: #0e9f6e;
-  background: rgba(14, 159, 110, 0.15);
+  color: ${({ danger }) => (danger ? '#F02E51' : '#0e9f6e')};
+  background: ${({ danger }) => (danger ? 'rgba(240, 46, 81, 0.15)' : 'rgba(14, 159, 110, 0.15)')};
   border-radius: 4px;
 `
 
