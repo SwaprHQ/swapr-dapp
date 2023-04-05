@@ -1,11 +1,14 @@
-import { CoWTrade, Trade, TradeType } from '@swapr/sdk'
+import { CoWTrade, Trade, TradeType, Percent } from '@swapr/sdk'
 
 import styled from 'styled-components'
 
 import { ROUTABLE_PLATFORM_LOGO } from '../../../../constants'
+import { PRICE_IMPACT_MEDIUM } from '../../../../constants'
 import { Field } from '../../../../state/swap/types'
 import { limitNumberOfDecimalPlaces } from '../../../../utils/prices'
 import { computeSlippageAdjustedAmounts } from '../../../../utils/prices'
+import { simpleWarningSeverity } from '../../../../utils/prices'
+import { computeTradePriceBreakdown } from '../../../../utils/prices'
 import {
   DEX_SELECTED_BORDER,
   DEX_UNSELECTED_BORDER,
@@ -13,6 +16,9 @@ import {
   IndicatorIconVariant,
   TEXT_COLOR_PRIMARY,
   BorderStyle,
+  SWAP_PLATFORM_INFO_ITEM_COLOR_DEFAULT,
+  SWAP_PLATFORM_INFO_ITEM_COLOR_POSITIVE,
+  SWAP_PLATFORM_INFO_ITEM_COLOR_NEGATIVE,
 } from '../../constants'
 import { Indicator } from './Indicator'
 
@@ -33,13 +39,18 @@ export function SwapDexInfoItem({
 }: SwapDexInfoItemProps) {
   const isExactIn = trade.tradeType === TradeType.EXACT_INPUT
   const slippageAdjustedAmounts = computeSlippageAdjustedAmounts(trade)
+  const { priceImpactWithoutFee } = computeTradePriceBreakdown(trade)
 
   const tokenAmount = limitNumberOfDecimalPlaces(
     isExactIn ? slippageAdjustedAmounts[Field.OUTPUT] : slippageAdjustedAmounts[Field.INPUT]
   )
 
   return (
-    <Container isSelected={isSelected} onClick={onClick}>
+    <Container
+      isSelected={isSelected}
+      danger={simpleWarningSeverity(priceImpactWithoutFee) >= PRICE_IMPACT_MEDIUM}
+      onClick={onClick}
+    >
       <DexInfo isSelected={isSelected}>
         <Dex>
           {ROUTABLE_PLATFORM_LOGO[trade.platform.name]}
@@ -66,16 +77,23 @@ export function SwapDexInfoItem({
   )
 }
 
-const Container = styled.div<{ isSelected: boolean }>`
+type ContainerProps = {
+  isSelected: boolean
+  danger?: boolean
+}
+
+const Container = styled.div<ContainerProps>`
   display: flex;
   justify-content: space-between;
   align-items: center;
   padding: 14px;
   ${BorderStyle}
-  background: ${({ isSelected }) =>
+  background: ${({ isSelected, danger }) =>
     isSelected
-      ? 'linear-gradient(180deg, rgba(15, 152, 106, 0.2) -16.91%, rgba(15, 152, 106, 0) 116.18%), linear-gradient(113.18deg, rgba(255, 255, 255, 0.15) -0.1%, rgba(0, 0, 0, 0) 98.9%), rgba(23, 22, 33, 0.6);'
-      : 'linear-gradient(180deg, rgba(68, 65, 99, 0.1) -16.91%, rgba(68, 65, 99, 0) 116.18%), linear-gradient(113.18deg, rgba(255, 255, 255, 0.2) -0.1%, rgba(0, 0, 0, 0) 98.9%), #171621'};
+      ? danger
+        ? SWAP_PLATFORM_INFO_ITEM_COLOR_NEGATIVE
+        : SWAP_PLATFORM_INFO_ITEM_COLOR_POSITIVE
+      : SWAP_PLATFORM_INFO_ITEM_COLOR_DEFAULT};
   background-blend-mode: normal, overlay, normal;
   opacity: 0.8;
   box-shadow: 0px 4px 42px rgba(0, 0, 0, 0.16);
