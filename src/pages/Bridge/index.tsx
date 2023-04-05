@@ -261,7 +261,7 @@ export default function Bridge() {
 
   const handleModal = useCallback(async () => {
     setModalData({
-      symbol: bridgeCurrency?.symbol,
+      symbol: bridgeCurrency?.symbol ?? '',
       typedValue,
       fromChainId,
       toChainId,
@@ -301,7 +301,7 @@ export default function Bridge() {
         isNetworkDisabled,
         onNetworkChange: onFromNetworkChange,
         selectedNetworkChainId: isCollecting && collectableTx ? collectableTx.fromChainId : fromChainId,
-        activeChainId: account ? chainId : -1,
+        activeChainId: account ? chainId : undefined,
         showTestnets: isDevelopment,
       }),
     [account, chainId, collectableTx, isCollecting, fromChainId, onFromNetworkChange, isDevelopment]
@@ -314,7 +314,7 @@ export default function Bridge() {
         isNetworkDisabled,
         onNetworkChange: onToNetworkChange,
         selectedNetworkChainId: isCollecting && collectableTx ? collectableTx.toChainId : toChainId,
-        activeChainId: account ? chainId : -1,
+        activeChainId: account ? chainId : undefined,
         showTestnets: isDevelopment,
       }),
     [account, chainId, collectableTx, isCollecting, onToNetworkChange, toChainId, isDevelopment]
@@ -395,8 +395,8 @@ export default function Bridge() {
               disabled={!account || isCollecting || !isNetworkConnected}
               id="bridge-currency-input"
               hideBalance={
-                isCollecting && collectableTx
-                  ? ![collectableTx.fromChainId, collectableTx.toChainId].includes(chainId ?? 0)
+                isCollecting && collectableTx && chainId
+                  ? ![collectableTx.fromChainId, collectableTx.toChainId].includes(chainId)
                   : false
               }
               isLoading={!!account && isNetworkConnected && listsLoading}

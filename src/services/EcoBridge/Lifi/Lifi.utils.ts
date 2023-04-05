@@ -1,12 +1,29 @@
 import { ChainId as SwaprChainId } from '@swapr/sdk'
 
-import { ChainId, StatusResponse } from '@lifi/sdk'
+import { Action, ChainId, StatusResponse } from '@lifi/sdk'
 
 import { BridgeTransactionStatus } from '../../../state/bridgeTransactions/types'
 import { LIFI_TXN_STATUS } from './Lifi.constants'
 
-// // Add more chains keys on the go from
-// //'https://li.quest/v1/chains';
+export const validateSendingToken = (action: Action, statusResponse: StatusResponse) => {
+  const _statusResponse = structuredClone(statusResponse)
+  if (
+    _statusResponse.sending.token?.address &&
+    action &&
+    _statusResponse.sending.token?.address !== action.fromToken.address
+  ) {
+    _statusResponse.sending.token = action.fromToken
+    _statusResponse.sending.amount = action.fromAmount
+    if (_statusResponse.receiving === undefined) {
+      // @ts-expect-error To show receiving Chain till Lifi status is resolved
+      _statusResponse.receiving = {
+        chainId: action.toChainId,
+        token: action.toToken,
+      }
+    }
+  }
+  return _statusResponse
+}
 
 export const LifiChainShortNames = new Map([
   [SwaprChainId.MAINNET, 'ETH'],

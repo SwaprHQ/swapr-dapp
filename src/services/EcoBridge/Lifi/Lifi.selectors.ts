@@ -6,7 +6,7 @@ import { BridgeTransactionSummary } from '../../../state/bridgeTransactions/type
 import { LifiList } from '../EcoBridge.types'
 import { LIFI_TXN_STATUS, LIFI_PENDING_REASONS } from './Lifi.constants'
 import { LifiTransactionStatus } from './Lifi.types'
-import { getStatus } from './Lifi.utils'
+import { getStatus, validateSendingToken } from './Lifi.utils'
 
 const createSelectRoute = (bridgeId: LifiList) =>
   createSelector([(state: AppState) => state.ecoBridge[bridgeId].route], route => route)
@@ -62,26 +62,29 @@ const createSelectBridgeTransactionsSummary = (
   selectOwnedTxs: ReturnType<typeof createSelectOwnedTransactions>
 ) =>
   createSelector([selectOwnedTxs], txs => {
-    const summaries = txs.map(({ statusResponse, timeResolved }) => {
+    const summaries = txs.map(({ statusResponse, timeResolved, action }) => {
       const pendingReason =
         statusResponse.status === LIFI_TXN_STATUS.PENDING && statusResponse.substatus
           ? LIFI_PENDING_REASONS[statusResponse.substatus]!
           : 'We cannot determine the status of the transfer.'
 
+      // Sometime StatusResponse gives wrong sending token address, so we need to validate it
+      statusResponse = validateSendingToken(action, statusResponse)
+
       const fromValueRaw = Number(statusResponse.sending.amount ?? 0).toString()
       const fromValue = formatUnits(fromValueRaw, statusResponse.sending.token?.decimals) ?? '0'
 
-      const toValueRaw = Number(statusResponse.receiving?.amount ?? 0).toString()
+      const toValueRaw = Number(statusResponse?.receiving?.amount ?? 0).toString()
       const toValue = formatUnits(toValueRaw, statusResponse.receiving?.token?.decimals) ?? '0'
 
       const summary: BridgeTransactionSummary = {
         assetName: statusResponse.sending.token?.symbol!,
-        toAssetName: statusResponse.receiving?.token?.symbol,
+        toAssetName: statusResponse?.receiving?.token?.symbol,
         assetAddressL1: statusResponse.sending.token?.address,
         assetAddressL2: statusResponse.receiving?.token?.address,
-        // @ts-expect-error ChainId type miss match
+        // @ts-expect-error ChainId type miss match between Lifi and Swapr
         fromChainId: statusResponse.sending.chainId,
-        // @ts-expect-error ChainId type miss match
+        // @ts-expect-error ChainId type miss match between Lifi and Swapr
         toChainId: statusResponse.receiving?.chainId,
         status: getStatus(statusResponse.status),
         fromValue,

@@ -128,7 +128,9 @@ export interface BridgeModalState {
   readonly disclaimerText?: string
 }
 
-export type BridgeModalData = Pick<BridgeModalState, 'symbol' | 'typedValue' | 'fromChainId' | 'toChainId'>
+export type BridgeModalData = Pick<BridgeModalState, 'typedValue' | 'fromChainId' | 'toChainId'> & {
+  symbol: string
+}
 
 export type WritableListsState = {
   [url: string]: ListsState['byUrl'][string]

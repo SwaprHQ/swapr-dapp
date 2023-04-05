@@ -9,6 +9,7 @@ import { SWPRSupportedChains } from '../../utils/chainSupportsSWPR'
 import {
   BridgeDetails,
   BridgeList,
+  BridgeModalData,
   BridgeModalStatus,
   BridgingDetailsErrorMessage,
   EcoBridgeChangeHandler,
@@ -142,6 +143,9 @@ export abstract class EcoBridgeChildBase {
             })
           )
         },
+      },
+      setModalData: (props: BridgeModalData) => {
+        this.store.dispatch(ecoBridgeUIActions.setBridgeModalData(props))
       },
       statusButton: {
         setStatus: (status: ButtonStatus) => {

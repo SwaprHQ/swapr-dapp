@@ -34,8 +34,8 @@ export const BridgeModal = ({
   const { t } = useTranslation('bridge')
   const { status, symbol, typedValue, fromChainId, toChainId, error } = modalData
 
-  const { name: fromNetworkName } = getNetworkInfo(fromChainId)
-  const { name: toNetworkName } = getNetworkInfo(toChainId)
+  const { name: fromNetworkName } = fromChainId ? getNetworkInfo(fromChainId) : { name: 'unknown' }
+  const { name: toNetworkName } = toChainId ? getNetworkInfo(toChainId) : { name: 'unknown' }
 
   const activeBridge = useSelector((state: AppState) => state.ecoBridge.common.activeBridge)
 

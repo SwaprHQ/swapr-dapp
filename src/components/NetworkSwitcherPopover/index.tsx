@@ -8,6 +8,7 @@ import { useNetworkSwitch } from '../../hooks/useNetworkSwitch'
 import { ApplicationModal } from '../../state/application/actions'
 import { useCloseModals, useModalOpen } from '../../state/application/hooks'
 import { createNetworksList } from '../../utils/networksList'
+import { Loader } from '../Loader'
 import { networkOptionsPreset, NetworkSwitcher, NetworkSwitcherTags } from '../NetworkSwitcher'
 
 interface NetworkSwitcherPopoverProps {
@@ -32,12 +33,20 @@ export default function NetworkSwitcherPopover({ children, modal, placement }: N
     )
   }
 
+  if (!account || !activeChainId) {
+    return (
+      <div style={{ margin: '0px 10px' }}>
+        <Loader stroke="#C0BAF6" />
+      </div>
+    )
+  }
+
   const networkList = createNetworksList({
     networkOptionsPreset,
     onNetworkChange: selectNetwork,
     isNetworkDisabled,
-    selectedNetworkChainId: activeChainId ? activeChainId : -1,
-    activeChainId: account ? activeChainId : -1,
+    selectedNetworkChainId: activeChainId,
+    activeChainId: activeChainId,
     ignoreTags: [NetworkSwitcherTags.COMING_SOON],
     showTestnets: false,
   })

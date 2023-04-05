@@ -1,4 +1,4 @@
-import { ChainId, GetStatusRequest, QuoteRequest, StatusResponse } from '@lifi/sdk'
+import { Action, ChainId, GetStatusRequest, QuoteRequest, StatusResponse } from '@lifi/sdk'
 
 type LifiTokenInfo = {
   address: string
@@ -15,6 +15,7 @@ export interface LifiQuoteRequest extends Omit<QuoteRequest, 'fromAddress'> {
 }
 
 export interface LifiTransactionStatus {
+  action: Action
   statusRequest: GetStatusRequest
   statusResponse: StatusResponse
   account: string
