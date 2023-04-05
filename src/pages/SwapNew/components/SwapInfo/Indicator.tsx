@@ -22,14 +22,14 @@ export const INDICATOR_ICON = {
 
 type IndicatorProps = {
   color: IndicatorColorVariant
-  icon: IndicatorIconVariant
+  icon?: IndicatorIconVariant
   text?: string
 }
 
 export function Indicator({ color, icon, text }: IndicatorProps) {
   return (
     <Container color={color}>
-      {INDICATOR_ICON[icon]}
+      {icon && INDICATOR_ICON[icon]}
       {text}
     </Container>
   )
@@ -38,6 +38,7 @@ export function Indicator({ color, icon, text }: IndicatorProps) {
 const Container = styled.div<{ color: IndicatorColorVariant }>`
   height: 20px;
   display: inline-flex;
+  vertical-align: top;
   align-items: center;
   gap: 4px;
   padding: 5px;
