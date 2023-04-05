@@ -1,4 +1,4 @@
-import { CoWTrade, Trade, TradeType, Percent } from '@swapr/sdk'
+import { CoWTrade, Trade, TradeType } from '@swapr/sdk'
 
 import styled from 'styled-components'
 
@@ -10,8 +10,9 @@ import { computeSlippageAdjustedAmounts } from '../../../../utils/prices'
 import { simpleWarningSeverity } from '../../../../utils/prices'
 import { computeTradePriceBreakdown } from '../../../../utils/prices'
 import {
-  DEX_SELECTED_BORDER,
-  DEX_UNSELECTED_BORDER,
+  SWAP_PLATFORM_INFO_ITEM_BORDER_DEFAULT,
+  SWAP_PLATFORM_INFO_ITEM_BORDER_POSITIVE,
+  SWAP_PLATFORM_INFO_ITEM_BORDER_NEGATIVE,
   IndicatorColorVariant,
   IndicatorIconVariant,
   TEXT_COLOR_PRIMARY,
@@ -77,6 +78,18 @@ export function SwapDexInfoItem({
   )
 }
 
+const getBackgroundColor = (isSelected: boolean, danger?: boolean) => {
+  if (!isSelected) return SWAP_PLATFORM_INFO_ITEM_COLOR_DEFAULT
+
+  return danger ? SWAP_PLATFORM_INFO_ITEM_COLOR_NEGATIVE : SWAP_PLATFORM_INFO_ITEM_COLOR_POSITIVE
+}
+
+const getBorderColor = (isSelected: boolean, danger?: boolean) => {
+  if (!isSelected) return SWAP_PLATFORM_INFO_ITEM_BORDER_DEFAULT
+
+  return danger ? SWAP_PLATFORM_INFO_ITEM_BORDER_NEGATIVE : SWAP_PLATFORM_INFO_ITEM_BORDER_POSITIVE
+}
+
 type ContainerProps = {
   isSelected: boolean
   danger?: boolean
@@ -88,12 +101,7 @@ const Container = styled.div<ContainerProps>`
   align-items: center;
   padding: 14px;
   ${BorderStyle}
-  background: ${({ isSelected, danger }) =>
-    isSelected
-      ? danger
-        ? SWAP_PLATFORM_INFO_ITEM_COLOR_NEGATIVE
-        : SWAP_PLATFORM_INFO_ITEM_COLOR_POSITIVE
-      : SWAP_PLATFORM_INFO_ITEM_COLOR_DEFAULT};
+  background: ${({ isSelected, danger }) => getBackgroundColor(isSelected, danger)};
   background-blend-mode: normal, overlay, normal;
   opacity: 0.8;
   box-shadow: 0px 4px 42px rgba(0, 0, 0, 0.16);
@@ -110,7 +118,7 @@ const Container = styled.div<ContainerProps>`
     bottom: 0;
     border-radius: 12px;
     border: 1.5px solid transparent;
-    background: ${({ isSelected }) => (isSelected ? DEX_SELECTED_BORDER : DEX_UNSELECTED_BORDER)};
+    background: ${({ isSelected, danger }) => getBorderColor(isSelected, danger)};
     mask: linear-gradient(#fff 0 0) padding-box, linear-gradient(#fff 0 0);
     -webkit-mask: linear-gradient(#fff 0 0) padding-box, linear-gradient(#fff 0 0);
     -webkit-mask-composite: destination-out;
