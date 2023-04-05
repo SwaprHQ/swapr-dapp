@@ -10,8 +10,8 @@ import {
   ELEMENTS_SPACING,
   BorderStyle,
 } from '../../constants'
+import { PlatformsList } from './PlatformsList'
 import { SwapInfoBasics } from './SwapInfoBasics'
-import { SwapInfoDetailed } from './SwapInfoDetailed'
 
 type SwapInfoProps = {
   loading: boolean
@@ -34,7 +34,7 @@ export function SwapInfo({ loading, allPlatformTrades, selectedTrade, outputCurr
 
       <AnimatePresence>
         {showSwapInfoDetails && allPlatformTrades?.length !== 0 && (
-          <SwapInfoDetailed
+          <PlatformsList
             loading={loading}
             allPlatformTrades={allPlatformTrades}
             selectedTrade={selectedTrade}

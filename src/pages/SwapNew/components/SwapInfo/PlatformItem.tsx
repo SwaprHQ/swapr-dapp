@@ -24,7 +24,7 @@ import {
 } from '../../constants'
 import { Indicator } from './Indicator'
 
-type SwapDexInfoItemProps = {
+type PlatformItemProps = {
   bestRoute: boolean
   isSelected: boolean
   trade: Trade
@@ -32,13 +32,13 @@ type SwapDexInfoItemProps = {
   onClick: () => void
 }
 
-export function SwapDexInfoItem({
+export function PlatformItem({
   bestRoute,
   isSelected = false,
   trade,
   outputCurrencySymbol,
   onClick,
-}: SwapDexInfoItemProps) {
+}: PlatformItemProps) {
   const isExactIn = trade.tradeType === TradeType.EXACT_INPUT
   const slippageAdjustedAmounts = computeSlippageAdjustedAmounts(trade)
   const { priceImpactWithoutFee } = computeTradePriceBreakdown(trade)

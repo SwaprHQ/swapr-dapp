@@ -5,21 +5,16 @@ import { useCallback, useContext } from 'react'
 import styled from 'styled-components'
 
 import { SwapContext } from '../../../Swap/SwapBox/SwapContext'
-import { SwapDexInfoItem } from './SwapDexInfoItem'
+import { PlatformItem } from './PlatformItem'
 
-type SwapInfoDetailedProps = {
+type PlatformsListProps = {
   loading: boolean
   allPlatformTrades?: (Trade | undefined)[]
   selectedTrade?: Trade
   outputCurrencySymbol?: string
 }
 
-export function SwapInfoDetailed({
-  loading,
-  allPlatformTrades,
-  selectedTrade,
-  outputCurrencySymbol,
-}: SwapInfoDetailedProps) {
+export function PlatformsList({ loading, allPlatformTrades, selectedTrade, outputCurrencySymbol }: PlatformsListProps) {
   const { setPlatformOverride } = useContext(SwapContext)
 
   const handleSelectedTradeOverride = useCallback(
@@ -53,7 +48,7 @@ export function SwapInfoDetailed({
           if (!trade) return null
 
           return (
-            <SwapDexInfoItem
+            <PlatformItem
               key={trade.platform.name}
               bestRoute={index === 0}
               isSelected={selectedTrade?.platform.name === trade.platform.name}
