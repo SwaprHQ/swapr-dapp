@@ -8,19 +8,6 @@ import { BigNumber, Contract } from 'ethers'
 import { formatUnits } from 'ethers/lib/utils'
 import { request } from 'graphql-request'
 
-import { subgraphClientsUris } from '../../../apollo/client'
-import { ZERO_ADDRESS } from '../../../constants'
-import { BridgeTransactionStatus } from '../../../state/bridgeTransactions/types'
-import { SWPRSupportedChains } from '../../../utils/chainSupportsSWPR'
-import {
-  BridgeModalStatus,
-  EcoBridgeChangeHandler,
-  EcoBridgeChildBaseConstructor,
-  EcoBridgeChildBaseInit,
-  OmniBridgeList,
-  SyncState,
-} from '../EcoBridge.types'
-import { ButtonStatus, EcoBridgeChildBase } from '../EcoBridge.utils'
 import { HOME_AMB_ABI } from './abis/abi'
 import { BRIDGE_CONFIG, defaultTokensUrl } from './OmniBridge.config'
 import { omniBridgeActions } from './OmniBridge.reducers'
@@ -57,6 +44,19 @@ import {
 } from './OmniBridge.utils'
 import { executionsQuery, partnerTxHashQuery, requestsUserQuery } from './subgraph/history'
 import { foreignTokensQuery, homeTokensQuery } from './subgraph/tokens'
+import { subgraphClientsUris } from '../../../apollo/client'
+import { ZERO_ADDRESS } from '../../../constants'
+import { BridgeTransactionStatus } from '../../../state/bridgeTransactions/types'
+import { SWPRSupportedChains } from '../../../utils/chainSupportsSWPR'
+import {
+  BridgeModalStatus,
+  EcoBridgeChangeHandler,
+  EcoBridgeChildBaseConstructor,
+  EcoBridgeChildBaseInit,
+  OmniBridgeList,
+  SyncState,
+} from '../EcoBridge.types'
+import { ButtonStatus, EcoBridgeChildBase } from '../EcoBridge.utils'
 export class OmniBridge extends EcoBridgeChildBase {
   private _homeChainId: ChainId
   private _foreignChainId: ChainId
@@ -585,6 +585,7 @@ export class OmniBridge extends EcoBridgeChildBase {
       if (!gasPrice) throw this.ecoBridgeUtils.logger.error('Cannot get gas price')
 
       const {
+        //@ts-expect-error
         bundle: { nativeCurrencyPrice },
       } = await request(subgraphClientsUris[this._activeChainId as SWPRSupportedChains], QUERY_ETH_PRICE)
 

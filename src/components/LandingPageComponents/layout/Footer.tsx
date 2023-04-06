@@ -1,11 +1,11 @@
 import styled from 'styled-components'
 
-import { scrollTo } from '../../../utils/helperFunctions'
-import { breakpoints } from '../../../utils/theme'
-import { FooterContent } from '../../../utils/uiConstants'
 import SwaprLogo from './../../../assets/images/swapr-logo.svg'
 import NavigationButton from './../../../assets/images/timeline-assets/navigation-button.png'
 import Layout from './Layout'
+import { scrollTo } from '../../../utils/helperFunctions'
+import { breakpoints } from '../../../utils/theme'
+import { FooterContent } from '../../../utils/uiConstants'
 
 const Footer = () => {
   return (

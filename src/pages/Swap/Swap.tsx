@@ -4,10 +4,6 @@ import { Fragment, useEffect, useState } from 'react'
 import { redirect } from 'react-router-dom'
 import styled from 'styled-components'
 
-import Hero from '../../components/LandingPageComponents/layout/Hero'
-import { useActiveWeb3React } from '../../hooks'
-import { useRouter } from '../../hooks/useRouter'
-import { ChartOption, SwapTab } from '../../state/user/reducer'
 import { AdvancedTradingViewBox } from './AdvancedTradingViewBox'
 import { Tabs } from './Components/Tabs'
 import { LandingSections } from './LandingSections'
@@ -15,6 +11,10 @@ import { LimitOrderBox } from './LimitOrderBox'
 import { supportedChainIdList } from './LimitOrderBox/constants'
 import { SwapBox } from './SwapBox/SwapBox.component'
 import { SwapTabContext } from './SwapContext'
+import Hero from '../../components/LandingPageComponents/layout/Hero'
+import { useActiveWeb3React } from '../../hooks'
+import { useRouter } from '../../hooks/useRouter'
+import { ChartOption, SwapTab } from '../../state/user/reducer'
 
 const AppBodyContainer = styled.section`
   display: flex;

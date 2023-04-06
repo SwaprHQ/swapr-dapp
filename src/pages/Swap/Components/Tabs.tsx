@@ -4,6 +4,7 @@ import { useTranslation } from 'react-i18next'
 import { useDispatch } from 'react-redux'
 import styled from 'styled-components'
 
+import { ChartTabs } from './ChartTabs'
 import { ReactComponent as Bridge } from '../../../assets/images/bridge.svg'
 import { ReactComponent as EcoRouter } from '../../../assets/images/eco-router.svg'
 import Row from '../../../components/Row'
@@ -14,7 +15,6 @@ import { ecoBridgeUIActions } from '../../../services/EcoBridge/store/UI.reducer
 import { SwapTab } from '../../../state/user/reducer'
 import { supportedChainIdList } from '../LimitOrderBox/constants'
 import { SwapTabContext } from '../SwapContext'
-import { ChartTabs } from './ChartTabs'
 
 const TabsColumn = styled.div`
   max-width: 457px;

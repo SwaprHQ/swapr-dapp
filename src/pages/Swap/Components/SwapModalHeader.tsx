@@ -6,6 +6,7 @@ import { AlertTriangle, ArrowDown } from 'react-feather'
 import { Text } from 'rebass'
 import { useTheme } from 'styled-components'
 
+import { SwapShowAcceptChanges, TruncatedText } from './styles'
 import { ButtonPrimary } from '../../../components/Button'
 import { AutoColumn } from '../../../components/Column'
 import { CurrencyLogo } from '../../../components/CurrencyLogo'
@@ -14,7 +15,6 @@ import { Field } from '../../../state/swap/types'
 import { TYPE } from '../../../theme'
 import { shortenAddress } from '../../../utils'
 import { computeSlippageAdjustedAmounts, computeTradePriceBreakdown, warningSeverity } from '../../../utils/prices'
-import { SwapShowAcceptChanges, TruncatedText } from './styles'
 
 export default function SwapModalHeader({
   trade,

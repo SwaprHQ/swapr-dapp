@@ -2,11 +2,11 @@ import { Fragment, ReactNode, useEffect, useState } from 'react'
 import Marquee from 'react-fast-marquee'
 import styled, { keyframes } from 'styled-components'
 
+import Layout from './Layout'
+import Arrow from '../../../assets/images/arrow-down-hero.svg'
 import { breakpoints } from '../../../utils/theme'
 import { HeroContent, RoutingThroughContent } from '../../../utils/uiConstants'
 import Button from '../common/Button'
-import Arrow from './../../../assets/images/arrow-down-hero.svg'
-import Layout from './Layout'
 
 const arrowIndicatorAnimation = keyframes`
   0% {opacity: 1}

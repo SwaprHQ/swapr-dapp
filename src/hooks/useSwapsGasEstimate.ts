@@ -4,6 +4,9 @@ import { ChainId, Token, Trade, UniswapV2RoutablePlatform, UniswapV2Trade } from
 import { BigNumber } from 'ethers'
 import { useCallback, useEffect, useMemo, useState } from 'react'
 
+import { useCurrency } from './Tokens'
+import useENS from './useENS'
+import { useSwapsCallArguments } from './useSwapCallback'
 import { INITIAL_ALLOWED_SLIPPAGE } from '../constants'
 import { useTokenAllowancesForMultipleSpenders } from '../data/Allowances'
 import { MainnetGasPrice } from '../state/application/actions'
@@ -13,9 +16,6 @@ import { Field } from '../state/swap/types'
 import { useUserPreferredGasPrice } from '../state/user/hooks'
 import { useCurrencyBalance } from '../state/wallet/hooks'
 import { calculateGasMargin } from '../utils'
-import { useCurrency } from './Tokens'
-import useENS from './useENS'
-import { useSwapsCallArguments } from './useSwapCallback'
 
 import { useActiveWeb3React } from './index'
 

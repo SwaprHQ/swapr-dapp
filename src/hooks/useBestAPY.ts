@@ -2,6 +2,8 @@ import { Pair, Percent } from '@swapr/sdk'
 
 import { useMemo } from 'react'
 
+import { useKpiTokens } from './useKpiTokens'
+import { useNativeCurrency } from './useNativeCurrency'
 import { useGetPairLiquidityMiningCampaingsQuery } from '../graphql/generated/schema'
 import { useAllTokensFromActiveListsOnCurrentChain } from '../state/lists/hooks'
 import {
@@ -11,8 +13,6 @@ import {
   getRewardTokenAddressFromPair,
   SubgraphPair,
 } from '../utils/liquidityMining'
-import { useKpiTokens } from './useKpiTokens'
-import { useNativeCurrency } from './useNativeCurrency'
 
 import { useActiveWeb3React } from '.'
 

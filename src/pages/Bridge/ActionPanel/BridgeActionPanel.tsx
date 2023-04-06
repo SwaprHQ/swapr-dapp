@@ -3,6 +3,9 @@ import { ChainId } from '@swapr/sdk'
 import { useCallback } from 'react'
 import { useSelector } from 'react-redux'
 
+import { BridgeButton } from './BridgeButton'
+import { NetworkSwitcher } from './NetworkSwitcher'
+import { useBridgeActionPanel } from './useBridgeActionPanel'
 import { ButtonConfirmed, ButtonPrimary } from '../../../components/Button'
 import { ButtonConnect } from '../../../components/ButtonConnect'
 import { Loader } from '../../../components/Loader'
@@ -11,9 +14,6 @@ import { RowBetween } from '../../../components/Row'
 import { isToken } from '../../../hooks/Tokens'
 import { useNetworkSwitch } from '../../../hooks/useNetworkSwitch'
 import { AppState } from '../../../state'
-import { BridgeButton } from './BridgeButton'
-import { NetworkSwitcher } from './NetworkSwitcher'
-import { useBridgeActionPanel } from './useBridgeActionPanel'
 
 export type BridgeActionPanelProps = {
   account: string | null | undefined

@@ -1,11 +1,10 @@
 import { Store } from '@reduxjs/toolkit'
 import { BigNumber } from 'ethers'
-import { gql } from 'graphql-request'
 
+import { createArbitrumSlice } from './ArbitrumBridge.reducer'
 import { AppState } from '../../../state'
 import { clearBridgeTxs } from '../../../state/bridgeTransactions/actions'
 import { SupportedChainsConfig } from '../EcoBridge.types'
-import { createArbitrumSlice } from './ArbitrumBridge.reducer'
 
 export const migrateBridgeTransactions = (
   store: Store<AppState>,
@@ -23,13 +22,5 @@ export const migrateBridgeTransactions = (
   store.dispatch(actions.migrateTxs({ [from]: fromTxs, [to]: toTxs }))
   store.dispatch(clearBridgeTxs([from, to]))
 }
-
-export const QUERY_ETH_PRICE = gql`
-  query {
-    bundle(id: "1") {
-      nativeCurrencyPrice
-    }
-  }
-`
 
 export const MAX_SUBMISSION_PRICE_PERCENT_INCREASE = BigNumber.from(400)

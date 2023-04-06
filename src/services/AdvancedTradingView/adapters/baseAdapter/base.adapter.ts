@@ -2,6 +2,7 @@ import { ChainId, Pair, Token, UniswapV2RoutablePlatform } from '@swapr/sdk'
 
 import { request, RequestOptions } from 'graphql-request'
 
+import { PAIR_BURNS_AND_MINTS, PAIR_SWAPS, PAIR_SWAPS_BURNS_AND_MINTS } from './base.queries'
 import {
   AdapterFetchDetails,
   AdapterFetchDetailsExtended,
@@ -11,7 +12,6 @@ import {
 } from '../../advancedTradingView.types'
 import { initialState as advancedTradingViewInitialState } from '../../store/advancedTradingView.reducer'
 import { AbstractAdvancedTradingViewAdapter } from '../advancedTradingView.adapter'
-import { PAIR_BURNS_AND_MINTS, PAIR_SWAPS, PAIR_SWAPS_BURNS_AND_MINTS } from './base.queries'
 
 export interface BaseAppState {
   advancedTradingView: typeof advancedTradingViewInitialState

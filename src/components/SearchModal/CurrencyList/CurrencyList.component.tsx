@@ -7,6 +7,9 @@ import { FixedSizeListProps } from 'react-window'
 import { Box, Flex, Text } from 'rebass'
 import { useTheme } from 'styled-components'
 
+import { FixedContentRow, StyledBalanceText, StyledFixedSizeList, TokenListLogoWrapper } from './CurrencyList.styles'
+import { BREAK_LINE, CurrencyListProps, CurrencyRowProps, isBreakLine } from './CurrencyList.types'
+import { currencyKey } from './CurrencyList.utils'
 import TokenListLogo from '../../../assets/images/tokenlist.svg'
 import { useActiveWeb3React } from '../../../hooks'
 import { useIsUserAddedToken } from '../../../hooks/Tokens'
@@ -23,9 +26,6 @@ import QuestionHelper from '../../QuestionHelper'
 import { AutoRow, RowBetween, RowFixed } from '../../Row'
 import { ImportRow } from '../ImportRow'
 import { TokenPickerItem } from '../shared'
-import { FixedContentRow, StyledBalanceText, StyledFixedSizeList, TokenListLogoWrapper } from './CurrencyList.styles'
-import { BREAK_LINE, CurrencyListProps, CurrencyRowProps, isBreakLine } from './CurrencyList.types'
-import { currencyKey } from './CurrencyList.utils'
 
 const Balance = ({ balance }: { balance: CurrencyAmount }) => (
   <StyledBalanceText title={balance.toExact()}>{balance.toSignificant(4)}</StyledBalanceText>

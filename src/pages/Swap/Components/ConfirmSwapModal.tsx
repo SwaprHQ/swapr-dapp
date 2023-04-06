@@ -2,12 +2,12 @@ import { currencyEquals, Trade, UniswapV2RoutablePlatform } from '@swapr/sdk'
 
 import { useCallback, useMemo } from 'react'
 
+import SwapModalFooter from './SwapModalFooter'
+import SwapModalHeader from './SwapModalHeader'
 import TransactionConfirmationModal, {
   ConfirmationModalContent,
   TransactionErrorContent,
 } from '../../../components/TransactionConfirmationModal'
-import SwapModalFooter from './SwapModalFooter'
-import SwapModalHeader from './SwapModalHeader'
 
 /**
  * Returns true if the trade requires a confirmation of details before we can submit it

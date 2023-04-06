@@ -2,17 +2,6 @@ import { Currency } from '@swapr/sdk'
 
 import { Fragment, ReactNode, useCallback, useEffect, useMemo, useState } from 'react'
 
-import { useActiveWeb3React } from '../../hooks'
-import { useCurrencyBalance } from '../../state/wallet/hooks'
-import { TYPE } from '../../theme'
-import { normalizeInputValue } from '../../utils'
-import { debounce } from '../../utils/debounce'
-import { CurrencyWrapperSource } from '../CurrencyLogo'
-import { FiatValueDetails } from '../FiatValueDetails'
-import { NumericalInput } from '../Input/NumericalInput'
-import { Loader } from '../Loader'
-import { RowBetween } from '../Row'
-import { CurrencySearchModalComponent } from '../SearchModal/CurrencySearchModal'
 import {
   Aligner,
   Container,
@@ -26,6 +15,17 @@ import {
 import { CurrencyInputPanelProps } from './CurrencyInputPanel.types'
 import { CurrencyUserBalance } from './CurrencyUserBalance'
 import { CurrencyView } from './CurrencyView'
+import { useActiveWeb3React } from '../../hooks'
+import { useCurrencyBalance } from '../../state/wallet/hooks'
+import { TYPE } from '../../theme'
+import { normalizeInputValue } from '../../utils'
+import { debounce } from '../../utils/debounce'
+import { CurrencyWrapperSource } from '../CurrencyLogo'
+import { FiatValueDetails } from '../FiatValueDetails'
+import { NumericalInput } from '../Input/NumericalInput'
+import { Loader } from '../Loader'
+import { RowBetween } from '../Row'
+import { CurrencySearchModalComponent } from '../SearchModal/CurrencySearchModal'
 
 const CurrencySelectFallback = ({ children, currency: _ }: { children: ReactNode; currency: any }) => (
   <Fragment>{children}</Fragment>

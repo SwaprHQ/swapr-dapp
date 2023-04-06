@@ -3,9 +3,9 @@ import { ChainId, Currency, DAI } from '@swapr/sdk'
 
 import { utils } from 'ethers'
 
+import { XdaiBridgeExecutions, XdaiBridgeRequests, XdaiBridgeTransaction } from './XdaiBridge.types'
 import { ZERO_ADDRESS } from '../../../constants'
 import { BridgeTransactionStatus } from '../../../state/bridgeTransactions/types'
-import { XdaiBridgeExecutions, XdaiBridgeRequests, XdaiBridgeTransaction } from './XdaiBridge.types'
 
 export const ETHEREUM_BRIDGE_ADDRESS = '0x4aa42145Aa6Ebf72e164C9bBC74fbD3788045016'
 export const XDAI_BRIDGE_ADDRESS = '0x7301CFA0e1756B71869E93d4e4Dca5c7d0eb0AA6'

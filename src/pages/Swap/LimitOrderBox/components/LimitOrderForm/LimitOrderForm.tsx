@@ -9,6 +9,8 @@ import { Link } from 'react-router-dom'
 import { usePrevious } from 'react-use'
 import { Flex } from 'rebass'
 
+import { AutoRow, MaxAlert } from './styles'
+import { checkMaxOrderAmount, formatMarketPrice, formatMaxValue, toFixedSix } from './utils'
 import { ButtonPrimary } from '../../../../../components/Button'
 import { AutoColumn } from '../../../../../components/Column'
 import { CurrencyInputPanel } from '../../../../../components/CurrencyInputPanel'
@@ -33,8 +35,6 @@ import { CurrencySelectTooltip } from '../CurrencySelectTooltip'
 import { OrderExpiryField } from '../OrderExpiryField'
 import { OrderLimitPriceField } from '../OrderLimitPriceField'
 import SwapTokens from '../SwapTokens'
-import { AutoRow, MaxAlert } from './styles'
-import { checkMaxOrderAmount, formatMarketPrice, formatMaxValue, toFixedSix } from './utils'
 
 dayjs.extend(dayjsUTCPlugin)
 

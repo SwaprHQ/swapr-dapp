@@ -1,12 +1,6 @@
 import { configureStore } from '@reduxjs/toolkit'
 import { load, save } from 'redux-localstorage-simple'
 
-import advancedTradingView from '../services/AdvancedTradingView/store'
-import {
-  ecoBridgePersistedKeys,
-  fixCorruptedEcoBridgeLocalStorageEntries,
-} from '../services/EcoBridge/EcoBridge.config'
-import ecoBridge from '../services/EcoBridge/store/EcoBridge.reducer'
 import application from './application/reducer'
 import bridgeTransactions from './bridgeTransactions/reducer'
 import burn from './burn/reducer'
@@ -19,6 +13,12 @@ import multicall from './multicall/reducer'
 import swap from './swap/reducer'
 import transactions from './transactions/reducer'
 import user from './user/reducer'
+import advancedTradingView from '../services/AdvancedTradingView/store'
+import {
+  ecoBridgePersistedKeys,
+  fixCorruptedEcoBridgeLocalStorageEntries,
+} from '../services/EcoBridge/EcoBridge.config'
+import ecoBridge from '../services/EcoBridge/store/EcoBridge.reducer'
 
 const PERSISTED_KEYS: string[] = ['user', 'transactions', 'claim', 'bridgeTransactions', ...ecoBridgePersistedKeys]
 

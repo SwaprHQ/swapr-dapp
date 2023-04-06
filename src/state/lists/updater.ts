@@ -2,14 +2,14 @@ import { getVersionUpgrade, minVersionBump, VersionUpgrade } from '@uniswap/toke
 import { useCallback, useEffect } from 'react'
 import { useDispatch } from 'react-redux'
 
+import { acceptListUpdate } from './actions'
+import { useActiveListUrls, useAllLists } from './hooks'
 import { UNSUPPORTED_LIST_URLS } from '../../constants/lists'
 import { useActiveWeb3React } from '../../hooks'
 import { useFetchCarrotListCallback, useFetchListCallback } from '../../hooks/useFetchListCallback'
 import useInterval from '../../hooks/useInterval'
 import useIsWindowVisible from '../../hooks/useIsWindowVisible'
 import { AppDispatch } from '../index'
-import { acceptListUpdate } from './actions'
-import { useActiveListUrls, useAllLists } from './hooks'
 
 export default function Updater(): null {
   const { library, chainId, account } = useActiveWeb3React()

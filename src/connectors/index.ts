@@ -3,12 +3,12 @@ import { ChainId } from '@swapr/sdk'
 import { InjectedConnector } from '@web3-react/injected-connector'
 import { providers } from 'ethers'
 
-import swprLogo from '../assets/images/swpr-logo.png'
-import { REFETCH_DATA_INTERVAL } from '../constants/data'
-import getLibrary from '../utils/getLibrary'
 import { CustomNetworkConnector } from './CustomNetworkConnector'
 import { CustomWalletConnectConnector } from './CustomWalletConnectConnector'
 import { CustomWalletLinkConnector } from './CustomWalletLinkConnector'
+import swprLogo from '../assets/images/swpr-logo.png'
+import { REFETCH_DATA_INTERVAL } from '../constants/data'
+import getLibrary from '../utils/getLibrary'
 
 export const INFURA_PROJECT_ID = '0ebf4dd05d6740f482938b8a80860d13'
 

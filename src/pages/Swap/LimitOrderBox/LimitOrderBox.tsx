@@ -1,8 +1,8 @@
 import { redirect } from 'react-router-dom'
 
-import { useActiveWeb3React } from '../../../hooks'
 import { LimitOrderForm } from './components/LimitOrderForm/LimitOrderForm'
 import { supportedChainIdList } from './constants'
+import { useActiveWeb3React } from '../../../hooks'
 
 export function LimitOrderBox() {
   const { library, account, chainId } = useActiveWeb3React()

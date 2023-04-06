@@ -7,21 +7,6 @@ import { TokenInfo, TokenList } from '@uniswap/token-lists'
 import { BigNumber } from 'ethers'
 import { request } from 'graphql-request'
 
-import { subgraphClientsUris } from '../../../apollo/client'
-import { ZERO_ADDRESS } from '../../../constants'
-import ERC20_ABI from '../../../constants/abis/erc20.json'
-import { BridgeTransactionStatus } from '../../../state/bridgeTransactions/types'
-import { SWPRSupportedChains } from '../../../utils/chainSupportsSWPR'
-import { QUERY_ETH_PRICE } from '../Arbitrum/ArbitrumBridge.utils'
-import {
-  BridgeModalStatus,
-  EcoBridgeChangeHandler,
-  EcoBridgeChildBaseConstructor,
-  EcoBridgeChildBaseInit,
-  SyncState,
-  XdaiBridgeList,
-} from '../EcoBridge.types'
-import { ButtonStatus, EcoBridgeChildBase } from '../EcoBridge.utils'
 import {
   XDAI_BRIDGE_EXECUTIONS,
   XDAI_BRIDGE_FOREIGN_REQUEST,
@@ -33,14 +18,29 @@ import { xdaiActions } from './XdaiBridge.reducer'
 import { xdaiSelectors } from './XdaiBridge.selectors'
 import { XdaiBridgeExecutions, XdaiBridgeRequests, XdaiMessage } from './XdaiBridge.types'
 import {
-  combineTransactions,
   ETHEREUM_BRIDGE_ADDRESS,
-  packSignatures,
-  signatureToVRS,
   XDAI_BRIDGE_ADDRESS,
   XDAI_BRIDGE_FOREIGN_SUBGRAPH_ENDPOINT,
   XDAI_BRIDGE_HOME_SUBGRAPH_ENDPOINT,
+  combineTransactions,
+  packSignatures,
+  signatureToVRS,
 } from './XdaiBridge.utils'
+import { subgraphClients } from '../../../apollo/client'
+import { ZERO_ADDRESS } from '../../../constants'
+import ERC20_ABI from '../../../constants/abis/erc20.json'
+import { GetBundleQuery, GetBundleDocument } from '../../../graphql/generated/schema'
+import { BridgeTransactionStatus } from '../../../state/bridgeTransactions/types'
+import { SWPRSupportedChains } from '../../../utils/chainSupportsSWPR'
+import {
+  BridgeModalStatus,
+  EcoBridgeChangeHandler,
+  EcoBridgeChildBaseConstructor,
+  EcoBridgeChildBaseInit,
+  SyncState,
+  XdaiBridgeList,
+} from '../EcoBridge.types'
+import { ButtonStatus, EcoBridgeChildBase } from '../EcoBridge.utils'
 
 export class XdaiBridge extends EcoBridgeChildBase {
   private _homeChainId = ChainId.XDAI
@@ -132,15 +132,24 @@ export class XdaiBridge extends EcoBridgeChildBase {
       const gasPrice = await this._activeProvider?.getGasPrice()
 
       const {
-        bundle: { nativeCurrencyPrice },
-      } = await request(subgraphClientsUris[this._activeChainId as SWPRSupportedChains], QUERY_ETH_PRICE)
+        data: { bundle },
+        error,
+      } = await subgraphClients[this._activeChainId as SWPRSupportedChains].query<GetBundleQuery>({
+        query: GetBundleDocument,
+      })
+      if (error) {
+        console.error(error.message)
+      }
+      const { nativeCurrencyPrice } = bundle ?? { nativeCurrencyPrice: 0 }
 
       const gasCost = estimatedGas * Number(gasPrice?.toString())
 
       const formattedGasCost = formatUnits(gasCost, 18)
 
       gas = `${Number(Number(formattedGasCost) * Number(nativeCurrencyPrice)).toFixed(2)}$`
-    } catch {}
+    } catch (error) {
+      console.log(error)
+    }
 
     this.store.dispatch(
       this.baseActions.setBridgeDetails({

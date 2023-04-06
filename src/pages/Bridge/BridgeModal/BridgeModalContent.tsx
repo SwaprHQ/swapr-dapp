@@ -1,9 +1,6 @@
 import { AlertCircle } from 'react-feather'
 import { Trans, useTranslation } from 'react-i18next'
 
-import { ButtonPrimary } from '../../../components/Button'
-import { ConfirmationPendingContent, TransactionErrorContent } from '../../../components/TransactionConfirmationModal'
-import { TYPE } from '../../../theme'
 import {
   ButtonAccept,
   ButtonCancel,
@@ -15,6 +12,9 @@ import {
   Wrapper,
 } from './BridgeModal.styles'
 import { BridgeModalContentProps } from './BridgeModal.types'
+import { ButtonPrimary } from '../../../components/Button'
+import { ConfirmationPendingContent, TransactionErrorContent } from '../../../components/TransactionConfirmationModal'
+import { TYPE } from '../../../theme'
 
 export default function BridgeModalContent({
   onDismiss,

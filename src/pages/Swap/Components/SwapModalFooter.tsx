@@ -5,6 +5,8 @@ import { Repeat } from 'react-feather'
 import { Text } from 'rebass'
 import styled from 'styled-components'
 
+import FormattedPriceImpact from './FormattedPriceImpact'
+import { StyledBalanceMaxMini, SwapCallbackError } from './styles'
 import { ButtonError } from '../../../components/Button'
 import { AutoColumn } from '../../../components/Column'
 import QuestionHelper from '../../../components/QuestionHelper'
@@ -18,8 +20,6 @@ import {
   formatExecutionPrice,
   warningSeverity,
 } from '../../../utils/prices'
-import FormattedPriceImpact from './FormattedPriceImpact'
-import { StyledBalanceMaxMini, SwapCallbackError } from './styles'
 
 export default function SwapModalFooter({
   trade,

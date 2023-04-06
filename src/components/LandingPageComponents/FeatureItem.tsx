@@ -1,9 +1,9 @@
 import { useEffect, useState } from 'react'
 import styled from 'styled-components'
 
+import Button from './common/Button'
 import { breakpoints } from '../../utils/theme'
 import { Feature } from '../../utils/uiConstants'
-import Button from './common/Button'
 
 interface FeatureItemProps {
   feature: Feature

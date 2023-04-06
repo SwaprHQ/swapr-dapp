@@ -1,8 +1,8 @@
 import styled, { keyframes } from 'styled-components'
 
+import SwaprTimelineLogo from './../../assets/images/timeline-assets/swapr.svg'
 import { MileStone } from '../../utils/milestones'
 import { breakpoints } from '../../utils/theme'
-import SwaprTimelineLogo from './../../assets/images/timeline-assets/swapr.svg'
 
 const fadeLeftIn = keyframes`
     0% {transform: translateX(0); opacity: 1;}
@@ -50,6 +50,7 @@ interface MilestoneProps {
 }
 
 export default function Milestone({ milestoneData, milestoneIndex }: MilestoneProps) {
+  debugger
   return (
     <StyledMilestone className={`milestone ${milestoneData.past ? 'past-milestone' : 'future-milestone'}`}>
       <div className="milestone-content" data-aos="fade" data-aos-delay={milestoneIndex * 100}>

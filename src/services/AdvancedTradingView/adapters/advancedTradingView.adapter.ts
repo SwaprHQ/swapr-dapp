@@ -2,6 +2,7 @@ import { ChainId, Token } from '@swapr/sdk'
 
 import { Store } from '@reduxjs/toolkit'
 
+import { BaseActionPayload, SetSwapsBurnsAndMintsActionPayload } from './baseAdapter/base.types'
 import {
   AdapterFetchDetails,
   AdapterFetchDetailsExtended,
@@ -12,7 +13,6 @@ import {
   AdvancedTradingViewAdapterConstructorParams,
 } from '../advancedTradingView.types'
 import { actions } from '../store/advancedTradingView.reducer'
-import { BaseActionPayload, SetSwapsBurnsAndMintsActionPayload } from './baseAdapter/base.types'
 
 // each adapter should extend this class
 export abstract class AbstractAdvancedTradingViewAdapter<AppState> {

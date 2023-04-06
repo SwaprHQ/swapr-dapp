@@ -4,6 +4,13 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import styled from 'styled-components'
 
+import { BridgeActionPanel } from './ActionPanel/BridgeActionPanel'
+import { AssetSelector } from './AssetsSelector'
+import { BridgeModal } from './BridgeModal/BridgeModal'
+import { BridgeSelectionWindow } from './BridgeSelectionWindow'
+import { BridgeTransactionsSummary } from './BridgeTransactionsSummary'
+import { Tabs } from './Tabs'
+import { BridgeTab, isNetworkDisabled } from './utils'
 import ArrowIcon from '../../assets/images/arrow.svg'
 import { CurrencyInputPanelBridge } from '../../components/CurrencyInputPanel/CurrencyInputPanel.container'
 import {
@@ -37,13 +44,6 @@ import { BridgeTransactionSummary } from '../../state/bridgeTransactions/types'
 import { maxAmountSpend } from '../../utils/maxAmountSpend'
 import { createNetworksList, getNetworkOptions } from '../../utils/networksList'
 import AppBody from '../AppBody'
-import { BridgeActionPanel } from './ActionPanel/BridgeActionPanel'
-import { AssetSelector } from './AssetsSelector'
-import { BridgeModal } from './BridgeModal/BridgeModal'
-import { BridgeSelectionWindow } from './BridgeSelectionWindow'
-import { BridgeTransactionsSummary } from './BridgeTransactionsSummary'
-import { Tabs } from './Tabs'
-import { BridgeTab, isNetworkDisabled } from './utils'
 
 const Wrapper = styled.div`
   width: 100%;

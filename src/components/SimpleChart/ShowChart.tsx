@@ -1,9 +1,9 @@
 import { useTranslation } from 'react-i18next'
 
+import { SimpleChartLoading } from './SimpleChartLoading'
 import { TYPE } from '../../theme'
 import { AreaChartTokenPrice } from '../Charts/AreaChartTokenPrice'
 import { ChartData } from '../Charts/chartUtils'
-import { SimpleChartLoading } from './SimpleChartLoading'
 
 interface ShowChartProps {
   data: ChartData[]

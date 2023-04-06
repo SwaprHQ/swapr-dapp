@@ -5,13 +5,13 @@ import { type TokenInfo, type TokenList } from '@uniswap/token-lists/dist/types'
 import { useMemo } from 'react'
 import { useSelector } from 'react-redux'
 
+import { WrappedTokenInfo } from './wrapped-token-info'
 import { NETWORK_DETAIL, ZERO_ADDRESS } from '../../constants'
 import { UNSUPPORTED_LIST_URLS } from '../../constants/lists'
 import UNSUPPORTED_TOKEN_LIST from '../../constants/tokenLists/swapr-unsupported.tokenlist.json'
 import { useActiveWeb3React } from '../../hooks'
 import sortByListPriority from '../../utils/listSort'
 import { AppState } from '../index'
-import { WrappedTokenInfo } from './wrapped-token-info'
 
 export type TokenAddressMap = Readonly<{
   [chainId: number]: Readonly<{ [tokenAddress: string]: { token: WrappedTokenInfo; list: TokenList } }>
@@ -30,7 +30,8 @@ export function listToTokenMap(list: TokenList | null, useCache = true): TokenAd
   const map = list.tokens.reduce<TokenAddressMap>((tokenMap, tokenInfo) => {
     const token = new WrappedTokenInfo(tokenInfo, list)
     if (tokenMap[token.chainId]?.[token.address] !== undefined) {
-      console.error(new Error(`Duplicate token! ${token.address}`))
+      // Dont want to log this error in production
+      // console.error(new Error(`Duplicate token! ${token.address}`))
       return tokenMap
     }
     return {

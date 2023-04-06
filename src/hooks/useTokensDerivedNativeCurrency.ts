@@ -4,9 +4,9 @@ import { Price, PricedToken, PricedTokenAmount, TokenAmount } from '@swapr/sdk'
 import Decimal from 'decimal.js-light'
 import { useMemo } from 'react'
 
-import { useGetDerivedNativeCurrencyTokensQuery } from '../graphql/generated/schema'
 import { useKpiTokens } from './useKpiTokens'
 import { useNativeCurrency } from './useNativeCurrency'
+import { useGetDerivedNativeCurrencyTokensQuery } from '../graphql/generated/schema'
 
 import { useActiveWeb3React } from './index'
 

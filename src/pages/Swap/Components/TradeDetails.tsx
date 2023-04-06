@@ -5,13 +5,13 @@ import { Trans } from 'react-i18next'
 import Skeleton from 'react-loading-skeleton'
 import { Box } from 'rebass'
 
+import { SwapSettings } from './SwapSettings'
+import TradePrice from './TradePrice'
 import { AdvancedSwapDetailsToggle } from '../../../components/AdvancedSwapDetailsToggle'
 import { AutoColumn } from '../../../components/Column'
 import { RecipientField } from '../../../components/RecipientField'
 import { RowBetween, RowFixed } from '../../../components/Row'
 import { TYPE } from '../../../theme'
-import { SwapSettings } from './SwapSettings'
-import TradePrice from './TradePrice'
 
 interface TradeDetailsProps {
   show: boolean

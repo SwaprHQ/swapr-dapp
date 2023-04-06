@@ -4,6 +4,8 @@ import { Currency, Pair, Token, WETH } from '@swapr/sdk'
 import { arrayify } from 'ethers/lib/utils'
 import { useMemo } from 'react'
 
+import { useBytes32TokenContract, useTokenContract, useWrappingToken } from './useContract'
+import { useNativeCurrency } from './useNativeCurrency'
 import { createTokenFilterFunction } from '../components/SearchModal/utils/filtering'
 import {
   TokenAddressMap,
@@ -16,8 +18,6 @@ import { WrappedTokenInfo } from '../state/lists/wrapped-token-info'
 import { NEVER_RELOAD, useSingleCallResult } from '../state/multicall/hooks'
 import { useUserAddedPairs, useUserAddedTokens } from '../state/user/hooks'
 import { isAddress } from '../utils'
-import { useBytes32TokenContract, useTokenContract, useWrappingToken } from './useContract'
-import { useNativeCurrency } from './useNativeCurrency'
 
 import { useActiveWeb3React } from './index'
 

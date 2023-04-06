@@ -2,6 +2,9 @@ import { Contract } from 'ethers'
 import { useEffect, useMemo, useRef } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 
+import { errorFetchingMulticallResults, fetchingMulticallResults, updateMulticallResults } from './actions'
+import { MulticallState } from './reducer'
+import { Call, parseCallKey } from './utils'
 import { useActiveWeb3React } from '../../hooks'
 import { useMulticallContract } from '../../hooks/useContract'
 import useDebounce from '../../hooks/useDebounce'
@@ -9,9 +12,6 @@ import chunkArray from '../../utils/ChuckArray'
 import { retry, RetryableError } from '../../utils/retry'
 import { useBlockNumber } from '../application/hooks'
 import { AppState } from '../index'
-import { errorFetchingMulticallResults, fetchingMulticallResults, updateMulticallResults } from './actions'
-import { MulticallState } from './reducer'
-import { Call, parseCallKey } from './utils'
 
 /**
  * Fetches a chunk of calls, enforcing a minimum block number constraint

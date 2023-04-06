@@ -5,6 +5,7 @@ import { AlertTriangle } from 'react-feather'
 import { usePrevious } from 'react-use'
 import styled from 'styled-components'
 
+import PendingView from './PendingView'
 import { ReactComponent as DxDaoBanner } from '../../assets/images/DxDaoProductBanner.svg'
 import { ReactComponent as Close } from '../../assets/images/x.svg'
 import { useUnsupportedChainIdError } from '../../hooks'
@@ -13,7 +14,6 @@ import { TYPE } from '../../theme'
 import Modal from '../Modal'
 import { AutoRow } from '../Row'
 import { ModalView } from '../Web3Status'
-import PendingView from './PendingView'
 const CloseIcon = styled.div`
   position: absolute;
   right: 1rem;

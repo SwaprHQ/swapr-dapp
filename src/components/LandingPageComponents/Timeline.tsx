@@ -1,12 +1,12 @@
 import { useEffect, useRef, useState } from 'react'
 import styled from 'styled-components'
 
-import { MileStone, TimelineData } from '../../utils/milestones'
-import { breakpoints, gradients } from '../../utils/theme'
 import BottomRail from './BottomRail'
 import Layout from './layout/Layout'
 import Milestone from './Milestone'
 import TimelineControls from './TimelineControls'
+import { MileStone, TimelineData } from '../../utils/milestones'
+import { breakpoints, gradients } from '../../utils/theme'
 
 const Timeline = () => {
   const [currentMilestoneGroup, setCurrentMilestoneGroup] = useState<MileStone[]>([])

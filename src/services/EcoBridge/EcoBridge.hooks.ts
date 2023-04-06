@@ -3,17 +3,6 @@ import { ChainId, Currency, Token } from '@swapr/sdk'
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 
-import { useActiveWeb3React } from '../../hooks'
-import { parseStringOrBytes32 } from '../../hooks/Tokens'
-import { useBytes32TokenContract, useTokenContract, useWrappingToken } from '../../hooks/useContract'
-import { useNativeCurrency } from '../../hooks/useNativeCurrency'
-import { AppState } from '../../state'
-import { WrappedTokenInfo } from '../../state/lists/wrapped-token-info'
-import { NEVER_RELOAD, useSingleCallResult } from '../../state/multicall/hooks'
-import { tryParseAmount } from '../../state/swap/hooks'
-import { useCurrencyBalances } from '../../state/wallet/hooks'
-import { isAddress } from '../../utils'
-import { currencyId } from '../../utils/currencyId'
 import {
   BridgeModalData,
   BridgeModalState,
@@ -33,6 +22,17 @@ import {
   selectSupportedLists,
 } from './store/EcoBridge.selectors'
 import { ecoBridgeUIActions } from './store/UI.reducer'
+import { useActiveWeb3React } from '../../hooks'
+import { parseStringOrBytes32 } from '../../hooks/Tokens'
+import { useBytes32TokenContract, useTokenContract, useWrappingToken } from '../../hooks/useContract'
+import { useNativeCurrency } from '../../hooks/useNativeCurrency'
+import { AppState } from '../../state'
+import { WrappedTokenInfo } from '../../state/lists/wrapped-token-info'
+import { NEVER_RELOAD, useSingleCallResult } from '../../state/multicall/hooks'
+import { tryParseAmount } from '../../state/swap/hooks'
+import { useCurrencyBalances } from '../../state/wallet/hooks'
+import { isAddress } from '../../utils'
+import { currencyId } from '../../utils/currencyId'
 
 export const useBridgeSupportedTokens = () => {
   const { chainId } = useActiveWeb3React()

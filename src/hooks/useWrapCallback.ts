@@ -5,11 +5,11 @@ import { wrappedCurrency } from '@swapr/sdk/dist/entities/trades/utils'
 import { useEffect, useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 
+import { useNativeCurrencyWrapperContract, useWrappingToken } from './useContract'
+import { useNativeCurrency } from './useNativeCurrency'
 import { tryParseAmount } from '../state/swap/hooks'
 import { useAllSwapTransactions, useTransactionAdder } from '../state/transactions/hooks'
 import { useCurrencyBalance } from '../state/wallet/hooks'
-import { useNativeCurrencyWrapperContract, useWrappingToken } from './useContract'
-import { useNativeCurrency } from './useNativeCurrency'
 
 import { useActiveWeb3React } from './index'
 

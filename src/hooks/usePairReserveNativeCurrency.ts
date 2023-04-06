@@ -4,8 +4,8 @@ import { ChainId, CurrencyAmount, Pair } from '@swapr/sdk'
 import Decimal from 'decimal.js-light'
 import { useMemo } from 'react'
 
-import { useGetPairQuery } from '../graphql/generated/schema'
 import { useNativeCurrency } from './useNativeCurrency'
+import { useGetPairQuery } from '../graphql/generated/schema'
 
 import { useActiveWeb3React } from './index'
 

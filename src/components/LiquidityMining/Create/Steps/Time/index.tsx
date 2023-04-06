@@ -2,12 +2,12 @@ import { useCallback } from 'react'
 import { Flex } from 'rebass'
 import styled from 'styled-components'
 
+import TimeSelector from './TimeSelector'
 import { ReactComponent as LockOpenSvg } from '../../../../../assets/images/lock-open.svg'
 import { ReactComponent as LockSvg } from '../../../../../assets/images/lock.svg'
 import { TYPE } from '../../../../../theme'
 import { Switch } from '../../../../Switch'
 import { HorizontalDivider, SmoothGradientCard } from '../../../styleds'
-import TimeSelector from './TimeSelector'
 
 const StyledSmoothGradientCard = styled(SmoothGradientCard)`
   z-index: 100 !important;

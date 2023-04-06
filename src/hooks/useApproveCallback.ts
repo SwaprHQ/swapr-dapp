@@ -14,13 +14,13 @@ import { wrappedAmount } from '@swapr/sdk/dist/entities/trades/utils'
 
 import { useCallback, useMemo } from 'react'
 
+import { useTokenContract } from './useContract'
+import { useNativeCurrency } from './useNativeCurrency'
 import { useTokenAllowance } from '../data/Allowances'
 import { Field } from '../state/swap/types'
 import { useHasPendingApproval, useTransactionAdder } from '../state/transactions/hooks'
 import { calculateGasMargin } from '../utils'
 import { computeSlippageAdjustedAmounts } from '../utils/prices'
-import { useTokenContract } from './useContract'
-import { useNativeCurrency } from './useNativeCurrency'
 
 import { useActiveWeb3React } from './index'
 

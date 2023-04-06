@@ -6,6 +6,7 @@ import { Settings } from 'react-feather'
 import { Box, Flex } from 'rebass'
 import styled from 'styled-components'
 
+import { SwapPlatformSelector } from './SwapPlatformSelector'
 import { AutoColumn } from '../../../components/Column'
 import { GreenGasPriceOption, OrangeGasPriceOption, PurpleGasPriceOption } from '../../../components/GasBadges'
 import { RowFixed } from '../../../components/Row'
@@ -13,7 +14,6 @@ import { useActiveWeb3React } from '../../../hooks'
 import { MainnetGasPrice } from '../../../state/application/actions'
 import { useMainnetGasPrices, useToggleSettingsMenu } from '../../../state/application/hooks'
 import { useMultihopManager, useUserPreferredGasPrice } from '../../../state/user/hooks'
-import { SwapPlatformSelector } from './SwapPlatformSelector'
 
 const HideableAutoColumn = styled(AutoColumn)<{ show: boolean }>`
   transform: ${({ show }) => (show ? 'translateY(16px)' : 'translateY(-100%)')};

@@ -15,9 +15,16 @@ import { ERC20 } from '@arbitrum/sdk/dist/lib/abi/ERC20'
 import { L2GatewayToken } from '@arbitrum/sdk/dist/lib/abi/L2GatewayToken'
 import { TokenList } from '@uniswap/token-lists'
 import { BigNumber, Signer } from 'ethers'
-import request from 'graphql-request'
+// import request from 'graphql-request'
 
-import { subgraphClientsUris } from '../../../apollo/client'
+import { arbitrumTransactionsAdapter } from './ArbitrumBridge.adapter'
+import ARBITRUM_TOKEN_LISTS_CONFIG from './ArbitrumBridge.lists.json'
+import { arbitrumActions } from './ArbitrumBridge.reducer'
+import { arbitrumSelectors } from './ArbitrumBridge.selectors'
+import { hasArbitrumMetadata } from './ArbitrumBridge.types'
+import { migrateBridgeTransactions } from './ArbitrumBridge.utils'
+import { subgraphClients } from '../../../apollo/client'
+import { GetBundleDocument, GetBundleQuery } from '../../../graphql/generated/schema'
 import { ArbitrumBridgeTxn, BridgeAssetType, BridgeTransactionSummary } from '../../../state/bridgeTransactions/types'
 import { addTransaction } from '../../../state/transactions/actions'
 import { getChainPair, txnTypeToLayer } from '../../../utils/arbitrum'
@@ -32,12 +39,6 @@ import {
   SyncState,
 } from '../EcoBridge.types'
 import { ButtonStatus, EcoBridgeChildBase } from '../EcoBridge.utils'
-import { arbitrumTransactionsAdapter } from './ArbitrumBridge.adapter'
-import ARBITRUM_TOKEN_LISTS_CONFIG from './ArbitrumBridge.lists.json'
-import { arbitrumActions } from './ArbitrumBridge.reducer'
-import { arbitrumSelectors } from './ArbitrumBridge.selectors'
-import { hasArbitrumMetadata } from './ArbitrumBridge.types'
-import { migrateBridgeTransactions, QUERY_ETH_PRICE } from './ArbitrumBridge.utils'
 
 export class ArbitrumBridge extends EcoBridgeChildBase {
   private l1ChainId: ChainId
@@ -773,9 +774,15 @@ export class ArbitrumBridge extends EcoBridgeChildBase {
       }
 
       const {
-        bundle: { nativeCurrencyPrice },
-      } = await request(subgraphClientsUris[this._activeChainId as SWPRSupportedChains], QUERY_ETH_PRICE)
-
+        data: { bundle },
+        error,
+      } = await subgraphClients[this._activeChainId as SWPRSupportedChains].query<GetBundleQuery>({
+        query: GetBundleDocument,
+      })
+      if (error) {
+        console.error(error.message)
+      }
+      const { nativeCurrencyPrice } = bundle ?? { nativeCurrencyPrice: '0' }
       const totalTxnGasCostInWei = Number(gas) * Number(gasPrice) //gas units * gas price (wei)
 
       const totalTxnGasCostInEth = formatUnits(totalTxnGasCostInWei, 18)
