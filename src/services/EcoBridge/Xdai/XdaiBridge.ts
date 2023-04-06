@@ -26,12 +26,11 @@ import {
   packSignatures,
   signatureToVRS,
 } from './XdaiBridge.utils'
-import { subgraphClients } from '../../../apollo/client'
 import { ZERO_ADDRESS } from '../../../constants'
 import ERC20_ABI from '../../../constants/abis/erc20.json'
-import { GetBundleQuery, GetBundleDocument } from '../../../graphql/generated/schema'
 import { BridgeTransactionStatus } from '../../../state/bridgeTransactions/types'
 import { SWPRSupportedChains } from '../../../utils/chainSupportsSWPR'
+import { formatNumber } from '../../../utils/formatNumber'
 import {
   BridgeModalStatus,
   EcoBridgeChangeHandler,
@@ -40,7 +39,7 @@ import {
   SyncState,
   XdaiBridgeList,
 } from '../EcoBridge.types'
-import { ButtonStatus, EcoBridgeChildBase } from '../EcoBridge.utils'
+import { ButtonStatus, EcoBridgeChildBase, getNativeCurrencyPrice } from '../EcoBridge.utils'
 
 export class XdaiBridge extends EcoBridgeChildBase {
   private _homeChainId = ChainId.XDAI
@@ -131,22 +130,15 @@ export class XdaiBridge extends EcoBridgeChildBase {
     try {
       const gasPrice = await this._activeProvider?.getGasPrice()
 
-      const {
-        data: { bundle },
-        error,
-      } = await subgraphClients[this._activeChainId as SWPRSupportedChains].query<GetBundleQuery>({
-        query: GetBundleDocument,
-      })
-      if (error) {
-        console.error(error.message)
-      }
-      const { nativeCurrencyPrice } = bundle ?? { nativeCurrencyPrice: 0 }
+      const nativeCurrencyPrice = await getNativeCurrencyPrice(this._activeChainId as SWPRSupportedChains)
 
       const gasCost = estimatedGas * Number(gasPrice?.toString())
 
       const formattedGasCost = formatUnits(gasCost, 18)
 
-      gas = `${Number(Number(formattedGasCost) * Number(nativeCurrencyPrice)).toFixed(2)}$`
+      if (nativeCurrencyPrice !== 0) {
+        gas = `${formatNumber(Number(formattedGasCost) * nativeCurrencyPrice, true)}`
+      }
     } catch (error) {
       console.log(error)
     }

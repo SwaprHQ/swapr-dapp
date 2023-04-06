@@ -37,17 +37,16 @@ import {
   getMessage,
   getMessageData,
   messageCallStatus,
-  QUERY_ETH_PRICE,
   relayTokens,
   requiredSignatures,
   timeout,
 } from './OmniBridge.utils'
 import { executionsQuery, partnerTxHashQuery, requestsUserQuery } from './subgraph/history'
 import { foreignTokensQuery, homeTokensQuery } from './subgraph/tokens'
-import { subgraphClientsUris } from '../../../apollo/client'
 import { ZERO_ADDRESS } from '../../../constants'
 import { BridgeTransactionStatus } from '../../../state/bridgeTransactions/types'
 import { SWPRSupportedChains } from '../../../utils/chainSupportsSWPR'
+import { formatNumber } from '../../../utils/formatNumber'
 import {
   BridgeModalStatus,
   EcoBridgeChangeHandler,
@@ -56,7 +55,7 @@ import {
   OmniBridgeList,
   SyncState,
 } from '../EcoBridge.types'
-import { ButtonStatus, EcoBridgeChildBase } from '../EcoBridge.utils'
+import { ButtonStatus, EcoBridgeChildBase, getNativeCurrencyPrice } from '../EcoBridge.utils'
 export class OmniBridge extends EcoBridgeChildBase {
   private _homeChainId: ChainId
   private _foreignChainId: ChainId
@@ -584,14 +583,13 @@ export class OmniBridge extends EcoBridgeChildBase {
 
       if (!gasPrice) throw this.ecoBridgeUtils.logger.error('Cannot get gas price')
 
-      const {
-        //@ts-expect-error
-        bundle: { nativeCurrencyPrice },
-      } = await request(subgraphClientsUris[this._activeChainId as SWPRSupportedChains], QUERY_ETH_PRICE)
+      const nativeCurrencyPrice = await getNativeCurrencyPrice(this._activeChainId as SWPRSupportedChains)
 
       const gasCostInNativeCurrency = formatEther(gasPrice.mul(GAS_COST))
 
-      gas = `${(Number(gasCostInNativeCurrency) * Number(nativeCurrencyPrice)).toFixed(2)}$`
+      if (nativeCurrencyPrice !== 0) {
+        gas = `${formatNumber(Number(gasCostInNativeCurrency) * nativeCurrencyPrice, true)}` // mul eth cost * eth price
+      }
     } catch (e) {
       gas = undefined
     }

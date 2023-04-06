@@ -16,7 +16,10 @@ import {
 } from './EcoBridge.types'
 import { commonActions } from './store/Common.reducer'
 import { ecoBridgeUIActions } from './store/UI.reducer'
+import { subgraphClients } from '../../apollo/client'
+import { GetBundleQuery, GetBundleDocument } from '../../graphql/generated/schema'
 import { BridgeTransactionSummary } from '../../state/bridgeTransactions/types'
+import { SWPRSupportedChains } from '../../utils/chainSupportsSWPR'
 
 export enum ButtonStatus {
   APPROVE = 'Approve',
@@ -339,4 +342,19 @@ export const createEcoBridgeChildBaseSlice = <T, Reducers extends SliceCaseReduc
       ...reducers,
     },
   })
+}
+
+export const getNativeCurrencyPrice = async (activeChainId: SWPRSupportedChains): Promise<number> => {
+  const {
+    data: { bundle },
+    error,
+  } = await subgraphClients[activeChainId].query<GetBundleQuery>({
+    query: GetBundleDocument,
+  })
+  if (error) {
+    console.error('Native Currency fetch error : ', error.message)
+  }
+  const { nativeCurrencyPrice } = bundle ?? { nativeCurrencyPrice: 0 }
+
+  return Number(nativeCurrencyPrice ?? 0)
 }
