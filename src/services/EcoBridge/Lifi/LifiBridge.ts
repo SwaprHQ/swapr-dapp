@@ -6,6 +6,7 @@ import { BigNumber, Contract, ethers } from 'ethers'
 import { formatUnits, parseUnits } from 'ethers/lib/utils'
 
 import LifiLogo from '../../../assets/images/lifi-logo.png'
+import { formatNumber } from '../../../utils/formatNumber'
 import {
   BridgeModalStatus,
   EcoBridgeChangeHandler,
@@ -132,7 +133,7 @@ export class LifiBridge extends EcoBridgeChildBase {
       this.ecoBridgeUtils.metadataStatus.fail('No available routes / details')
       return
     }
-    if (!step) {
+    if (step === undefined) {
       this.ecoBridgeUtils.metadataStatus.fail('No available routes / details')
       return
     }
@@ -141,10 +142,11 @@ export class LifiBridge extends EcoBridgeChildBase {
 
     const { id: routeId, action, estimate } = step
     const { executionDuration, toAmount, gasCosts, feeCosts } = estimate
-    const totalFees = feeCosts?.reduce((cost, costs) => {
-      cost += Number(costs?.amountUSD ?? 0)
-      return cost
-    }, 0)
+    const totalFees =
+      feeCosts?.reduce((cost, costs) => {
+        cost += Number(costs?.amountUSD ?? 0)
+        return cost
+      }, 0) ?? 0
     const { toToken } = action
     const { amountUSD: totalGasFeeUSD } = gasCosts?.[0] ?? {}
     const formattedToAmount = Number(formatUnits(toAmount, toToken.decimals))
@@ -153,8 +155,8 @@ export class LifiBridge extends EcoBridgeChildBase {
 
     this.store.dispatch(
       this.baseActions.setBridgeDetails({
-        gas: `${Number(totalGasFeeUSD ?? 0).toFixed(2)}$`,
-        fee: `${totalFees}$`,
+        gas: `${formatNumber(totalGasFeeUSD ?? 0, true)}`,
+        fee: `${formatNumber(totalFees, true)}`,
         estimateTime: executionDuration ? `${(executionDuration / 60).toFixed(0).toString()} min` : undefined,
         receiveAmount: formattedToAmount,
         requestId,
@@ -162,10 +164,13 @@ export class LifiBridge extends EcoBridgeChildBase {
       })
     )
   }
-
+  // Initialize the bridge
   init = async ({ account, activeChainId, activeProvider, staticProviders, store }: EcoBridgeChildBaseInit) => {
+    // Set the initial environment
     this.setInitialEnv({ staticProviders, store })
+    // Set the signer data
     this.setSignerData({ account, activeChainId, activeProvider })
+    // Start the listeners
     this.ecoBridgeUtils.listeners.start([{ listener: this.#pendingTxListener }])
   }
 
@@ -198,7 +203,7 @@ export class LifiBridge extends EcoBridgeChildBase {
     const routeId = this.store.getState().ecoBridge.common.activeRouteId
     const route = this.#selectors().selectRoute(this.store.getState())
 
-    //this shouldn't happen because validation on front not allowed to set bridge which status is "failed"
+    //this shouldn't happen because validation on fronted not allowed to set bridge when status is "failed"
     if (!routeId || !route || route.id !== routeId) return
 
     try {

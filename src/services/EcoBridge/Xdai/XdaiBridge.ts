@@ -141,7 +141,7 @@ export class XdaiBridge extends EcoBridgeChildBase {
         gas = `${formatNumber(Number(formattedGasCost) * nativeCurrencyPrice, true)}`
       }
     } catch (error) {
-      console.log(error)
+      console.log("XDai Brige coudn't fetch nativeCurrencyPrice", error)
     }
 
     this.store.dispatch(
