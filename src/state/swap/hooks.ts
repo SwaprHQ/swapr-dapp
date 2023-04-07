@@ -37,6 +37,7 @@ import { wrappedCurrency } from '../../utils/wrappedCurrency'
 import { AppDispatch, AppState } from '../index'
 import { useIsMultihop, useUserSlippageTolerance } from '../user/hooks'
 import { useCurrencyBalances } from '../wallet/hooks'
+
 import { replaceSwapState, selectCurrency, setRecipient, switchCurrencies, typeInput } from './actions'
 import { Field } from './types'
 

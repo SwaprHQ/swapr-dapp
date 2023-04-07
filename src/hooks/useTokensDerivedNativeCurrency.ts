@@ -5,6 +5,7 @@ import Decimal from 'decimal.js-light'
 import { useMemo } from 'react'
 
 import { useGetDerivedNativeCurrencyTokensQuery } from '../graphql/generated/schema'
+
 import { useKpiTokens } from './useKpiTokens'
 import { useNativeCurrency } from './useNativeCurrency'
 

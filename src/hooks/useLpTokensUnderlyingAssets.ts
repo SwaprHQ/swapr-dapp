@@ -6,6 +6,7 @@ import { useMemo } from 'react'
 
 import { useGetPairQuery } from '../graphql/generated/schema'
 import type { Pair as PairType } from '../graphql/generated/schema'
+
 import { useNativeCurrency } from './useNativeCurrency'
 
 import { useActiveWeb3React } from './index'

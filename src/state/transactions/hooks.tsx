@@ -9,6 +9,7 @@ import { type BridgeTransaction, TransactionType } from '../../pages/Account/Acc
 import { selectBridgeTransactions } from '../../services/EcoBridge/store/EcoBridge.selectors'
 import { AppDispatch, AppState } from '../index'
 import { useListsByAddress } from '../lists/hooks'
+
 import { addTransaction } from './actions'
 import { TransactionDetails } from './reducer'
 

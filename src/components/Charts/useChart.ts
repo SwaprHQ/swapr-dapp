@@ -1,4 +1,4 @@
-import { createChart, UTCTimestamp } from 'lightweight-charts'
+import { ColorType, createChart, MouseEventParams, UTCTimestamp } from 'lightweight-charts'
 import { useEffect, useRef, useState } from 'react'
 
 import {
@@ -39,7 +39,7 @@ export function useChart({ data, showHours }: ChartProps) {
       height: 248,
       width: chartRef.current.parentElement.clientWidth,
       layout: {
-        backgroundColor: chartColors.backgroundColor,
+        background: { type: ColorType.Solid, color: chartColors.backgroundColor },
         textColor: chartColors.textColor,
       },
       leftPriceScale: {
@@ -101,12 +101,14 @@ export function useChart({ data, showHours }: ChartProps) {
     }
     chart.timeScale().fitContent()
 
-    chart.subscribeCrosshairMove(function (param) {
-      const currentPrice = param?.seriesPrices.get(newSeries) ?? lastDataElement(data)?.value ?? 0
-      setPrice(currentPrice as string)
+    function handler(param: MouseEventParams) {
+      const currentPrice = param?.seriesData.get(newSeries) ?? lastDataElement(data)?.value ?? 0
+      setPrice(currentPrice?.toString() ?? '0')
       const time = param?.time ? param?.time : lastDataElement(data)?.time ?? 0
       setDate(buildDate(time as UTCTimestamp))
-    })
+    }
+
+    chart.subscribeCrosshairMove(handler)
 
     const handleResize = () => {
       chart.timeScale().fitContent()
@@ -122,6 +124,7 @@ export function useChart({ data, showHours }: ChartProps) {
       window.removeEventListener('resize', handleResize)
       setPrice('0')
       setDate(buildDate(lastElementTimeOrDefault(data)))
+      chart.unsubscribeCrosshairMove(handler)
       chart.remove()
     }
   }, [data, showHours])

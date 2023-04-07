@@ -22,6 +22,7 @@ import { ButtonPrimary } from '../../Button'
 import { Pagination } from '../../Pagination'
 import { UndecoratedLink } from '../../UndercoratedLink'
 import { PairsFilterType } from '../ListFilter'
+
 import { LoadingList } from './LoadingList'
 import { Pair as PairCard } from './Pair'
 

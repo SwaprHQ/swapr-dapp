@@ -6,6 +6,7 @@ import { SubgraphLiquidityMiningCampaign } from '../apollo'
 import { usePairLiquidityTokenTotalSupply } from '../data/Reserves'
 import { useGetLiquidityMiningCampaignQuery } from '../graphql/generated/schema'
 import { toLiquidityMiningCampaign } from '../utils/liquidityMining'
+
 import { useKpiTokens } from './useKpiTokens'
 import { useNativeCurrency } from './useNativeCurrency'
 import { usePairReserveNativeCurrency } from './usePairReserveNativeCurrency'

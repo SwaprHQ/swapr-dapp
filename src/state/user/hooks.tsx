@@ -10,6 +10,7 @@ import { useActiveWeb3React } from '../../hooks'
 import { useAllTokens } from '../../hooks/Tokens'
 import { MainnetGasPrice } from '../application/actions'
 import { AppDispatch, AppState } from '../index'
+
 import {
   addSerializedPair,
   addSerializedToken,

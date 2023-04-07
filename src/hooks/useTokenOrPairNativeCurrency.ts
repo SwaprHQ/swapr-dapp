@@ -6,6 +6,7 @@ import { useMemo } from 'react'
 
 import { usePairLiquidityTokenTotalSupply } from '../data/Reserves'
 import { getLpTokenPrice } from '../utils/prices'
+
 import { useNativeCurrency } from './useNativeCurrency'
 import { usePairReserveNativeCurrency } from './usePairReserveNativeCurrency'
 import { useTokenDerivedNativeCurrency } from './useTokenDerivedNativeCurrency'

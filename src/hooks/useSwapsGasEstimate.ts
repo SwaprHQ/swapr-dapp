@@ -13,6 +13,7 @@ import { Field } from '../state/swap/types'
 import { useUserPreferredGasPrice } from '../state/user/hooks'
 import { useCurrencyBalance } from '../state/wallet/hooks'
 import { calculateGasMargin } from '../utils'
+
 import { useCurrency } from './Tokens'
 import useENS from './useENS'
 import { useSwapsCallArguments } from './useSwapCallback'

@@ -2,6 +2,7 @@ import styled, { keyframes } from 'styled-components'
 
 import { breakpoints, gradients } from '../../utils/theme'
 import { CommunityBannerContent } from '../../utils/uiConstants'
+
 import dxDaoLogo from './../../assets/images/logo-dxdao.svg'
 import BannerGraphic1 from './../../assets/images/owned-by-1.png'
 import BannerGraphic2 from './../../assets/images/owned-by-2.png'

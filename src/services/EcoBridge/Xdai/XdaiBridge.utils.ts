@@ -5,6 +5,7 @@ import { utils } from 'ethers'
 
 import { ZERO_ADDRESS } from '../../../constants'
 import { BridgeTransactionStatus } from '../../../state/bridgeTransactions/types'
+
 import { XdaiBridgeExecutions, XdaiBridgeRequests, XdaiBridgeTransaction } from './XdaiBridge.types'
 
 export const ETHEREUM_BRIDGE_ADDRESS = '0x4aa42145Aa6Ebf72e164C9bBC74fbD3788045016'

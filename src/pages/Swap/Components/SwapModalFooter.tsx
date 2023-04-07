@@ -18,6 +18,7 @@ import {
   formatExecutionPrice,
   warningSeverity,
 } from '../../../utils/prices'
+
 import FormattedPriceImpact from './FormattedPriceImpact'
 import { StyledBalanceMaxMini, SwapCallbackError } from './styles'
 

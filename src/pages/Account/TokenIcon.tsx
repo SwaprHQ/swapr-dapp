@@ -7,6 +7,7 @@ import SWPRLogo from '../../assets/images/swpr-logo.png'
 import { getTokenLogoURL, NATIVE_CURRENCY_LOGO } from '../../components/CurrencyLogo/CurrencyLogo.utils'
 import { ZERO_ADDRESS } from '../../constants'
 import { useListsByAddress, useListsByToken } from '../../state/lists/hooks'
+
 import { StyledLogo } from './Account.styles'
 import { getNetworkDefaultTokenUrl } from './utils/accountUtils'
 

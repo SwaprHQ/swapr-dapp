@@ -8,6 +8,7 @@ import { useTranslation } from 'react-i18next'
 import { tryParseAmount } from '../state/swap/hooks'
 import { useAllSwapTransactions, useTransactionAdder } from '../state/transactions/hooks'
 import { useCurrencyBalance } from '../state/wallet/hooks'
+
 import { useNativeCurrencyWrapperContract, useWrappingToken } from './useContract'
 import { useNativeCurrency } from './useNativeCurrency'
 

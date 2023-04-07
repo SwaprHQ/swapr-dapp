@@ -3,6 +3,7 @@ import styled from 'styled-components'
 
 import { MileStone, TimelineData } from '../../utils/milestones'
 import { breakpoints, gradients } from '../../utils/theme'
+
 import BottomRail from './BottomRail'
 import Layout from './layout/Layout'
 import Milestone from './Milestone'

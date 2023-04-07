@@ -1,6 +1,7 @@
 import { Fragment } from 'react'
 
 import { type Transaction, TransactionType } from '../Account.types'
+
 import { BridgeTransactionRow } from './BridgeTransactionRow'
 import { LimitTransactionRow } from './LimitTransactionRow'
 import { SwapTransactionRow } from './SwapTransactionRow'

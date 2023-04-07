@@ -14,6 +14,7 @@ import { Field } from '../../../state/swap/types'
 import { TYPE } from '../../../theme'
 import { shortenAddress } from '../../../utils'
 import { computeSlippageAdjustedAmounts, computeTradePriceBreakdown, warningSeverity } from '../../../utils/prices'
+
 import { SwapShowAcceptChanges, TruncatedText } from './styles'
 
 export default function SwapModalHeader({

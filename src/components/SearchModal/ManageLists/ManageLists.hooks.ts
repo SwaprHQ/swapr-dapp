@@ -15,6 +15,7 @@ import { useActiveListUrls, useAllLists } from '../../../state/lists/hooks'
 import { parseENSAddress } from '../../../utils/parseENSAddress'
 import uriToHttp from '../../../utils/uriToHttp'
 import { CurrencyModalView } from '../CurrencySearchModal'
+
 import { ListRowContext } from './ManageLists.context'
 import { ListRowContextType, ListRowProps, ManageListsContextType, ManageListsProps } from './ManageLists.types'
 

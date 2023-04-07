@@ -7,6 +7,7 @@ import { TokenList } from '@uniswap/token-lists'
 import { AppState } from '../../state'
 import { ListsState } from '../../state/lists/reducer'
 import { WrappedTokenInfo } from '../../state/lists/wrapped-token-info'
+
 import { EcoBridgeChildBase } from './EcoBridge.utils'
 
 export interface EcoBridgeChildBaseState {

@@ -25,6 +25,7 @@ import { TriangleIcon } from '../Icons'
 import NetworkSwitcherPopover from '../NetworkSwitcherPopover'
 import Row from '../Row'
 import WalletModal from '../WalletModal'
+
 import { AccountStatus } from './AccountStatus'
 import { ConnectWalletPopover } from './ConnectWalletPopover'
 

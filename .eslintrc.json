@@ -30,10 +30,11 @@
       }
     ],
     "import/no-unresolved": "off",
+    "import/no-duplicates": ["error"],
     "import/order": [
       "error",
       {
-        "groups": ["internal", ["builtin", "external"], ["parent", "sibling"]],
+        "groups": ["internal", ["builtin", "external"], "parent", "sibling"],
         "pathGroups": [
           {
             "pattern": "@swapr/**",

@@ -13,6 +13,7 @@ import { NumericalInput } from '../Input/NumericalInput'
 import { Loader } from '../Loader'
 import { RowBetween } from '../Row'
 import { CurrencySearchModalComponent } from '../SearchModal/CurrencySearchModal'
+
 import {
   Aligner,
   Container,

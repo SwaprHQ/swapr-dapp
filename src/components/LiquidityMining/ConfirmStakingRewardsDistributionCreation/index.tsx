@@ -6,6 +6,7 @@ import TransactionConfirmationModal, {
   ConfirmationModalContent,
   TransactionErrorContent,
 } from '../../TransactionConfirmationModal'
+
 import StakingRewardsDistributionCreationModalFooter from './StakingRewardsDistributionCreationModalFooter'
 
 interface ConfirmStakingRewardsDistributionCreationProps {

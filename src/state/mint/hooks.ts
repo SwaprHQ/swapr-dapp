@@ -11,6 +11,7 @@ import { wrappedCurrency, wrappedCurrencyAmount } from '../../utils/wrappedCurre
 import { AppDispatch, AppState } from '../index'
 import { tryParseAmount } from '../swap/hooks'
 import { useCurrencyBalances } from '../wallet/hooks'
+
 import { Field, typeInput } from './actions'
 
 const ZERO = JSBI.BigInt(0)

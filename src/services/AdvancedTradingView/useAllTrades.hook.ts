@@ -7,6 +7,7 @@ import { formatTransactions } from '../../pages/Account/utils/accountUtils'
 import { useLimitOrderTransactions } from '../../pages/Swap/LimitOrderBox/utils/hooks'
 import { useAllBridgeTransactions, useAllSwapTransactions } from '../../state/transactions/hooks'
 import { sortByTimeStamp } from '../../utils/sortByTimestamp'
+
 import { AdvancedViewTransaction } from './advancedTradingView.types'
 import {
   selectAllDataFromAdapters,

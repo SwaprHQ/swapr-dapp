@@ -2,6 +2,7 @@ import { Box, Flex } from 'rebass'
 
 import { TYPE } from '../../theme/index'
 import { PercentualDifferenceText } from '../PercentualDifference/PercentualDifferenceText'
+
 import { ChartData, formatDate, formatPrice, lastElementValueOrDefault } from './chartUtils'
 import { useChart } from './useChart'
 

@@ -2,6 +2,7 @@ import styled from 'styled-components'
 
 import { breakpoints, gradients } from '../../utils/theme'
 import { FeaturesContent } from '../../utils/uiConstants'
+
 import FeatureItem from './FeatureItem'
 import Layout from './layout/Layout'
 

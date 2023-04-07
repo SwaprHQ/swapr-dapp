@@ -3,6 +3,7 @@ import { ChainId } from '@swapr/sdk'
 import { Store } from '@reduxjs/toolkit'
 
 import { AppState } from '../../state'
+
 import { initiateEcoBridgeProviders } from './EcoBridge.providers'
 import {
   BridgeList,

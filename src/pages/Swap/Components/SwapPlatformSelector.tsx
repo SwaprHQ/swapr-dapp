@@ -34,6 +34,7 @@ import {
   limitNumberOfDecimalPlaces,
   simpleWarningSeverity,
 } from '../../../utils/prices'
+
 import { PlatformSelectorLoader } from './SwapPlatformSelectorLoader'
 import SwapRoute from './SwapRoute'
 

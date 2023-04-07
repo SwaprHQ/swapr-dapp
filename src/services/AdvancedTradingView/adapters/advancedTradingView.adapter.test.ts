@@ -3,6 +3,7 @@ import { ChainId, Token } from '@swapr/sdk'
 import { configureStore, Store } from '@reduxjs/toolkit'
 
 import advancedTradingView from '../store/advancedTradingView.reducer'
+
 import { adapters } from './adapters.config'
 import { AdvancedTradingViewAdapter } from './advancedTradingView.adapter'
 import { BaseAppState } from './baseAdapter/base.adapter'

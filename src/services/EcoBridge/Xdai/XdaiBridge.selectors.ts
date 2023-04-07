@@ -5,6 +5,7 @@ import { BridgeTransactionStatus, BridgeTransactionSummary } from '../../../stat
 import { normalizeInputValue } from '../../../utils'
 import { ArbitrumPendingReasons } from '../Arbitrum/ArbitrumBridge.types'
 import { XdaiBridgeList } from '../EcoBridge.types'
+
 import { xdaiBridgeTransactionAdapter } from './XdaiBridge.adapter'
 
 const createSelectOwnedTransactions = (bridgeId: XdaiBridgeList) => {

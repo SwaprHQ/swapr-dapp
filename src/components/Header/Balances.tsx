@@ -8,6 +8,7 @@ import { useActiveWeb3React, useUnsupportedChainIdError } from '../../hooks'
 import { useNativeCurrency } from '../../hooks/useNativeCurrency'
 import { useToggleShowClaimPopup } from '../../state/application/hooks'
 import { useNativeCurrencyBalance, useTokenBalance } from '../../state/wallet/hooks'
+
 import { Amount } from './styled'
 
 const StyledBalanacesWrapper = styled.div(

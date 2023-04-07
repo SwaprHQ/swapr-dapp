@@ -4,6 +4,7 @@ import { PayloadAction } from '@reduxjs/toolkit'
 
 import { OmniBridgeList } from '../EcoBridge.types'
 import { createEcoBridgeChildBaseSlice } from '../EcoBridge.utils'
+
 import { omniTransactionsAdapter } from './OmniBridge.adapter'
 import { OmnibridgeInitialState, OmniBridgeTransaction, OmnibridgeTransactionMessage } from './OmniBridge.types'
 

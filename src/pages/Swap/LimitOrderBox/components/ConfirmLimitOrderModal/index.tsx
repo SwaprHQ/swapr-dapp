@@ -9,6 +9,7 @@ import TransactionConfirmationModal, {
 import { LimitOrderFormContext } from '../../contexts/LimitOrderFormContext'
 import { LimitOrderKind, MarketPrices } from '../../interfaces'
 import { calculateMarketPriceDiffPercentage } from '../../utils'
+
 import { ConfirmationFooter } from './ConfirmationFooter'
 import { ConfirmationHeader } from './ConfirmationHeader'
 

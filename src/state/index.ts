@@ -7,6 +7,7 @@ import {
   fixCorruptedEcoBridgeLocalStorageEntries,
 } from '../services/EcoBridge/EcoBridge.config'
 import ecoBridge from '../services/EcoBridge/store/EcoBridge.reducer'
+
 import application from './application/reducer'
 import bridgeTransactions from './bridgeTransactions/reducer'
 import burn from './burn/reducer'

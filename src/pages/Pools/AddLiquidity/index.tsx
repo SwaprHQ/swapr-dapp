@@ -42,6 +42,7 @@ import { wrappedCurrency } from '../../../utils/wrappedCurrency'
 import AppBody from '../../AppBody'
 import TradePrice from '../../Swap/Components/TradePrice'
 import { Dots, Wrapper } from '../styleds'
+
 import { ConfirmAddModalBottom } from './ConfirmAddModalBottom'
 
 type CurrencySearchParams = {

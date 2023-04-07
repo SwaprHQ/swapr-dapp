@@ -6,6 +6,7 @@ import { useEffect, useState } from 'react'
 // Web3 hooks
 import { useActiveWeb3React } from '../../hooks'
 import { useIsMultihop, useUserSlippageTolerance } from '../../state/user/hooks'
+
 import { getExactIn, getExactOut } from './api'
 // Types
 // eslint-disable-next-line

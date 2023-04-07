@@ -14,6 +14,7 @@ import {
   getRewardTokenAddressFromPair,
   SubgraphPair,
 } from '../utils/liquidityMining'
+
 import { useKpiTokens } from './useKpiTokens'
 import { useNativeCurrency } from './useNativeCurrency'
 

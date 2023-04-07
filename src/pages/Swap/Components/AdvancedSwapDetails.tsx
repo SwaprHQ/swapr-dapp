@@ -10,6 +10,7 @@ import { useToggleSettingsMenu } from '../../../state/application/hooks'
 import { useUserSlippageTolerance } from '../../../state/user/hooks'
 import { TYPE } from '../../../theme'
 import { computeTradePriceBreakdown } from '../../../utils/prices'
+
 import FormattedPriceImpact from './FormattedPriceImpact'
 
 const StyledMenuIcon = styled(Settings)`

@@ -6,6 +6,7 @@ import { AdvancedDetailsFooter } from '../../components/AdvancedDetailsFooter'
 import { BridgeTransactionStatus, BridgeTransactionSummary } from '../../state/bridgeTransactions/types'
 import { getExplorerLink } from '../../utils'
 import { getNetworkInfo } from '../../utils/networksList'
+
 import { BridgeStatusTag } from './BridgeStatusTag'
 
 const Container = styled.div`

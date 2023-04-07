@@ -9,6 +9,7 @@ import { useMemo } from 'react'
 import { SubgraphLiquidityMiningCampaign } from '../apollo'
 import { useGetUserLiquidityPositionsQuery } from '../graphql/generated/schema'
 import { getBestApyPairCampaign, toLiquidityMiningCampaign } from '../utils/liquidityMining'
+
 import { useKpiTokens } from './useKpiTokens'
 import { useNativeCurrency } from './useNativeCurrency'
 

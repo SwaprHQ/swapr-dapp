@@ -10,6 +10,7 @@ import { AutoColumn } from '../../../components/Column'
 import { RecipientField } from '../../../components/RecipientField'
 import { RowBetween, RowFixed } from '../../../components/Row'
 import { TYPE } from '../../../theme'
+
 import { SwapSettings } from './SwapSettings'
 import TradePrice from './TradePrice'
 

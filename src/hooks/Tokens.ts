@@ -16,6 +16,7 @@ import { WrappedTokenInfo } from '../state/lists/wrapped-token-info'
 import { NEVER_RELOAD, useSingleCallResult } from '../state/multicall/hooks'
 import { useUserAddedPairs, useUserAddedTokens } from '../state/user/hooks'
 import { isAddress } from '../utils'
+
 import { useBytes32TokenContract, useTokenContract, useWrappingToken } from './useContract'
 import { useNativeCurrency } from './useNativeCurrency'
 

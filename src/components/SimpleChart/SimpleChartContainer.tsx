@@ -4,6 +4,7 @@ import React, { useLayoutEffect, useState } from 'react'
 
 import { usePairTokenPriceByTimestamp } from '../../hooks/usePairTokenPriceByTimestamp'
 import { DATE_INTERVALS } from '../Charts/chartUtils'
+
 import { SimpleChart } from './SimpleChart'
 
 type SimpleChartContainerProps = { currency0?: Currency; currency1?: Currency }

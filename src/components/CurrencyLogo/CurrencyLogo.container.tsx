@@ -10,6 +10,7 @@ import useHttpLocations from '../../hooks/useHttpLocations'
 import { useBridgeTokenInfo } from '../../services/EcoBridge/EcoBridge.hooks'
 import { useTokenInfoFromActiveListOnCurrentChain } from '../../state/lists/hooks'
 import { WrappedTokenInfo } from '../../state/lists/wrapped-token-info'
+
 import { CurrencyLogoComponent } from './CurrencyLogo.component'
 import { CurrencyLogoContainerProps, CurrencyWrapperSource } from './CurrencyLogo.types'
 import { getTokenLogoURL, NATIVE_CURRENCY_LOGO } from './CurrencyLogo.utils'

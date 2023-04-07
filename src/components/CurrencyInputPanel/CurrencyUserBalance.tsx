@@ -6,6 +6,7 @@ import { useTheme } from 'styled-components'
 import { useActiveWeb3React } from '../../hooks'
 import { TYPE } from '../../theme'
 import { limitNumberOfDecimalPlaces } from '../../utils/prices'
+
 import { UnderlinedSmallText, UppercaseHelper } from './CurrencyInputPanel.styles'
 import { CurrencyUserBalanceProps } from './CurrencyInputPanel.types'
 

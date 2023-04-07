@@ -4,6 +4,7 @@ import { useCallback } from 'react'
 
 import Modal from '../../Modal'
 import { PairSearch } from '../PairSearch'
+
 import { PairSearchModalProps } from './PairSearchModal.types'
 
 export const PairSearchModal = ({

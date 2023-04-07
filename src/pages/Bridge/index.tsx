@@ -37,6 +37,7 @@ import { BridgeTransactionSummary } from '../../state/bridgeTransactions/types'
 import { maxAmountSpend } from '../../utils/maxAmountSpend'
 import { createNetworksList, getNetworkOptions } from '../../utils/networksList'
 import AppBody from '../AppBody'
+
 import { BridgeActionPanel } from './ActionPanel/BridgeActionPanel'
 import { AssetSelector } from './AssetsSelector'
 import { BridgeModal } from './BridgeModal/BridgeModal'

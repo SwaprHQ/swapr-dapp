@@ -9,6 +9,7 @@ import chunkArray from '../../utils/ChuckArray'
 import { retry, RetryableError } from '../../utils/retry'
 import { useBlockNumber } from '../application/hooks'
 import { AppState } from '../index'
+
 import { errorFetchingMulticallResults, fetchingMulticallResults, updateMulticallResults } from './actions'
 import { MulticallState } from './reducer'
 import { Call, parseCallKey } from './utils'

@@ -11,6 +11,7 @@ import { RowBetween } from '../../../components/Row'
 import { isToken } from '../../../hooks/Tokens'
 import { useNetworkSwitch } from '../../../hooks/useNetworkSwitch'
 import { AppState } from '../../../state'
+
 import { BridgeButton } from './BridgeButton'
 import { NetworkSwitcher } from './NetworkSwitcher'
 import { useBridgeActionPanel } from './useBridgeActionPanel'

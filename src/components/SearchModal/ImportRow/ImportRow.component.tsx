@@ -8,6 +8,7 @@ import { AutoColumn } from '../../Column'
 import { CurrencyLogo } from '../../CurrencyLogo'
 import ListLogo from '../../ListLogo'
 import { AutoRow, RowFixed } from '../../Row'
+
 import { CheckIcon, NameOverflow, TokenSection } from './ImportRow.styles'
 import { ImportRowProps } from './ImportRow.types'
 

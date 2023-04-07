@@ -25,6 +25,7 @@ import { CurrencyLogo } from '../../../CurrencyLogo'
 import Row, { RowBetween } from '../../../Row'
 import DataDisplayer from '../DataDisplayer'
 import TokenAmountDisplayer from '../TokenAmountDisplayer'
+
 import ConfirmClaimModal from './ConfirmClaimModal'
 import ConfirmExitModal from './ConfirmExitModal'
 import ConfirmStakingModal from './ConfirmStakingModal'

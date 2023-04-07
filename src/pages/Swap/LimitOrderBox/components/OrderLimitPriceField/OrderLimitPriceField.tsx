@@ -9,6 +9,7 @@ import { LimitOrderFormContext } from '../../contexts/LimitOrderFormContext'
 import { InputFocus, LimitOrderKind, MarketPrices } from '../../interfaces'
 import { calculateMarketPriceDiffPercentage, computeNewAmount } from '../../utils'
 import { InputGroup } from '../InputGroup'
+
 import { MarketPriceButton } from './MarketPriceButton'
 import {
   LimitLabel,

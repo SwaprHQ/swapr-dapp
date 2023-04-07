@@ -14,6 +14,7 @@ import { normalizeInputValue } from '../../../utils'
 import { getBridgeTxStatus, txnTypeToOrigin } from '../../../utils/arbitrum'
 import { ecoBridgeConfig } from '../EcoBridge.config'
 import { ArbitrumList } from '../EcoBridge.types'
+
 import { arbitrumTransactionsAdapter } from './ArbitrumBridge.adapter'
 import { ArbitrumPendingReasons } from './ArbitrumBridge.types'
 

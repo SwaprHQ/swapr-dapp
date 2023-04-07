@@ -7,6 +7,7 @@ import { ReactComponent as LockSvg } from '../../../../../assets/images/lock.svg
 import { TYPE } from '../../../../../theme'
 import { Switch } from '../../../../Switch'
 import { HorizontalDivider, SmoothGradientCard } from '../../../styleds'
+
 import TimeSelector from './TimeSelector'
 
 const StyledSmoothGradientCard = styled(SmoothGradientCard)`

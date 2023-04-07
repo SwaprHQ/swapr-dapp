@@ -3,6 +3,7 @@ import { createReducer } from '@reduxjs/toolkit'
 import { DEFAULT_DEADLINE_FROM_NOW, DEFAULT_USER_MULTIHOP_ENABLED, INITIAL_ALLOWED_SLIPPAGE } from '../../constants'
 import { MainnetGasPrice } from '../application/actions'
 import { updateVersion } from '../global/actions'
+
 import {
   addSerializedPair,
   addSerializedToken,

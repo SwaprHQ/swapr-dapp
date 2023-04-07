@@ -19,6 +19,7 @@ import { Field } from '../state/swap/types'
 import { useHasPendingApproval, useTransactionAdder } from '../state/transactions/hooks'
 import { calculateGasMargin } from '../utils'
 import { computeSlippageAdjustedAmounts } from '../utils/prices'
+
 import { useTokenContract } from './useContract'
 import { useNativeCurrency } from './useNativeCurrency'
 

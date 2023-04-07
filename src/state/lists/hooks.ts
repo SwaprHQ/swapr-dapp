@@ -11,6 +11,7 @@ import UNSUPPORTED_TOKEN_LIST from '../../constants/tokenLists/swapr-unsupported
 import { useActiveWeb3React } from '../../hooks'
 import sortByListPriority from '../../utils/listSort'
 import { AppState } from '../index'
+
 import { WrappedTokenInfo } from './wrapped-token-info'
 
 export type TokenAddressMap = Readonly<{
@@ -30,7 +31,8 @@ export function listToTokenMap(list: TokenList | null, useCache = true): TokenAd
   const map = list.tokens.reduce<TokenAddressMap>((tokenMap, tokenInfo) => {
     const token = new WrappedTokenInfo(tokenInfo, list)
     if (tokenMap[token.chainId]?.[token.address] !== undefined) {
-      console.error(new Error(`Duplicate token! ${token.address}`))
+      // Dont want to log this error in production
+      // console.error(new Error(`Duplicate token! ${token.address}`))
       return tokenMap
     }
     return {

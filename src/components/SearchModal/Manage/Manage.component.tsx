@@ -10,6 +10,7 @@ import { CurrencySearchModalContext } from '../CurrencySearchModal/CurrencySearc
 import { GoBackIcon } from '../GoBackIcon'
 import { ManageLists } from '../ManageLists'
 import { ManageTokens } from '../ManageTokens'
+
 import {
   AnimatedSlide,
   AnimatedToggleIndicator,

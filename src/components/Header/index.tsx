@@ -25,6 +25,7 @@ import Row, { RowFixed, RowFlat } from '../Row'
 import { Settings } from '../Settings'
 import { SwaprVersionLogo } from '../SwaprVersionLogo'
 import Web3Status from '../Web3Status'
+
 import { Balances } from './Balances'
 import { HeaderButton } from './HeaderButton'
 import { HeaderLink, HeaderMobileLink } from './HeaderLink'

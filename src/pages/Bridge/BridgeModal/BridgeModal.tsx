@@ -6,6 +6,7 @@ import Modal from '../../../components/Modal'
 import { BridgeModalState, BridgeModalStatus } from '../../../services/EcoBridge/EcoBridge.types'
 import { AppState } from '../../../state'
 import { getNetworkInfo } from '../../../utils/networksList'
+
 import { BridgeModalType } from './BridgeModal.types'
 import BridgeModalContent from './BridgeModalContent'
 

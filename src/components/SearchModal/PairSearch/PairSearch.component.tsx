@@ -15,6 +15,7 @@ import { PaddedColumn, SearchInput, Separator } from '../shared'
 import { SortButton } from '../SortButton'
 import { filterPairs as filterPairsBySearchQuery } from '../utils/filtering'
 import { usePairsComparator } from '../utils/sorting'
+
 import { Wrapper } from './PairSearch.styles'
 import { PairSearchProps } from './PairSearch.types'
 

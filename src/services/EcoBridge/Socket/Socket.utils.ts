@@ -3,6 +3,7 @@ import { ChainId, Currency, DAI, WETH } from '@swapr/sdk'
 
 import { MATIC, SOCKET_NATIVE_TOKEN_ADDRESS } from '../../../constants'
 import { SupportedChainsConfig } from '../EcoBridge.types'
+
 import { Route, TokenPriceResponseDTO } from './api/generated'
 import { isFee, SocketWrapDirection } from './Socket.types'
 

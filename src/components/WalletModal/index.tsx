@@ -13,6 +13,7 @@ import { TYPE } from '../../theme'
 import Modal from '../Modal'
 import { AutoRow } from '../Row'
 import { ModalView } from '../Web3Status'
+
 import PendingView from './PendingView'
 const CloseIcon = styled.div`
   position: absolute;

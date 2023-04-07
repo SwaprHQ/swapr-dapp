@@ -32,6 +32,7 @@ import { CurrencySearchModalContext } from '../CurrencySearchModal/CurrencySearc
 import { SearchInput, Separator } from '../shared'
 import { filterTokens, useSortedTokensByQuery } from '../utils/filtering'
 import { useTokenComparator } from '../utils/sorting'
+
 import { CurrencySearchContext } from './CurrencySearch.context'
 import { CloseIconStyled, ContentWrapper, Footer } from './CurrencySearch.styles'
 import { CurrencySearchProps } from './CurrencySearch.types'

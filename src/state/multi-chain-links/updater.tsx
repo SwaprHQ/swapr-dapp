@@ -2,6 +2,7 @@ import { useEffect } from 'react'
 import { useLocation, useSearchParams } from 'react-router-dom'
 
 import { useActiveWeb3React } from '../../hooks'
+
 import { useIsSwitchingToCorrectChain, useIsSwitchingToCorrectChainUpdater } from './hooks'
 
 export default function Updater(): null {

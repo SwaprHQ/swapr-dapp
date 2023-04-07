@@ -15,6 +15,7 @@ import { SpaceBg } from '../components/SpaceBg/SpaceBg'
 import Web3ReactManager from '../components/Web3ReactManager'
 import { useActiveWeb3React } from '../hooks'
 import { SWPRSupportedChains } from '../utils/chainSupportsSWPR'
+
 import { Routes } from './Routes'
 
 import 'react-loading-skeleton/dist/skeleton.css'

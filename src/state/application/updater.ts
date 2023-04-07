@@ -6,6 +6,7 @@ import { useDispatch } from 'react-redux'
 import { useActiveWeb3React } from '../../hooks'
 import useDebounce from '../../hooks/useDebounce'
 import useIsWindowVisible from '../../hooks/useIsWindowVisible'
+
 import { MainnetGasPrice, setConnectorInfo, updateBlockNumber, updateMainnetGasPrices } from './actions'
 
 export default function Updater(): null {

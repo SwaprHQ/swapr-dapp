@@ -8,6 +8,7 @@ import styled, { useTheme } from 'styled-components'
 import { TYPE } from '../../theme'
 import { BlurBox } from '../../ui/StyledElements/BlurBox'
 import { ChartData, DATE_INTERVALS } from '../Charts/chartUtils'
+
 import { ShowChart } from './ShowChart'
 import { SimpleChartDateFilters } from './SimpleChartDateFilters'
 

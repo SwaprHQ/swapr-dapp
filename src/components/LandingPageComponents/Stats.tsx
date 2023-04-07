@@ -1,27 +1,30 @@
 import { ChainId } from '@swapr/sdk'
 
-import { gql, GraphQLClient } from 'graphql-request'
+// import { gql, GraphQLClient } from 'graphql-request'
+import { ApolloClient, NormalizedCacheObject, gql } from '@apollo/client'
 import TextAnim from 'rc-texty'
 import { useEffect, useState } from 'react'
 import styled from 'styled-components'
 
-import { immediateSubgraphClients } from '../../apollo/client'
+import { subgraphClients } from '../../apollo/client'
+import { SwaprFactory } from '../../graphql/generated/schema'
 import { toClassName } from '../../utils/helperFunctions'
 import { breakpoints, gradients } from '../../utils/theme'
 import { StatsContent } from '../../utils/uiConstants'
+
 import Layout from './layout/Layout'
 
 const subgraphApiClients = [
-  immediateSubgraphClients[ChainId.ARBITRUM_ONE],
-  immediateSubgraphClients[ChainId.GNOSIS],
-  immediateSubgraphClients[ChainId.MAINNET],
+  subgraphClients[ChainId.ARBITRUM_ONE],
+  subgraphClients[ChainId.GNOSIS],
+  subgraphClients[ChainId.MAINNET],
 ] as const
 
 const LLAMA_SWAPR_TVL = new URL('https://api.llama.fi/tvl/swapr')
 const LLAMA_PRICES = new URL('https://coins.llama.fi/prices')
 
 const tokensQuery = gql`
-  {
+  query SwaprFactory {
     swaprFactories(first: 1000) {
       txCount
       totalVolumeUSD
@@ -29,10 +32,13 @@ const tokensQuery = gql`
   }
 `
 
-const retrieveData = async (client: GraphQLClient) => {
+const retrieveData = async (client: ApolloClient<NormalizedCacheObject>) => {
   return await client
-    .request(tokensQuery)
-    .then(data => {
+    .query<{ swaprFactories: SwaprFactory[] }>({ query: tokensQuery })
+    .then(({ data, error }) => {
+      if (error) {
+        throw error
+      }
       return data
     })
     .catch(error => {
@@ -45,7 +51,7 @@ const Stats = () => {
   const [tvl, setTvl] = useState('0')
   const [swaprPrice, setSwaprPrice] = useState(0)
   let [tx, setTx] = useState(0)
-  let [totalVolumeUSD, setTotalVolumeUSD] = useState(0)
+  let [totalVolumeUSD, setTotalVolumeUSD] = useState('0')
   const [isChartActive, setIsChartActive] = useState(false)
 
   useEffect(() => {
@@ -84,17 +90,38 @@ const Stats = () => {
   }, [])
 
   useEffect(() => {
-    subgraphApiClients.forEach(client => {
-      retrieveData(client).then(data => {
-        if (data) {
-          const floatTx = parseFloat(data.swaprFactories[0].txCount)
-          const floatVolume = parseFloat(data.swaprFactories[0].totalVolumeUSD)
-          setTx(tx => tx + floatTx)
-          setTotalVolumeUSD(totalVolumeUSD => Number(((totalVolumeUSD += floatVolume) / 1000000).toFixed(0) ?? '0'))
-        } else {
-          setFailedToUpdate(true)
-        }
-      })
+    const getSwaprTransactionData = async () => {
+      const result = await Promise.all(
+        subgraphApiClients.map(async client => {
+          const data = await retrieveData(client)
+          if (data) {
+            return {
+              txnCount: parseFloat(data.swaprFactories[0].txCount ?? '0'),
+              totalVolumeUSD: parseFloat(data.swaprFactories[0].totalVolumeUSD ?? '0') / 1000000,
+            }
+          } else {
+            return { txnCount: 0, totalVolumeUSD: 0 }
+          }
+        })
+      )
+      const { txnCount, totalVolumeUSD } = result.reduce(
+        (acc, curr) => {
+          acc.txnCount += curr.txnCount
+          acc.totalVolumeUSD += curr.totalVolumeUSD
+          return acc
+        },
+        { txnCount: 0, totalVolumeUSD: 0 }
+      )
+
+      if (txnCount === 0 && totalVolumeUSD === 0) {
+        setFailedToUpdate(true)
+      } else {
+        setTx(txnCount)
+        setTotalVolumeUSD(totalVolumeUSD.toFixed(0))
+      }
+    }
+    getSwaprTransactionData().catch(error => {
+      console.error('Error fetching Swapr transaction data: ', error)
     })
   }, [])
 

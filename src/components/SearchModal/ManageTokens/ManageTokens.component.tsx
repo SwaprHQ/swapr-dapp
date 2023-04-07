@@ -16,6 +16,7 @@ import Row, { RowBetween, RowFixed } from '../../Row'
 import { CurrencyModalView } from '../CurrencySearchModal'
 import { ImportRow } from '../ImportRow'
 import { PaddedColumn, SearchInput, Separator } from '../shared'
+
 import { Footer, TrashIcon, Wrapper } from './ManageTokens.styles'
 import { ManageTokensProps } from './ManageTokens.types'
 

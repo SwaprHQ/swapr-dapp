@@ -6,6 +6,7 @@ import EthereumLogo from '../../assets/images/ethereum-logo.svg'
 import GnosisLogo from '../../assets/images/gnosis-chain-logo.svg'
 import OptimismLogo from '../../assets/images/optimism-logo.svg'
 import PolygonMaticLogo from '../../assets/images/polygon-matic-logo.svg'
+
 import { NetworkOptionsPreset, NetworkSwitcherTags } from './NetworkSwitcher.types'
 
 export const networkOptionsPreset: NetworkOptionsPreset[] = [

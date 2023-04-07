@@ -7,6 +7,7 @@ import { PayloadAction } from '@reduxjs/toolkit'
 import { ArbitrumBridgeTxn, ArbitrumBridgeTxnsState } from '../../../state/bridgeTransactions/types'
 import { ArbitrumList } from '../EcoBridge.types'
 import { createEcoBridgeChildBaseSlice } from '../EcoBridge.utils'
+
 import { arbitrumTransactionsAdapter } from './ArbitrumBridge.adapter'
 import { ArbitrumInitialState } from './ArbitrumBridge.types'
 
