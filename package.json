@@ -65,7 +65,7 @@
     "date-fns": "^2.29.3",
     "debug": "^4.3.4",
     "decimal.js-light": "^2.5.1",
-    "ethers": "^5.7.2",
+    "ethers": "^5.4.4",
     "etherscan-api": "10.3.0",
     "git-revision-webpack-plugin": "^5.0.0",
     "graphql": "16.6.0",

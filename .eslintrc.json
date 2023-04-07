@@ -30,6 +30,7 @@
       }
     ],
     "import/no-unresolved": "off",
+    "import/no-duplicates": ["error"],
     "import/order": [
       "error",
       {
