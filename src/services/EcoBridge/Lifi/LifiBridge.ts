@@ -390,13 +390,19 @@ export class LifiBridge extends EcoBridgeChildBase {
 
       if (!this._account || !checkRoute || !this._activeProvider || !route.transactionRequest) return
       const signer = this._activeProvider.getSigner()
-      // const checkTransaction = await signer.populateTransaction(route.transactionRequest)
-      // const signTransaction = await signer.signTransaction(route.transactionRequest)
 
       const transaction = await signer.sendTransaction(route.transactionRequest)
       const transactionReceipt = await transaction.wait()
 
-      if (!transactionReceipt) return
+      // Failed to do Bridge transaction
+      if (!transactionReceipt) {
+        this.ecoBridgeUtils.ui.modal.setBridgeModalStatus(
+          BridgeModalStatus.ERROR,
+          this.bridgeId,
+          'Failed to execute transaction'
+        )
+        return
+      }
 
       const { hash } = transaction
       const { tool, action } = route

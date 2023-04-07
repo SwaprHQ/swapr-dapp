@@ -36,7 +36,6 @@ const createLifiSlice = (bridgeId: LifiList) =>
     name: bridgeId,
     initialState,
     reducers: {
-      // TODO: cleanup redux and fix txn history
       setApprovalData: (
         state,
         action: PayloadAction<{
@@ -68,7 +67,7 @@ const createLifiSlice = (bridgeId: LifiList) =>
 
         state.transactions.forEach((txn, index) => {
           if (txn.statusResponse.sending.txHash === statusResponse.sending.txHash) {
-            state.transactions[index] = { ...txn, statusResponse: statusResponse, timeResolved }
+            state.transactions[index] = { ...txn, statusResponse, timeResolved }
           }
         })
       },
