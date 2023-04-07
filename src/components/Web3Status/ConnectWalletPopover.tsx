@@ -10,7 +10,7 @@ import { SUPPORTED_WALLETS } from '../../constants'
 import { useOnClickOutside } from '../../hooks/useOnClickOutside'
 import { ApplicationModal } from '../../state/application/actions'
 import { useCloseModals, useModalOpen } from '../../state/application/hooks'
-import { StyledConnectedIcon } from '../../utils'
+import { ConnectedIcon } from '../../ui/Icons/ConnectedIcon'
 import Popover from '../Popover'
 
 const Wrapper = styled.div`
@@ -217,7 +217,7 @@ export const Item = ({ id, onClick, name, icon, link, isActive }: ItemProps) => 
   const getContent = () => (
     <>
       <ListIconWrapper isActive={isActive}>
-        {isActive && <StyledConnectedIcon width="50px" padding="0 0 0 12px" />}
+        {isActive && <ConnectedIcon width="50px" padding="0 0 0 12px" />}
         <img src={icon} alt={name + ' logo'} />
       </ListIconWrapper>
       {name}

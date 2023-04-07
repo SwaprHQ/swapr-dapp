@@ -27,7 +27,14 @@ import {
 import { socketActions } from './Socket.reducer'
 import { socketSelectors } from './Socket.selectors'
 import { SocketTokenMap, SocketTx, SocketTxStatus } from './Socket.types'
-import { getBestRoute, getStatusOfResponse, overrideTokensAddresses, SOCKET_LISTS_URL, VERSION } from './Socket.utils'
+import {
+  getBestRoute,
+  getBridgeFee,
+  getStatusOfResponse,
+  overrideTokensAddresses,
+  SOCKET_LISTS_URL,
+  VERSION,
+} from './Socket.utils'
 
 export class SocketBridge extends EcoBridgeChildBase {
   private _tokenLists: SocketTokenMap = {}
@@ -332,7 +339,9 @@ export class SocketBridge extends EcoBridgeChildBase {
       return
     }
 
-    const { toAmount, serviceTime, totalGasFeesInUsd, routeId } = bestRoute
+    const { toAmount, serviceTime, totalGasFeesInUsd, routeId, userTxs } = bestRoute
+
+    const fee = getBridgeFee(userTxs)
 
     const formattedToAmount = Number(formatUnits(toAmount, result.toAsset.decimals))
       .toFixed(this._receiveAmountDecimalPlaces)
@@ -340,6 +349,7 @@ export class SocketBridge extends EcoBridgeChildBase {
 
     this.store.dispatch(
       this.baseActions.setBridgeDetails({
+        fee,
         gas: `${formatNumber(totalGasFeesInUsd, true)}`,
         estimateTime: `${(serviceTime / 60).toFixed(0).toString()} min`,
         receiveAmount: formattedToAmount,

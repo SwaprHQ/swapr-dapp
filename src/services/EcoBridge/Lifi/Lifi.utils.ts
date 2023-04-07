@@ -1,8 +1,9 @@
 import { ChainId as SwaprChainId } from '@swapr/sdk'
 
-import { Action, ChainId, StatusResponse } from '@lifi/sdk'
+import { Action, ChainId, StatusResponse, FeeCost } from '@lifi/sdk'
 
 import { BridgeTransactionStatus } from '../../../state/bridgeTransactions/types'
+import { formatNumber } from '../../../utils/formatNumber'
 
 import { LIFI_TXN_STATUS } from './Lifi.constants'
 
@@ -49,4 +50,24 @@ export function getStatus(status: StatusResponse['status']) {
     default:
       return BridgeTransactionStatus.PENDING
   }
+}
+
+export const getFeeCost = (feeCosts?: FeeCost[], fromAmountUSD?: string) => {
+  const totalFeesUsd =
+    feeCosts?.reduce((cost, costs) => {
+      cost += Number(costs?.amountUSD ?? 0)
+      return cost
+    }, 0) ?? 0
+
+  const totalFeesPercentage =
+    feeCosts?.reduce((cost, costs) => {
+      cost += Number(costs?.percentage ?? 0)
+      return cost
+    }, 0) ?? 0
+
+  const feeAmountUsdFromPercentage = totalFeesPercentage * Number(fromAmountUSD ?? 0)
+
+  return totalFeesUsd !== 0
+    ? `${formatNumber(totalFeesUsd, true)}`
+    : `${formatNumber(feeAmountUsdFromPercentage, true)}`
 }

@@ -23,7 +23,7 @@ import { LIFI_TXN_STATUS, NATIVE_TOKEN_ADDRESS, VERSION } from './Lifi.constants
 import { lifiActions } from './Lifi.reducer'
 import { lifiSelectors } from './Lifi.selectors'
 import { LifiQuoteRequest, LifiTransactionStatus } from './Lifi.types'
-import { LifiChainShortNames, isLifiChainId } from './Lifi.utils'
+import { LifiChainShortNames, getFeeCost, isLifiChainId } from './Lifi.utils'
 
 export class LifiBridge extends EcoBridgeChildBase {
   #abortControllers: { [id: string]: AbortController } = {}
@@ -142,13 +142,12 @@ export class LifiBridge extends EcoBridgeChildBase {
     this.store.dispatch(this.#actions().setRoute(step))
 
     const { id: routeId, action, estimate } = step
-    const { executionDuration, toAmount, gasCosts, feeCosts } = estimate
-    const totalFees =
-      feeCosts?.reduce((cost, costs) => {
-        cost += Number(costs?.amountUSD ?? 0)
-        return cost
-      }, 0) ?? 0
+    const { executionDuration, toAmount, gasCosts, feeCosts, fromAmountUSD } = estimate
+
     const { toToken } = action
+
+    const fee = getFeeCost(feeCosts, fromAmountUSD)
+
     const { amountUSD: totalGasFeeUSD } = gasCosts?.[0] ?? {}
     const formattedToAmount = Number(formatUnits(toAmount, toToken.decimals))
       .toFixed(this._receiveAmountDecimalPlaces)
@@ -156,8 +155,8 @@ export class LifiBridge extends EcoBridgeChildBase {
 
     this.store.dispatch(
       this.baseActions.setBridgeDetails({
+        fee,
         gas: `${formatNumber(totalGasFeeUSD ?? 0, true)}`,
-        fee: `${formatNumber(totalFees, true)}`,
         estimateTime: executionDuration ? `${(executionDuration / 60).toFixed(0).toString()} min` : undefined,
         receiveAmount: formattedToAmount,
         requestId,
