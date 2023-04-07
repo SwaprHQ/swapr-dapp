@@ -1,5 +1,8 @@
 import { DateTime } from 'luxon'
+import { useCallback, useState } from 'react'
+import { Repeat } from 'react-feather'
 import { Box, Flex } from 'rebass'
+import styled from 'styled-components'
 
 import { getExplorerLink } from '../../../utils'
 import { formatNumber } from '../../../utils/formatNumber'
@@ -24,6 +27,7 @@ interface BridgeTransactionRowProps {
 
 export function BridgeTransactionRow({ transaction, showBackgroundStatus }: BridgeTransactionRowProps) {
   const { type, status, sellToken, buyToken, confirmedTime, logs, bridgeId } = transaction
+  const [flipPrice, setFlipPrice] = useState(true)
 
   const fromNetwork = sellToken.chainId ? getNetworkInfo(Number(sellToken.chainId)) : undefined
   const toNetwork = buyToken?.chainId ? getNetworkInfo(Number(buyToken?.chainId)) : undefined
@@ -33,6 +37,15 @@ export function BridgeTransactionRow({ transaction, showBackgroundStatus }: Brid
     bridgeId === 'socket'
       ? logs[0] && logs[1] && getExplorerLink(logs[0].chainId, logs[0].txHash, 'transaction', bridgeId)
       : logs[1] && getExplorerLink(logs[1].chainId, logs[1].txHash, 'transaction', bridgeId)
+
+  const price = flipPrice ? buyToken.value / sellToken.value : sellToken.value / buyToken.value
+
+  const formattedPrice = price > 0 && price < Infinity ? `${formatNumber(price)}` : '- -'
+  const tokenPair = flipPrice
+    ? `${buyToken?.symbol} / ${sellToken?.symbol}`
+    : `${sellToken?.symbol} / ${buyToken?.symbol}`
+
+  const handleFlip = useCallback(() => setFlipPrice(flip => !flip), [])
 
   return (
     <GridCard status={showBackgroundStatus ? status.toUpperCase() : undefined}>
@@ -77,8 +90,15 @@ export function BridgeTransactionRow({ transaction, showBackgroundStatus }: Brid
       </TokenDetails>
 
       <TransactionDetails justifyContent="start">
-        <Flex flexDirection="column" alignContent="center">
+        {/* <Flex flexDirection="column" alignContent="center">
           <Box>- -</Box>
+        </Flex> */}
+        <Flex flexDirection="column" alignContent="center" onClick={handleFlip} sx={{ cursor: 'pointer' }}>
+          <Box>{formattedPrice}</Box>
+          <Box sx={{ fontSize: '10px' }}>
+            {tokenPair}
+            <StyledSwitch />
+          </Box>
         </Flex>
       </TransactionDetails>
 
@@ -107,3 +127,10 @@ export function BridgeTransactionRow({ transaction, showBackgroundStatus }: Brid
     </GridCard>
   )
 }
+
+export const StyledSwitch = styled(Repeat)`
+  width: 12px;
+  height: 12px;
+  color: ${props => props.theme.purple3};
+  margin-left: 4px;
+`

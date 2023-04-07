@@ -168,8 +168,8 @@ const BridgeTransactionsSummaryRow = ({ tx, handleTriggerCollect }: BridgeTransa
   const analytics = useAnalytics()
   const { assetName, fromChainId, status, toChainId, fromValue, pendingReason, log, bridgeId } = tx
   const initialStatus = useRef(status)
-  const fromChainName = getNetworkInfo(fromChainId).name
-  const toChainName = getNetworkInfo(toChainId).name
+  const fromChainName = fromChainId ? getNetworkInfo(fromChainId).name : ''
+  const toChainName = toChainId ? getNetworkInfo(toChainId).name : ''
 
   const toLink =
     bridgeId === 'socket'

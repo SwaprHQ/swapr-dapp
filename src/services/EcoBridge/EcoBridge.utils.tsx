@@ -9,6 +9,7 @@ import { SWPRSupportedChains } from '../../utils/chainSupportsSWPR'
 import {
   BridgeDetails,
   BridgeList,
+  BridgeModalData,
   BridgeModalStatus,
   BridgingDetailsErrorMessage,
   EcoBridgeChangeHandler,
@@ -142,6 +143,9 @@ export abstract class EcoBridgeChildBase {
             })
           )
         },
+      },
+      setModalData: (props: BridgeModalData) => {
+        this.store.dispatch(ecoBridgeUIActions.setBridgeModalData(props))
       },
       statusButton: {
         setStatus: (status: ButtonStatus) => {
@@ -298,7 +302,7 @@ export const createEcoBridgeChildBaseSlice = <T, Reducers extends SliceCaseReduc
         state.lastMetadataCt = action.payload.id
       },
       setBridgeDetails: (state, action: PayloadAction<BridgeDetails>) => {
-        const { gas, fee, estimateTime, receiveAmount, requestId } = action.payload
+        const { gas, fee, estimateTime, receiveAmount, requestId, routeId } = action.payload
 
         //(store persist) crashing page without that code
         if (!state.bridgingDetails) {
@@ -318,6 +322,7 @@ export const createEcoBridgeChildBaseSlice = <T, Reducers extends SliceCaseReduc
           fee,
           estimateTime,
           receiveAmount,
+          routeId,
         }
       },
       setBridgeDetailsStatus: (

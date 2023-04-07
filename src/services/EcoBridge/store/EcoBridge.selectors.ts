@@ -20,7 +20,9 @@ import {
   SyncState,
   TokenMap,
   XdaiBridgeList,
+  LifiList,
 } from '../EcoBridge.types'
+import { lifiSelectors } from '../Lifi/Lifi.selectors'
 import { omniBridgeSelectors } from '../OmniBridge/OmniBridge.selectors'
 import { socketSelectors } from '../Socket/Socket.selectors'
 import { xdaiSelectors } from '../Xdai/XdaiBridge.selectors'
@@ -42,7 +44,7 @@ import { xdaiSelectors } from '../Xdai/XdaiBridge.selectors'
  */
 
 const createSelectBridgingDetails = (
-  bridgeId: ConnextList | OmniBridgeList | XdaiBridgeList | ArbitrumList | SocketList
+  bridgeId: ConnextList | OmniBridgeList | XdaiBridgeList | ArbitrumList | SocketList | LifiList
 ) =>
   createSelector(
     [
@@ -90,7 +92,9 @@ export const selectSupportedBridges = createSelector(
       []
     )
 
-    return isBridgeSwapActive ? supportedBridges.filter(bridge => bridge.bridgeId === 'socket') : supportedBridges
+    return isBridgeSwapActive
+      ? supportedBridges.filter(bridge => ['socket', 'lifi'].includes(bridge.bridgeId))
+      : supportedBridges
   }
 )
 
@@ -103,6 +107,7 @@ export const selectBridgeTransactions = createSelector(
     omniBridgeSelectors['omnibridge:eth-xdai'].selectBridgeTransactionsSummary,
     connextSelectors['connext'].selectBridgeTransactionsSummary,
     xdaiSelectors['xdai'].selectBridgeTransactionsSummary,
+    lifiSelectors['lifi'].selectBridgeTransactionsSummary,
   ],
   (
     txsSummaryTestnet,
@@ -110,7 +115,8 @@ export const selectBridgeTransactions = createSelector(
     txsSummarySocket,
     txsOmnibridgeEthGnosis,
     txsSummaryConnext,
-    txsSummaryXdai
+    txsSummaryXdai,
+    txsSummaryLifi
   ) => {
     const txs = [
       ...txsSummaryTestnet,
@@ -119,6 +125,7 @@ export const selectBridgeTransactions = createSelector(
       ...txsOmnibridgeEthGnosis,
       ...txsSummaryConnext,
       ...txsSummaryXdai,
+      ...txsSummaryLifi,
     ]
 
     return txs
@@ -186,6 +193,7 @@ export const selectBridgeLists = createSelector(
     (state: AppState) => state.ecoBridge['connext'].lists,
     (state: AppState) => state.ecoBridge['omnibridge:eth-xdai'].lists,
     (state: AppState) => state.ecoBridge['xdai'].lists,
+    (state: AppState) => state.ecoBridge['lifi'].lists,
     (state: AppState) => state.lists.byUrl[DEFAULT_TOKEN_LIST].current,
   ],
   (
@@ -195,6 +203,7 @@ export const selectBridgeLists = createSelector(
     tokenListConnext,
     omnibridgeEthGnosisList,
     tokenListXdai,
+    tokenListLifi,
     swprDefaultList
   ) => {
     // Tmp solution to add swpr token list to arbitrum bridges
@@ -209,6 +218,7 @@ export const selectBridgeLists = createSelector(
       ...tokenListSocket,
       ...tokenListXdai,
       ...tokenListConnext,
+      ...tokenListLifi,
       ...omnibridgeEthGnosisList,
     }
 
@@ -332,6 +342,7 @@ const arbitrumMainnetBridgeDetails = createSelectBridgingDetails('arbitrum:mainn
 const arbitrumTestnetBridgeDetails = createSelectBridgingDetails('arbitrum:testnet')
 const omnibridgeBridgeDetails = createSelectBridgingDetails('omnibridge:eth-xdai')
 const xdaiBridgeDetails = createSelectBridgingDetails('xdai')
+const lifiBridgeDetails = createSelectBridgingDetails('lifi')
 
 export const selectSupportedBridgesForUI = createSelector(
   [
@@ -342,6 +353,7 @@ export const selectSupportedBridgesForUI = createSelector(
     socketBridgeDetails,
     connextBridgeDetails,
     xdaiBridgeDetails,
+    lifiBridgeDetails,
   ],
   (
     bridges,
@@ -350,7 +362,8 @@ export const selectSupportedBridgesForUI = createSelector(
     omnibridgeEthGnosisDetails,
     socketDetails,
     connextDetails,
-    xdaiDetails
+    xdaiDetails,
+    lifiDetails
   ) => {
     const bridgeNameMap = bridges.reduce<{ [bridgeId: string]: string }>((total, next) => {
       total[next.bridgeId] = next.name
@@ -364,6 +377,7 @@ export const selectSupportedBridgesForUI = createSelector(
       socketDetails,
       connextDetails,
       xdaiDetails,
+      lifiDetails,
     ].reduce<SupportedBridges[]>((total, bridge) => {
       if (bridgeNameMap[bridge.bridgeId] !== undefined) {
         total.push({

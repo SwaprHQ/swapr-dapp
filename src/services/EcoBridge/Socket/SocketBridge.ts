@@ -6,6 +6,7 @@ import { TokenInfo, TokenList } from '@uniswap/token-lists'
 
 import SocketLogo from '../../../assets/images/socket-logo.png'
 import { SOCKET_NATIVE_TOKEN_ADDRESS } from '../../../constants'
+import { formatNumber } from '../../../utils/formatNumber'
 import {
   BridgeModalStatus,
   EcoBridgeChangeHandler,
@@ -26,7 +27,14 @@ import {
 import { socketActions } from './Socket.reducer'
 import { socketSelectors } from './Socket.selectors'
 import { SocketTokenMap, SocketTx, SocketTxStatus } from './Socket.types'
-import { getBestRoute, getStatusOfResponse, overrideTokensAddresses, SOCKET_LISTS_URL, VERSION } from './Socket.utils'
+import {
+  getBestRoute,
+  getBridgeFee,
+  getStatusOfResponse,
+  overrideTokensAddresses,
+  SOCKET_LISTS_URL,
+  VERSION,
+} from './Socket.utils'
 
 export class SocketBridge extends EcoBridgeChildBase {
   private _tokenLists: SocketTokenMap = {}
@@ -331,20 +339,22 @@ export class SocketBridge extends EcoBridgeChildBase {
       return
     }
 
-    const { toAmount, serviceTime, totalGasFeesInUsd, routeId } = bestRoute
+    const { toAmount, serviceTime, totalGasFeesInUsd, routeId, userTxs } = bestRoute
+
+    const fee = getBridgeFee(userTxs)
 
     const formattedToAmount = Number(formatUnits(toAmount, result.toAsset.decimals))
       .toFixed(this._receiveAmountDecimalPlaces)
       .toString()
 
-    this.store.dispatch(this.commonActions.setActiveRouteId(routeId))
-
     this.store.dispatch(
       this.baseActions.setBridgeDetails({
-        gas: `${totalGasFeesInUsd.toFixed(2).toString()}$`,
+        fee,
+        gas: `${formatNumber(totalGasFeesInUsd, true)}`,
         estimateTime: `${(serviceTime / 60).toFixed(0).toString()} min`,
         receiveAmount: formattedToAmount,
         requestId,
+        routeId,
       })
     )
   }

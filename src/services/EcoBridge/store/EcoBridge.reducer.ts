@@ -2,6 +2,7 @@ import { combineReducers } from '@reduxjs/toolkit'
 
 import { arbitrumReducers } from '../Arbitrum/ArbitrumBridge.reducer'
 import { connextReducers } from '../Connext/Connext.reducer'
+import { lifiReducers } from '../Lifi/Lifi.reducer'
 import { omniBridgeReducers } from '../OmniBridge/OmniBridge.reducers'
 import { socketReducers } from '../Socket/Socket.reducer'
 import { xdaiReducers } from '../Xdai/XdaiBridge.reducer'
@@ -17,6 +18,7 @@ const ecoBridgeReducer = combineReducers({
   ...xdaiReducers,
   ...connextReducers,
   ...omniBridgeReducers,
+  ...lifiReducers,
 })
 
 export default ecoBridgeReducer

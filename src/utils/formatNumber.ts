@@ -32,7 +32,7 @@ export const formatNumber = (number: number | string, usd = false, ignoreZero = 
 
   if (usd) {
     if (num < 0.1) {
-      return formatDollarAmount(num, 4)
+      return formatDollarAmount(num, 3)
     } else {
       return formatDollarAmount(num, 2)
     }

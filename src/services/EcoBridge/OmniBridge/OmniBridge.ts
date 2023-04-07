@@ -575,7 +575,7 @@ export class OmniBridge extends EcoBridgeChildBase {
       },
     }
 
-    let gas: undefined | string = undefined
+    let gas: string | undefined = undefined
 
     try {
       const GAS_COST = 260000

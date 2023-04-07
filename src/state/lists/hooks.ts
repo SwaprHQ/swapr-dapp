@@ -31,8 +31,7 @@ export function listToTokenMap(list: TokenList | null, useCache = true): TokenAd
   const map = list.tokens.reduce<TokenAddressMap>((tokenMap, tokenInfo) => {
     const token = new WrappedTokenInfo(tokenInfo, list)
     if (tokenMap[token.chainId]?.[token.address] !== undefined) {
-      // Dont want to log this error in production
-      // console.error(new Error(`Duplicate token! ${token.address}`))
+      console.info(`Duplicate token! ${token.address}`)
       return tokenMap
     }
     return {

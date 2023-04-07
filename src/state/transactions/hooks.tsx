@@ -100,6 +100,7 @@ export function useAllBridgeTransactions(allNetwork = false): BridgeTransaction[
       allBridgeTransactions.map(transaction => {
         const {
           assetName,
+          toAssetName,
           assetAddressL1,
           assetAddressL2,
           fromChainId,
@@ -124,7 +125,7 @@ export function useAllBridgeTransactions(allNetwork = false): BridgeTransaction[
           },
           buyToken: {
             value: Number(toValue ?? 0),
-            symbol: listByAddress.get(toChainId)?.get(`${assetAddressL2}`)?.symbol ?? assetName,
+            symbol: toAssetName ?? listByAddress.get(toChainId)?.get(`${assetAddressL2}`)?.symbol ?? assetName,
             chainId: toChainId,
             tokenAddress: assetAddressL2,
           },

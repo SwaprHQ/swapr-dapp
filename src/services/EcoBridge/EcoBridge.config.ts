@@ -3,12 +3,14 @@ import { ChainId } from '@swapr/sdk'
 import { ArbitrumBridge } from './Arbitrum/ArbitrumBridge'
 import { Connext } from './Connext/Connext'
 import { EcoBridgeChildBase } from './EcoBridge.utils'
+import { LifiBridge } from './Lifi/LifiBridge'
 import { OmniBridge } from './OmniBridge/OmniBridge'
 import { bridgeSupportedChains } from './Socket/Socket.utils'
 import { SocketBridge } from './Socket/SocketBridge'
 import { XdaiBridge } from './Xdai/XdaiBridge'
 
 const socketBridgeId = 'socket'
+const lifiBridgeId = 'lifi'
 
 //supported chains are bidirectional
 export const ecoBridgeConfig: EcoBridgeChildBase[] = [
@@ -23,7 +25,7 @@ export const ecoBridgeConfig: EcoBridgeChildBase[] = [
     supportedChains: [{ from: ChainId.MAINNET, to: ChainId.ARBITRUM_ONE }],
   }),
   new SocketBridge({
-    bridgeId: 'socket',
+    bridgeId: socketBridgeId,
     displayName: 'Socket',
     supportedChains: bridgeSupportedChains([
       ChainId.ARBITRUM_ONE,
@@ -56,6 +58,18 @@ export const ecoBridgeConfig: EcoBridgeChildBase[] = [
     displayName: 'OmniBridge',
     supportedChains: [{ from: ChainId.XDAI, to: ChainId.MAINNET }],
   }),
+  new LifiBridge({
+    bridgeId: lifiBridgeId,
+    displayName: 'Lifi',
+    supportedChains: bridgeSupportedChains([
+      ChainId.ARBITRUM_ONE,
+      ChainId.MAINNET,
+      ChainId.POLYGON,
+      ChainId.GNOSIS,
+      ChainId.OPTIMISM_MAINNET,
+      ChainId.BSC_MAINNET,
+    ]),
+  }),
 ]
 
 export const ecoBridgePersistedKeys = ecoBridgeConfig.map(
@@ -63,9 +77,11 @@ export const ecoBridgePersistedKeys = ecoBridgeConfig.map(
 )
 
 export const fixCorruptedEcoBridgeLocalStorageEntries = (persistenceNamespace: string) => {
-  const keysWithoutSocket = ecoBridgePersistedKeys.filter(key => !key.includes(socketBridgeId))
+  const keysWithoutSocketOrLifi = ecoBridgePersistedKeys.filter(
+    key => !(key.includes(socketBridgeId) || key.includes(lifiBridgeId))
+  )
 
-  keysWithoutSocket.forEach(key => {
+  keysWithoutSocketOrLifi.forEach(key => {
     const fullKey = `${persistenceNamespace}_${key}`
 
     const isEntityAdapter = window.localStorage.getItem(fullKey)?.includes('entities')

@@ -2,6 +2,7 @@ import { formatUnits } from '@ethersproject/units'
 import { ChainId, Currency, DAI, WETH } from '@swapr/sdk'
 
 import { MATIC, SOCKET_NATIVE_TOKEN_ADDRESS } from '../../../constants'
+import { formatNumber } from '../../../utils/formatNumber'
 import { SupportedChainsConfig } from '../EcoBridge.types'
 
 import { Route, TokenPriceResponseDTO } from './api/generated'
@@ -82,7 +83,7 @@ export const getBestRoute = (routes: Route[], tokenData?: TokenPriceResponseDTO,
   return routes[indexOfBestRoute]
 }
 
-export const getBridgeFee = (userTxs: any, fromAsset: { amount: string; decimals?: number }): string => {
+export const getBridgeFee = (userTxs: object[]) => {
   if (isFee(userTxs)) {
     const [singleTxBridge] = userTxs
 
@@ -95,17 +96,8 @@ export const getBridgeFee = (userTxs: any, fromAsset: { amount: string; decimals
       return total
     }, 0)
 
-    const { amount, decimals } = fromAsset
-    const formattedValue = Number(formatUnits(amount, decimals))
-
-    //fee is incorrect (socket)
-    const fee = (totalStepsFee / formattedValue) * 100
-
-    return `${fee.toFixed(2).toString()}%`
+    return `${formatNumber(totalStepsFee, true)}`
   }
-
-  //this shouldn't happen
-  return '---'
 }
 
 export const getStatusOfResponse = (e: any) => {
