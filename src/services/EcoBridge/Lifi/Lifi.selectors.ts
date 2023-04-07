@@ -4,6 +4,7 @@ import { createSelector } from 'reselect'
 import { AppState } from '../../../state'
 import { BridgeTransactionSummary } from '../../../state/bridgeTransactions/types'
 import { LifiList } from '../EcoBridge.types'
+
 import { LIFI_TXN_STATUS, LIFI_PENDING_REASONS } from './Lifi.constants'
 import { LifiTransactionStatus } from './Lifi.types'
 import { getStatus, validateSendingToken } from './Lifi.utils'

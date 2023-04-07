@@ -22,10 +22,10 @@ import {
   XdaiBridgeList,
   LifiList,
 } from '../EcoBridge.types'
+import { lifiSelectors } from '../Lifi/Lifi.selectors'
 import { omniBridgeSelectors } from '../OmniBridge/OmniBridge.selectors'
 import { socketSelectors } from '../Socket/Socket.selectors'
 import { xdaiSelectors } from '../Xdai/XdaiBridge.selectors'
-import { lifiSelectors } from './../Lifi/Lifi.selectors'
 
 /**
  * Each bridge declares in config which chainId pairs it supports.

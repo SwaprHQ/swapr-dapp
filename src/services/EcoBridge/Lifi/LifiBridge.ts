@@ -13,10 +13,11 @@ import {
   EcoBridgeChildBaseConstructor,
   EcoBridgeChildBaseInit,
   SyncState,
+  LifiList,
 } from '../EcoBridge.types'
 import { ButtonStatus, EcoBridgeChildBase } from '../EcoBridge.utils'
 import { overrideTokensAddresses } from '../Socket/Socket.utils'
-import { LifiList } from './../EcoBridge.types'
+
 import { LifiApi } from './Lifi.api'
 import { LIFI_TXN_STATUS, NATIVE_TOKEN_ADDRESS, VERSION } from './Lifi.constants'
 import { lifiActions } from './Lifi.reducer'

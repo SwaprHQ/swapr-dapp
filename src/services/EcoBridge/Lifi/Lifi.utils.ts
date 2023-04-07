@@ -3,6 +3,7 @@ import { ChainId as SwaprChainId } from '@swapr/sdk'
 import { Action, ChainId, StatusResponse } from '@lifi/sdk'
 
 import { BridgeTransactionStatus } from '../../../state/bridgeTransactions/types'
+
 import { LIFI_TXN_STATUS } from './Lifi.constants'
 
 export const validateSendingToken = (action: Action, statusResponse: StatusResponse) => {
