@@ -259,6 +259,9 @@ function Header() {
         </Title>
         <HeaderLinks>
           <Divider />
+          <HeaderLink data-testid="swapbox-2-nav-link" id="swapbox-2-nav-link" to="/swapbox2">
+            {t('swapbox2')}
+          </HeaderLink>
           <HeaderLink data-testid="swap-nav-link" id="swap-nav-link" to={swapRoute}>
             {t('swap')}
           </HeaderLink>

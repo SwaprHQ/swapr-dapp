@@ -69,6 +69,7 @@
     "decimal.js-light": "^2.5.1",
     "ethers": "^5.4.4",
     "etherscan-api": "10.3.0",
+    "framer-motion": "^9.0.1",
     "git-revision-webpack-plugin": "^5.0.0",
     "graphql": "16.6.0",
     "graphql-request": "^5.2.0",
