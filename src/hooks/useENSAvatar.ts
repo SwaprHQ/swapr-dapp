@@ -79,6 +79,7 @@ export function useENSAvatar(ensName?: string | null) {
         setLoading(false)
       })
       .catch(e => {
+        setLoading(false)
         console.error('useAvatar error: ', e)
       })
   }, [chainId, ensName])
