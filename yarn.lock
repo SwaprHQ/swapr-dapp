@@ -5102,6 +5102,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@openzeppelin/contracts@npm:4.7.0":
+  version: 4.7.0
+  resolution: "@openzeppelin/contracts@npm:4.7.0"
+  checksum: ac917e668505ffbd300fcb00fd2f39b5f1153f77f82d482988336a881134b806b2d820f4293962691ef4d6f9f8ee5ecc71da82c6eb6ad2f02810511e90fa0d96
+  languageName: node
+  linkType: hard
+
 "@parcel/watcher@npm:^2.1.0":
   version: 2.1.0
   resolution: "@parcel/watcher@npm:2.1.0"
@@ -7554,7 +7561,7 @@ __metadata:
     "@types/webpack-env": 1.18.0
     "@typescript-eslint/eslint-plugin": ^5.49.0
     "@typescript-eslint/parser": ^5.49.0
-    "@uniswap/smart-order-router": ^2.9.3
+    "@uniswap/smart-order-router": ^3.10.2
     "@uniswap/token-lists": ^1.0.0-beta.27
     "@uniswap/v3-periphery": 1.4.1
     "@web3-react/core": ^6.1.9
@@ -9392,7 +9399,17 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@uniswap/router-sdk@npm:^1.3.0":
+"@uniswap/permit2-sdk@npm:^1.2.0":
+  version: 1.2.0
+  resolution: "@uniswap/permit2-sdk@npm:1.2.0"
+  dependencies:
+    ethers: ^5.3.1
+    tiny-invariant: ^1.3.1
+  checksum: 524519c4f5492a721de9215f4c74c18af4a8a4f676273ccc9c01512fe36c8e8ac51dd3474b19021522b76ef2edd25d9c871b0eb051e22b6564e37cd2b9422920
+  languageName: node
+  linkType: hard
+
+"@uniswap/router-sdk@npm:^1.3.0, @uniswap/router-sdk@npm:^1.4.0":
   version: 1.4.0
   resolution: "@uniswap/router-sdk@npm:1.4.0"
   dependencies:
@@ -9416,6 +9433,20 @@ __metadata:
     tiny-invariant: ^1.1.0
     toformat: ^2.0.0
   checksum: 5b7db0c65aa65e3961b438f5198e9abca29c65b64bf404a3340644a222fc60e8192e79d68526fc8cb8b0e1487449fc3497810a4cd5b6556d0b9952b75a6ed13b
+  languageName: node
+  linkType: hard
+
+"@uniswap/sdk-core@npm:^3.1.0":
+  version: 3.2.2
+  resolution: "@uniswap/sdk-core@npm:3.2.2"
+  dependencies:
+    "@ethersproject/address": ^5.0.2
+    big.js: ^5.2.2
+    decimal.js-light: ^2.5.0
+    jsbi: ^3.1.4
+    tiny-invariant: ^1.1.0
+    toformat: ^2.0.0
+  checksum: 6a2b85ef429b2f19324764944f7de309e74509bcc7c4f869e4fb39b836e75d3efda6c842a35511e9e4747dddaf24c4675f2bf980668110e742c76bafab29e8b4
   languageName: node
   linkType: hard
 
@@ -9444,6 +9475,37 @@ __metadata:
   peerDependencies:
     jsbi: ^3.2.0
   checksum: 561225756f7bbbb9ac559d5a31687732fc890f93fee0bbd9f967a095553997b2d6331345844f833972c88b80b58c5925c38c69ae2f75122b4eea35fcb9688a29
+  languageName: node
+  linkType: hard
+
+"@uniswap/smart-order-router@npm:^3.10.2":
+  version: 3.10.2
+  resolution: "@uniswap/smart-order-router@npm:3.10.2"
+  dependencies:
+    "@uniswap/default-token-list": ^2.0.0
+    "@uniswap/permit2-sdk": ^1.2.0
+    "@uniswap/router-sdk": ^1.3.0
+    "@uniswap/swap-router-contracts": ^1.3.0
+    "@uniswap/token-lists": ^1.0.0-beta.25
+    "@uniswap/universal-router": ^1.0.1
+    "@uniswap/universal-router-sdk": ^1.3.9
+    "@uniswap/v2-sdk": ^3.0.1
+    "@uniswap/v3-sdk": ^3.7.0
+    async-retry: ^1.3.1
+    await-timeout: ^1.1.1
+    axios: ^0.21.1
+    bunyan: ^1.8.15
+    bunyan-blackhole: ^1.1.1
+    ethers: ^5.7.2
+    graphql: ^15.5.0
+    graphql-request: ^3.4.0
+    lodash: ^4.17.21
+    mnemonist: ^0.38.3
+    node-cache: ^5.1.2
+    stats-lite: ^2.2.0
+  peerDependencies:
+    jsbi: ^3.2.0
+  checksum: 24b849df68f74fccfbb762f7cca6c3a199c608518959e7f79cb4f9a315ea80cc53cae647484ab65b56a2f2da3cd2eb0a8d435b9ff30dbb0c661fbcb486db2d96
   languageName: node
   linkType: hard
 
@@ -9478,6 +9540,33 @@ __metadata:
   version: 1.0.0-beta.31
   resolution: "@uniswap/token-lists@npm:1.0.0-beta.31"
   checksum: 3ee3cf6f10e94358278f1fd4e3310f8fc1690db6fecf38eb730077e87254886293016d80c9c0449bebbadb173b105fc3da6140b424dd418e333f515c15abe315
+  languageName: node
+  linkType: hard
+
+"@uniswap/universal-router-sdk@npm:^1.3.9":
+  version: 1.4.4
+  resolution: "@uniswap/universal-router-sdk@npm:1.4.4"
+  dependencies:
+    "@uniswap/permit2-sdk": ^1.2.0
+    "@uniswap/router-sdk": ^1.4.0
+    "@uniswap/sdk-core": ^3.1.0
+    "@uniswap/universal-router": 1.3.1
+    "@uniswap/v2-sdk": ^3.0.1
+    "@uniswap/v3-sdk": ^3.9.0
+    bignumber.js: ^9.0.2
+    ethers: ^5.3.1
+  checksum: c580b42645359b0b65bf2dd4fb96f750d191e926ce620c43f0f4edf6dbb01495853059bcc7de13068e4a7229dd0ea7b27703c547f6eedb035b7637b72e994611
+  languageName: node
+  linkType: hard
+
+"@uniswap/universal-router@npm:1.3.1, @uniswap/universal-router@npm:^1.0.1":
+  version: 1.3.1
+  resolution: "@uniswap/universal-router@npm:1.3.1"
+  dependencies:
+    "@openzeppelin/contracts": 4.7.0
+    "@uniswap/v2-core": 1.0.1
+    "@uniswap/v3-core": 1.0.0
+  checksum: 91efb3a3e2d8c3b2050ff3fefa876d5e859e99b1cc83a99fc5ef75def2bc4377c950a25830a923b0123c866468dba4e356840e6202f087582e8999fdbe293f72
   languageName: node
   linkType: hard
 
@@ -9549,7 +9638,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@uniswap/v3-sdk@npm:^3.7.0, @uniswap/v3-sdk@npm:^3.8.3":
+"@uniswap/v3-sdk@npm:^3.7.0, @uniswap/v3-sdk@npm:^3.8.3, @uniswap/v3-sdk@npm:^3.9.0":
   version: 3.9.0
   resolution: "@uniswap/v3-sdk@npm:3.9.0"
   dependencies:
@@ -13023,7 +13112,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"bignumber.js@npm:^9.0.0, bignumber.js@npm:^9.0.1, bignumber.js@npm:^9.1.1":
+"bignumber.js@npm:^9.0.0, bignumber.js@npm:^9.0.1, bignumber.js@npm:^9.0.2, bignumber.js@npm:^9.1.1":
   version: 9.1.1
   resolution: "bignumber.js@npm:9.1.1"
   checksum: ad243b7e2f9120b112d670bb3d674128f0bd2ca1745b0a6c9df0433bd2c0252c43e6315d944c2ac07b4c639e7496b425e46842773cf89c6a2dcd4f31e5c4b11e
@@ -18961,7 +19050,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"ethers@npm:^5.0.13, ethers@npm:^5.1.0, ethers@npm:^5.4.4, ethers@npm:^5.4.6, ethers@npm:^5.5.3, ethers@npm:^5.6.1, ethers@npm:^5.7.2":
+"ethers@npm:^5.0.13, ethers@npm:^5.1.0, ethers@npm:^5.3.1, ethers@npm:^5.4.4, ethers@npm:^5.4.6, ethers@npm:^5.5.3, ethers@npm:^5.6.1, ethers@npm:^5.7.2":
   version: 5.7.2
   resolution: "ethers@npm:5.7.2"
   dependencies:
@@ -35338,7 +35427,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"tiny-invariant@npm:^1.0.6, tiny-invariant@npm:^1.1.0, tiny-invariant@npm:^1.2.0":
+"tiny-invariant@npm:^1.0.6, tiny-invariant@npm:^1.1.0, tiny-invariant@npm:^1.2.0, tiny-invariant@npm:^1.3.1":
   version: 1.3.1
   resolution: "tiny-invariant@npm:1.3.1"
   checksum: 872dbd1ff20a21303a2fd20ce3a15602cfa7fcf9b228bd694a52e2938224313b5385a1078cb667ed7375d1612194feaca81c4ecbe93121ca1baebe344de4f84c
