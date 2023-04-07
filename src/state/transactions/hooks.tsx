@@ -4,13 +4,14 @@ import { ChainId } from '@swapr/sdk'
 import { useCallback, useMemo } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 
-import { addTransaction } from './actions'
-import { TransactionDetails } from './reducer'
 import { useActiveWeb3React } from '../../hooks'
 import { type BridgeTransaction, TransactionType } from '../../pages/Account/Account.types'
 import { selectBridgeTransactions } from '../../services/EcoBridge/store/EcoBridge.selectors'
 import { AppDispatch, AppState } from '../index'
 import { useListsByAddress } from '../lists/hooks'
+
+import { addTransaction } from './actions'
+import { TransactionDetails } from './reducer'
 
 export type SwaprTransactionResponse =
   | TransactionResponse

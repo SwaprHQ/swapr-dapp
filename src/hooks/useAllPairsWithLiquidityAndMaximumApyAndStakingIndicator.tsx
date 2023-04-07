@@ -2,10 +2,11 @@ import { BigintIsh, CurrencyAmount, JSBI, KpiToken, Pair, Percent, Token, ZERO }
 
 import { useMemo } from 'react'
 
-import { useAllPairsWithNonExpiredLiquidityMiningCampaignsAndLiquidityAndStakingIndicator } from './useAllPairsWithNonExpiredLiquidityMiningCampaignsAndLiquidityAndStakingIndicator'
 import { PairsFilterType } from '../components/Pool/ListFilter'
 import { LIQUIDITY_SORTING_TYPES } from '../constants'
 import { getBestApyPairCampaign } from '../utils/liquidityMining'
+
+import { useAllPairsWithNonExpiredLiquidityMiningCampaignsAndLiquidityAndStakingIndicator } from './useAllPairsWithNonExpiredLiquidityMiningCampaignsAndLiquidityAndStakingIndicator'
 
 export interface AggregatedPairs {
   pair: Pair

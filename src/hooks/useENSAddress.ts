@@ -1,10 +1,11 @@
 import { namehash } from 'ethers/lib/utils'
 import { useMemo } from 'react'
 
-import { useENSRegistrarContract, useENSResolverContract } from './useContract'
-import useDebounce from './useDebounce'
 import { useSingleCallResult } from '../state/multicall/hooks'
 import isZero from '../utils/isZero'
+
+import { useENSRegistrarContract, useENSResolverContract } from './useContract'
+import useDebounce from './useDebounce'
 
 /**
  * Does a lookup for an ENS name to find its address.

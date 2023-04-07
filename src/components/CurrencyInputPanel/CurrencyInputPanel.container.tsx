@@ -1,5 +1,3 @@
-import { CurrencyInputPanelComponent } from './CurrencyInputPanel.component'
-import { CurrencyInputPanelProps } from './CurrencyInputPanel.types'
 import { useAutoMaxBalance } from '../../hooks/useAutoMaxBalance'
 import { useBridgeInputValidation } from '../../pages/Bridge/ActionPanel/useBridgeInputValidation'
 import { CurrencyWrapperSource } from '../CurrencyLogo'
@@ -8,6 +6,9 @@ import {
   useCurrencySearchModalBridge,
   useCurrencySearchModalSwap,
 } from '../SearchModal/CurrencySearchModal/CurrencySearchModal.hooks'
+
+import { CurrencyInputPanelComponent } from './CurrencyInputPanel.component'
+import { CurrencyInputPanelProps } from './CurrencyInputPanel.types'
 
 export const CurrencyInputPanel = (currencyInputPanelProps: CurrencyInputPanelProps) => {
   const searchModalContexts = useCurrencySearchModalSwap()

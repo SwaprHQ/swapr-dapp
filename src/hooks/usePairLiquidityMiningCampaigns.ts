@@ -2,8 +2,6 @@ import { BigintIsh, Pair } from '@swapr/sdk'
 
 import { useCallback, useMemo } from 'react'
 
-import { useKpiTokens } from './useKpiTokens'
-import { useNativeCurrency } from './useNativeCurrency'
 import { SubgraphLiquidityMiningCampaign } from '../apollo'
 import { useGetLiquidityMiningCampaignsQuery } from '../graphql/generated/schema'
 import { useAllTokensFromActiveListsOnCurrentChain } from '../state/lists/hooks'
@@ -15,6 +13,9 @@ import {
   sortExpiredCampaigns,
   toLiquidityMiningCampaign,
 } from '../utils/liquidityMining'
+
+import { useKpiTokens } from './useKpiTokens'
+import { useNativeCurrency } from './useNativeCurrency'
 
 import { useActiveWeb3React } from '.'
 

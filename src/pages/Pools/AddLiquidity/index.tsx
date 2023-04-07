@@ -8,7 +8,6 @@ import { useParams } from 'react-router-dom'
 import { Text } from 'rebass'
 import { useTheme } from 'styled-components'
 
-import { ConfirmAddModalBottom } from './ConfirmAddModalBottom'
 import { ButtonPrimary } from '../../../components/Button'
 import { BlueCard, OutlineCard } from '../../../components/Card'
 import { AutoColumn, ColumnCenter } from '../../../components/Column'
@@ -43,6 +42,8 @@ import { wrappedCurrency } from '../../../utils/wrappedCurrency'
 import AppBody from '../../AppBody'
 import TradePrice from '../../Swap/Components/TradePrice'
 import { Dots, Wrapper } from '../styleds'
+
+import { ConfirmAddModalBottom } from './ConfirmAddModalBottom'
 
 type CurrencySearchParams = {
   currencyIdA: string

@@ -2,8 +2,6 @@ import { useCallback, useContext, useState } from 'react'
 import { useDispatch } from 'react-redux'
 import { Text } from 'rebass'
 
-import { BottomSectionContainer, Wrapper } from './ImportList.styles'
-import { ImportListProps } from './ImportList.types'
 import { useActiveWeb3React } from '../../../hooks'
 import { useFetchListCallback } from '../../../hooks/useFetchListCallback'
 import { AppDispatch } from '../../../state'
@@ -18,6 +16,9 @@ import { CurrencyModalView } from '../CurrencySearchModal'
 import { CurrencySearchModalContext } from '../CurrencySearchModal/CurrencySearchModal.context'
 import { GoBackIcon } from '../GoBackIcon'
 import { PaddedColumn } from '../shared'
+
+import { BottomSectionContainer, Wrapper } from './ImportList.styles'
+import { ImportListProps } from './ImportList.types'
 
 export function ImportList({ onBack, onDismiss }: ImportListProps) {
   const { listURL: listURI, importList: list, setModalView } = useContext(CurrencySearchModalContext)

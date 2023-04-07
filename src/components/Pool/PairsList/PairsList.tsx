@@ -6,8 +6,6 @@ import { Link } from 'react-router-dom'
 import { Box, Flex, Text } from 'rebass'
 import styled from 'styled-components'
 
-import { LoadingList } from './LoadingList'
-import { Pair as PairCard } from './Pair'
 import { useActiveWeb3React } from '../../../hooks'
 import { useSWPRToken } from '../../../hooks/swpr/useSWPRToken'
 import { AggregatedPairs } from '../../../hooks/useAllPairsWithLiquidityAndMaximumApyAndStakingIndicator'
@@ -24,6 +22,9 @@ import { ButtonPrimary } from '../../Button'
 import { Pagination } from '../../Pagination'
 import { UndecoratedLink } from '../../UndercoratedLink'
 import { PairsFilterType } from '../ListFilter'
+
+import { LoadingList } from './LoadingList'
+import { Pair as PairCard } from './Pair'
 
 interface PairsListProps {
   aggregatedPairs: AggregatedPairs[]

@@ -4,11 +4,12 @@ import { DateTime } from 'luxon'
 import { Flex, Text } from 'rebass'
 import styled from 'styled-components'
 
-import { useStylingTradeBackground } from './Trade.hooks'
 import { ROUTABLE_PLATFORM_LOGO } from '../../../../../constants'
 import { ExternalLink } from '../../../../../theme/components'
 import { EXPLORER_LINK_TYPE, getExplorerLink } from '../../../../../utils'
 import { AdvancedModeDetailsItems } from '../AdvancedSwapMode.styles'
+
+import { useStylingTradeBackground } from './Trade.hooks'
 
 const TradeWrapper = styled(ExternalLink)`
   display: flex;

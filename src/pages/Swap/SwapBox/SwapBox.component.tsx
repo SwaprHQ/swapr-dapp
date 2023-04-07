@@ -3,8 +3,6 @@ import { CoWTrade, Currency, CurrencyAmount, JSBI, Token } from '@swapr/sdk'
 import { useCallback, useContext, useEffect, useMemo, useState } from 'react'
 import styled from 'styled-components'
 
-import { CoWTradeState, SwapData } from './SwapBox.types'
-import { SwapContext } from './SwapContext'
 import { ReactComponent as SwapIcon } from '../../../assets/images/swap-icon.svg'
 import { AutoColumn } from '../../../components/Column'
 import { CurrencyInputPanel } from '../../../components/CurrencyInputPanel'
@@ -30,6 +28,9 @@ import ConfirmSwapModal from '../Components/ConfirmSwapModal'
 import { ArrowWrapper, SwitchTokensAmountsContainer, Wrapper } from '../Components/styles'
 import SwapButtons from '../Components/SwapButtons'
 import { TradeDetails } from '../Components/TradeDetails'
+
+import { CoWTradeState, SwapData } from './SwapBox.types'
+import { SwapContext } from './SwapContext'
 
 const SwitchIconContainer = styled.div`
   height: 0;

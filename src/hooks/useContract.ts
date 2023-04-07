@@ -20,7 +20,6 @@ import {
 import { constants } from 'ethers'
 import { useMemo } from 'react'
 
-import { useNativeCurrency } from './useNativeCurrency'
 import { ARBITRUM_ONE_PROVIDER } from '../constants'
 import {
   ARGENT_WALLET_DETECTOR_ABI,
@@ -34,6 +33,8 @@ import WETH_ABI from '../constants/abis/weth.json'
 import WMATIC_ABI from '../constants/abis/wmatic.json'
 import WXDAI_ABI from '../constants/abis/wxdai.json'
 import { getContract, getProviderOrSigner, isAddress } from '../utils'
+
+import { useNativeCurrency } from './useNativeCurrency'
 
 import { useActiveWeb3React } from './index'
 

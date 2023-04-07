@@ -1,11 +1,12 @@
 import { createSelector } from '@reduxjs/toolkit'
 
-import { xdaiBridgeTransactionAdapter } from './XdaiBridge.adapter'
 import { AppState } from '../../../state'
 import { BridgeTransactionStatus, BridgeTransactionSummary } from '../../../state/bridgeTransactions/types'
 import { normalizeInputValue } from '../../../utils'
 import { ArbitrumPendingReasons } from '../Arbitrum/ArbitrumBridge.types'
 import { XdaiBridgeList } from '../EcoBridge.types'
+
+import { xdaiBridgeTransactionAdapter } from './XdaiBridge.adapter'
 
 const createSelectOwnedTransactions = (bridgeId: XdaiBridgeList) => {
   const transactionsSelector = createSelector(

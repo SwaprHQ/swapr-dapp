@@ -2,12 +2,13 @@ import { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 
-import { BridgeModalType } from './BridgeModal.types'
-import BridgeModalContent from './BridgeModalContent'
 import Modal from '../../../components/Modal'
 import { BridgeModalState, BridgeModalStatus } from '../../../services/EcoBridge/EcoBridge.types'
 import { AppState } from '../../../state'
 import { getNetworkInfo } from '../../../utils/networksList'
+
+import { BridgeModalType } from './BridgeModal.types'
+import BridgeModalContent from './BridgeModalContent'
 
 export interface BridgeModalProps {
   handleResetBridge: () => void

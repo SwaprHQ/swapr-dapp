@@ -4,8 +4,9 @@ import Decimal from 'decimal.js-light'
 import { ethers } from 'ethers'
 import { useMemo } from 'react'
 
-import { useNativeCurrency } from './useNativeCurrency'
 import { useGetTokenQuery } from '../graphql/generated/schema'
+
+import { useNativeCurrency } from './useNativeCurrency'
 
 import { useActiveWeb3React } from './index'
 

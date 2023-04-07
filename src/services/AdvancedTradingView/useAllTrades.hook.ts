@@ -1,18 +1,19 @@
 import { useMemo } from 'react'
 import { useSelector } from 'react-redux'
 
-import { AdvancedViewTransaction } from './advancedTradingView.types'
-import {
-  selectAllDataFromAdapters,
-  selectHasMoreData,
-  selectUniswapV3AllData,
-} from './store/advancedTradingView.selectors'
 import { useActiveWeb3React } from '../../hooks'
 import { Transaction, TransactionStatus } from '../../pages/Account/Account.types'
 import { formatTransactions } from '../../pages/Account/utils/accountUtils'
 import { useLimitOrderTransactions } from '../../pages/Swap/LimitOrderBox/utils/hooks'
 import { useAllBridgeTransactions, useAllSwapTransactions } from '../../state/transactions/hooks'
 import { sortByTimeStamp } from '../../utils/sortByTimestamp'
+
+import { AdvancedViewTransaction } from './advancedTradingView.types'
+import {
+  selectAllDataFromAdapters,
+  selectHasMoreData,
+  selectUniswapV3AllData,
+} from './store/advancedTradingView.selectors'
 
 export const useAllTrades = (): {
   transactions: Transaction[]

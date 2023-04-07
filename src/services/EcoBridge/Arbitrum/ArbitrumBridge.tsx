@@ -16,12 +16,6 @@ import { L2GatewayToken } from '@arbitrum/sdk/dist/lib/abi/L2GatewayToken'
 import { TokenList } from '@uniswap/token-lists'
 import { BigNumber, Signer } from 'ethers'
 
-import { arbitrumTransactionsAdapter } from './ArbitrumBridge.adapter'
-import ARBITRUM_TOKEN_LISTS_CONFIG from './ArbitrumBridge.lists.json'
-import { arbitrumActions } from './ArbitrumBridge.reducer'
-import { arbitrumSelectors } from './ArbitrumBridge.selectors'
-import { hasArbitrumMetadata } from './ArbitrumBridge.types'
-import { migrateBridgeTransactions } from './ArbitrumBridge.utils'
 import { ArbitrumBridgeTxn, BridgeAssetType, BridgeTransactionSummary } from '../../../state/bridgeTransactions/types'
 import { addTransaction } from '../../../state/transactions/actions'
 import { getChainPair, txnTypeToLayer } from '../../../utils/arbitrum'
@@ -37,6 +31,13 @@ import {
   SyncState,
 } from '../EcoBridge.types'
 import { ButtonStatus, EcoBridgeChildBase, getNativeCurrencyPrice } from '../EcoBridge.utils'
+
+import { arbitrumTransactionsAdapter } from './ArbitrumBridge.adapter'
+import ARBITRUM_TOKEN_LISTS_CONFIG from './ArbitrumBridge.lists.json'
+import { arbitrumActions } from './ArbitrumBridge.reducer'
+import { arbitrumSelectors } from './ArbitrumBridge.selectors'
+import { hasArbitrumMetadata } from './ArbitrumBridge.types'
+import { migrateBridgeTransactions } from './ArbitrumBridge.utils'
 
 export class ArbitrumBridge extends EcoBridgeChildBase {
   private l1ChainId: ChainId

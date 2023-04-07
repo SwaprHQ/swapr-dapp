@@ -3,10 +3,6 @@ import { ChainId, Currency, Pair, Token, WETH, WMATIC, WXDAI } from '@swapr/sdk'
 import { useContext, useEffect, useMemo, useRef, useState } from 'react'
 import { useDispatch } from 'react-redux'
 
-import { adapters } from './adapters/adapters.config'
-import { AdvancedTradingViewAdapter } from './adapters/advancedTradingView.adapter'
-import { AdapterAmountToFetch } from './advancedTradingView.types'
-import { sortsBeforeTokens } from './store/advancedTradingView.selectors'
 import { useSimpleAnalyticsEvent } from '../../analytics/hooks/useSimpleAnalyticsEvent'
 import { getProModeEventNameByChainId } from '../../analytics/utils/index'
 import { REFETCH_DATA_INTERVAL } from '../../constants/data'
@@ -19,6 +15,11 @@ import { SwapTabContext } from '../../pages/Swap/SwapContext'
 import store, { AppState } from '../../state'
 import { useSwapState } from '../../state/swap/hooks'
 import { SwapTab } from '../../state/user/reducer'
+
+import { adapters } from './adapters/adapters.config'
+import { AdvancedTradingViewAdapter } from './adapters/advancedTradingView.adapter'
+import { AdapterAmountToFetch } from './advancedTradingView.types'
+import { sortsBeforeTokens } from './store/advancedTradingView.selectors'
 
 const WrappedNativeCurrencyAddress = {
   [ChainId.MAINNET]: WETH[ChainId.MAINNET].address,

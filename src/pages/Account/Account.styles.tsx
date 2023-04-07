@@ -2,10 +2,11 @@ import { ExternalLink } from 'react-feather'
 import { Flex, Link, Text } from 'rebass'
 import styled from 'styled-components'
 
-import { TransactionStatus } from './Account.types'
 import { ButtonPurpleDim } from '../../components/Button'
 import Logo from '../../components/Logo'
 import { ListLayout } from '../../ui/StyledElements/ListLayout'
+
+import { TransactionStatus } from './Account.types'
 
 export const Status = styled(Flex)<{ status: string }>`
   text-transform: uppercase;

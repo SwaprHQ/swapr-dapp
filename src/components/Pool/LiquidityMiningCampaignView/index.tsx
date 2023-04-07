@@ -5,14 +5,15 @@ import { ChevronLeft, Repeat } from 'react-feather'
 import { usePrevious } from 'react-use'
 import styled from 'styled-components'
 
-import Information from './Information'
-import StakeCard from './StakeCard'
 import { useActiveWeb3React } from '../../../hooks'
 import { useRouter } from '../../../hooks/useRouter'
 import { useIsSwitchingToCorrectChain } from '../../../state/multi-chain-links/hooks'
 import { DarkCard } from '../../Card'
 import { AutoColumn } from '../../Column'
 import { RowBetween } from '../../Row'
+
+import Information from './Information'
+import StakeCard from './StakeCard'
 
 const GoBackContainer = styled.div`
   font-size: 11px;

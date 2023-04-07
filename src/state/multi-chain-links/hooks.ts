@@ -1,8 +1,9 @@
 import { useCallback } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 
-import { updateSwitchingToCorrectChain } from './actions'
 import { AppDispatch, AppState } from '../index'
+
+import { updateSwitchingToCorrectChain } from './actions'
 
 /**
  * Returns true if a user, after landing on Swapr following a multichain link,

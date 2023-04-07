@@ -1,7 +1,8 @@
 import { ReactNode, useState } from 'react'
 
-import { PlatformOverride, SwapContext } from './SwapContext'
 import { useDefaultsFromURLSearch, useDerivedSwapInfo } from '../../../state/swap/hooks'
+
+import { PlatformOverride, SwapContext } from './SwapContext'
 
 export const SwapProvider = ({ children }: { children: ReactNode }) => {
   const [platformOverride, setPlatformOverride] = useState<PlatformOverride>(null)

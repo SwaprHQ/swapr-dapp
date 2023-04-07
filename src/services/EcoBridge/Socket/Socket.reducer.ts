@@ -2,10 +2,11 @@ import { ChainId } from '@swapr/sdk'
 
 import { PayloadAction } from '@reduxjs/toolkit'
 
-import { Route } from './api/generated'
-import { SocketBridgeState, SocketTx, SocketTxStatus } from './Socket.types'
 import { SocketList } from '../EcoBridge.types'
 import { createEcoBridgeChildBaseSlice } from '../EcoBridge.utils'
+
+import { Route } from './api/generated'
+import { SocketBridgeState, SocketTx, SocketTxStatus } from './Socket.types'
 
 const initialState: SocketBridgeState = {
   transactions: [],

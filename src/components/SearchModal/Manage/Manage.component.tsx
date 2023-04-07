@@ -3,6 +3,14 @@ import { useCallback, useContext, useState } from 'react'
 import { useMeasure } from 'react-use'
 import { Box, Text } from 'rebass'
 
+import { CloseIcon } from '../../../theme'
+import { RowBetween } from '../../Row'
+import { CurrencyModalView } from '../CurrencySearchModal'
+import { CurrencySearchModalContext } from '../CurrencySearchModal/CurrencySearchModal.context'
+import { GoBackIcon } from '../GoBackIcon'
+import { ManageLists } from '../ManageLists'
+import { ManageTokens } from '../ManageTokens'
+
 import {
   AnimatedSlide,
   AnimatedToggleIndicator,
@@ -12,13 +20,6 @@ import {
   Wrapper,
 } from './Manage.styles'
 import { ManageProps } from './Manage.types'
-import { CloseIcon } from '../../../theme'
-import { RowBetween } from '../../Row'
-import { CurrencyModalView } from '../CurrencySearchModal'
-import { CurrencySearchModalContext } from '../CurrencySearchModal/CurrencySearchModal.context'
-import { GoBackIcon } from '../GoBackIcon'
-import { ManageLists } from '../ManageLists'
-import { ManageTokens } from '../ManageTokens'
 
 export const Manage = ({ onDismiss }: ManageProps) => {
   const { setModalView, setImportToken } = useContext(CurrencySearchModalContext)

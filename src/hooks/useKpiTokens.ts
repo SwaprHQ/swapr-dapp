@@ -6,9 +6,10 @@ import { gql, useQuery } from '@apollo/client'
 import { Decimal } from 'decimal.js-light'
 import { useMemo } from 'react'
 
-import { useCarrotSubgraphClient } from './useCarrotSubgraphClient'
 import { useGetDerivedNativeCurrencyTokensQuery } from '../graphql/generated/schema'
 import { useNativeCurrency } from '../hooks/useNativeCurrency'
+
+import { useCarrotSubgraphClient } from './useCarrotSubgraphClient'
 
 import { useActiveWeb3React } from './index'
 

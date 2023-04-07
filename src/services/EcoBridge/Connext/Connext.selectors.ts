@@ -2,12 +2,13 @@ import { formatUnits } from '@ethersproject/units'
 
 import { createSelector } from '@reduxjs/toolkit'
 
-import { connextTransactionsAdapter } from './Connext.adapter'
-import { CONNEXT_TOKENS } from './Connext.lists'
-import { ConnextTransactionStatus, TransactionsSummary } from './Connext.types'
 import { AppState } from '../../../state'
 import { BridgeTransactionStatus, BridgeTransactionSummary } from '../../../state/bridgeTransactions/types'
 import { ConnextList } from '../EcoBridge.types'
+
+import { connextTransactionsAdapter } from './Connext.adapter'
+import { CONNEXT_TOKENS } from './Connext.lists'
+import { ConnextTransactionStatus, TransactionsSummary } from './Connext.types'
 
 const createSelectOwnedTransactions = (bridgeId: ConnextList) => {
   const transactionsSelector = createSelector([(state: AppState) => state.ecoBridge[bridgeId].transactions], txs =>

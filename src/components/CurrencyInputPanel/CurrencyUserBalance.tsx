@@ -3,11 +3,12 @@ import { _10000 } from '@swapr/sdk'
 import { Trans } from 'react-i18next'
 import { useTheme } from 'styled-components'
 
-import { UnderlinedSmallText, UppercaseHelper } from './CurrencyInputPanel.styles'
-import { CurrencyUserBalanceProps } from './CurrencyInputPanel.types'
 import { useActiveWeb3React } from '../../hooks'
 import { TYPE } from '../../theme'
 import { limitNumberOfDecimalPlaces } from '../../utils/prices'
+
+import { UnderlinedSmallText, UppercaseHelper } from './CurrencyInputPanel.styles'
+import { CurrencyUserBalanceProps } from './CurrencyInputPanel.types'
 
 export const CurrencyUserBalance = ({
   hideBalance,

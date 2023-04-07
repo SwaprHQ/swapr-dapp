@@ -3,7 +3,6 @@ import { Currency, CurrencyAmount, JSBI, Pair, Percent, TokenAmount } from '@swa
 import { useCallback } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 
-import { Field, typeInput } from './actions'
 import { usePair } from '../../data/Reserves'
 import { useTotalSupply } from '../../data/TotalSupply'
 import { useActiveWeb3React } from '../../hooks'
@@ -11,6 +10,8 @@ import { wrappedCurrency } from '../../utils/wrappedCurrency'
 import { AppDispatch, AppState } from '../index'
 import { tryParseAmount } from '../swap/hooks'
 import { useTokenBalances } from '../wallet/hooks'
+
+import { Field, typeInput } from './actions'
 
 export function useBurnState(): AppState['burn'] {
   return useSelector<AppState, AppState['burn']>(state => state.burn)

@@ -1,9 +1,10 @@
 import styled from 'styled-components'
 
-import FeatureItem from './FeatureItem'
-import Layout from './layout/Layout'
 import { breakpoints, gradients } from '../../utils/theme'
 import { FeaturesContent } from '../../utils/uiConstants'
+
+import FeatureItem from './FeatureItem'
+import Layout from './layout/Layout'
 
 export default function Features() {
   return (

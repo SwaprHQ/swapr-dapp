@@ -10,17 +10,6 @@ import { getHardcodedGasLimits } from '@connext/nxtp-utils'
 import { TokenInfo } from '@uniswap/token-lists'
 import { ethers, utils } from 'ethers'
 
-import { connextSdkChainConfig } from './Connext.config'
-import { CONNEXT_TOKENS } from './Connext.lists'
-import { connextActions } from './Connext.reducer'
-import { connextSelectors } from './Connext.selectors'
-import {
-  ConnextQuote,
-  ConnextTransaction,
-  ConnextTransactionsSubgraph,
-  ConnextTransactionStatus,
-} from './Connext.types'
-import { getReceivingTransaction, getTransactionsQuery, SilentLogger } from './Connext.utils'
 import { SWPRSupportedChains } from '../../../utils/chainSupportsSWPR'
 import { formatNumber } from '../../../utils/formatNumber'
 import {
@@ -32,6 +21,18 @@ import {
   SyncState,
 } from '../EcoBridge.types'
 import { ButtonStatus, EcoBridgeChildBase, getNativeCurrencyPrice } from '../EcoBridge.utils'
+
+import { connextSdkChainConfig } from './Connext.config'
+import { CONNEXT_TOKENS } from './Connext.lists'
+import { connextActions } from './Connext.reducer'
+import { connextSelectors } from './Connext.selectors'
+import {
+  ConnextQuote,
+  ConnextTransaction,
+  ConnextTransactionsSubgraph,
+  ConnextTransactionStatus,
+} from './Connext.types'
+import { getReceivingTransaction, getTransactionsQuery, SilentLogger } from './Connext.utils'
 
 export class Connext extends EcoBridgeChildBase {
   private _connextSdk: NxtpSdk | undefined

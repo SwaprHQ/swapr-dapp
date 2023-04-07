@@ -3,14 +3,15 @@ import { currencyEquals, Token } from '@swapr/sdk'
 import { useCallback } from 'react'
 import { Text } from 'rebass'
 
-import { BaseWrapper } from './CommonTokens.styles'
-import { CommonTokensProps } from './CommonTokens.types'
 import { SUGGESTED_BASES } from '../../../constants'
 import { useNativeCurrency } from '../../../hooks/useNativeCurrency'
 import { TYPE } from '../../../theme'
 import { AutoColumn } from '../../Column'
 import { CurrencyLogo } from '../../CurrencyLogo'
 import { AutoRow } from '../../Row'
+
+import { BaseWrapper } from './CommonTokens.styles'
+import { CommonTokensProps } from './CommonTokens.types'
 
 export const CommonTokens = ({ chainId, onCurrencySelect, selectedCurrency }: CommonTokensProps) => {
   const nativeCurrency = useNativeCurrency()

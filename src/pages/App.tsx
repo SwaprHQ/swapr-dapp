@@ -6,7 +6,6 @@ import { useLocation } from 'react-router-dom'
 import { Slide, ToastContainer } from 'react-toastify'
 import styled, { useTheme } from 'styled-components'
 
-import { Routes } from './Routes'
 import { defaultSubgraphClient, subgraphClients } from '../apollo/client'
 import Header from '../components/Header'
 import { FallbackLoader } from '../components/Loader/FallbackLoader'
@@ -16,6 +15,8 @@ import { SpaceBg } from '../components/SpaceBg/SpaceBg'
 import Web3ReactManager from '../components/Web3ReactManager'
 import { useActiveWeb3React } from '../hooks'
 import { SWPRSupportedChains } from '../utils/chainSupportsSWPR'
+
+import { Routes } from './Routes'
 
 import 'react-loading-skeleton/dist/skeleton.css'
 import 'aos/dist/aos.css'

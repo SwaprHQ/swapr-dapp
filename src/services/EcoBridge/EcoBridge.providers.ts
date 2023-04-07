@@ -1,9 +1,10 @@
 import { JsonRpcProvider } from '@ethersproject/providers'
 import { ChainId } from '@swapr/sdk'
 
-import { EcoBridgeProviders } from './EcoBridge.types'
 import { INFURA_PROJECT_ID } from '../../connectors'
 import { NETWORK_DETAIL } from '../../constants'
+
+import { EcoBridgeProviders } from './EcoBridge.types'
 
 const addInfuraKey = (rpcUrl: string) => {
   if (rpcUrl.includes('infura')) {

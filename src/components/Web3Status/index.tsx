@@ -6,8 +6,6 @@ import { useTranslation } from 'react-i18next'
 import { createSearchParams, useNavigate, useSearchParams } from 'react-router-dom'
 import styled from 'styled-components'
 
-import { AccountStatus } from './AccountStatus'
-import { ConnectWalletPopover } from './ConnectWalletPopover'
 import { NetworkContextName } from '../../constants'
 import { useActiveWeb3React, useUnsupportedChainIdError } from '../../hooks'
 import { useENSAvatar } from '../../hooks/useENSAvatar'
@@ -27,6 +25,9 @@ import { TriangleIcon } from '../Icons'
 import NetworkSwitcherPopover from '../NetworkSwitcherPopover'
 import Row from '../Row'
 import WalletModal from '../WalletModal'
+
+import { AccountStatus } from './AccountStatus'
+import { ConnectWalletPopover } from './ConnectWalletPopover'
 
 const SwitchNetworkButton = styled.button`
   display: flex;

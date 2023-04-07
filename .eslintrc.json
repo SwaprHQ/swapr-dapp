@@ -33,7 +33,7 @@
     "import/order": [
       "error",
       {
-        "groups": ["internal", ["builtin", "external"], ["parent", "sibling"]],
+        "groups": ["internal", ["builtin", "external"], "parent", "sibling"],
         "pathGroups": [
           {
             "pattern": "@swapr/**",

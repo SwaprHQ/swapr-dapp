@@ -1,10 +1,11 @@
 import { Store } from '@reduxjs/toolkit'
 import { BigNumber } from 'ethers'
 
-import { createArbitrumSlice } from './ArbitrumBridge.reducer'
 import { AppState } from '../../../state'
 import { clearBridgeTxs } from '../../../state/bridgeTransactions/actions'
 import { SupportedChainsConfig } from '../EcoBridge.types'
+
+import { createArbitrumSlice } from './ArbitrumBridge.reducer'
 
 export const migrateBridgeTransactions = (
   store: Store<AppState>,

@@ -7,21 +7,6 @@ import { Navigate, useSearchParams } from 'react-router-dom'
 import { useToggle } from 'react-use'
 import { Box, Flex, Text } from 'rebass'
 
-import {
-  AvatarWrapper,
-  Button,
-  CallToActionWrapper,
-  CustomLinkIcon,
-  DetailActionWrapper,
-  ENSAvatar,
-  FullAccount,
-  PaginationRow,
-  StyledLink,
-} from './Account.styles'
-import { type Transaction } from './Account.types'
-import CopyWrapper from './CopyWrapper'
-import { NoDataTransactionRow, TransactionHeaders, TransactionRows } from './TransactionRows'
-import { formatTransactions, TransactionFilter } from './utils/accountUtils'
 import { PageMetaData } from '../../components/PageMetaData'
 import { Pagination } from '../../components/Pagination'
 import { Switch } from '../../components/Switch'
@@ -39,6 +24,22 @@ import { BlurBox } from '../../ui/StyledElements/BlurBox'
 import { PageWrapper } from '../../ui/StyledElements/PageWrapper'
 import { getExplorerLink, shortenAddress } from '../../utils'
 import { useLimitOrderTransactions } from '../Swap/LimitOrderBox/utils/hooks'
+
+import {
+  AvatarWrapper,
+  Button,
+  CallToActionWrapper,
+  CustomLinkIcon,
+  DetailActionWrapper,
+  ENSAvatar,
+  FullAccount,
+  PaginationRow,
+  StyledLink,
+} from './Account.styles'
+import { type Transaction } from './Account.types'
+import CopyWrapper from './CopyWrapper'
+import { NoDataTransactionRow, TransactionHeaders, TransactionRows } from './TransactionRows'
+import { formatTransactions, TransactionFilter } from './utils/accountUtils'
 
 export function Account() {
   const { t } = useTranslation('account')

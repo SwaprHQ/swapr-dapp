@@ -16,9 +16,6 @@ import { useTranslation } from 'react-i18next'
 import { FixedSizeList } from 'react-window'
 import { useTheme } from 'styled-components'
 
-import { CurrencySearchContext } from './CurrencySearch.context'
-import { CloseIconStyled, ContentWrapper, Footer } from './CurrencySearch.styles'
-import { CurrencySearchProps } from './CurrencySearch.types'
 import { useActiveWeb3React } from '../../../hooks'
 import { useSearchInactiveTokenLists } from '../../../hooks/Tokens'
 import { useNativeCurrency } from '../../../hooks/useNativeCurrency'
@@ -35,6 +32,10 @@ import { CurrencySearchModalContext } from '../CurrencySearchModal/CurrencySearc
 import { SearchInput, Separator } from '../shared'
 import { filterTokens, useSortedTokensByQuery } from '../utils/filtering'
 import { useTokenComparator } from '../utils/sorting'
+
+import { CurrencySearchContext } from './CurrencySearch.context'
+import { CloseIconStyled, ContentWrapper, Footer } from './CurrencySearch.styles'
+import { CurrencySearchProps } from './CurrencySearch.types'
 
 export const CurrencySearch = ({
   isOpen,

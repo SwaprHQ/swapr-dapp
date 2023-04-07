@@ -1,11 +1,12 @@
 import { createSelector } from '@reduxjs/toolkit'
 
-import { omniTransactionsAdapter } from './OmniBridge.adapter'
-import { getTransactionStatus } from './OmniBridge.utils'
 import { AppState } from '../../../state'
 import { BridgeTransactionStatus, BridgeTransactionSummary } from '../../../state/bridgeTransactions/types'
 import { normalizeInputValue } from '../../../utils'
 import { OmniBridgeList } from '../EcoBridge.types'
+
+import { omniTransactionsAdapter } from './OmniBridge.adapter'
+import { getTransactionStatus } from './OmniBridge.utils'
 
 const createSelectOwnedTransactions = (bridgeId: OmniBridgeList) => {
   const transactionsSelector = createSelector(

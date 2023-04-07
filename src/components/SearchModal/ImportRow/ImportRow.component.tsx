@@ -1,7 +1,5 @@
 import { useTheme } from 'styled-components'
 
-import { CheckIcon, NameOverflow, TokenSection } from './ImportRow.styles'
-import { ImportRowProps } from './ImportRow.types'
 import { useIsTokenActive, useIsUserAddedToken } from '../../../hooks/Tokens'
 import { WrappedTokenInfo } from '../../../state/lists/wrapped-token-info'
 import { TYPE } from '../../../theme'
@@ -10,6 +8,9 @@ import { AutoColumn } from '../../Column'
 import { CurrencyLogo } from '../../CurrencyLogo'
 import ListLogo from '../../ListLogo'
 import { AutoRow, RowFixed } from '../../Row'
+
+import { CheckIcon, NameOverflow, TokenSection } from './ImportRow.styles'
+import { ImportRowProps } from './ImportRow.types'
 
 export const ImportRow = ({ token, style, dim, showImportView, setImportToken }: ImportRowProps) => {
   const theme = useTheme()

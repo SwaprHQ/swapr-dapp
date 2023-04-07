@@ -7,12 +7,6 @@ import { Link } from 'react-router-dom'
 import { Flex, Text } from 'rebass'
 import styled from 'styled-components'
 
-import { Balances } from './Balances'
-import { HeaderButton } from './HeaderButton'
-import { HeaderLink, HeaderMobileLink } from './HeaderLink'
-import { HeaderLinkBadge } from './HeaderLinkBadge'
-import MobileOptions from './MobileOptions'
-import { Amount } from './styled'
 import { ReactComponent as GasInfoSvg } from '../../assets/images/gas-info.svg'
 import { useActiveWeb3React, useUnsupportedChainIdError } from '../../hooks'
 import { useSwaprSinglelSidedStakeCampaigns } from '../../hooks/singleSidedStakeCampaigns/useSwaprSingleSidedStakeCampaigns'
@@ -31,6 +25,13 @@ import Row, { RowFixed, RowFlat } from '../Row'
 import { Settings } from '../Settings'
 import { SwaprVersionLogo } from '../SwaprVersionLogo'
 import Web3Status from '../Web3Status'
+
+import { Balances } from './Balances'
+import { HeaderButton } from './HeaderButton'
+import { HeaderLink, HeaderMobileLink } from './HeaderLink'
+import { HeaderLinkBadge } from './HeaderLinkBadge'
+import MobileOptions from './MobileOptions'
+import { Amount } from './styled'
 
 const HeaderFrame = styled.div`
   position: relative;

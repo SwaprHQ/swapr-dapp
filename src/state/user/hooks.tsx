@@ -4,6 +4,13 @@ import { createSelector } from '@reduxjs/toolkit'
 import { useCallback, useMemo } from 'react'
 import { shallowEqual, useDispatch, useSelector } from 'react-redux'
 
+import { BASES_TO_TRACK_LIQUIDITY_FOR, PINNED_PAIRS } from '../../constants'
+import { PairState, usePairs } from '../../data/Reserves'
+import { useActiveWeb3React } from '../../hooks'
+import { useAllTokens } from '../../hooks/Tokens'
+import { MainnetGasPrice } from '../application/actions'
+import { AppDispatch, AppState } from '../index'
+
 import {
   addSerializedPair,
   addSerializedToken,
@@ -23,12 +30,6 @@ import {
   updateUserSlippageTolerance,
 } from './actions'
 import { ChartOption, SwapTab } from './reducer'
-import { BASES_TO_TRACK_LIQUIDITY_FOR, PINNED_PAIRS } from '../../constants'
-import { PairState, usePairs } from '../../data/Reserves'
-import { useActiveWeb3React } from '../../hooks'
-import { useAllTokens } from '../../hooks/Tokens'
-import { MainnetGasPrice } from '../application/actions'
-import { AppDispatch, AppState } from '../index'
 
 function serializeToken(token: Token): SerializedToken {
   return {

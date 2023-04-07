@@ -1,9 +1,10 @@
 import { useTranslation } from 'react-i18next'
 
-import { StyledDropDown, StyledTokenName } from './CurrencyInputPanel.styles'
-import { CurrencyViewProps } from './CurrencyInputPanel.types'
 import { CurrencyLogo } from '../CurrencyLogo'
 import { DoubleCurrencyLogo } from '../DoubleCurrencyLogo'
+
+import { StyledDropDown, StyledTokenName } from './CurrencyInputPanel.styles'
+import { CurrencyViewProps } from './CurrencyInputPanel.types'
 
 export const CurrencyView = ({
   pair,

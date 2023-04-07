@@ -1,10 +1,11 @@
 import styled from 'styled-components'
 
-import { BridgeTab } from './utils'
 import { NumberBadge } from '../../components/NumberBadge'
 import Row from '../../components/Row'
 import { BridgeTxsFilter } from '../../services/EcoBridge/EcoBridge.types'
 import { BridgeTransactionSummary } from '../../state/bridgeTransactions/types'
+
+import { BridgeTab } from './utils'
 
 interface TabsProps {
   collectableTxAmount: number

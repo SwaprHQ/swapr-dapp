@@ -3,8 +3,6 @@ import { ChainId } from '@swapr/sdk'
 import { L2ToL1MessageStatus } from '@arbitrum/sdk'
 import { createSelector } from '@reduxjs/toolkit'
 
-import { arbitrumTransactionsAdapter } from './ArbitrumBridge.adapter'
-import { ArbitrumPendingReasons } from './ArbitrumBridge.types'
 import { AppState } from '../../../state'
 import {
   ArbitrumBridgeTxn,
@@ -16,6 +14,9 @@ import { normalizeInputValue } from '../../../utils'
 import { getBridgeTxStatus, txnTypeToOrigin } from '../../../utils/arbitrum'
 import { ecoBridgeConfig } from '../EcoBridge.config'
 import { ArbitrumList } from '../EcoBridge.types'
+
+import { arbitrumTransactionsAdapter } from './ArbitrumBridge.adapter'
+import { ArbitrumPendingReasons } from './ArbitrumBridge.types'
 
 const getSupportedChains = (bridgeId: string) => {
   const bridge = ecoBridgeConfig.find(config => config.bridgeId === bridgeId)

@@ -3,7 +3,6 @@ import { ChainId } from '@swapr/sdk'
 import { useCallback, useEffect, useState } from 'react'
 import { AlertTriangle } from 'react-feather'
 
-import { Input, OptionCustom, SlippageErrorInner, SlippageErrorInnerAlertTriangle } from './styleds'
 import { useActiveWeb3React } from '../../hooks'
 import { MainnetGasPrice } from '../../state/application/actions'
 import { TYPE } from '../../theme'
@@ -12,6 +11,8 @@ import { Option } from '../Option'
 import QuestionHelper from '../QuestionHelper'
 import { RowBetween, RowFixed } from '../Row'
 import Toggle from '../Toggle'
+
+import { Input, OptionCustom, SlippageErrorInner, SlippageErrorInnerAlertTriangle } from './styleds'
 
 enum RawSlippageValue {
   Min = 1, // 0.01%

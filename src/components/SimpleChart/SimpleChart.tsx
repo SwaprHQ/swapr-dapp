@@ -5,11 +5,12 @@ import { useTranslation } from 'react-i18next'
 import { Box, Flex, Text } from 'rebass'
 import styled, { useTheme } from 'styled-components'
 
-import { ShowChart } from './ShowChart'
-import { SimpleChartDateFilters } from './SimpleChartDateFilters'
 import { TYPE } from '../../theme'
 import { BlurBox } from '../../ui/StyledElements/BlurBox'
 import { ChartData, DATE_INTERVALS } from '../Charts/chartUtils'
+
+import { ShowChart } from './ShowChart'
+import { SimpleChartDateFilters } from './SimpleChartDateFilters'
 
 interface SimpleChartProps {
   data: ChartData[]

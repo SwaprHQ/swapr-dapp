@@ -11,10 +11,6 @@ import Skeleton from 'react-loading-skeleton'
 import { Box, Flex } from 'rebass'
 import styled from 'styled-components'
 
-import ConfirmClaimModal from './ConfirmClaimModal'
-import ConfirmExitModal from './ConfirmExitModal'
-import ConfirmStakingModal from './ConfirmStakingModal'
-import ConfirmWithdrawalModal from './ConfirmWithdrawalModal'
 import { useActiveWeb3React } from '../../../../hooks'
 import { useLiquidityMiningActionCallbacks } from '../../../../hooks/useLiquidityMiningActionCallbacks'
 import { useLiquidityMiningCampaignPosition } from '../../../../hooks/useLiquidityMiningCampaignPosition'
@@ -29,6 +25,11 @@ import { CurrencyLogo } from '../../../CurrencyLogo'
 import Row, { RowBetween } from '../../../Row'
 import DataDisplayer from '../DataDisplayer'
 import TokenAmountDisplayer from '../TokenAmountDisplayer'
+
+import ConfirmClaimModal from './ConfirmClaimModal'
+import ConfirmExitModal from './ConfirmExitModal'
+import ConfirmStakingModal from './ConfirmStakingModal'
+import ConfirmWithdrawalModal from './ConfirmWithdrawalModal'
 
 const StyledPositionCard = styled(GreyCard)`
   border: none;

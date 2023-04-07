@@ -2,11 +2,12 @@ import { Pair, Token, TokenAmount } from '@swapr/sdk'
 
 import { useCallback } from 'react'
 
-import StakingRewardsDistributionCreationModalFooter from './StakingRewardsDistributionCreationModalFooter'
 import TransactionConfirmationModal, {
   ConfirmationModalContent,
   TransactionErrorContent,
 } from '../../TransactionConfirmationModal'
+
+import StakingRewardsDistributionCreationModalFooter from './StakingRewardsDistributionCreationModalFooter'
 
 interface ConfirmStakingRewardsDistributionCreationProps {
   onConfirm: () => void

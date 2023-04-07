@@ -1,5 +1,8 @@
 import { ChainId, UniswapV2RoutablePlatform } from '@swapr/sdk'
 
+import { AppState } from '../../../state'
+import { AdapterKey, Adapters } from '../advancedTradingView.types'
+
 import { BaseAdapter } from './baseAdapter/base.adapter'
 import { PairBurnsAndMints, PairSwaps, PairSwapsBurnsAndMints } from './baseAdapter/base.types'
 import { UniswapV3Adapter } from './uniswapV3/uniswapV3.adapter'
@@ -8,8 +11,6 @@ import {
   UniswapV3PairSwaps,
   UniswapV3SwapsBurnsAndMints,
 } from './uniswapV3/uniswapV3.types'
-import { AppState } from '../../../state'
-import { AdapterKey, Adapters } from '../advancedTradingView.types'
 
 export const adapters: Adapters<AppState> = {
   swapr: new BaseAdapter<AppState, PairSwapsBurnsAndMints, PairSwaps, PairBurnsAndMints>({

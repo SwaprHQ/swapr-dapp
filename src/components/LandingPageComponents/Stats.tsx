@@ -6,12 +6,13 @@ import TextAnim from 'rc-texty'
 import { useEffect, useState } from 'react'
 import styled from 'styled-components'
 
-import Layout from './layout/Layout'
 import { subgraphClients } from '../../apollo/client'
 import { SwaprFactory } from '../../graphql/generated/schema'
 import { toClassName } from '../../utils/helperFunctions'
 import { breakpoints, gradients } from '../../utils/theme'
 import { StatsContent } from '../../utils/uiConstants'
+
+import Layout from './layout/Layout'
 
 const subgraphApiClients = [
   subgraphClients[ChainId.ARBITRUM_ONE],

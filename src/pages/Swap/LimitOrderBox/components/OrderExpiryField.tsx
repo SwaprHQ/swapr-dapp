@@ -2,10 +2,11 @@ import { useContext, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import styled from 'styled-components'
 
-import { ButtonAddonsWrapper, InnerWrapper, Input, InputGroup, Label } from './InputGroup'
 import { invalidChars } from '../constants'
 import { LimitOrderFormContext } from '../contexts/LimitOrderFormContext'
 import { OrderExpiresInUnit } from '../interfaces'
+
+import { ButtonAddonsWrapper, InnerWrapper, Input, InputGroup, Label } from './InputGroup'
 
 export const ExpiryUnitButton = styled.span<{
   isActive: boolean

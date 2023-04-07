@@ -2,9 +2,6 @@ import { BigintIsh, Pair, Token } from '@swapr/sdk'
 
 import { useCallback, useMemo } from 'react'
 
-import { useSWPRToken } from './swpr/useSWPRToken'
-import { useKpiTokens } from './useKpiTokens'
-import { useNativeCurrency } from './useNativeCurrency'
 import { SubgraphLiquidityMiningCampaign, SubgraphSingleSidedStakingCampaign } from '../apollo'
 import { PairsFilterType } from '../components/Pool/ListFilter'
 import { useGetLiquidityMiningCampaignsQuery, useGetStakingCampaignsQuery } from '../graphql/generated/schema'
@@ -18,6 +15,10 @@ import {
   toLiquidityMiningCampaign,
   toSingleSidedStakeCampaign,
 } from '../utils/liquidityMining'
+
+import { useSWPRToken } from './swpr/useSWPRToken'
+import { useKpiTokens } from './useKpiTokens'
+import { useNativeCurrency } from './useNativeCurrency'
 
 import { useActiveWeb3React } from './index'
 

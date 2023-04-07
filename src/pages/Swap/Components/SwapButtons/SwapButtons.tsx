@@ -3,8 +3,6 @@ import { CoWTrade, Currency, Trade, UniswapV2Trade } from '@swapr/sdk'
 import { Dispatch, SetStateAction, useCallback, useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
 
-import { ErrorBox } from './SwabButtonsError'
-import { SwapButton, SwapLoadingButton } from './SwapButton'
 import { ButtonConfirmed, ButtonError, ButtonPrimary } from '../../../../components/Button'
 import { ButtonConnect } from '../../../../components/ButtonConnect'
 import Column from '../../../../components/Column'
@@ -20,6 +18,9 @@ import { useIsExpertMode } from '../../../../state/user/hooks'
 import { warningSeverity } from '../../../../utils/prices'
 import { wrappedCurrency } from '../../../../utils/wrappedCurrency'
 import { SwapData } from '../../SwapBox'
+
+import { ErrorBox } from './SwabButtonsError'
+import { SwapButton, SwapLoadingButton } from './SwapButton'
 
 const RoutablePlatformKeys = Object.keys(ROUTABLE_PLATFORM_STYLE)
 

@@ -7,6 +7,21 @@ import { TokenInfo, TokenList } from '@uniswap/token-lists'
 import { BigNumber } from 'ethers'
 import { request } from 'graphql-request'
 
+import { ZERO_ADDRESS } from '../../../constants'
+import ERC20_ABI from '../../../constants/abis/erc20.json'
+import { BridgeTransactionStatus } from '../../../state/bridgeTransactions/types'
+import { SWPRSupportedChains } from '../../../utils/chainSupportsSWPR'
+import { formatNumber } from '../../../utils/formatNumber'
+import {
+  BridgeModalStatus,
+  EcoBridgeChangeHandler,
+  EcoBridgeChildBaseConstructor,
+  EcoBridgeChildBaseInit,
+  SyncState,
+  XdaiBridgeList,
+} from '../EcoBridge.types'
+import { ButtonStatus, EcoBridgeChildBase, getNativeCurrencyPrice } from '../EcoBridge.utils'
+
 import {
   XDAI_BRIDGE_EXECUTIONS,
   XDAI_BRIDGE_FOREIGN_REQUEST,
@@ -26,20 +41,6 @@ import {
   packSignatures,
   signatureToVRS,
 } from './XdaiBridge.utils'
-import { ZERO_ADDRESS } from '../../../constants'
-import ERC20_ABI from '../../../constants/abis/erc20.json'
-import { BridgeTransactionStatus } from '../../../state/bridgeTransactions/types'
-import { SWPRSupportedChains } from '../../../utils/chainSupportsSWPR'
-import { formatNumber } from '../../../utils/formatNumber'
-import {
-  BridgeModalStatus,
-  EcoBridgeChangeHandler,
-  EcoBridgeChildBaseConstructor,
-  EcoBridgeChildBaseInit,
-  SyncState,
-  XdaiBridgeList,
-} from '../EcoBridge.types'
-import { ButtonStatus, EcoBridgeChildBase, getNativeCurrencyPrice } from '../EcoBridge.utils'
 
 export class XdaiBridge extends EcoBridgeChildBase {
   private _homeChainId = ChainId.XDAI

@@ -1,9 +1,10 @@
 import { createContext, ReactNode, useContext, useEffect, useState } from 'react'
 
-import { EcoBridge } from './EcoBridge'
-import { ecoBridgeConfig } from './EcoBridge.config'
 import { useActiveWeb3React } from '../../hooks'
 import store from '../../state'
+
+import { EcoBridge } from './EcoBridge'
+import { ecoBridgeConfig } from './EcoBridge.config'
 
 export const EcoBridgeContext = createContext<EcoBridge | null>(null)
 

@@ -2,6 +2,10 @@ import { PropsWithChildren, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Flex, Text } from 'rebass'
 
+import { ButtonDark } from '../../../../components/Button'
+import { useAdvancedTradingView } from '../../../../services/AdvancedTradingView/useAdvancedTradingView.hook'
+import { useAllTrades } from '../../../../services/AdvancedTradingView/useAllTrades.hook'
+
 import {
   AdvancedModeHeader,
   AdvancedModeTitle,
@@ -25,9 +29,6 @@ import { ColumnHeader } from './ColumnHeader'
 import { InfiniteScroll } from './InfiniteScroll'
 import { OrderHistoryTransaction } from './OrderHistory/OrderHistoryTransaction'
 import { PairDetails } from './PairDetails'
-import { ButtonDark } from '../../../../components/Button'
-import { useAdvancedTradingView } from '../../../../services/AdvancedTradingView/useAdvancedTradingView.hook'
-import { useAllTrades } from '../../../../services/AdvancedTradingView/useAllTrades.hook'
 
 enum TradesWrapperHeight {
   MIN = 570,

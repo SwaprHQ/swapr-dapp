@@ -1,7 +1,8 @@
 import { ChainId, DAI, USDC, USDT, WBTC, WETH } from '@swapr/sdk'
 
-import { ConnextToken } from './Connext.types'
 import { ZERO_ADDRESS } from '../../../constants'
+
+import { ConnextToken } from './Connext.types'
 
 //connext's list of tokens
 export const CONNEXT_TOKENS: ConnextToken[] = [

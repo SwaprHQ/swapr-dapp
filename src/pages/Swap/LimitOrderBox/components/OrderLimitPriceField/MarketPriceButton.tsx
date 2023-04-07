@@ -4,8 +4,9 @@ import { memo } from 'react'
 import { useTranslation } from 'react-i18next'
 import styled from 'styled-components'
 
-import { MarketPrice } from './styles'
 import { ReactComponent as ProgressCircle } from '../../../../../assets/images/progress-circle.svg'
+
+import { MarketPrice } from './styles'
 
 export const MarketPriceButton = memo(
   ({

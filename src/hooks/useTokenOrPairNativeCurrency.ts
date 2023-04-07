@@ -4,11 +4,12 @@ import { Pair, Price, Token } from '@swapr/sdk'
 import Decimal from 'decimal.js-light'
 import { useMemo } from 'react'
 
+import { usePairLiquidityTokenTotalSupply } from '../data/Reserves'
+import { getLpTokenPrice } from '../utils/prices'
+
 import { useNativeCurrency } from './useNativeCurrency'
 import { usePairReserveNativeCurrency } from './usePairReserveNativeCurrency'
 import { useTokenDerivedNativeCurrency } from './useTokenDerivedNativeCurrency'
-import { usePairLiquidityTokenTotalSupply } from '../data/Reserves'
-import { getLpTokenPrice } from '../utils/prices'
 
 import { useActiveWeb3React } from './index'
 

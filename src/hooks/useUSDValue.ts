@@ -17,7 +17,6 @@ import {
 import { useQuery } from '@tanstack/react-query'
 import { useMemo, useRef, useState } from 'react'
 
-import { useTradeExactInUniswapV2 } from './Trades'
 import { REFETCH_DATA_INTERVAL } from '../constants/data'
 import { tryParseAmount } from '../state/swap/hooks'
 import {
@@ -29,6 +28,8 @@ import {
 } from '../utils/coingecko'
 import { currencyId } from '../utils/currencyId'
 import { wrappedCurrencyAmount } from '../utils/wrappedCurrency'
+
+import { useTradeExactInUniswapV2 } from './Trades'
 
 import { useActiveWeb3React } from './index'
 

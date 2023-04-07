@@ -4,7 +4,6 @@ import { wrappedCurrency } from '@swapr/sdk/dist/entities/trades/utils'
 import { formatUnits } from 'ethers/lib/utils'
 import { ReactNode, useContext, useLayoutEffect, useRef, useState } from 'react'
 
-import { LimitOrderFormContext } from './LimitOrderFormContext'
 import { PRE_SELECT_OUTPUT_CURRENCY_ID } from '../../../../constants'
 import { useActiveWeb3React } from '../../../../hooks/index'
 import { useCurrency } from '../../../../hooks/Tokens'
@@ -14,6 +13,8 @@ import { SwapContext } from '../../SwapBox/SwapContext'
 import { supportedChainIdList } from '../constants/index'
 import { InputFocus, OrderExpiresInUnit } from '../interfaces'
 import { getInitialState } from '../utils'
+
+import { LimitOrderFormContext } from './LimitOrderFormContext'
 
 export function LimitOrderFormBaseConditionalProvider({
   account,

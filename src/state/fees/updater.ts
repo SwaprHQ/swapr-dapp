@@ -3,9 +3,10 @@ import { Fetcher } from '@swapr/sdk'
 import { useEffect } from 'react'
 import { useDispatch } from 'react-redux'
 
-import { setProtocolFee, setSwapFees } from './actions'
 import { useActiveWeb3React } from '../../hooks'
 import { chainSupportsSWPR } from '../../utils/chainSupportsSWPR'
+
+import { setProtocolFee, setSwapFees } from './actions'
 
 export default function Updater() {
   const { library, chainId } = useActiveWeb3React()

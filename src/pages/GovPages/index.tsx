@@ -3,8 +3,6 @@ import { useTranslation } from 'react-i18next'
 import { Flex, Text } from 'rebass'
 import styled, { useTheme } from 'styled-components'
 
-import { MainPage, PairPage } from './constant'
-import Container from './Container'
 import { ButtonPrimary, ButtonWithExternalLink } from '../../components/Button'
 import { LightCard } from '../../components/Card'
 import { AutoColumn } from '../../components/Column'
@@ -16,6 +14,9 @@ import { useNativeCurrency } from '../../hooks/useNativeCurrency'
 import { useRouter } from '../../hooks/useRouter'
 import { TYPE } from '../../theme'
 import { PageWrapper } from '../../ui/StyledElements/PageWrapper'
+
+import { MainPage, PairPage } from './constant'
+import Container from './Container'
 
 const TitleRow = styled(RowBetween)`
   ${({ theme }) => theme.mediaWidth.upToSmall`

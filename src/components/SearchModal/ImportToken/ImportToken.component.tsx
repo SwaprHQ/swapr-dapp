@@ -3,8 +3,6 @@ import { Token } from '@swapr/sdk'
 import { useContext } from 'react'
 import { Text } from 'rebass'
 
-import { BottomSectionContainer, SpacedButtonError, Wrapper } from './ImportToken.styles'
-import { ImportTokenProps } from './ImportToken.types'
 import { WrappedTokenInfo } from '../../../state/lists/wrapped-token-info'
 import { useAddUserToken } from '../../../state/user/hooks'
 import { CloseIcon, TYPE } from '../../../theme'
@@ -14,6 +12,9 @@ import { TokenWarningCard } from '../../TokenWarningModal'
 import { CurrencySearchModalContext } from '../CurrencySearchModal/CurrencySearchModal.context'
 import { GoBackIcon } from '../GoBackIcon'
 import { PaddedColumn } from '../shared'
+
+import { BottomSectionContainer, SpacedButtonError, Wrapper } from './ImportToken.styles'
+import { ImportTokenProps } from './ImportToken.types'
 
 export const ImportToken = ({ onBack, onDismiss, onCurrencySelect }: ImportTokenProps) => {
   const addToken = useAddUserToken()

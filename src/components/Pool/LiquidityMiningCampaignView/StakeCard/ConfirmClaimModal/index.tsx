@@ -2,12 +2,13 @@ import { PricedTokenAmount, TokenAmount } from '@swapr/sdk'
 
 import { useCallback, useEffect, useState } from 'react'
 
-import ConfirmClaimModalHeader from './Header'
 import TransactionConfirmationModal, {
   ConfirmationModalContent,
   TransactionErrorContent,
 } from '../../../../TransactionConfirmationModal'
 import ConfirmStakingModalFooter from '../ModalBase/Footer'
+
+import ConfirmClaimModalHeader from './Header'
 
 interface ConfirmClaimModalProps {
   isOpen: boolean

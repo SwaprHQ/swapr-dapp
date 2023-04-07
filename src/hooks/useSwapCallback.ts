@@ -17,8 +17,6 @@ import {
 import { UnsignedTransaction } from 'ethers'
 import { useContext, useMemo } from 'react'
 
-import useENS from './useENS'
-import useTransactionDeadline from './useTransactionDeadline'
 import { useAnalytics } from '../analytics/'
 import { INITIAL_ALLOWED_SLIPPAGE } from '../constants'
 import { SwapTabContext } from '../pages/Swap/SwapContext'
@@ -29,6 +27,9 @@ import { SwapProtocol } from '../state/transactions/reducer'
 import { useUserPreferredGasPrice } from '../state/user/hooks'
 import { calculateGasMargin, isAddress, shortenAddress } from '../utils'
 import { limitNumberOfDecimalPlaces } from '../utils/prices'
+
+import useENS from './useENS'
+import useTransactionDeadline from './useTransactionDeadline'
 
 import { useActiveWeb3React } from './index'
 

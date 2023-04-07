@@ -1,7 +1,8 @@
 import { createAction } from '@reduxjs/toolkit'
 
-import { ChartOption, SwapTab } from './reducer'
 import { MainnetGasPrice } from '../application/actions'
+
+import { ChartOption, SwapTab } from './reducer'
 
 export interface SerializedToken {
   chainId: number

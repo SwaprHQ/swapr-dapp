@@ -4,17 +4,6 @@ import { Currency } from '@swapr/sdk'
 
 import { TokenInfo, TokenList } from '@uniswap/token-lists'
 
-import { ApprovalsAPI, QuoteAPI, ServerAPI, TokenListsAPI } from './api'
-import {
-  BridgeStatusResponseSourceTxStatusEnum,
-  QuoteControllerGetQuoteSortEnum,
-  QuoteOutputDTO,
-  TokenPriceResponseDTO,
-} from './api/generated'
-import { socketActions } from './Socket.reducer'
-import { socketSelectors } from './Socket.selectors'
-import { SocketTokenMap, SocketTx, SocketTxStatus } from './Socket.types'
-import { getBestRoute, getStatusOfResponse, overrideTokensAddresses, SOCKET_LISTS_URL, VERSION } from './Socket.utils'
 import SocketLogo from '../../../assets/images/socket-logo.png'
 import { SOCKET_NATIVE_TOKEN_ADDRESS } from '../../../constants'
 import {
@@ -26,6 +15,18 @@ import {
   SyncState,
 } from '../EcoBridge.types'
 import { ButtonStatus, EcoBridgeChildBase } from '../EcoBridge.utils'
+
+import { ApprovalsAPI, QuoteAPI, ServerAPI, TokenListsAPI } from './api'
+import {
+  BridgeStatusResponseSourceTxStatusEnum,
+  QuoteControllerGetQuoteSortEnum,
+  QuoteOutputDTO,
+  TokenPriceResponseDTO,
+} from './api/generated'
+import { socketActions } from './Socket.reducer'
+import { socketSelectors } from './Socket.selectors'
+import { SocketTokenMap, SocketTx, SocketTxStatus } from './Socket.types'
+import { getBestRoute, getStatusOfResponse, overrideTokensAddresses, SOCKET_LISTS_URL, VERSION } from './Socket.utils'
 
 export class SocketBridge extends EcoBridgeChildBase {
   private _tokenLists: SocketTokenMap = {}

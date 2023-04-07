@@ -2,9 +2,6 @@ import { ChainId, Currency, DXD, SWPR, Token } from '@swapr/sdk'
 
 import { useMemo } from 'react'
 
-import { CurrencyLogoComponent } from './CurrencyLogo.component'
-import { CurrencyLogoContainerProps, CurrencyWrapperSource } from './CurrencyLogo.types'
-import { getTokenLogoURL, NATIVE_CURRENCY_LOGO } from './CurrencyLogo.utils'
 import carrotListLogoUrl from '../../assets/images/carrot.png'
 import DXDLogo from '../../assets/images/dxd.svg'
 import SWPRLogo from '../../assets/images/swpr-logo.png'
@@ -13,6 +10,10 @@ import useHttpLocations from '../../hooks/useHttpLocations'
 import { useBridgeTokenInfo } from '../../services/EcoBridge/EcoBridge.hooks'
 import { useTokenInfoFromActiveListOnCurrentChain } from '../../state/lists/hooks'
 import { WrappedTokenInfo } from '../../state/lists/wrapped-token-info'
+
+import { CurrencyLogoComponent } from './CurrencyLogo.component'
+import { CurrencyLogoContainerProps, CurrencyWrapperSource } from './CurrencyLogo.types'
+import { getTokenLogoURL, NATIVE_CURRENCY_LOGO } from './CurrencyLogo.utils'
 
 export const CurrencyLogo = ({
   currency,

@@ -1,8 +1,9 @@
 import { useEffect } from 'react'
 import { useDispatch } from 'react-redux'
 
-import { updateMatchesDarkMode } from './actions'
 import { AppDispatch } from '../index'
+
+import { updateMatchesDarkMode } from './actions'
 
 export default function Updater(): null {
   const dispatch = useDispatch<AppDispatch>()

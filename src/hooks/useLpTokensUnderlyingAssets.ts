@@ -4,9 +4,10 @@ import { JSBI, Pair, parseBigintIsh, Percent, Price, PricedToken, PricedTokenAmo
 import Decimal from 'decimal.js-light'
 import { useMemo } from 'react'
 
-import { useNativeCurrency } from './useNativeCurrency'
 import { useGetPairQuery } from '../graphql/generated/schema'
 import type { Pair as PairType } from '../graphql/generated/schema'
+
+import { useNativeCurrency } from './useNativeCurrency'
 
 import { useActiveWeb3React } from './index'
 

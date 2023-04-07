@@ -1,8 +1,9 @@
 import { ChainId } from '@swapr/sdk'
 
-import { BaseRedirect } from './BaseRedirect'
 import { useActiveWeb3React } from '../../hooks'
 import { chainSupportsSWPR } from '../../utils/chainSupportsSWPR'
+
+import { BaseRedirect } from './BaseRedirect'
 
 /**
  * A Route that is only accessible if all features available: Swapr core contract are deployed on the chain

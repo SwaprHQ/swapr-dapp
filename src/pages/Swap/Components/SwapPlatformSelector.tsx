@@ -7,8 +7,6 @@ import Skeleton from 'react-loading-skeleton'
 import { Box, Flex } from 'rebass'
 import styled, { useTheme } from 'styled-components'
 
-import { PlatformSelectorLoader } from './SwapPlatformSelectorLoader'
-import SwapRoute from './SwapRoute'
 import { AutoColumn } from '../../../components/Column'
 import { CurrencyLogo } from '../../../components/CurrencyLogo'
 import {
@@ -36,6 +34,9 @@ import {
   limitNumberOfDecimalPlaces,
   simpleWarningSeverity,
 } from '../../../utils/prices'
+
+import { PlatformSelectorLoader } from './SwapPlatformSelectorLoader'
+import SwapRoute from './SwapRoute'
 
 export interface SwapPlatformSelectorProps {
   allPlatformTrades: (Trade | undefined)[] | undefined
