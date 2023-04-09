@@ -577,6 +577,7 @@ export const RoutablePlatformKeysByNetwork = {
   [ChainId.BSC_MAINNET]: [
     UniswapV2RoutablePlatform.SUSHISWAP.name,
     UniswapV2RoutablePlatform.PANCAKESWAP.name,
+    RoutablePlatform.UNISWAP.name,
     RoutablePlatform.ONE_INCH.name,
   ],
   // TEST NETS WITH ALL DEXES

@@ -42,6 +42,7 @@ const STABLECOIN_AND_PLATFOM_BY_CHAIN: Record<number, { stablecoin: Token; platf
     stablecoin: DAI[ChainId.OPTIMISM_MAINNET],
     platform: UniswapV2RoutablePlatform.UNISWAP,
   },
+  [ChainId.BSC_MAINNET]: { stablecoin: DAI[ChainId.BSC_MAINNET], platform: UniswapV2RoutablePlatform.UNISWAP },
 }
 
 const convertToTokenAmount = (currencyAmount: CurrencyAmount | undefined, chainId: ChainId) => {
@@ -156,7 +157,7 @@ export function useCoingeckoUSDPrice(token?: Token, isNativeCurrency = false) {
         // we need to parse all USD returned amounts
         // and convert to the same currencyRef.current for both sides (SDK math invariant)
         // in our case we stick to the USDC paradigm
-        const quoteAmount = tryParseAmount(apiUsdPrice, STABLECOIN_AND_PLATFOM_BY_CHAIN[chainId].stablecoin, chainId)
+        const quoteAmount = tryParseAmount(apiUsdPrice, STABLECOIN_AND_PLATFOM_BY_CHAIN[chainId]?.stablecoin, chainId)
         // parse failure is unlikely - type safe
         if (!quoteAmount) {
           return null
