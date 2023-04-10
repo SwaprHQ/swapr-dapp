@@ -7538,7 +7538,7 @@ __metadata:
     "@swapr/sdk": 1.8.1
     "@synthetixio/synpress": ^2.3.3
     "@tanstack/react-query": 4.24.6
-    "@testing-library/cypress": ^8.0.3
+    "@testing-library/cypress": ^9.0.0
     "@types/aos": ^3.0.4
     "@types/debug": ^4.1.7
     "@types/jest": 29.5.0
@@ -7580,10 +7580,10 @@ __metadata:
     copy-to-clipboard: ^3.3.3
     cross-env: ^7.0.3
     crypto-browserify: ^3.12.0
-    cypress: ^10.8.0
+    cypress: 12.9.0
     cypress-ethereum-provider: ^0.1.7
-    cypress-localstorage-commands: ^2.1.0
-    cypress-mochawesome-reporter: ^3.1.0
+    cypress-localstorage-commands: 2.2.3
+    cypress-mochawesome-reporter: 3.3.0
     date-fns: ^2.29.3
     debug: ^4.3.4
     decimal.js-light: ^2.5.1
@@ -7828,6 +7828,18 @@ __metadata:
   peerDependencies:
     cypress: ^2.1.0 || ^3.0.0 || ^4.0.0 || ^5.0.0 || ^6.0.0 || ^7.0.0 || ^8.0.0 || ^9.0.0 || ^10.0.0 || ^11.0.0
   checksum: e005bc1a7ec808706c57e95ed312069fb5be39ea7362900dc2a32c09f124d478ade69ebcd7df88c076e3867ab328ae6e6ce13791bdf042621ff66b56552bf74b
+  languageName: node
+  linkType: hard
+
+"@testing-library/cypress@npm:^9.0.0":
+  version: 9.0.0
+  resolution: "@testing-library/cypress@npm:9.0.0"
+  dependencies:
+    "@babel/runtime": ^7.14.6
+    "@testing-library/dom": ^8.1.0
+  peerDependencies:
+    cypress: ^12.0.0
+  checksum: fbd24e8f0b8a60279b336de5f6bc0e7ad6fb31316eacab5128dacc7fccde1eb40935b90f2c3bddc7d814115fe3965c6dbf011785448cd15b5a5b0bc40ef5bb4c
   languageName: node
   linkType: hard
 
@@ -16055,18 +16067,18 @@ __metadata:
   languageName: node
   linkType: hard
 
-"cypress-localstorage-commands@npm:^2.1.0":
-  version: 2.2.2
-  resolution: "cypress-localstorage-commands@npm:2.2.2"
+"cypress-localstorage-commands@npm:2.2.3":
+  version: 2.2.3
+  resolution: "cypress-localstorage-commands@npm:2.2.3"
   peerDependencies:
     cypress: ">=2.1.0"
-  checksum: d077a274b6b6efadec4219de8bf79648eca42ac80da83aad5fec42940fe124488f45486d99cc0d69192e2773e030d23a8c02849d60d8f8f49eea4b597580df13
+  checksum: 8fa7791b5f2087d45d014c0135dcbb8719e777e490dcee64f789096a69c8bd2fbfd421e698cd3097a3bbeaf5218b74b5cd989b45e6eef2dbcfe661197d19d8f5
   languageName: node
   linkType: hard
 
-"cypress-mochawesome-reporter@npm:^3.1.0":
-  version: 3.2.3
-  resolution: "cypress-mochawesome-reporter@npm:3.2.3"
+"cypress-mochawesome-reporter@npm:3.3.0":
+  version: 3.3.0
+  resolution: "cypress-mochawesome-reporter@npm:3.3.0"
   dependencies:
     fs-extra: ^10.0.1
     mochawesome: ^7.1.3
@@ -16074,7 +16086,7 @@ __metadata:
     mochawesome-report-generator: ^6.2.0
   peerDependencies:
     cypress: ">=6.2.0"
-  checksum: bd9192ac9ede67304d223e41eec91791559e575a798ac534928140e19f4c4a46e463d07bea179abffd7a3b674e6ec3a3f390cee57727d9e2e1cc228db52bb394
+  checksum: 01d1fe5d943672d5653e23e3ddf872262fcda8fa314acbfac4f328764e405d5b0bff5a12ae1f09ad6165a9e4dd5b82b463692970eeef33f2e60546c0b6965008
   languageName: node
   linkType: hard
 
@@ -16137,7 +16149,59 @@ __metadata:
   languageName: node
   linkType: hard
 
-"cypress@npm:^10.10.0, cypress@npm:^10.8.0":
+"cypress@npm:12.9.0":
+  version: 12.9.0
+  resolution: "cypress@npm:12.9.0"
+  dependencies:
+    "@cypress/request": ^2.88.10
+    "@cypress/xvfb": ^1.2.4
+    "@types/node": ^14.14.31
+    "@types/sinonjs__fake-timers": 8.1.1
+    "@types/sizzle": ^2.3.2
+    arch: ^2.2.0
+    blob-util: ^2.0.2
+    bluebird: ^3.7.2
+    buffer: ^5.6.0
+    cachedir: ^2.3.0
+    chalk: ^4.1.0
+    check-more-types: ^2.24.0
+    cli-cursor: ^3.1.0
+    cli-table3: ~0.6.1
+    commander: ^5.1.0
+    common-tags: ^1.8.0
+    dayjs: ^1.10.4
+    debug: ^4.3.4
+    enquirer: ^2.3.6
+    eventemitter2: 6.4.7
+    execa: 4.1.0
+    executable: ^4.1.1
+    extract-zip: 2.0.1
+    figures: ^3.2.0
+    fs-extra: ^9.1.0
+    getos: ^3.2.1
+    is-ci: ^3.0.0
+    is-installed-globally: ~0.4.0
+    lazy-ass: ^1.6.0
+    listr2: ^3.8.3
+    lodash: ^4.17.21
+    log-symbols: ^4.0.0
+    minimist: ^1.2.6
+    ospath: ^1.2.2
+    pretty-bytes: ^5.6.0
+    proxy-from-env: 1.0.0
+    request-progress: ^3.0.0
+    semver: ^7.3.2
+    supports-color: ^8.1.1
+    tmp: ~0.2.1
+    untildify: ^4.0.0
+    yauzl: ^2.10.0
+  bin:
+    cypress: bin/cypress
+  checksum: aad2278310fe4897b2c4e1f23e22f28992c83bcac945a6c350d077b1b2fb1805e44d5c58e19e2a9d63ca04aa3f9eabdd3c661cab0ce5dddd75c72702262ac89e
+  languageName: node
+  linkType: hard
+
+"cypress@npm:^10.10.0":
   version: 10.11.0
   resolution: "cypress@npm:10.11.0"
   dependencies:
