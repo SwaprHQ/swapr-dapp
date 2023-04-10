@@ -6903,7 +6903,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@storybook/node-logger@npm:6.5.15, @storybook/node-logger@npm:^6.5.9":
+"@storybook/node-logger@npm:6.5.15":
   version: 6.5.15
   resolution: "@storybook/node-logger@npm:6.5.15"
   dependencies:
@@ -6913,6 +6913,18 @@ __metadata:
     npmlog: ^5.0.1
     pretty-hrtime: ^1.0.3
   checksum: 9c01127d3b57db7a85759d2f179afec0e1207c0754e80e22472e73468f831e1dafa2a5bf1047e54f92d47b5103325c157c14655208a6ddcdb8f9e7ee0b256e48
+  languageName: node
+  linkType: hard
+
+"@storybook/node-logger@npm:^7.0.2":
+  version: 7.0.2
+  resolution: "@storybook/node-logger@npm:7.0.2"
+  dependencies:
+    "@types/npmlog": ^4.1.2
+    chalk: ^4.1.0
+    npmlog: ^5.0.1
+    pretty-hrtime: ^1.0.3
+  checksum: bdb3102877d99614d5347b94f177c8b5a50268f67b61067e6e4c827e472f19e6bdd3fd18fe2e3e105aa77375f3cd39b77449f5a3d5d9220143f953e79ae3f9e7
   languageName: node
   linkType: hard
 
@@ -7529,7 +7541,7 @@ __metadata:
     "@storybook/addon-links": ^6.5.9
     "@storybook/builder-webpack5": ^6.5.9
     "@storybook/manager-webpack5": ^6.5.9
-    "@storybook/node-logger": ^6.5.9
+    "@storybook/node-logger": ^7.0.2
     "@storybook/preset-create-react-app": ^4.1.2
     "@storybook/react": ^6.5.9
     "@storybook/testing-library": ^0.0.13
