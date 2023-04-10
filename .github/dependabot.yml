@@ -19,6 +19,3 @@ updates:
     reviewers:
       - 'MilanVojnovic95'
       - 'wixzi'
-    ignore:
-      - dependency-name: '*'
-        update-types: ['version-update:semver-patch']
