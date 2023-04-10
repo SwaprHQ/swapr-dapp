@@ -128,7 +128,7 @@
     "@storybook/react": "7.0.2",
     "@storybook/react-webpack5": "7.0.2",
     "@storybook/testing-library": "0.1.0",
-    "@synthetixio/synpress": "^2.3.3",
+    "@synthetixio/synpress": "^3.5.1",
     "@testing-library/cypress": "^9.0.0",
     "@types/aos": "^3.0.4",
     "@types/debug": "^4.1.7",
