@@ -1,5 +1,13 @@
 import { Meta, Title, IconGallery, IconItem } from '@storybook/addon-docs/'
-import { imagesBase, svg, imagesAnimations, imagesBlog, imagesFeatures, imagesLogos, imagesTimelineAssets } from './'
+import {
+  imagesBase,
+  svg,
+  imagesAnimations,
+  imagesBlog,
+  imagesFeatures,
+  imagesLogos,
+  imagesTimelineAssets,
+} from './index'
 
 <Meta title="Theme/Icons" />
 

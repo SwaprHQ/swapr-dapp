@@ -1,5 +1,7 @@
-module.exports = {
-  stories: ['../src/**/*.stories.mdx', '../src/**/*.stories.@(js|jsx|ts|tsx)'],
+import type { StorybookConfig } from '@storybook/react-webpack5'
+
+const config: StorybookConfig = {
+  stories: ['../src/**/*.stories.mdx'],
   addons: [
     '@storybook/addon-links',
     '@storybook/addon-essentials',
@@ -9,11 +11,15 @@ module.exports = {
     '@storybook/addon-docs',
     'storybook-react-i18next',
   ],
-  framework: '@storybook/react',
-  core: {
-    builder: 'webpack5',
+  framework: {
+    name: '@storybook/react-webpack5',
+    options: {},
   },
+  // core: {
+  //   builder: 'webpack5',
+  // },
   webpackFinal: async config => {
+    //@ts-expect-error
     const fallback = config.resolve.fallback || {}
     Object.assign(fallback, {
       fs: false,
@@ -28,8 +34,13 @@ module.exports = {
       url: require.resolve('url'),
       path: require.resolve('path-browserify'),
     })
+    //@ts-expect-error
     config.resolve.fallback = fallback
-
     return config
   },
+  docs: {
+    autodocs: false,
+  },
 }
+
+export default config

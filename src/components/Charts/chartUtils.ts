@@ -24,10 +24,13 @@ export const lastElementTimeOrDefault = (data: ChartData[]) => lastDataElement(d
 
 export const formatPrice = (price: string) => {
   const floatPrice = parseFloat(price)
-  const significantDigits = 6
-  const format = { groupSeparator: '' }
-  const quotient = new Decimal(floatPrice).toSignificantDigits(significantDigits)
-  return quotient.toFormat(quotient.decimalPlaces(), format)
+  if (floatPrice.toString() !== 'NaN') {
+    const significantDigits = 6
+    const format = { groupSeparator: '' }
+    const quotient = new Decimal(floatPrice).toSignificantDigits(significantDigits)
+    return quotient.toFormat(quotient.decimalPlaces(), format)
+  }
+  return 0
 }
 
 export const DATE_INTERVALS = {

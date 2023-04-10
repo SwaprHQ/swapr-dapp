@@ -1,4 +1,4 @@
-import { Canvas, Meta, Story, ArgsTable, Description } from '@storybook/addon-docs'
+import { Canvas, Meta, Story, ArgTypes, Description } from '@storybook/addon-docs'
 import styled from 'styled-components'
 import { AutoRowCleanGap } from '../Row'
 import { componentName } from '../../utils'
@@ -26,8 +26,8 @@ import {
 <Canvas>
   <Story name="Styled Buttons" component={Base}>
     <AutoRowCleanGap gap={12}>
-      {StyledButtonsArray.map(Component => (
-        <Component style={{ width: 'auto' }} key={Component.index}>
+      {StyledButtonsArray.map((Component, index) => (
+        <Component style={{ width: 'auto' }} key={`${Component.index}${index}`}>
           {componentName(Component)}
         </Component>
       ))}
@@ -37,7 +37,7 @@ import {
 
 Below are all Basic props styled buttons accept
 
-<ArgsTable of={Base} />
+<ArgTypes of={Base} />
 
 export const ButtonConfirmedTemplate = args => <ButtonConfirmed {...args} />
 
@@ -140,4 +140,4 @@ export const CarrotButtonTemplate = args => <CarrotButton {...args} />
   </Story>
 </Canvas>
 
-<ArgsTable of={ButtonExternalLink} />
+<ArgTypes of={ButtonExternalLink} />
