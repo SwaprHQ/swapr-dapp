@@ -15,9 +15,6 @@ const config: StorybookConfig = {
     name: '@storybook/react-webpack5',
     options: {},
   },
-  // core: {
-  //   builder: 'webpack5',
-  // },
   webpackFinal: async config => {
     //@ts-expect-error
     const fallback = config.resolve.fallback || {}
