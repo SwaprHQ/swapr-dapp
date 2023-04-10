@@ -24,7 +24,7 @@ git clone https://github.com/SwaprHQ/swapr-dapp.git
 Install dependencies using Yarn
 
 ```bash
-yarn install --frozen-lockfile
+yarn install --immutable
 ```
 
 Build the app
