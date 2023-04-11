@@ -1,0 +1,121 @@
+# https://chompbuild.com/
+# npm install -g chomp
+
+version = 0.1
+
+[[task]]
+name = 'build'
+deps = ['codegen:socket', 'codegen:graphql']
+run = 'cross-env GENERATE_SOURCEMAP=false react-app-rewired build'
+
+[[task]]
+name = 'build-storybook'
+run = 'storybook build -s public'
+
+[server]
+name = 'build:serve'
+port = 5005
+root = 'build'
+
+[[task]]
+name = 'serve'
+deps = ['build']
+run = 'chomp --serve'
+
+[[task]]
+name = 'chromatic'
+run = 'chromatic --exit-zero-on-changes'
+
+[[task]]
+name = 'codegen:cow-limit-order-app-data'
+run = './node_modules/.bin/ts-node --project ./bin/tsconfig.json ./bin/generate-cow-limit-order-app-data/index.ts '
+
+[[task]]
+name = 'codegen:fathom:dev'
+run = './node_modules/.bin/ts-node --project ./bin/tsconfig.json ./bin/fathom-generate-events/index.ts --out ./src/analytics/generated/dev'
+
+[[task]]
+name = 'codegen:fathom:prod'
+run = './node_modules/.bin/ts-node --project ./bin/tsconfig.json ./bin/fathom-generate-events/index.ts --out ./src/analytics/generated/prod'
+
+[[task]]
+name = 'codegen:graphql'
+run = 'graphql-codegen --config graphql-codegen.yml'
+
+[[task]]
+name = 'codegen:socket'
+run = 'TARGET=src/services/EcoBridge/Socket/api/generated && openapi-generator-cli generate --skip-validate-spec -i ./src/services/EcoBridge/Socket/api/swagger.json -g typescript-fetch -o "$TARGET" --additional-properties=typescriptThreePlus=true'
+
+[[task]]
+name = 'cypress:ci'
+run = '''cross-env start-server-and-test 'react-app-rewired start' http-get://localhost:3000'''
+
+[[task]]
+name = 'cypress:run'
+run = "cross-env cypress run -r mochawesome -s 'tests/cypress/integration/smoke/*'"
+
+[[task]]
+name = 'integration-test'
+run = "start-server-and-test 'serve build -l 3000' http://localhost:3000 'cypress run'"
+
+[[task]]
+name = 'ipfs-build'
+run = 'cross-env PUBLIC_URL="." GENERATE_SOURCEMAP=false react-app-rewired build'
+
+[[task]]
+name = 'lint'
+run = 'eslint src --ext js,jsx,ts,tsx'
+
+[[task]]
+name = 'lint:fix'
+run = 'eslint src --ext js,jsx,ts,tsx --fix'
+
+[[task]]
+name = 'prepare'
+run = 'husky install'
+
+[[task]]
+name = 'report:generate'
+run = 'marge index.json --reportDir public-report --assetsDir public-report/assets --reportPageTitle index.html'
+
+[[task]]
+name = 'report:merge'
+run = 'mochawesome-merge mochawesome-report/*.json > index.json --charts true'
+
+[[task]]
+name = 'start'
+deps = ['codegen:socket', 'codegen:graphql']
+engine = 'node'
+run = 'react-app-rewired start'
+
+[[task]]
+name = 'storybook'
+run = 'storybook dev -p 6006 -s public'
+
+[[task]]
+name = 'synpress:ct'
+run = "cross-env start-server-and-test 'react-app-rewired start' http-get://localhost:3000 'yarn synpress:run $TEST_PARAMS'"
+
+[[task]]
+name = 'synpress:init'
+run = 'yarn synpress:run --configFile tests/synpress/synpress.config.ts -s tests/synpress/specs/Initialize.ts'
+
+[[task]]
+name = 'synpress:init:ci'
+run = "cross-env start-server-and-test 'react-app-rewired start' http-get://localhost:3000 'yarn synpress:init'"
+
+[[task]]
+name = 'synpress:open'
+run = '''cross-env MOCHAWESOME_HTML='false' MOCHAWESOME_OVERWRITE='false' NETWORK_NAME='rinkeby' CYPRESS_SKIP_RESOURCES_WAIT='false' FAIL_ON_ERROR='0' ETHERSCAN_KEY='25VF97IQZ8EFIYSYFI72UCTJJII3HSZU7Z' synpress open --configFile tests/synpress/synpress.config.ts'''
+
+[[task]]
+name = 'synpress:run'
+run = "cross-env MOCHAWESOME_HTML='false' MOCHAWESOME_OVERWRITE='false' NETWORK_NAME='rinkeby' CYPRESS_SKIP_RESOURCES_WAIT='false' FAIL_ON_ERROR='0' ETHERSCAN_KEY='25VF97IQZ8EFIYSYFI72UCTJJII3HSZU7Z' synpress run --configFile tests/synpress/synpress.config.ts -r mochawesome --reporterOptions 'overwrite=false, html=false, json=true'"
+
+[[task]]
+name = 'test'
+run = 'react-scripts test --env=jsdom'
+
+[[task]]
+name = 'typecheck'
+run = 'tsc --noEmit'
