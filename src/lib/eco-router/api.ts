@@ -259,7 +259,8 @@ export async function getExactOut(
             tradeType: TradeType.EXACT_OUTPUT,
           })
         }
-        if (platform.name === RoutablePlatform.ONE_INCH.name) {
+        // Trade out doesn't yet work on OneInch
+        /* if (platform.name === RoutablePlatform.ONE_INCH.name) {
           return OneInchTrade.getQuote({
             quoteCurrency: currencyIn,
             amount: currencyAmountOut,
@@ -267,7 +268,7 @@ export async function getExactOut(
             recipient: receiver,
             tradeType: TradeType.EXACT_OUTPUT,
           })
-        }
+        } */
       } catch (error) {
         errors.push(error)
         return undefined
