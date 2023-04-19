@@ -11,7 +11,7 @@ import { ZERO_ADDRESS } from '../../../constants'
 import ERC20_ABI from '../../../constants/abis/erc20.json'
 import { BridgeTransactionStatus } from '../../../state/bridgeTransactions/types'
 import { SWPRSupportedChains } from '../../../utils/chainSupportsSWPR'
-import { formatNumber } from '../../../utils/formatNumber'
+import { formatGasOrFees } from '../../../utils/formatNumber'
 import {
   BridgeModalStatus,
   EcoBridgeChangeHandler,
@@ -138,7 +138,7 @@ export class XdaiBridge extends EcoBridgeChildBase {
       const formattedGasCost = formatUnits(gasCost, 18)
 
       if (nativeCurrencyPrice !== 0) {
-        gas = `${formatNumber(Number(formattedGasCost) * nativeCurrencyPrice, true)}`
+        gas = formatGasOrFees(Number(formattedGasCost) * nativeCurrencyPrice)
       }
     } catch (error) {
       console.error("XDai Brige coudn't fetch nativeCurrencyPrice", error)
@@ -147,7 +147,7 @@ export class XdaiBridge extends EcoBridgeChildBase {
     this.store.dispatch(
       this.baseActions.setBridgeDetails({
         gas,
-        fee: '0%',
+        fee: '$0.00',
         estimateTime: '5 min',
         receiveAmount: Number(value).toFixed(this._receiveAmountDecimalPlaces),
         requestId,
