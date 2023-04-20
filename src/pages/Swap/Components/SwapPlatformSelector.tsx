@@ -151,7 +151,7 @@ export function SwapPlatformSelector({
       )}
       <SelectionListWindowWrapper>
         <SelectionListLabelWrapper>
-          <SelectionListLabel justify={true} flex={showGasFees ? '30%' : '45%'}>
+          <SelectionListLabel justify="start" flex={showGasFees ? '30%' : '45%'}>
             {t('platfromSelector.exchange')}
           </SelectionListLabel>
           <SelectionListLabel>

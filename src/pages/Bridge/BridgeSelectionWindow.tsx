@@ -36,13 +36,15 @@ export const BridgeSelectionWindow = () => {
       {!!availableBridges.length && (
         <SelectionListWindowWrapper extraMarginTop="10px">
           <SelectionListLabelWrapper>
-            <SelectionListLabel flex="35%" justify>
+            <SelectionListLabel flex="35%" justify="start">
               Bridge
             </SelectionListLabel>
             <SelectionListLabel>Fee</SelectionListLabel>
             <SelectionListLabel>Gas</SelectionListLabel>
             <SelectionListLabel>Time</SelectionListLabel>
-            <SelectionListLabel flex="22%">Amount</SelectionListLabel>
+            <SelectionListLabel flex="22%" justify="end">
+              Amount
+            </SelectionListLabel>
           </SelectionListLabelWrapper>
           {availableBridges.map(({ bridgeId, name, details, status }) => (
             <Bridge
@@ -95,7 +97,7 @@ const Bridge = ({ id, name, activeBridge, details, status, handleSelectBridge }:
       <SelectionListName flex="35%" isSelected={isSelected}>
         {name}
       </SelectionListName>
-      <SelectionListDetails data-testid="fee-amount">
+      <SelectionListDetails data-testid="fee-amount" justify="center">
         {!show ? (
           <Skeleton width="25px" height="9px" />
         ) : !details.fee ? (
@@ -104,7 +106,7 @@ const Bridge = ({ id, name, activeBridge, details, status, handleSelectBridge }:
           details.fee
         )}
       </SelectionListDetails>
-      <SelectionListDetails data-testid="bridge-gas">
+      <SelectionListDetails data-testid="bridge-gas" justify="center">
         {!show ? (
           <Skeleton width="25px" height="9px" />
         ) : !details.gas ? (
@@ -113,7 +115,7 @@ const Bridge = ({ id, name, activeBridge, details, status, handleSelectBridge }:
           details.gas
         )}
       </SelectionListDetails>
-      <SelectionListDetails data-testid="estimated-time">
+      <SelectionListDetails data-testid="estimated-time" justify="center">
         {!show ? <Skeleton width="25px" height="9px" /> : details.estimateTime}
       </SelectionListDetails>
       <SelectionListReceiveAmount flex="22%" data-testid="bridge-amount">
