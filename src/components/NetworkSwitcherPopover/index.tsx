@@ -19,7 +19,7 @@ interface NetworkSwitcherPopoverProps {
 
 export default function NetworkSwitcherPopover({ children, modal, placement }: NetworkSwitcherPopoverProps) {
   const closeModals = useCloseModals()
-  const { connector, chainId: activeChainId, account } = useActiveWeb3React()
+  const { connector, chainId: activeChainId } = useActiveWeb3React()
   const networkSwitcherPopoverOpen = useModalOpen(modal)
   const unsupportedChainIdError = useUnsupportedChainIdError()
 
@@ -33,7 +33,7 @@ export default function NetworkSwitcherPopover({ children, modal, placement }: N
     )
   }
 
-  if (!account || !activeChainId) {
+  if (!activeChainId) {
     return (
       <div style={{ margin: '0px 10px' }}>
         <Loader stroke="#C0BAF6" />
