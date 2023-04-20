@@ -6,7 +6,7 @@ import { BigNumber, Contract, ethers } from 'ethers'
 import { formatUnits, parseUnits } from 'ethers/lib/utils'
 
 import LifiLogo from '../../../assets/images/lifi-logo.png'
-import { formatNumber } from '../../../utils/formatNumber'
+import { formatGasOrFees } from '../../../utils/formatNumber'
 import {
   BridgeModalStatus,
   EcoBridgeChangeHandler,
@@ -156,7 +156,7 @@ export class LifiBridge extends EcoBridgeChildBase {
     this.store.dispatch(
       this.baseActions.setBridgeDetails({
         fee,
-        gas: `${formatNumber(totalGasFeeUSD ?? 0, true)}`,
+        gas: formatGasOrFees(totalGasFeeUSD ?? 0),
         estimateTime: executionDuration ? `${(executionDuration / 60).toFixed(0).toString()} min` : undefined,
         receiveAmount: formattedToAmount,
         requestId,

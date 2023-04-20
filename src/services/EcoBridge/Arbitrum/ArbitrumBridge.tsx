@@ -20,7 +20,7 @@ import { ArbitrumBridgeTxn, BridgeAssetType, BridgeTransactionSummary } from '..
 import { addTransaction } from '../../../state/transactions/actions'
 import { getChainPair, txnTypeToLayer } from '../../../utils/arbitrum'
 import { SWPRSupportedChains } from '../../../utils/chainSupportsSWPR'
-import { formatNumber } from '../../../utils/formatNumber'
+import { formatGasOrFees } from '../../../utils/formatNumber'
 import getTokenList from '../../../utils/getTokenList'
 import {
   ArbitrumList,
@@ -777,7 +777,7 @@ export class ArbitrumBridge extends EcoBridgeChildBase {
 
       const totalTxnGasCostInEth = formatUnits(totalTxnGasCostInWei, 18)
       if (nativeCurrencyPrice !== 0) {
-        totalTxnGasCostInUSD = `${formatNumber(Number(totalTxnGasCostInEth) * nativeCurrencyPrice, true)}` // mul eth cost * eth price
+        totalTxnGasCostInUSD = formatGasOrFees(Number(totalTxnGasCostInEth) * nativeCurrencyPrice) // mul eth cost * eth price
       }
     } catch (e) {
       totalTxnGasCostInUSD = undefined //when Arbitrum cannot estimate gas
@@ -786,7 +786,7 @@ export class ArbitrumBridge extends EcoBridgeChildBase {
     this.store.dispatch(
       this.baseActions.setBridgeDetails({
         gas: totalTxnGasCostInUSD,
-        fee: '0%',
+        fee: '$0.00',
         estimateTime: this.l1ChainId === this._activeChainId ? '10 min' : '7 days',
         receiveAmount: Number(value).toFixed(this._receiveAmountDecimalPlaces).toString(),
         requestId,

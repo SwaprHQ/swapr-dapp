@@ -6,7 +6,7 @@ import { TokenInfo, TokenList } from '@uniswap/token-lists'
 
 import SocketLogo from '../../../assets/images/socket-logo.png'
 import { SOCKET_NATIVE_TOKEN_ADDRESS } from '../../../constants'
-import { formatNumber } from '../../../utils/formatNumber'
+import { formatGasOrFees } from '../../../utils/formatNumber'
 import {
   BridgeModalStatus,
   EcoBridgeChangeHandler,
@@ -350,7 +350,7 @@ export class SocketBridge extends EcoBridgeChildBase {
     this.store.dispatch(
       this.baseActions.setBridgeDetails({
         fee,
-        gas: `${formatNumber(totalGasFeesInUsd, true)}`,
+        gas: formatGasOrFees(totalGasFeesInUsd),
         estimateTime: `${(serviceTime / 60).toFixed(0).toString()} min`,
         receiveAmount: formattedToAmount,
         requestId,

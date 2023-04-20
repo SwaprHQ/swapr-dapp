@@ -11,7 +11,7 @@ import { TokenInfo } from '@uniswap/token-lists'
 import { ethers, utils } from 'ethers'
 
 import { SWPRSupportedChains } from '../../../utils/chainSupportsSWPR'
-import { formatNumber } from '../../../utils/formatNumber'
+import { formatGasOrFees } from '../../../utils/formatNumber'
 import {
   BridgeModalStatus,
   ConnextList,
@@ -414,10 +414,7 @@ export class Connext extends EcoBridgeChildBase {
         bid: { amount, amountReceived },
       } = quote
 
-      const fee = `${(
-        ((Number(formatUnits(amount)) - Number(formatUnits(amountReceived))) / Number(formatUnits(amount))) *
-        100
-      ).toFixed(2)}%`
+      const fee = formatGasOrFees(Number(formatUnits(amount)) - Number(formatUnits(amountReceived)))
 
       const { prepare } = await getHardcodedGasLimits(fromChainId)
 
@@ -432,7 +429,7 @@ export class Connext extends EcoBridgeChildBase {
         const nativeCurrencyPrice = await getNativeCurrencyPrice(this._activeChainId as SWPRSupportedChains)
 
         if (nativeCurrencyPrice !== 0) {
-          gasInUSD = `${formatNumber(Number(totalGas) * nativeCurrencyPrice, true)}`
+          gasInUSD = formatGasOrFees(Number(totalGas) * nativeCurrencyPrice)
         }
       }
 

@@ -11,7 +11,7 @@ import { CustomNetworkConnector } from './CustomNetworkConnector'
 import { CustomWalletConnectConnector } from './CustomWalletConnectConnector'
 import { CustomWalletLinkConnector } from './CustomWalletLinkConnector'
 
-export const INFURA_PROJECT_ID = '0ebf4dd05d6740f482938b8a80860d13'
+export const INFURA_PROJECT_ID = 'e1a3bfc40093494ca4f36b286ab36f2d'
 
 export const network = new CustomNetworkConnector({
   urls: {
