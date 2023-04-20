@@ -11,7 +11,7 @@ import { request } from 'graphql-request'
 import { ZERO_ADDRESS } from '../../../constants'
 import { BridgeTransactionStatus } from '../../../state/bridgeTransactions/types'
 import { SWPRSupportedChains } from '../../../utils/chainSupportsSWPR'
-import { formatNumber } from '../../../utils/formatNumber'
+import { formatGasOrFees } from '../../../utils/formatNumber'
 import {
   BridgeModalStatus,
   EcoBridgeChangeHandler,
@@ -542,14 +542,10 @@ export class OmniBridge extends EcoBridgeChildBase {
 
     const feeAmount = parsedFromAmount.sub(toAmount)
 
-    let fee = '0%'
+    let fee = '$0.00'
 
     if (feeAmount.gt(0)) {
-      fee = `${(
-        (Number(formatUnits(feeAmount.toString(), toTokenDecimals)) /
-          Number(formatUnits(parsedFromAmount.toString(), fromTokenDecimals))) *
-        100
-      ).toFixed(2)}%`
+      fee = formatGasOrFees(formatUnits(feeAmount.toString(), toTokenDecimals))
     }
 
     this._tokensPair = {
@@ -589,7 +585,7 @@ export class OmniBridge extends EcoBridgeChildBase {
       const gasCostInNativeCurrency = formatEther(gasPrice.mul(GAS_COST))
 
       if (nativeCurrencyPrice !== 0) {
-        gas = `${formatNumber(Number(gasCostInNativeCurrency) * nativeCurrencyPrice, true)}` // mul eth cost * eth price
+        gas = formatGasOrFees(Number(gasCostInNativeCurrency) * nativeCurrencyPrice) // mul eth cost * eth price
       }
     } catch (e) {
       gas = undefined

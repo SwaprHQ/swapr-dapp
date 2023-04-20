@@ -2,7 +2,7 @@ import { formatUnits } from '@ethersproject/units'
 import { ChainId, Currency, DAI, WETH } from '@swapr/sdk'
 
 import { MATIC, SOCKET_NATIVE_TOKEN_ADDRESS } from '../../../constants'
-import { formatNumber } from '../../../utils/formatNumber'
+import { formatGasOrFees } from '../../../utils/formatNumber'
 import { SupportedChainsConfig } from '../EcoBridge.types'
 
 import { Route, TokenPriceResponseDTO } from './api/generated'
@@ -89,14 +89,16 @@ export const getBridgeFee = (userTxs: object[]) => {
 
     //get protocolFee for each step
     const totalStepsFee = singleTxBridge.steps.reduce((total, step) => {
-      if (!step.protocolFees.asset || step.protocolFees.amount === '0') {
+      if (step.protocolFees?.asset === undefined || step.protocolFees?.amount === '0') {
         return total
       }
-      total += Number(formatUnits(step.protocolFees.amount, step.protocolFees.asset.decimals))
+      if (step.protocolFees.asset?.decimals !== undefined) {
+        total += Number(formatUnits(step.protocolFees.amount, step.protocolFees.asset.decimals))
+      }
       return total
     }, 0)
 
-    return `${formatNumber(totalStepsFee, true)}`
+    return formatGasOrFees(totalStepsFee)
   }
 }
 
