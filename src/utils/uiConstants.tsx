@@ -435,27 +435,6 @@ export const FooterContent = {
       ],
     },
     {
-      title: 'Documentation',
-      footerLinks: [
-        {
-          label: 'DIY Campaigns',
-          href: 'https://dxdocs.eth.limo/docs/Products/swapr/DIY%20Liquidity%20Mining/',
-        },
-        {
-          label: 'Roadmap',
-          href: 'https://dxdocs.eth.limo/docs/Products/swapr/roadmap/',
-        },
-        {
-          label: "We're hiring",
-          href: 'https://dxdocs.eth.limo/docs/ContributorHub/open-positions-and-bounties/',
-        },
-        {
-          label: 'SWPR Token',
-          href: 'https://dxdocs.eth.limo/docs/Products/swapr/tokenomics/',
-        },
-      ],
-    },
-    {
       title: 'Analytics',
       footerLinks: [
         {

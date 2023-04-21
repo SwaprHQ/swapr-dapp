@@ -5,7 +5,6 @@ import CommunityLinks from '../../../components/LandingPageComponents/CommunityL
 import Features from '../../../components/LandingPageComponents/Features'
 import Footer from '../../../components/LandingPageComponents/layout/Footer'
 import Stats from '../../../components/LandingPageComponents/Stats'
-import Timeline from '../../../components/LandingPageComponents/Timeline'
 
 const LandingBodyContainer = styled.section`
   width: calc(100% + 32px) !important;
@@ -17,7 +16,6 @@ export function LandingSections() {
       <LandingBodyContainer>
         <Features />
         <Stats />
-        <Timeline />
         <CommunityLinks />
         <BlogNavigation />
       </LandingBodyContainer>
