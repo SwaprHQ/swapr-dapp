@@ -375,10 +375,6 @@ export const FooterContent = {
           href: 'https://twitter.com/SwaprEth',
         },
         {
-          label: 'Keybase',
-          href: 'https://keybase.io/team/dx_dao',
-        },
-        {
           label: 'Forum',
           href: 'https://daotalk.org/c/dx-dao/15',
         },
