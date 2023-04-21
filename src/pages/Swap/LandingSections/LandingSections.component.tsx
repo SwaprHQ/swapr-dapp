@@ -1,7 +1,6 @@
 import styled from 'styled-components'
 
 import BlogNavigation from '../../../components/LandingPageComponents/BlogNavigation'
-import CommunityBanner from '../../../components/LandingPageComponents/CommunityBanner'
 import CommunityLinks from '../../../components/LandingPageComponents/CommunityLinks'
 import Features from '../../../components/LandingPageComponents/Features'
 import Footer from '../../../components/LandingPageComponents/layout/Footer'
@@ -18,7 +17,6 @@ export function LandingSections() {
       <LandingBodyContainer>
         <Features />
         <Stats />
-        <CommunityBanner />
         <Timeline />
         <CommunityLinks />
         <BlogNavigation />

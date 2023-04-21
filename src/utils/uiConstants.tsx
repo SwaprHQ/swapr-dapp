@@ -317,23 +317,6 @@ export const FeaturesContent: Readonly<FeatureContent> = {
   ],
 } as const
 
-export const CommunityBannerContent = {
-  preHeader: 'A DXdao Product',
-  content: 'Owned and funded by the Community',
-  buttons: [
-    {
-      label: 'GET INVOLVED',
-      href: 'https://dxdao.eth.limo/',
-      type: 'primary',
-    },
-    {
-      label: 'FORUM',
-      href: 'https://daotalk.org/c/dx-dao/15',
-      type: 'dark',
-    },
-  ],
-} as const
-
 export const CommunityLinksContent = {
   preHeader: 'Swapr Protocol',
   title: (

@@ -323,12 +323,8 @@ export function Settings({ simple }: { simple?: boolean }) {
                         Discord
                       </MenuItem>
                     </RowBetween>
-                    <RowBetween alignItems="center" marginBottom="8px">
+                    <RowBetween alignItems="center" justify="center" marginBottom="8px">
                       <SwaprVersionLogo />
-                      <Divider horizontal style={{ height: 48 }} />
-                      <TYPE.Body fontWeight={700} fontSize="8px" letterSpacing="3px" color="white">
-                        A DXDAO PRODUCT
-                      </TYPE.Body>
                     </RowBetween>
                   </>
                 )}

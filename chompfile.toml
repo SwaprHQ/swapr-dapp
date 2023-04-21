@@ -85,7 +85,6 @@ run = 'mochawesome-merge mochawesome-report/*.json > index.json --charts true'
 [[task]]
 name = 'start'
 deps = ['codegen:socket', 'codegen:graphql']
-engine = 'node'
 run = 'react-app-rewired start'
 
 [[task]]
