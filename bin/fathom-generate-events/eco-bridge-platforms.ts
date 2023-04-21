@@ -52,5 +52,14 @@ export function ecoBridgePlatformList(): EcoBridgePlatformInformation[] {
         ChainId.BSC_MAINNET,
       ]),
     },
+    {
+      platformName: 'omnibridge-eth-xdai',
+      supportedChains: [
+        {
+          from: ChainId.GNOSIS,
+          to: ChainId.MAINNET,
+        },
+      ],
+    },
   ]
 }
