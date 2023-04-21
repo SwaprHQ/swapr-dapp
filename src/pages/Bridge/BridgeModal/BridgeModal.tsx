@@ -90,10 +90,6 @@ export const BridgeModal = ({
       setIsWarning(false)
       setBridgeName('Connext Network')
     }
-    if (activeBridge?.includes('omnibridge')) {
-      setIsWarning(false)
-      setBridgeName('OmniBridge')
-    }
     if (activeBridge === 'lifi') {
       setIsWarning(false)
       setBridgeName('Lifi Bridge')
