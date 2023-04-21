@@ -12,11 +12,8 @@ import Swap from './../assets/images/features/swap.png'
 import Vote from './../assets/images/features/vote.png'
 import gnosisChainLogo from './../assets/images/gnosis-chain.svg'
 import BaoSwapStats from './../assets/images/isologo-baoswap.svg'
-import Discord from './../assets/images/isologo-discord.svg'
-import Github from './../assets/images/isologo-github.svg'
 import HoneySwapStats from './../assets/images/isologo-honeyswap.svg'
 import SushiSwapStats from './../assets/images/isologo-sushiswap.svg'
-import Twitter from './../assets/images/isologo-twitter.svg'
 import UniSwapStats from './../assets/images/isologo-uniswap.svg'
 import RoutingLevinSwap from './../assets/images/levinswap.svg'
 import ArbitrumLogo from './../assets/images/logo-Arbitrum.svg'
@@ -313,53 +310,6 @@ export const FeaturesContent: Readonly<FeatureContent> = {
           external: true,
         },
       ],
-    },
-  ],
-} as const
-
-export const CommunityLinksContent = {
-  preHeader: 'Swapr Protocol',
-  title: (
-    <span>
-      Join an unstoppable <br />
-      community
-    </span>
-  ),
-  links: [
-    {
-      image: Discord,
-      alt: 'Discord Logo',
-      title: 'Discord',
-      content: 'Join in on community discussion on the Swapr Discord.',
-      button: {
-        label: 'JOIN DISCORD',
-        href: 'https://discord.gg/QFkNsjTkzD',
-      },
-    },
-    {
-      image: Github,
-      alt: 'GitHub Logo',
-      title: 'GitHub',
-      content: (
-        <>
-          Contribute to the <br />
-          Swapr repositories on GitHub.
-        </>
-      ),
-      button: {
-        label: 'VISIT GITHUB',
-        href: 'https://github.com/levelkdev/dxswap-dapp',
-      },
-    },
-    {
-      image: Twitter,
-      alt: 'Twitter Logo',
-      title: 'Twitter',
-      content: 'Get the latest Swapr announcements on the Swapr Twitter.',
-      button: {
-        label: 'Follow on Twitter',
-        href: 'https://twitter.com/SwaprEth',
-      },
     },
   ],
 } as const
