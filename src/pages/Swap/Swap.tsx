@@ -8,6 +8,7 @@ import Hero from '../../components/LandingPageComponents/layout/Hero'
 import { useActiveWeb3React } from '../../hooks'
 import { useRouter } from '../../hooks/useRouter'
 import { ChartOption, SwapTab } from '../../state/user/reducer'
+
 import { AdvancedTradingViewBox } from './AdvancedTradingViewBox'
 import { Tabs } from './Components/Tabs'
 import { LandingSections } from './LandingSections'

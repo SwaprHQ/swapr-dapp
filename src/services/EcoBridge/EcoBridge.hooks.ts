@@ -14,6 +14,7 @@ import { tryParseAmount } from '../../state/swap/hooks'
 import { useCurrencyBalances } from '../../state/wallet/hooks'
 import { isAddress } from '../../utils'
 import { currencyId } from '../../utils/currencyId'
+
 import {
   BridgeModalData,
   BridgeModalState,

@@ -71,6 +71,11 @@ export type BridgeTransactionSummary = Pick<
   pendingReason?: string
   fromValue: string
   toValue: string
+  // Bridge swap
+  toAssetName?: string
 }
 
-export type BridgeTransactionLog = Pick<ArbitrumBridgeTxn, 'txHash' | 'chainId'>
+export type BridgeTransactionLog = { fromTxnLink?: string; toTxnLink?: string } & Pick<
+  ArbitrumBridgeTxn,
+  'txHash' | 'chainId'
+>

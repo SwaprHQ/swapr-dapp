@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next'
 import { TYPE } from '../../theme'
 import { AreaChartTokenPrice } from '../Charts/AreaChartTokenPrice'
 import { ChartData } from '../Charts/chartUtils'
+
 import { SimpleChartLoading } from './SimpleChartLoading'
 
 interface ShowChartProps {

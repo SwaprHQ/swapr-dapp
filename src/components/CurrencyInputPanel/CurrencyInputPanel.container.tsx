@@ -6,6 +6,7 @@ import {
   useCurrencySearchModalBridge,
   useCurrencySearchModalSwap,
 } from '../SearchModal/CurrencySearchModal/CurrencySearchModal.hooks'
+
 import { CurrencyInputPanelComponent } from './CurrencyInputPanel.component'
 import { CurrencyInputPanelProps } from './CurrencyInputPanel.types'
 

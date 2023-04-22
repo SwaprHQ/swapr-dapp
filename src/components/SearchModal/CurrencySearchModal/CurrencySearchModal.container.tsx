@@ -1,5 +1,6 @@
 import { CurrencySearchContext } from '../CurrencySearch/CurrencySearch.context'
 import { ListRowContext, ManageListsContext } from '../ManageLists/ManageLists.context'
+
 import { CurrencySearchModalComponent } from './CurrencySearchModal.component'
 import { CurrencySearchModalContext } from './CurrencySearchModal.context'
 import { useCurrencySearchModalSwap } from './CurrencySearchModal.hooks'

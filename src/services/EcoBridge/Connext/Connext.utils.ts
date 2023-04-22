@@ -1,5 +1,4 @@
 import { Logger } from '@connext/nxtp-utils'
-import { gql } from 'graphql-request'
 
 /**
  * Used to suppress logs from connext sdk
@@ -16,14 +15,6 @@ export class SilentLogger extends Logger {
     }
   }
 }
-
-export const QUERY_NATIVE_PRICE = gql`
-  query {
-    bundle(id: "1") {
-      nativeCurrencyPrice
-    }
-  }
-`
 
 export const getTransactionsQuery = (account: string) => {
   return `{

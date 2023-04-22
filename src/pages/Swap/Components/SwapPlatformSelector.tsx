@@ -34,6 +34,7 @@ import {
   limitNumberOfDecimalPlaces,
   simpleWarningSeverity,
 } from '../../../utils/prices'
+
 import { PlatformSelectorLoader } from './SwapPlatformSelectorLoader'
 import SwapRoute from './SwapRoute'
 
@@ -150,7 +151,7 @@ export function SwapPlatformSelector({
       )}
       <SelectionListWindowWrapper>
         <SelectionListLabelWrapper>
-          <SelectionListLabel justify={true} flex={showGasFees ? '30%' : '45%'}>
+          <SelectionListLabel justify="start" flex={showGasFees ? '30%' : '45%'}>
             {t('platfromSelector.exchange')}
           </SelectionListLabel>
           <SelectionListLabel>

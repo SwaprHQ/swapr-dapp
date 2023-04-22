@@ -6,11 +6,12 @@ import { providers } from 'ethers'
 import swprLogo from '../assets/images/swpr-logo.png'
 import { REFETCH_DATA_INTERVAL } from '../constants/data'
 import getLibrary from '../utils/getLibrary'
+
 import { CustomNetworkConnector } from './CustomNetworkConnector'
 import { CustomWalletConnectConnector } from './CustomWalletConnectConnector'
 import { CustomWalletLinkConnector } from './CustomWalletLinkConnector'
 
-export const INFURA_PROJECT_ID = '0ebf4dd05d6740f482938b8a80860d13'
+export const INFURA_PROJECT_ID = 'e1a3bfc40093494ca4f36b286ab36f2d'
 
 export const network = new CustomNetworkConnector({
   urls: {

@@ -10,6 +10,7 @@ import {
   useManageListsContextBridge,
   useManageListsContextSwap,
 } from '../ManageLists/ManageLists.hooks'
+
 import { CurrencyModalView, CurrencySearchModalContextType } from './CurrencySearchModal.types'
 
 export const useCurrencySearchModalContext = (): CurrencySearchModalContextType => {

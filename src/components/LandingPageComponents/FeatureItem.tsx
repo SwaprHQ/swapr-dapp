@@ -1,12 +1,16 @@
 import { useEffect, useState } from 'react'
 import styled from 'styled-components'
 
-import { breakpoints } from './../../utils/theme'
+import { breakpoints } from '../../utils/theme'
+import { Feature } from '../../utils/uiConstants'
+
 import Button from './common/Button'
 
-const FeatureItem = props => {
-  const { feature } = props
-
+interface FeatureItemProps {
+  feature: Feature
+  id: string
+}
+export default function FeatureItem({ feature, id }: FeatureItemProps) {
   const [isElementVisible, setIsElementVisible] = useState(false)
   const [isSafari, setIsSafari] = useState(false)
 
@@ -17,9 +21,9 @@ const FeatureItem = props => {
 
   useEffect(() => {
     window.addEventListener('scroll', () => {
-      let el = document.getElementById(props.id)
-      if (el) {
-        let elRect = el.getBoundingClientRect().y
+      const element = document.getElementById(id)
+      if (element !== null) {
+        let elRect = element.getBoundingClientRect().y
         if (elRect < 800) {
           setIsElementVisible(true)
         } else if (elRect > 1200) {
@@ -27,9 +31,10 @@ const FeatureItem = props => {
         }
       }
     })
-  }, [props.id])
+  }, [id])
+
   return (
-    <StyledFeatureItem className="feature-item" data-aos="fade-up" id={props.id}>
+    <StyledFeatureItem className="feature-item" data-aos="fade-up" id={id}>
       <div className="feature-item-content">
         <div className="image-container">
           {!isSafari ? (
@@ -42,15 +47,8 @@ const FeatureItem = props => {
           <h3>{feature.title}</h3>
           <p>{feature.content}</p>
           <div className="feature-buttons">
-            {feature.buttons.map((button, key) => (
-              <Button
-                key={key}
-                label={button.label}
-                type={button.type}
-                to={button.href}
-                onClick={button.onClick && button.onClick}
-                external={button.external && button.external}
-              />
+            {feature.buttons.map(({ label, type, external, onClick, href }, key) => (
+              <Button key={key} label={label} type={type} to={href} onClick={onClick} external={external} />
             ))}
           </div>
         </div>
@@ -180,5 +178,3 @@ const StyledFeatureItem = styled.div`
     }
   }
 `
-
-export default FeatureItem

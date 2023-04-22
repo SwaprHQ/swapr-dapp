@@ -3,6 +3,7 @@ import { ChainId } from '@swapr/sdk'
 import { memo } from 'react'
 
 import { useActiveWeb3React } from '../../../../../hooks'
+
 import { DexScreenerIframe, Wrapper } from './Chart.styles'
 import { ChartLoader } from './ChartLoader.component'
 

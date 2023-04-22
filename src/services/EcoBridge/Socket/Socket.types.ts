@@ -3,6 +3,7 @@ import { ChainId } from '@swapr/sdk'
 import { TokenInfo } from '@uniswap/token-lists'
 
 import { BridgeList } from '../EcoBridge.types'
+
 import { Route } from './api/generated'
 
 export type SocketTokenMap = {

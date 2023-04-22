@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 
 import { FallbackLoader } from '../../../../../components/Loader/FallbackLoader'
+
 import { AbsoluteWrapper } from './Chart.styles'
 
 const THREE_SECONDS = 3000

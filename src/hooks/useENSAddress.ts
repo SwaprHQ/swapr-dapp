@@ -3,6 +3,7 @@ import { useMemo } from 'react'
 
 import { useSingleCallResult } from '../state/multicall/hooks'
 import isZero from '../utils/isZero'
+
 import { useENSRegistrarContract, useENSResolverContract } from './useContract'
 import useDebounce from './useDebounce'
 

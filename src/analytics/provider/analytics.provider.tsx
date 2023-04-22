@@ -11,6 +11,7 @@ import { siteEvents as siteEventsDev } from '../generated/dev'
 import { FathomSiteInformation, siteEvents as siteEventsProd } from '../generated/prod'
 import * as trackers from '../trackers'
 import { computeItemId } from '../utils'
+
 import { AnalyticsContext, IAnalyticsContext } from './analytics.context'
 import { AnalyticsTradeQueueState, ItemStatus } from './analytics.state'
 

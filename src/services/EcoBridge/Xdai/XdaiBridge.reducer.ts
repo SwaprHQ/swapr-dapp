@@ -4,6 +4,7 @@ import { TokenList } from '@uniswap/token-lists'
 import { BridgeTransactionStatus } from '../../../state/bridgeTransactions/types'
 import { BridgeDetails, SyncState, XdaiBridgeList } from '../EcoBridge.types'
 import { createEcoBridgeChildBaseSlice } from '../EcoBridge.utils'
+
 import { xdaiBridgeTransactionAdapter } from './XdaiBridge.adapter'
 import { XdaiBridgeTransaction, XdaiMessage } from './XdaiBridge.types'
 

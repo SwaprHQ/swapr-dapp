@@ -2,6 +2,7 @@ import { ChainId } from '@swapr/sdk'
 
 import { useActiveWeb3React } from '../../hooks'
 import { chainSupportsSWPR } from '../../utils/chainSupportsSWPR'
+
 import { BaseRedirect } from './BaseRedirect'
 
 /**

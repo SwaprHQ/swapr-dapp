@@ -14,6 +14,7 @@ import { ecoBridgeUIActions } from '../../../services/EcoBridge/store/UI.reducer
 import { SwapTab } from '../../../state/user/reducer'
 import { supportedChainIdList } from '../LimitOrderBox/constants'
 import { SwapTabContext } from '../SwapContext'
+
 import { ChartTabs } from './ChartTabs'
 
 const TabsColumn = styled.div`

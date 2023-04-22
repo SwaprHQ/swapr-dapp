@@ -13,6 +13,7 @@ import { useActiveWeb3React } from '../../../hooks'
 import { MainnetGasPrice } from '../../../state/application/actions'
 import { useMainnetGasPrices, useToggleSettingsMenu } from '../../../state/application/hooks'
 import { useMultihopManager, useUserPreferredGasPrice } from '../../../state/user/hooks'
+
 import { SwapPlatformSelector } from './SwapPlatformSelector'
 
 const HideableAutoColumn = styled(AutoColumn)<{ show: boolean }>`

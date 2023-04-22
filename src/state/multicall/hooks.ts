@@ -9,6 +9,7 @@ import { AppState } from '..'
 import { useActiveWeb3React } from '../../hooks'
 import { debounce } from '../../utils/debounce'
 import { useBlockNumber } from '../application/hooks'
+
 import { addMulticallListeners, ListenerOptions, removeMulticallListeners } from './actions'
 import { MulticallState } from './reducer'
 import { Call, parseCallKey, toCallKey } from './utils'

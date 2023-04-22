@@ -5,6 +5,7 @@ import Decimal from 'decimal.js-light'
 import { useMemo } from 'react'
 
 import { useGetBundleQuery } from '../graphql/generated/schema'
+
 import { useNativeCurrency } from './useNativeCurrency'
 
 export function useNativeCurrencyUSDPrice(): { loading: boolean; nativeCurrencyUSDPrice: Price } {

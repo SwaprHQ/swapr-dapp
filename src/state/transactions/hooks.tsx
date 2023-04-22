@@ -9,6 +9,7 @@ import { type BridgeTransaction, TransactionType } from '../../pages/Account/Acc
 import { selectBridgeTransactions } from '../../services/EcoBridge/store/EcoBridge.selectors'
 import { AppDispatch, AppState } from '../index'
 import { useListsByAddress } from '../lists/hooks'
+
 import { addTransaction } from './actions'
 import { TransactionDetails } from './reducer'
 
@@ -99,6 +100,7 @@ export function useAllBridgeTransactions(allNetwork = false): BridgeTransaction[
       allBridgeTransactions.map(transaction => {
         const {
           assetName,
+          toAssetName,
           assetAddressL1,
           assetAddressL2,
           fromChainId,
@@ -123,7 +125,7 @@ export function useAllBridgeTransactions(allNetwork = false): BridgeTransaction[
           },
           buyToken: {
             value: Number(toValue ?? 0),
-            symbol: listByAddress.get(toChainId)?.get(`${assetAddressL2}`)?.symbol ?? assetName,
+            symbol: toAssetName ?? listByAddress.get(toChainId)?.get(`${assetAddressL2}`)?.symbol ?? assetName,
             chainId: toChainId,
             tokenAddress: assetAddressL2,
           },

@@ -5,6 +5,7 @@ import { createSelector } from '@reduxjs/toolkit'
 import { AppState } from '../../../state'
 import { BridgeTransactionStatus, BridgeTransactionSummary } from '../../../state/bridgeTransactions/types'
 import { ConnextList } from '../EcoBridge.types'
+
 import { connextTransactionsAdapter } from './Connext.adapter'
 import { CONNEXT_TOKENS } from './Connext.lists'
 import { ConnextTransactionStatus, TransactionsSummary } from './Connext.types'

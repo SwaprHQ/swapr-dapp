@@ -6,6 +6,7 @@ import { useResponsiveItemsPerPage } from '../../../../hooks/useResponsiveItemsP
 import { ListLayout } from '../../../../ui/StyledElements/ListLayout'
 import { TableHeader } from '../../../../ui/StyledElements/TableHeader'
 import { TableHeaderText } from '../../../../ui/StyledElements/TableHeaderText'
+
 import { LoadingRow } from './LoadingRow'
 
 export function LoadingList() {

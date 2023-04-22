@@ -5,6 +5,7 @@ import { useMemo } from 'react'
 import { PairsFilterType } from '../components/Pool/ListFilter'
 import { LIQUIDITY_SORTING_TYPES } from '../constants'
 import { getBestApyPairCampaign } from '../utils/liquidityMining'
+
 import { useAllPairsWithNonExpiredLiquidityMiningCampaignsAndLiquidityAndStakingIndicator } from './useAllPairsWithNonExpiredLiquidityMiningCampaignsAndLiquidityAndStakingIndicator'
 
 export interface AggregatedPairs {

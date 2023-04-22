@@ -11,6 +11,7 @@ import {
 } from '../../advancedTradingView.types'
 import { initialState as advancedTradingViewInitialState } from '../../store/advancedTradingView.reducer'
 import { AbstractAdvancedTradingViewAdapter } from '../advancedTradingView.adapter'
+
 import { PAIR_BURNS_AND_MINTS, PAIR_SWAPS, PAIR_SWAPS_BURNS_AND_MINTS } from './base.queries'
 
 export interface BaseAppState {

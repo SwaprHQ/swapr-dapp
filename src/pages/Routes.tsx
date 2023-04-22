@@ -3,6 +3,7 @@ import { Route, Routes as Switch } from 'react-router-dom'
 
 import { BaseRedirect } from '../components/Routing/BaseRedirect'
 import { RouteCheck } from '../components/Routing/RouteCheck'
+
 import { RedirectDuplicateTokenIds, RedirectOldAddLiquidityPathStructure } from './Pools/AddLiquidity/redirects'
 import { RedirectOldRemoveLiquidityPathStructure } from './Pools/RemoveLiquidity/redirects'
 // Dont want to lazy import swap

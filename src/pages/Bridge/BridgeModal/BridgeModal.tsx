@@ -6,6 +6,7 @@ import Modal from '../../../components/Modal'
 import { BridgeModalState, BridgeModalStatus } from '../../../services/EcoBridge/EcoBridge.types'
 import { AppState } from '../../../state'
 import { getNetworkInfo } from '../../../utils/networksList'
+
 import { BridgeModalType } from './BridgeModal.types'
 import BridgeModalContent from './BridgeModalContent'
 
@@ -33,8 +34,8 @@ export const BridgeModal = ({
   const { t } = useTranslation('bridge')
   const { status, symbol, typedValue, fromChainId, toChainId, error } = modalData
 
-  const { name: fromNetworkName } = getNetworkInfo(fromChainId)
-  const { name: toNetworkName } = getNetworkInfo(toChainId)
+  const { name: fromNetworkName } = fromChainId ? getNetworkInfo(fromChainId) : { name: 'unknown' }
+  const { name: toNetworkName } = toChainId ? getNetworkInfo(toChainId) : { name: 'unknown' }
 
   const activeBridge = useSelector((state: AppState) => state.ecoBridge.common.activeBridge)
 
@@ -92,6 +93,10 @@ export const BridgeModal = ({
     if (activeBridge?.includes('omnibridge')) {
       setIsWarning(false)
       setBridgeName('OmniBridge')
+    }
+    if (activeBridge === 'lifi') {
+      setIsWarning(false)
+      setBridgeName('Lifi Bridge')
     }
   }, [activeBridge, status, symbol, t, typedValue])
 

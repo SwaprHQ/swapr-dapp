@@ -17,6 +17,7 @@ import { getStakedAmountUSD } from '../../../../../utils/liquidityMining'
 import { ButtonPrimary } from '../../../../Button'
 import { CampaignCard } from '../../../../Pool/PairsList/CampaignCard'
 import { Card, Divider } from '../../../styleds'
+
 import PoolSummary from './PoolSummary'
 import RewardSummary from './RewardSummary'
 import SimulateStaking from './SimulateStaking'

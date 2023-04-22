@@ -7,6 +7,7 @@ import { TokenList } from '@uniswap/token-lists'
 import { AppState } from '../../state'
 import { ListsState } from '../../state/lists/reducer'
 import { WrappedTokenInfo } from '../../state/lists/wrapped-token-info'
+
 import { EcoBridgeChildBase } from './EcoBridge.utils'
 
 export interface EcoBridgeChildBaseState {
@@ -56,8 +57,9 @@ export type SocketList = 'socket'
 export type XdaiBridgeList = 'xdai'
 export type OmniBridgeList = 'omnibridge:eth-xdai'
 export type ArbitrumList = 'arbitrum:mainnet' | 'arbitrum:testnet'
+export type LifiList = 'lifi'
 
-export type BridgeList = ArbitrumList | SocketList | OmniBridgeList | ConnextList | XdaiBridgeList
+export type BridgeList = ArbitrumList | SocketList | OmniBridgeList | ConnextList | XdaiBridgeList | LifiList
 export type OptionalBridgeList = BridgeList | undefined
 
 export interface EcoBridgeChildBaseConstructor {
@@ -89,6 +91,7 @@ export interface BridgeDetails {
   fee?: string
   receiveAmount?: string
   requestId?: number
+  routeId?: string
 }
 
 export type SupportedBridges = {
@@ -125,7 +128,9 @@ export interface BridgeModalState {
   readonly disclaimerText?: string
 }
 
-export type BridgeModalData = Pick<BridgeModalState, 'symbol' | 'typedValue' | 'fromChainId' | 'toChainId'>
+export type BridgeModalData = Pick<BridgeModalState, 'typedValue' | 'fromChainId' | 'toChainId'> & {
+  symbol: string
+}
 
 export type WritableListsState = {
   [url: string]: ListsState['byUrl'][string]

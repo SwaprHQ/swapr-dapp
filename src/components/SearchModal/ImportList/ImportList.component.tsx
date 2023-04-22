@@ -16,6 +16,7 @@ import { CurrencyModalView } from '../CurrencySearchModal'
 import { CurrencySearchModalContext } from '../CurrencySearchModal/CurrencySearchModal.context'
 import { GoBackIcon } from '../GoBackIcon'
 import { PaddedColumn } from '../shared'
+
 import { BottomSectionContainer, Wrapper } from './ImportList.styles'
 import { ImportListProps } from './ImportList.types'
 

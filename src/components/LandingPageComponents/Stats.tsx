@@ -1,24 +1,30 @@
 import { ChainId } from '@swapr/sdk'
 
-import { gql } from 'graphql-request'
-import TextyAnim from 'rc-texty'
+// import { gql, GraphQLClient } from 'graphql-request'
+import { ApolloClient, NormalizedCacheObject, gql } from '@apollo/client'
+import TextAnim from 'rc-texty'
 import { useEffect, useState } from 'react'
 import styled from 'styled-components'
 
-import { immediateSubgraphClients } from '../../apollo/client'
+import { subgraphClients } from '../../apollo/client'
+import { SwaprFactory } from '../../graphql/generated/schema'
+import { toClassName } from '../../utils/helperFunctions'
 import { breakpoints, gradients } from '../../utils/theme'
-import { StatsContent } from '../../utils/ui-constants'
-import { toClassName } from './../../utils/helper-functions'
+import { StatsContent } from '../../utils/uiConstants'
+
 import Layout from './layout/Layout'
 
 const subgraphApiClients = [
-  immediateSubgraphClients[ChainId.ARBITRUM_ONE],
-  immediateSubgraphClients[ChainId.XDAI],
-  immediateSubgraphClients[ChainId.MAINNET],
-]
+  subgraphClients[ChainId.ARBITRUM_ONE],
+  subgraphClients[ChainId.GNOSIS],
+  subgraphClients[ChainId.MAINNET],
+] as const
+
+const LLAMA_SWAPR_TVL = new URL('https://api.llama.fi/tvl/swapr')
+const LLAMA_PRICES = new URL('https://coins.llama.fi/prices')
 
 const tokensQuery = gql`
-  {
+  query SwaprFactory {
     swaprFactories(first: 1000) {
       txCount
       totalVolumeUSD
@@ -26,10 +32,13 @@ const tokensQuery = gql`
   }
 `
 
-const retrieveData = async client => {
+const retrieveData = async (client: ApolloClient<NormalizedCacheObject>) => {
   return await client
-    .request(tokensQuery)
-    .then(data => {
+    .query<{ swaprFactories: SwaprFactory[] }>({ query: tokensQuery })
+    .then(({ data, error }) => {
+      if (error) {
+        throw error
+      }
       return data
     })
     .catch(error => {
@@ -39,14 +48,14 @@ const retrieveData = async client => {
 
 const Stats = () => {
   const [failedToUpdate, setFailedToUpdate] = useState(false)
-  const [tvl, setTvl] = useState(0)
+  const [tvl, setTvl] = useState('0')
   const [swaprPrice, setSwaprPrice] = useState(0)
   let [tx, setTx] = useState(0)
-  let [totalVolumeUSD, setTotalVolumeUSD] = useState(0)
+  let [totalVolumeUSD, setTotalVolumeUSD] = useState('0')
   const [isChartActive, setIsChartActive] = useState(false)
 
   useEffect(() => {
-    const tvlPromise = fetch('https://api.llama.fi/tvl/swapr')
+    const tvlPromise = fetch(LLAMA_SWAPR_TVL)
     tvlPromise
       .then(data => {
         return data.json()
@@ -61,7 +70,7 @@ const Stats = () => {
 
   useEffect(() => {
     const coinCode = 'arbitrum:0xde903e2712288a1da82942dddf2c20529565ac30'
-    const swaprPricePromise = fetch('https://coins.llama.fi/prices', {
+    const swaprPricePromise = fetch(LLAMA_PRICES, {
       method: 'POST',
       body: JSON.stringify({
         coins: [coinCode],
@@ -81,20 +90,38 @@ const Stats = () => {
   }, [])
 
   useEffect(() => {
-    subgraphApiClients.forEach(client => {
-      retrieveData(client).then(data => {
-        if (data) {
-          let floatTx = parseFloat(data.swaprFactories[0].txCount)
-          let floatVolume = parseFloat(data.swaprFactories[0].totalVolumeUSD)
+    const getSwaprTransactionData = async () => {
+      const result = await Promise.all(
+        subgraphApiClients.map(async client => {
+          const data = await retrieveData(client)
+          if (data) {
+            return {
+              txnCount: parseFloat(data.swaprFactories[0].txCount ?? '0'),
+              totalVolumeUSD: parseFloat(data.swaprFactories[0].totalVolumeUSD ?? '0') / 1000000,
+            }
+          } else {
+            return { txnCount: 0, totalVolumeUSD: 0 }
+          }
+        })
+      )
+      const { txnCount, totalVolumeUSD } = result.reduce(
+        (acc, curr) => {
+          acc.txnCount += curr.txnCount
+          acc.totalVolumeUSD += curr.totalVolumeUSD
+          return acc
+        },
+        { txnCount: 0, totalVolumeUSD: 0 }
+      )
 
-          // eslint-disable-next-line
-          setTx((tx += floatTx))
-          // eslint-disable-next-line
-          setTotalVolumeUSD(((totalVolumeUSD += floatVolume) / 1000000).toFixed(0))
-        } else {
-          setFailedToUpdate(true)
-        }
-      })
+      if (txnCount === 0 && totalVolumeUSD === 0) {
+        setFailedToUpdate(true)
+      } else {
+        setTx(txnCount)
+        setTotalVolumeUSD(totalVolumeUSD.toFixed(0))
+      }
+    }
+    getSwaprTransactionData().catch(error => {
+      console.error('Error fetching Swapr transaction data: ', error)
     })
   }, [])
 
@@ -105,24 +132,27 @@ const Stats = () => {
       threshold: 0.5,
     }
 
-    const callback = entries => {
+    const observer = new IntersectionObserver(entries => {
       entries.forEach(entry => {
         setIsChartActive(entry.isIntersecting)
       })
-    }
-
-    const observer = new IntersectionObserver(callback, options)
+    }, options)
 
     const target = document.querySelector('#stats')
-    observer.observe(target)
+    if (target) {
+      observer.observe(target)
+    }
+    return () => {
+      observer.disconnect()
+    }
   }, [])
 
   const statsData = {
-    TVL: '$' + tvl + ' M',
-    'SWPR PRICE': swaprPrice,
-    'TOTAL VOLUME': '$' + totalVolumeUSD + ' M',
-    TRADES: tx,
-  }
+    TVL: `$${tvl} M`,
+    'SWPR PRICE': `${swaprPrice}`,
+    'TOTAL VOLUME': `$${totalVolumeUSD} M`,
+    TRADES: `${tx}`,
+  } as const
 
   return (
     <StyledStats id={'stats'} width={'main-width'} isChartActive={isChartActive}>
@@ -136,16 +166,17 @@ const Stats = () => {
       <div className="stats-grid">
         {StatsContent.stats.map((statsItem, key) => (
           <div key={key} className={`stats-module ${toClassName(statsItem.title)}`}>
-            <div className="poligon" />
-            <h3 className="">{statsItem.title}</h3>
+            <h3>{statsItem.title}</h3>
             {statsItem.value && (
               <span className={`value ${!isChartActive ? 'hidden' : ''}`}>
                 {isChartActive && (
                   <>
-                    <>{statsItem.headingDollar && <TextyAnim type="flash">$</TextyAnim>}</>
+                    <>{statsItem.headingDollar && <TextAnim type="flash">$</TextAnim>}</>
                     <>
-                      {statsItem.externalSource ? (
-                        <TextyAnim type="flash">{statsData[statsItem.title].toString()}</TextyAnim>
+                      {statsItem.externalSource &&
+                      !['ROUTING THROUGH', 'TOTAL FEES COLLECTED'].includes(statsItem.title) ? (
+                        // @ts-expect-error //statsData props checked above
+                        <TextAnim type="flash">{statsData[statsItem.title]}</TextAnim>
                       ) : (
                         statsItem.value
                       )}

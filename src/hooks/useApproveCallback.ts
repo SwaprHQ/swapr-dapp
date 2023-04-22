@@ -19,6 +19,7 @@ import { Field } from '../state/swap/types'
 import { useHasPendingApproval, useTransactionAdder } from '../state/transactions/hooks'
 import { calculateGasMargin } from '../utils'
 import { computeSlippageAdjustedAmounts } from '../utils/prices'
+
 import { useTokenContract } from './useContract'
 import { useNativeCurrency } from './useNativeCurrency'
 
@@ -44,10 +45,6 @@ export function useApproveCallback(
 
   // check the current approval status
   const approvalState: ApprovalState = useMemo(() => {
-    console.log({
-      currentAllowance: currentAllowance?.toSignificant(5),
-      amountToApprove: amountToApprove?.toSignificant(5),
-    })
     if (!amountToApprove || !spender) return ApprovalState.UNKNOWN
     if (amountToApprove.currency === nativeCurrency) return ApprovalState.APPROVED
     // we might not have enough data to know whether or not we need to approve

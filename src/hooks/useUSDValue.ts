@@ -28,6 +28,7 @@ import {
 } from '../utils/coingecko'
 import { currencyId } from '../utils/currencyId'
 import { wrappedCurrencyAmount } from '../utils/wrappedCurrency'
+
 import { useTradeExactInUniswapV2 } from './Trades'
 
 import { useActiveWeb3React } from './index'

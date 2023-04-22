@@ -3,6 +3,7 @@ import { ChainId } from '@swapr/sdk'
 import { Store } from '@reduxjs/toolkit'
 
 import { AppState } from '../../state'
+
 import { initiateEcoBridgeProviders } from './EcoBridge.providers'
 import {
   BridgeList,
@@ -119,7 +120,6 @@ export class EcoBridge {
 
   public getSupportedBridges = () => {
     const supportedBridges = selectSupportedBridges(this.store.getState())
-
     supportedBridges.forEach(bridge => {
       this.bridges[bridge.bridgeId].getBridgingMetadata()
     })

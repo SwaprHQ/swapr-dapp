@@ -5,6 +5,7 @@ import styled from 'styled-components'
 
 import { AutoRowCleanGap } from '../../components/Row'
 import { useNativeCurrency } from '../../hooks/useNativeCurrency'
+
 import { GovCard } from './Card'
 import { MainPage, PairPage, temporaryCurrencyData } from './constant'
 

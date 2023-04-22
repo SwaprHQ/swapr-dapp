@@ -7,6 +7,7 @@ import TransactionConfirmationModal, {
   TransactionErrorContent,
 } from '../../../../TransactionConfirmationModal'
 import ConfirmStakingModalFooter from '../ModalBase/Footer'
+
 import ConfirmClaimModalHeader from './Header'
 
 interface ConfirmClaimModalProps {

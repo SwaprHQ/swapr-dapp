@@ -26,5 +26,3 @@ i18next
       order: ['navigator'],
     },
   })
-
-export default i18next

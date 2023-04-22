@@ -14,7 +14,7 @@ import {
   SelectionListWindowWrapper,
 } from '../../components/SelectionList'
 import { useActiveBridge, useAvailableBridges } from '../../services/EcoBridge/EcoBridge.hooks'
-import { BridgeList, OptionalBridgeList, SyncState } from '../../services/EcoBridge/EcoBridge.types'
+import { BridgeDetails, BridgeList, OptionalBridgeList, SyncState } from '../../services/EcoBridge/EcoBridge.types'
 import { commonActions } from '../../services/EcoBridge/store/Common.reducer'
 import { ecoBridgeUIActions } from '../../services/EcoBridge/store/UI.reducer'
 
@@ -23,9 +23,12 @@ export const BridgeSelectionWindow = () => {
   const activeBridge = useActiveBridge()
   const availableBridges = useAvailableBridges()
 
-  const handleSelectBridge = (id: OptionalBridgeList, receiveAmount?: string) => {
+  const handleSelectBridge = (id: OptionalBridgeList, receiveAmount?: string, routeId?: string) => {
     dispatch(commonActions.setActiveBridge(id))
     dispatch(ecoBridgeUIActions.setTo({ value: receiveAmount }))
+    if (routeId) {
+      dispatch(commonActions.setActiveRouteId(routeId))
+    }
   }
 
   return (
@@ -33,13 +36,15 @@ export const BridgeSelectionWindow = () => {
       {!!availableBridges.length && (
         <SelectionListWindowWrapper extraMarginTop="10px">
           <SelectionListLabelWrapper>
-            <SelectionListLabel flex="35%" justify>
+            <SelectionListLabel flex="35%" justify="start">
               Bridge
             </SelectionListLabel>
             <SelectionListLabel>Fee</SelectionListLabel>
             <SelectionListLabel>Gas</SelectionListLabel>
             <SelectionListLabel>Time</SelectionListLabel>
-            <SelectionListLabel flex="22%">Amount</SelectionListLabel>
+            <SelectionListLabel flex="22%" justify="end">
+              Amount
+            </SelectionListLabel>
           </SelectionListLabelWrapper>
           {availableBridges.map(({ bridgeId, name, details, status }) => (
             <Bridge
@@ -68,14 +73,9 @@ interface BridgeProps {
   id: BridgeList
   name: string
   activeBridge: OptionalBridgeList
-  details: {
-    gas?: string
-    fee?: string
-    estimateTime?: string
-    receiveAmount?: string
-  }
+  details: BridgeDetails
   status: SyncState
-  handleSelectBridge: (id: OptionalBridgeList, receiveAmount?: string) => void
+  handleSelectBridge: (id: OptionalBridgeList, receiveAmount?: string, routeId?: string) => void
 }
 
 const Bridge = ({ id, name, activeBridge, details, status, handleSelectBridge }: BridgeProps) => {
@@ -90,14 +90,14 @@ const Bridge = ({ id, name, activeBridge, details, status, handleSelectBridge }:
       isLoading={isLoading}
       onClick={() => {
         if (!isLoading) {
-          handleSelectBridge(id, details.receiveAmount)
+          handleSelectBridge(id, details.receiveAmount, details.routeId)
         }
       }}
     >
       <SelectionListName flex="35%" isSelected={isSelected}>
         {name}
       </SelectionListName>
-      <SelectionListDetails data-testid="fee-amount">
+      <SelectionListDetails data-testid="fee-amount" justify="center">
         {!show ? (
           <Skeleton width="25px" height="9px" />
         ) : !details.fee ? (
@@ -106,7 +106,7 @@ const Bridge = ({ id, name, activeBridge, details, status, handleSelectBridge }:
           details.fee
         )}
       </SelectionListDetails>
-      <SelectionListDetails data-testid="bridge-gas">
+      <SelectionListDetails data-testid="bridge-gas" justify="center">
         {!show ? (
           <Skeleton width="25px" height="9px" />
         ) : !details.gas ? (
@@ -115,7 +115,7 @@ const Bridge = ({ id, name, activeBridge, details, status, handleSelectBridge }:
           details.gas
         )}
       </SelectionListDetails>
-      <SelectionListDetails data-testid="estimated-time">
+      <SelectionListDetails data-testid="estimated-time" justify="center">
         {!show ? <Skeleton width="25px" height="9px" /> : details.estimateTime}
       </SelectionListDetails>
       <SelectionListReceiveAmount flex="22%" data-testid="bridge-amount">

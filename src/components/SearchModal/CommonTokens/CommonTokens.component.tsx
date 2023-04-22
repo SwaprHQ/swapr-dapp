@@ -9,6 +9,7 @@ import { TYPE } from '../../../theme'
 import { AutoColumn } from '../../Column'
 import { CurrencyLogo } from '../../CurrencyLogo'
 import { AutoRow } from '../../Row'
+
 import { BaseWrapper } from './CommonTokens.styles'
 import { CommonTokensProps } from './CommonTokens.types'
 

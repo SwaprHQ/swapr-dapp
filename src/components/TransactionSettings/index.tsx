@@ -11,6 +11,7 @@ import { Option } from '../Option'
 import QuestionHelper from '../QuestionHelper'
 import { RowBetween, RowFixed } from '../Row'
 import Toggle from '../Toggle'
+
 import { Input, OptionCustom, SlippageErrorInner, SlippageErrorInnerAlertTriangle } from './styleds'
 
 enum RawSlippageValue {

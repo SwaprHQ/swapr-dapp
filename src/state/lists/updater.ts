@@ -8,6 +8,7 @@ import { useFetchCarrotListCallback, useFetchListCallback } from '../../hooks/us
 import useInterval from '../../hooks/useInterval'
 import useIsWindowVisible from '../../hooks/useIsWindowVisible'
 import { AppDispatch } from '../index'
+
 import { acceptListUpdate } from './actions'
 import { useActiveListUrls, useAllLists } from './hooks'
 

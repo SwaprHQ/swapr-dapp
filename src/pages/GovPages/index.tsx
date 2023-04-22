@@ -14,6 +14,7 @@ import { useNativeCurrency } from '../../hooks/useNativeCurrency'
 import { useRouter } from '../../hooks/useRouter'
 import { TYPE } from '../../theme'
 import { PageWrapper } from '../../ui/StyledElements/PageWrapper'
+
 import { MainPage, PairPage } from './constant'
 import Container from './Container'
 

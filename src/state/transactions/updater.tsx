@@ -9,6 +9,7 @@ import { retry, RetryableError, RetryOptions } from '../../utils/retry'
 import { updateBlockNumber } from '../application/actions'
 import { useAddPopup, useBlockNumber } from '../application/hooks'
 import { AppState } from '../index'
+
 import { checkedTransaction, finalizeTransaction } from './actions'
 import { SwapProtocol, TransactionState } from './reducer'
 

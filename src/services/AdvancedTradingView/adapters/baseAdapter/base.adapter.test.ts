@@ -4,6 +4,7 @@ import { configureStore, Store } from '@reduxjs/toolkit'
 
 import { AdapterKey } from '../../advancedTradingView.types'
 import advancedTradingView, { actions } from '../../store/advancedTradingView.reducer'
+
 import { BaseAdapter, BaseAppState } from './base.adapter'
 import { PairBurnsAndMints, PairSwaps, PairSwapsBurnsAndMints } from './base.types'
 

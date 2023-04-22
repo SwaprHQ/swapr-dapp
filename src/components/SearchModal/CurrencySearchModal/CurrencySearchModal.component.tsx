@@ -9,6 +9,7 @@ import { CurrencySearch } from '../CurrencySearch'
 import { ImportList } from '../ImportList'
 import { ImportToken } from '../ImportToken'
 import { Manage } from '../Manage'
+
 import { CurrencySearchModalContext } from './CurrencySearchModal.context'
 import { CurrencyModalView, CurrencySearchModalProps } from './CurrencySearchModal.types'
 

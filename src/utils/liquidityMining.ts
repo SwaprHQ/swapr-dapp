@@ -20,6 +20,7 @@ import { DateTime, Duration } from 'luxon'
 
 import { SubgraphLiquidityMiningCampaign, SubgraphSingleSidedStakingCampaign } from '../apollo'
 import { ZERO_USD } from '../constants'
+
 import { getLpTokenPrice } from './prices'
 
 export function getRemainingRewardsUSD(

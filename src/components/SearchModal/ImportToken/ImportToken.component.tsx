@@ -12,6 +12,7 @@ import { TokenWarningCard } from '../../TokenWarningModal'
 import { CurrencySearchModalContext } from '../CurrencySearchModal/CurrencySearchModal.context'
 import { GoBackIcon } from '../GoBackIcon'
 import { PaddedColumn } from '../shared'
+
 import { BottomSectionContainer, SpacedButtonError, Wrapper } from './ImportToken.styles'
 import { ImportTokenProps } from './ImportToken.types'
 

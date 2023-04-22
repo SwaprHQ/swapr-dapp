@@ -7,12 +7,11 @@ import { TokenInfo, TokenList } from '@uniswap/token-lists'
 import { BigNumber } from 'ethers'
 import { request } from 'graphql-request'
 
-import { subgraphClientsUris } from '../../../apollo/client'
 import { ZERO_ADDRESS } from '../../../constants'
 import ERC20_ABI from '../../../constants/abis/erc20.json'
 import { BridgeTransactionStatus } from '../../../state/bridgeTransactions/types'
 import { SWPRSupportedChains } from '../../../utils/chainSupportsSWPR'
-import { QUERY_ETH_PRICE } from '../Arbitrum/ArbitrumBridge.utils'
+import { formatGasOrFees } from '../../../utils/formatNumber'
 import {
   BridgeModalStatus,
   EcoBridgeChangeHandler,
@@ -21,7 +20,8 @@ import {
   SyncState,
   XdaiBridgeList,
 } from '../EcoBridge.types'
-import { ButtonStatus, EcoBridgeChildBase } from '../EcoBridge.utils'
+import { ButtonStatus, EcoBridgeChildBase, getNativeCurrencyPrice } from '../EcoBridge.utils'
+
 import {
   XDAI_BRIDGE_EXECUTIONS,
   XDAI_BRIDGE_FOREIGN_REQUEST,
@@ -33,13 +33,13 @@ import { xdaiActions } from './XdaiBridge.reducer'
 import { xdaiSelectors } from './XdaiBridge.selectors'
 import { XdaiBridgeExecutions, XdaiBridgeRequests, XdaiMessage } from './XdaiBridge.types'
 import {
-  combineTransactions,
   ETHEREUM_BRIDGE_ADDRESS,
-  packSignatures,
-  signatureToVRS,
   XDAI_BRIDGE_ADDRESS,
   XDAI_BRIDGE_FOREIGN_SUBGRAPH_ENDPOINT,
   XDAI_BRIDGE_HOME_SUBGRAPH_ENDPOINT,
+  combineTransactions,
+  packSignatures,
+  signatureToVRS,
 } from './XdaiBridge.utils'
 
 export class XdaiBridge extends EcoBridgeChildBase {
@@ -131,21 +131,23 @@ export class XdaiBridge extends EcoBridgeChildBase {
     try {
       const gasPrice = await this._activeProvider?.getGasPrice()
 
-      const {
-        bundle: { nativeCurrencyPrice },
-      } = await request(subgraphClientsUris[this._activeChainId as SWPRSupportedChains], QUERY_ETH_PRICE)
+      const nativeCurrencyPrice = await getNativeCurrencyPrice(this._activeChainId as SWPRSupportedChains)
 
       const gasCost = estimatedGas * Number(gasPrice?.toString())
 
       const formattedGasCost = formatUnits(gasCost, 18)
 
-      gas = `${Number(Number(formattedGasCost) * Number(nativeCurrencyPrice)).toFixed(2)}$`
-    } catch {}
+      if (nativeCurrencyPrice !== 0) {
+        gas = formatGasOrFees(Number(formattedGasCost) * nativeCurrencyPrice)
+      }
+    } catch (error) {
+      console.error("XDai Brige coudn't fetch nativeCurrencyPrice", error)
+    }
 
     this.store.dispatch(
       this.baseActions.setBridgeDetails({
         gas,
-        fee: '0%',
+        fee: '$0.00',
         estimateTime: '5 min',
         receiveAmount: Number(value).toFixed(this._receiveAmountDecimalPlaces),
         requestId,

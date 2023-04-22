@@ -5,6 +5,7 @@ import { getAddress } from 'ethers/lib/utils'
 import { useMemo } from 'react'
 
 import { useSingleCallResult, useSingleContractMultipleData } from '../state/multicall/hooks'
+
 import { useStakingRewardsDistributionContract } from './useContract'
 
 import { useActiveWeb3React } from './index'

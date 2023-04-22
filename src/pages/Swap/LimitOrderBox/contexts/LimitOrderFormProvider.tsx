@@ -13,6 +13,7 @@ import { SwapContext } from '../../SwapBox/SwapContext'
 import { supportedChainIdList } from '../constants/index'
 import { InputFocus, OrderExpiresInUnit } from '../interfaces'
 import { getInitialState } from '../utils'
+
 import { LimitOrderFormContext } from './LimitOrderFormContext'
 
 export function LimitOrderFormBaseConditionalProvider({

@@ -5,6 +5,7 @@ import { useDispatch } from 'react-redux'
 
 import { useActiveWeb3React } from '../../hooks'
 import { chainSupportsSWPR } from '../../utils/chainSupportsSWPR'
+
 import { setProtocolFee, setSwapFees } from './actions'
 
 export default function Updater() {

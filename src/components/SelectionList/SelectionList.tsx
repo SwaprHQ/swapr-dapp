@@ -9,13 +9,14 @@ export const SelectionListWindowWrapper = styled.div<{
   margin-top: ${({ extraMarginTop }) => (extraMarginTop ? extraMarginTop : '0')};
 `
 export const SelectionListLabelWrapper = styled.header`
+  padding: 0 10px;
   margin-bottom: 14px;
   background: transparent;
   display: flex;
 `
 
 export const SelectionListLabel = styled(Text)<{
-  justify?: boolean
+  justify?: 'start' | 'center' | 'end'
   flex?: string
 }>`
   color: ${({ theme }) => theme.text5};
@@ -24,7 +25,7 @@ export const SelectionListLabel = styled(Text)<{
   text-transform: uppercase;
   display: flex;
   flex: ${({ flex }) => flex || '15%'};
-  justify-content: ${({ justify }) => (justify ? 'start' : 'end')};
+  justify-content: ${({ justify = 'center' }) => justify};
 `
 export const SelectionListOption = styled.div<{
   isSelected: boolean
@@ -52,13 +53,13 @@ export const SelectionListName = styled(Text)<{
   color: ${({ isSelected, theme }) => (isSelected ? theme.text1 : theme.text3)};
   flex: ${({ flex }) => flex || '45%'};
 `
-export const SelectionListDetails = styled(Text)<{ flex?: string }>`
+export const SelectionListDetails = styled(Text)<{ flex?: string; justify?: 'center' | 'start' | 'end' }>`
   font-weight: 500;
   font-size: 10px;
   color: ${({ theme }) => theme.text5};
   text-transform: uppercase;
   display: flex;
-  justify-content: end;
+  justify-content: ${({ justify = 'end' }) => justify};
   flex: ${({ flex }) => flex || '15%'};
 `
 

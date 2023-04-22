@@ -6,6 +6,7 @@ import { NotificationPopup } from '../../components/Popups/NotificationPopup'
 import { TransactionPopup } from '../../components/Popups/TransactionPopup'
 import { useActiveWeb3React } from '../../hooks'
 import { AppDispatch, AppState } from '../index'
+
 import { ApplicationModal, MainnetGasPrice, PopupContent, setOpenModal } from './actions'
 
 export function useBlockNumber(): number | undefined {

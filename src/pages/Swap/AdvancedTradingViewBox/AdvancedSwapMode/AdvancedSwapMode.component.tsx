@@ -5,6 +5,7 @@ import { Flex, Text } from 'rebass'
 import { ButtonDark } from '../../../../components/Button'
 import { useAdvancedTradingView } from '../../../../services/AdvancedTradingView/useAdvancedTradingView.hook'
 import { useAllTrades } from '../../../../services/AdvancedTradingView/useAllTrades.hook'
+
 import {
   AdvancedModeHeader,
   AdvancedModeTitle,

@@ -10,6 +10,7 @@ import { wrappedCurrency } from '../../utils/wrappedCurrency'
 import { AppDispatch, AppState } from '../index'
 import { tryParseAmount } from '../swap/hooks'
 import { useTokenBalances } from '../wallet/hooks'
+
 import { Field, typeInput } from './actions'
 
 export function useBurnState(): AppState['burn'] {

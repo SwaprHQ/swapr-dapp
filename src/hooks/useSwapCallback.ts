@@ -27,6 +27,7 @@ import { SwapProtocol } from '../state/transactions/reducer'
 import { useUserPreferredGasPrice } from '../state/user/hooks'
 import { calculateGasMargin, isAddress, shortenAddress } from '../utils'
 import { limitNumberOfDecimalPlaces } from '../utils/prices'
+
 import useENS from './useENS'
 import useTransactionDeadline from './useTransactionDeadline'
 

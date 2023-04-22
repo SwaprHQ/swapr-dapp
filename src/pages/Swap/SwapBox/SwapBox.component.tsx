@@ -28,6 +28,7 @@ import ConfirmSwapModal from '../Components/ConfirmSwapModal'
 import { ArrowWrapper, SwitchTokensAmountsContainer, Wrapper } from '../Components/styles'
 import SwapButtons from '../Components/SwapButtons'
 import { TradeDetails } from '../Components/TradeDetails'
+
 import { CoWTradeState, SwapData } from './SwapBox.types'
 import { SwapContext } from './SwapContext'
 

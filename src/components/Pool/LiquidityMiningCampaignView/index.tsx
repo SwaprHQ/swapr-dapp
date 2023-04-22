@@ -11,6 +11,7 @@ import { useIsSwitchingToCorrectChain } from '../../../state/multi-chain-links/h
 import { DarkCard } from '../../Card'
 import { AutoColumn } from '../../Column'
 import { RowBetween } from '../../Row'
+
 import Information from './Information'
 import StakeCard from './StakeCard'
 

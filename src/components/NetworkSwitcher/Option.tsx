@@ -1,7 +1,8 @@
 import styled from 'styled-components'
 
-import { StyledConnectedIcon } from '../../utils'
+import { ConnectedIcon } from '../../ui/Icons/ConnectedIcon'
 import { AutoRow } from '../Row'
+
 import { NetworkOptions } from './NetworkSwitcher.types'
 
 const InfoCard = styled.button<{ active?: boolean; connected?: boolean }>`
@@ -61,7 +62,7 @@ export default function Option({
     <OptionCardClickable onClick={onClick} disabled={disabled} active={active} connected={connected}>
       <OptionCardLeft>
         <AutoRow>
-          {connected && <StyledConnectedIcon margin="0 5px 0 0" />}
+          {connected && <ConnectedIcon margin="0 5px 0 0" />}
           {logoSrc && <Icon src={logoSrc} alt={'Icon'} />}
           <HeaderText
             connected={connected}

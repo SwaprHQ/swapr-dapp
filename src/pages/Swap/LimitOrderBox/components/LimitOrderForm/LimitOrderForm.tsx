@@ -33,6 +33,7 @@ import { CurrencySelectTooltip } from '../CurrencySelectTooltip'
 import { OrderExpiryField } from '../OrderExpiryField'
 import { OrderLimitPriceField } from '../OrderLimitPriceField'
 import SwapTokens from '../SwapTokens'
+
 import { AutoRow, MaxAlert } from './styles'
 import { checkMaxOrderAmount, formatMarketPrice, formatMaxValue, toFixedSix } from './utils'
 

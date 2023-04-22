@@ -8,6 +8,7 @@ import { useMemo } from 'react'
 
 import { useGetDerivedNativeCurrencyTokensQuery } from '../graphql/generated/schema'
 import { useNativeCurrency } from '../hooks/useNativeCurrency'
+
 import { useCarrotSubgraphClient } from './useCarrotSubgraphClient'
 
 import { useActiveWeb3React } from './index'

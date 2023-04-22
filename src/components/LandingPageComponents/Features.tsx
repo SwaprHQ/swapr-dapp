@@ -1,11 +1,12 @@
 import styled from 'styled-components'
 
-import { breakpoints, gradients } from './../../utils/theme'
-import { FeaturesContent } from './../../utils/ui-constants'
+import { breakpoints, gradients } from '../../utils/theme'
+import { FeaturesContent } from '../../utils/uiConstants'
+
 import FeatureItem from './FeatureItem'
 import Layout from './layout/Layout'
 
-const Features = () => {
+export default function Features() {
   return (
     <StyledFeatures id={'features'} width="main-width">
       <section className="top-banner" data-aos={'fade-up'}>
@@ -115,7 +116,6 @@ const StyledFeatures = styled(Layout)`
         font-size: 18px;
       }
       h2 {
-        /* padding-left: 20px; */
         span {
           font-size: 31px;
         }
@@ -192,5 +192,3 @@ const StyledFeatures = styled(Layout)`
     }
   }
 `
-
-export default Features

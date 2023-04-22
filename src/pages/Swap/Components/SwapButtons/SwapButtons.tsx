@@ -18,6 +18,7 @@ import { useIsExpertMode } from '../../../../state/user/hooks'
 import { warningSeverity } from '../../../../utils/prices'
 import { wrappedCurrency } from '../../../../utils/wrappedCurrency'
 import { SwapData } from '../../SwapBox'
+
 import { ErrorBox } from './SwabButtonsError'
 import { SwapButton, SwapLoadingButton } from './SwapButton'
 

@@ -15,6 +15,7 @@ import { SwapTabContext } from '../../pages/Swap/SwapContext'
 import store, { AppState } from '../../state'
 import { useSwapState } from '../../state/swap/hooks'
 import { SwapTab } from '../../state/user/reducer'
+
 import { adapters } from './adapters/adapters.config'
 import { AdvancedTradingViewAdapter } from './adapters/advancedTradingView.adapter'
 import { AdapterAmountToFetch } from './advancedTradingView.types'

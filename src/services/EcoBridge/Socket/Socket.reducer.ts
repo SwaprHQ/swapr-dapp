@@ -4,6 +4,7 @@ import { PayloadAction } from '@reduxjs/toolkit'
 
 import { SocketList } from '../EcoBridge.types'
 import { createEcoBridgeChildBaseSlice } from '../EcoBridge.utils'
+
 import { Route } from './api/generated'
 import { SocketBridgeState, SocketTx, SocketTxStatus } from './Socket.types'
 

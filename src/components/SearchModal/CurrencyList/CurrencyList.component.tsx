@@ -23,6 +23,7 @@ import QuestionHelper from '../../QuestionHelper'
 import { AutoRow, RowBetween, RowFixed } from '../../Row'
 import { ImportRow } from '../ImportRow'
 import { TokenPickerItem } from '../shared'
+
 import { FixedContentRow, StyledBalanceText, StyledFixedSizeList, TokenListLogoWrapper } from './CurrencyList.styles'
 import { BREAK_LINE, CurrencyListProps, CurrencyRowProps, isBreakLine } from './CurrencyList.types'
 import { currencyKey } from './CurrencyList.utils'

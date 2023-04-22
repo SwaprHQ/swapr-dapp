@@ -8,9 +8,7 @@ import { ChainId, Currency, CurrencyAmount, JSBI, Pair, Percent, Token, UniswapV
 
 import Decimal from 'decimal.js-light'
 import { commify } from 'ethers/lib/utils'
-import styled from 'styled-components'
 
-import { ReactComponent as ConnectedSvg } from '../assets/images/connected.svg'
 import { NetworkDetails } from '../constants'
 import { TokenAddressMap } from '../state/lists/hooks'
 import { SwapProtocol } from '../state/transactions/reducer'
@@ -257,11 +255,6 @@ export const switchOrAddNetwork = (networkDetails?: NetworkDetails, account?: st
     })
 }
 
-export const StyledConnectedIcon = styled(ConnectedSvg)<{ width?: string; padding?: string; margin?: string }>`
-  min-width: ${props => (props.width ? props.width : '22px')};
-  padding: ${props => (props.padding ? props.padding : '0')};
-  margin: ${props => (props.margin ? props.margin : '0')};
-`
 export const normalizeInputValue = (val: string, strictFormat?: boolean) => {
   const normalizedValue = val.replace(/^0+(?=\d+)/, '').replace(/^\./, '0.')
 

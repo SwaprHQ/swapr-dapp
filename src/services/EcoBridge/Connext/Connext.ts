@@ -9,10 +9,9 @@ import { getDeployedTransactionManagerContract, NxtpSdk } from '@connext/nxtp-sd
 import { getHardcodedGasLimits } from '@connext/nxtp-utils'
 import { TokenInfo } from '@uniswap/token-lists'
 import { ethers, utils } from 'ethers'
-import { request } from 'graphql-request'
 
-import { subgraphClientsUris } from '../../../apollo/client'
 import { SWPRSupportedChains } from '../../../utils/chainSupportsSWPR'
+import { formatGasOrFees } from '../../../utils/formatNumber'
 import {
   BridgeModalStatus,
   ConnextList,
@@ -21,7 +20,8 @@ import {
   EcoBridgeChildBaseInit,
   SyncState,
 } from '../EcoBridge.types'
-import { ButtonStatus, EcoBridgeChildBase } from '../EcoBridge.utils'
+import { ButtonStatus, EcoBridgeChildBase, getNativeCurrencyPrice } from '../EcoBridge.utils'
+
 import { connextSdkChainConfig } from './Connext.config'
 import { CONNEXT_TOKENS } from './Connext.lists'
 import { connextActions } from './Connext.reducer'
@@ -32,7 +32,7 @@ import {
   ConnextTransactionsSubgraph,
   ConnextTransactionStatus,
 } from './Connext.types'
-import { getReceivingTransaction, getTransactionsQuery, QUERY_NATIVE_PRICE, SilentLogger } from './Connext.utils'
+import { getReceivingTransaction, getTransactionsQuery, SilentLogger } from './Connext.utils'
 
 export class Connext extends EcoBridgeChildBase {
   private _connextSdk: NxtpSdk | undefined
@@ -414,10 +414,7 @@ export class Connext extends EcoBridgeChildBase {
         bid: { amount, amountReceived },
       } = quote
 
-      const fee = `${(
-        ((Number(formatUnits(amount)) - Number(formatUnits(amountReceived))) / Number(formatUnits(amount))) *
-        100
-      ).toFixed(2)}%`
+      const fee = formatGasOrFees(Number(formatUnits(amount)) - Number(formatUnits(amountReceived)))
 
       const { prepare } = await getHardcodedGasLimits(fromChainId)
 
@@ -429,14 +426,10 @@ export class Connext extends EcoBridgeChildBase {
         const gasInGwei = BigNumber.from(gasPrice).mul(prepare)
         const totalGas = formatUnits(gasInGwei)
 
-        const {
-          bundle: { nativeCurrencyPrice },
-        } = await request(subgraphClientsUris[fromChainId as SWPRSupportedChains], QUERY_NATIVE_PRICE, {
-          chainId: fromChainId,
-        })
+        const nativeCurrencyPrice = await getNativeCurrencyPrice(this._activeChainId as SWPRSupportedChains)
 
-        if (nativeCurrencyPrice) {
-          gasInUSD = `${(Number(totalGas) * Number(nativeCurrencyPrice)).toFixed(2)}$`
+        if (nativeCurrencyPrice !== 0) {
+          gasInUSD = formatGasOrFees(Number(totalGas) * nativeCurrencyPrice)
         }
       }
 
