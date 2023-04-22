@@ -350,7 +350,7 @@ export const CommunityLinksContent = {
       content: 'Join in on community discussion on the Swapr Discord.',
       button: {
         label: 'JOIN DISCORD',
-        href: 'https://discord.gg/4QXEJQkvHH',
+        href: 'https://discord.gg/QFkNsjTkzD',
       },
     },
     {
@@ -435,7 +435,7 @@ export const FooterContent = {
       footerLinks: [
         {
           label: 'Discord',
-          href: 'https://discord.gg/4QXEJQkvHH',
+          href: 'https://discord.gg/QFkNsjTkzD',
         },
         {
           label: 'Twitter',
