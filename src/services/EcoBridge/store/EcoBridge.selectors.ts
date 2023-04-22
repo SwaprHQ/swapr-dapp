@@ -14,6 +14,7 @@ import {
   BridgeList,
   BridgeTxsFilter,
   ConnextList,
+  OmniBridgeList,
   SocketList,
   SupportedBridges,
   SyncState,
@@ -22,6 +23,7 @@ import {
   LifiList,
 } from '../EcoBridge.types'
 import { lifiSelectors } from '../Lifi/Lifi.selectors'
+import { omniBridgeSelectors } from '../OmniBridge/OmniBridge.selectors'
 import { socketSelectors } from '../Socket/Socket.selectors'
 import { xdaiSelectors } from '../Xdai/XdaiBridge.selectors'
 
@@ -41,7 +43,9 @@ import { xdaiSelectors } from '../Xdai/XdaiBridge.selectors'
  *
  */
 
-const createSelectBridgingDetails = (bridgeId: ConnextList | XdaiBridgeList | ArbitrumList | SocketList | LifiList) =>
+const createSelectBridgingDetails = (
+  bridgeId: ConnextList | OmniBridgeList | XdaiBridgeList | ArbitrumList | SocketList | LifiList
+) =>
   createSelector(
     [
       (state: AppState) => state.ecoBridge[bridgeId].bridgingDetails,
@@ -100,15 +104,25 @@ export const selectBridgeTransactions = createSelector(
     arbitrumSelectors['arbitrum:testnet'].selectBridgeTransactionsSummary,
     arbitrumSelectors['arbitrum:mainnet'].selectBridgeTransactionsSummary,
     socketSelectors['socket'].selectBridgeTransactionsSummary,
+    omniBridgeSelectors['omnibridge:eth-xdai'].selectBridgeTransactionsSummary,
     connextSelectors['connext'].selectBridgeTransactionsSummary,
     xdaiSelectors['xdai'].selectBridgeTransactionsSummary,
     lifiSelectors['lifi'].selectBridgeTransactionsSummary,
   ],
-  (txsSummaryTestnet, txsSummaryMainnet, txsSummarySocket, txsSummaryConnext, txsSummaryXdai, txsSummaryLifi) => {
+  (
+    txsSummaryTestnet,
+    txsSummaryMainnet,
+    txsSummarySocket,
+    txsOmnibridgeEthGnosis,
+    txsSummaryConnext,
+    txsSummaryXdai,
+    txsSummaryLifi
+  ) => {
     const txs = [
       ...txsSummaryTestnet,
       ...txsSummaryMainnet,
       ...txsSummarySocket,
+      ...txsOmnibridgeEthGnosis,
       ...txsSummaryConnext,
       ...txsSummaryXdai,
       ...txsSummaryLifi,
@@ -165,6 +179,7 @@ export const selectBridgeListsLoadingStatus = createSelector(
     (state: AppState) => state.ecoBridge['socket'].listsStatus,
     (state: AppState) => state.ecoBridge['xdai'].listsStatus,
     (state: AppState) => state.ecoBridge['connext'].listsStatus,
+    (state: AppState) => state.ecoBridge['omnibridge:eth-xdai'].listsStatus,
   ],
   // Because of redux-persist initial state is undefined
   (...statuses) => statuses.some(status => ['loading', 'idle', undefined].includes(status))
@@ -176,6 +191,7 @@ export const selectBridgeLists = createSelector(
     (state: AppState) => state.ecoBridge['arbitrum:mainnet'].lists,
     (state: AppState) => state.ecoBridge['socket'].lists,
     (state: AppState) => state.ecoBridge['connext'].lists,
+    (state: AppState) => state.ecoBridge['omnibridge:eth-xdai'].lists,
     (state: AppState) => state.ecoBridge['xdai'].lists,
     (state: AppState) => state.ecoBridge['lifi'].lists,
     (state: AppState) => state.lists.byUrl[DEFAULT_TOKEN_LIST].current,
@@ -185,6 +201,7 @@ export const selectBridgeLists = createSelector(
     tokenListMainnet,
     tokenListSocket,
     tokenListConnext,
+    omnibridgeEthGnosisList,
     tokenListXdai,
     tokenListLifi,
     swprDefaultList
@@ -202,6 +219,7 @@ export const selectBridgeLists = createSelector(
       ...tokenListXdai,
       ...tokenListConnext,
       ...tokenListLifi,
+      ...omnibridgeEthGnosisList,
     }
 
     return allTokenLists
@@ -322,6 +340,7 @@ const connextBridgeDetails = createSelectBridgingDetails('connext')
 const socketBridgeDetails = createSelectBridgingDetails('socket')
 const arbitrumMainnetBridgeDetails = createSelectBridgingDetails('arbitrum:mainnet')
 const arbitrumTestnetBridgeDetails = createSelectBridgingDetails('arbitrum:testnet')
+const omnibridgeBridgeDetails = createSelectBridgingDetails('omnibridge:eth-xdai')
 const xdaiBridgeDetails = createSelectBridgingDetails('xdai')
 const lifiBridgeDetails = createSelectBridgingDetails('lifi')
 
@@ -330,6 +349,7 @@ export const selectSupportedBridgesForUI = createSelector(
     selectSupportedBridges,
     arbitrumTestnetBridgeDetails,
     arbitrumMainnetBridgeDetails,
+    omnibridgeBridgeDetails,
     socketBridgeDetails,
     connextBridgeDetails,
     xdaiBridgeDetails,
@@ -339,6 +359,7 @@ export const selectSupportedBridgesForUI = createSelector(
     bridges,
     arbitrumTestnetDetails,
     arbitrumMainnetDetails,
+    omnibridgeEthGnosisDetails,
     socketDetails,
     connextDetails,
     xdaiDetails,
@@ -352,6 +373,7 @@ export const selectSupportedBridgesForUI = createSelector(
     const supportedBridges = [
       arbitrumMainnetDetails,
       arbitrumTestnetDetails,
+      omnibridgeEthGnosisDetails,
       socketDetails,
       connextDetails,
       xdaiDetails,
