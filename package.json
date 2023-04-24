@@ -120,7 +120,7 @@
     "@simbathesailor/use-what-changed": "^2.0.0",
     "@storybook/addon-actions": "7.0.2",
     "@storybook/addon-docs": "7.0.2",
-    "@storybook/addon-essentials": "7.0.2",
+    "@storybook/addon-essentials": "7.0.6",
     "@storybook/addon-interactions": "7.0.2",
     "@storybook/addon-links": "7.0.2",
     "@storybook/node-logger": "7.0.2",
