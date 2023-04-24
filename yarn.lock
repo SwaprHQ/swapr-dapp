@@ -7480,7 +7480,7 @@ __metadata:
     react-redux: ^8.0.2
     react-router-dom: ^6.4.1
     react-scripts: 5.0.1
-    react-toastify: 9.1.1
+    react-toastify: 9.1.2
     react-use: ^17.4.0
     react-virtualized-auto-sizer: ^1.0.6
     react-window: ^1.8.5
@@ -29492,15 +29492,15 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-toastify@npm:9.1.1":
-  version: 9.1.1
-  resolution: "react-toastify@npm:9.1.1"
+"react-toastify@npm:9.1.2":
+  version: 9.1.2
+  resolution: "react-toastify@npm:9.1.2"
   dependencies:
     clsx: ^1.1.1
   peerDependencies:
     react: ">=16"
     react-dom: ">=16"
-  checksum: 2039255539961a9b4d77b2656f120b20abe46cb0c699a7f3c0af23b4ef669d9c4d24dae6b8f4954b5efd83edf6d6e23614a29e94e9ee0d2647741fba9ba2db85
+  checksum: 0b21851bbb03592aa6e318ca62622016a6aa37cc52484c4a2fee39ce38c9933993e570c8ad9375f0a7061d3401fd175796b74f851b7d5a711b4802e0a3f9f34a
   languageName: node
   linkType: hard
 
