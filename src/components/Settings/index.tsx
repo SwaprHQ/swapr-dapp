@@ -176,7 +176,7 @@ const Divider = styled.div<{ horizontal?: boolean }>`
   height: ${props => (props.horizontal ? '100%' : 'auto')};
 `
 
-const CODE_LINK = 'https://github.com/levelkdev/dxswap-dapp'
+const CODE_LINK = 'https://github.com/ImpeccableHQ/swapr-dapp'
 
 export function Settings({ simple }: { simple?: boolean }) {
   const open = useModalOpen(simple ? ApplicationModal.SIMPLE_SETTINGS : ApplicationModal.SETTINGS)

@@ -29,7 +29,7 @@ describe('Transactions Settings Smoke Test', () => {
   it('Check Code hyperlink [TC-49]', () => {
     TransactionSettings.getCodeHyperlink()
       .should('have.attr', 'href')
-      .and('include', 'https://github.com/levelkdev/dxswap-dapp')
+      .and('include', 'https://github.com/ImpeccableHQ/swapr-dapp')
   })
   it('Check Discord hyperlink [TC-49]', () => {
     TransactionSettings.getDiscordHyperlink()
