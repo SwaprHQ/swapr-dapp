@@ -90,7 +90,7 @@ TypeScript interfaces that are used in more than one place should be stored here
 
 # Coding Standards
 
-At DXdao, everyone thrives to write high-quality code. And such as every Contributor should follow _best practices_ to achieve their goals.
+At Swapr, everyone thrives to write high-quality code. And such as every Contributor should follow _best practices_ to achieve their goals.
 
 ## Code Indentation
 

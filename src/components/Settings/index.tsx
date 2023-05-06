@@ -1,6 +1,6 @@
 import { transparentize } from 'polished'
 import { useState } from 'react'
-import { Code, Info, MessageCircle, Settings as SettingsIcon, X } from 'react-feather'
+import { Code, MessageCircle, Settings as SettingsIcon, X } from 'react-feather'
 import { Text } from 'rebass'
 import styled from 'styled-components'
 
@@ -305,15 +305,6 @@ export function Settings({ simple }: { simple?: boolean }) {
                     </RowBetween>
                     <Divider />
                     <RowBetween width="100%" marginTop="12px" marginBottom="12px">
-                      <MenuItem
-                        href="https://dxdao.eth.limo/"
-                        rel="noopener noreferrer"
-                        target="_blank"
-                        data-testid="about-hyperlink"
-                      >
-                        <Info size={14} />
-                        About
-                      </MenuItem>
                       <MenuItem href={CODE_LINK} data-testid="code-hyperlink">
                         <Code size={14} />
                         Code
