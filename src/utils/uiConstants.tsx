@@ -5,7 +5,6 @@ import EcoRouterArticle from './../assets/images/blog/ecorouter-article.png'
 import MevArticle from './../assets/images/blog/mev-article.png'
 import BNBLogo from './../assets/images/BNBLogo.svg'
 import Bridge from './../assets/images/features/bridge.png'
-import DiyFarm from './../assets/images/features/diy-farm.png'
 import EcoRouting from './../assets/images/features/eco-routing.png'
 import Farming from './../assets/images/features/farm.png'
 import Swap from './../assets/images/features/swap.png'
@@ -204,6 +203,26 @@ export const FeaturesContent: Readonly<FeatureContent> = {
       ],
     },
     {
+      title: 'BRIDGE',
+      content: 'Bridge directly to or from multiple chains: Ethereum, Gnosis, Arbitrum, Polygon, Optimism.',
+      image: Bridge,
+      animation: animations['06_Bridge'],
+      buttons: [
+        {
+          label: 'BRIDGE',
+          href: '/#/bridge',
+          type: 'primary',
+          external: false,
+        },
+        {
+          label: 'READ MORE',
+          href: 'https://dxdocs.eth.limo/docs/Products/swapr/',
+          type: 'dark',
+          external: true,
+        },
+      ],
+    },
+    {
       title: 'ECO-ROUTING',
       content: 'The eco-router ensures the best price through established DEXes with no extra fees!',
       animation: animations['02_Eco_Routing'],
@@ -234,46 +253,6 @@ export const FeaturesContent: Readonly<FeatureContent> = {
         {
           label: 'FARM',
           href: '/#/rewards',
-          type: 'primary',
-          external: false,
-        },
-        {
-          label: 'READ MORE',
-          href: 'https://dxdocs.eth.limo/docs/Products/swapr/',
-          type: 'dark',
-          external: true,
-        },
-      ],
-    },
-    {
-      title: 'DIY FARM',
-      content: 'The Swapr protocol allows anyone to create farming campaigns. Any pair, any reward.',
-      image: DiyFarm,
-      animation: animations['05_DIY_Farm'],
-      buttons: [
-        {
-          label: 'CREATE CAMPAIGN',
-          href: '/#/liquidity-mining/create',
-          type: 'primary',
-          external: false,
-        },
-        {
-          label: 'READ MORE',
-          href: 'https://dxdocs.eth.limo/docs/Products/swapr/',
-          type: 'dark',
-          external: true,
-        },
-      ],
-    },
-    {
-      title: 'BRIDGE',
-      content: 'Bridge directly to or from multiple chains: Ethereum, Gnosis, Arbitrum, Polygon, Optimism.',
-      image: Bridge,
-      animation: animations['06_Bridge'],
-      buttons: [
-        {
-          label: 'BRIDGE',
-          href: '/#/bridge',
           type: 'primary',
           external: false,
         },
