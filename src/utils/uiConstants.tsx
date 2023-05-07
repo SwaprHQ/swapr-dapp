@@ -9,7 +9,6 @@ import DiyFarm from './../assets/images/features/diy-farm.png'
 import EcoRouting from './../assets/images/features/eco-routing.png'
 import Farming from './../assets/images/features/farm.png'
 import Swap from './../assets/images/features/swap.png'
-import Vote from './../assets/images/features/vote.png'
 import gnosisChainLogo from './../assets/images/gnosis-chain.svg'
 import BaoSwapStats from './../assets/images/isologo-baoswap.svg'
 import HoneySwapStats from './../assets/images/isologo-honeyswap.svg'
@@ -50,12 +49,7 @@ export const mainNavigation = [
 ]
 
 export const HeroContent = {
-  mainText: (
-    <span>
-      Swap, Farm, Bridge and
-      <br /> Vote on Defi unchained.
-    </span>
-  ),
+  mainText: <span>Swap, Bridge, Farm across chains.</span>,
   heroLogos: [
     {
       img: EthereumLogo,
@@ -181,7 +175,7 @@ export type FeatureContent = {
 
 export const FeaturesContent: Readonly<FeatureContent> = {
   topBanner: {
-    title: 'Swap, Farm, Bridge & Vote. DeFi unchained.',
+    title: 'Swap, Bridge and Farm across chains.',
     logos: [EthereumLogo, ArbitrumLogo, gnosisChainLogo, PolygonLogo, OptimismLogo, BNBLogo],
   },
   preHeader: 'Swapr Features',
@@ -222,26 +216,6 @@ export const FeaturesContent: Readonly<FeatureContent> = {
           },
           type: 'primary',
           external: false,
-        },
-        {
-          label: 'READ MORE',
-          href: 'https://dxdocs.eth.limo/docs/Products/swapr/',
-          type: 'dark',
-          external: true,
-        },
-      ],
-    },
-    {
-      title: 'VOTE',
-      content: 'LPs on the Swapr protocol can vote to adjust the fees on their pools.',
-      image: Vote,
-      animation: animations['03_Vote'],
-      buttons: [
-        {
-          label: 'VOTE',
-          href: 'https://snapshot.org/#/swpr.eth',
-          type: 'primary',
-          external: true,
         },
         {
           label: 'READ MORE',
