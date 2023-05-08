@@ -43,7 +43,7 @@
     "@reach/portal": "^0.17.0",
     "@react-spring/web": "^9.7.1",
     "@rebass/forms": "^4.0.6",
-    "@reduxjs/toolkit": "^1.9.2",
+    "@reduxjs/toolkit": "^1.9.5",
     "@swapr/core": "^0.3.19",
     "@swapr/periphery": "^0.3.22",
     "@swapr/sdk": "1.8.2",
