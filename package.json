@@ -126,7 +126,7 @@
     "@storybook/node-logger": "7.0.2",
     "@storybook/preset-create-react-app": "7.0.2",
     "@storybook/react": "7.0.2",
-    "@storybook/react-webpack5": "7.0.2",
+    "@storybook/react-webpack5": "7.0.9",
     "@storybook/testing-library": "0.1.0",
     "@synthetixio/synpress": "^2.3.3",
     "@testing-library/cypress": "^9.0.0",
