@@ -34,15 +34,15 @@ export const ButtonCancel = styled.button`
   margin-top: 8px;
   cursor: pointer;
 `
-export const DisclaimerTextWrapper = styled.div<{ isWarning: boolean }>`
+export const DisclaimerTextWrapper = styled.div`
   padding: 24px 30px;
-  background: ${({ theme, isWarning }) => (isWarning ? 'rgba(240, 46, 81, 0.25)' : theme.bg1And2)};
+  background: ${({ theme }) => theme.bg1And2};
   border-radius: 12px;
   margin: 24px 0;
 
   p,
   span {
-    color: ${({ theme, isWarning }) => (isWarning ? theme.red1 : theme.text1)};
+    color: ${({ theme }) => theme.text1};
   }
 `
 export const DisclaimerText = styled.p`
@@ -59,12 +59,11 @@ export const DisclaimerText = styled.p`
     font-weight: 700;
   }
 `
-export const ButtonAccept = styled(ButtonPrimary)<{ isWarning: boolean }>`
-  background: ${({ theme, isWarning }) => (isWarning ? theme.red1 : theme.primary1)};
+export const ButtonAccept = styled(ButtonPrimary)`
+  background: ${({ theme }) => theme.primary1};
 
   &:hover {
-    background-color: ${({ theme, isWarning }) =>
-      isWarning ? darken(0.05, theme.red1) : darken(0.05, theme.primary1)};
+    background-color: ${({ theme }) => darken(0.05, theme.primary1)};
   }
 `
 
