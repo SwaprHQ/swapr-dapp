@@ -84,8 +84,9 @@ export class ArbitrumBridge extends EcoBridgeChildBase {
     supportedChains: supportedChainsArr,
     bridgeId,
     displayName = 'Arbitrum',
+    displayUrl,
   }: EcoBridgeChildBaseConstructor) {
-    super({ supportedChains: supportedChainsArr, bridgeId, displayName })
+    super({ supportedChains: supportedChainsArr, bridgeId, displayName, displayUrl })
     this.setBaseActions(this.actions)
 
     if (supportedChainsArr.length !== 1) throw this.ecoBridgeUtils.logger.error(`${this.bridgeId}: Invalid config`)

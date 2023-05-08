@@ -4,12 +4,14 @@ import { BridgeList, OptionalBridgeList } from '../EcoBridge.types'
 
 interface CommonState {
   activeBridge?: BridgeList
+  activeBridgeUrl?: string
   activeLists: string[]
   activeRouteId?: string
 }
 
 const initialState: CommonState = {
   activeBridge: undefined,
+  activeBridgeUrl: undefined,
   activeLists: ['arbitrum:testnet-swpr', 'arbitrum:mainnet-swpr'],
 }
 
@@ -19,6 +21,9 @@ const commonSlice = createSlice({
   reducers: {
     setActiveBridge: (state, { payload }: PayloadAction<OptionalBridgeList>) => {
       state.activeBridge = payload
+    },
+    setActiveBridgeUrl: (state, { payload }: PayloadAction<string>) => {
+      state.activeBridgeUrl = payload
     },
     activateLists: (state, { payload }: PayloadAction<string[]>) => {
       payload.forEach(id => {

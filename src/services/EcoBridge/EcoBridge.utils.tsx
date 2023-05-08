@@ -56,6 +56,7 @@ export const getErrorMsg = (error: any, bridgeId?: BridgeList) => {
 export abstract class EcoBridgeChildBase {
   public readonly bridgeId: BridgeList
   public readonly displayName: string
+  public readonly displayUrl: string
   public readonly supportedChains: EcoBridgeChildBaseConstructor['supportedChains']
   protected ecoBridgeUIActions: typeof ecoBridgeUIActions
   protected commonActions: typeof commonActions
@@ -68,9 +69,10 @@ export abstract class EcoBridgeChildBase {
   private _listeners: NodeJS.Timeout[] = []
   protected readonly _receiveAmountDecimalPlaces = 3
 
-  constructor({ supportedChains, bridgeId, displayName }: EcoBridgeChildBaseConstructor) {
+  constructor({ supportedChains, bridgeId, displayName, displayUrl }: EcoBridgeChildBaseConstructor) {
     this.bridgeId = bridgeId
     this.displayName = displayName
+    this.displayUrl = displayUrl
     this.supportedChains = supportedChains
     this.ecoBridgeUIActions = ecoBridgeUIActions
     this.commonActions = commonActions

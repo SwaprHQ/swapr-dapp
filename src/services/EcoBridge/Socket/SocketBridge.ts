@@ -40,8 +40,8 @@ export class SocketBridge extends EcoBridgeChildBase {
   private _tokenLists: SocketTokenMap = {}
   private _abortControllers: { [id: string]: AbortController } = {}
 
-  constructor({ supportedChains, bridgeId, displayName = 'Socket' }: EcoBridgeChildBaseConstructor) {
-    super({ supportedChains, bridgeId, displayName })
+  constructor({ supportedChains, bridgeId, displayName = 'Socket', displayUrl }: EcoBridgeChildBaseConstructor) {
+    super({ supportedChains, bridgeId, displayName, displayUrl })
     this.setBaseActions(this.actions)
   }
 

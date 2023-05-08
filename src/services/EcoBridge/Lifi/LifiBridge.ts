@@ -28,8 +28,8 @@ import { LifiChainShortNames, getFeeCost, isLifiChainId } from './Lifi.utils'
 export class LifiBridge extends EcoBridgeChildBase {
   #abortControllers: { [id: string]: AbortController } = {}
 
-  constructor({ supportedChains, bridgeId, displayName = 'Lifi' }: EcoBridgeChildBaseConstructor) {
-    super({ supportedChains, bridgeId, displayName })
+  constructor({ supportedChains, bridgeId, displayName = 'Lifi', displayUrl }: EcoBridgeChildBaseConstructor) {
+    super({ supportedChains, bridgeId, displayName, displayUrl })
     this.setBaseActions(this.#actions())
   }
 

@@ -1,8 +1,10 @@
 import { AlertCircle } from 'react-feather'
 import { Trans, useTranslation } from 'react-i18next'
+import { useSelector } from 'react-redux'
 
 import { ButtonPrimary } from '../../../components/Button'
 import { ConfirmationPendingContent, TransactionErrorContent } from '../../../components/TransactionConfirmationModal'
+import { AppState } from '../../../state'
 import { TYPE } from '../../../theme'
 
 import {
@@ -30,6 +32,9 @@ export default function BridgeModalContent({
   bridgeName,
 }: BridgeModalContentProps) {
   const { t } = useTranslation('bridge')
+
+  const activeBridgeUrl = useSelector((state: AppState) => state.ecoBridge.common.activeBridgeUrl)
+
   switch (modalType) {
     case 'pending':
       return <ConfirmationPendingContent onDismiss={onDismiss} pendingText={text} />
@@ -88,6 +93,13 @@ export default function BridgeModalContent({
             {isWarning && <DisclaimerText>{t('bridge.walletControl', { bridgeName })}</DisclaimerText>}
             <DisclaimerText>
               <Trans i18nKey="bridge:bridge.responsible" components={[<span key="0"></span>]} />
+            </DisclaimerText>
+            <DisclaimerText>
+              <Trans
+                i18nKey="bridge:bridge.checkoutBridgeUrl"
+                values={{ activeBridgeUrl }}
+                components={[<span key="0"></span>]}
+              />
             </DisclaimerText>
           </DisclaimerTextWrapper>
           <ButtonAccept

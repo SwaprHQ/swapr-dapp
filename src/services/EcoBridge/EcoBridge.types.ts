@@ -65,6 +65,7 @@ export type OptionalBridgeList = BridgeList | undefined
 export interface EcoBridgeChildBaseConstructor {
   supportedChains: SupportedChainsConfig[]
   displayName: string
+  displayUrl: string
   bridgeId: BridgeList
 }
 
@@ -96,6 +97,7 @@ export interface BridgeDetails {
 
 export type SupportedBridges = {
   name: string
+  url: string
   bridgeId: BridgeList
   status: SyncState
   details: BridgeDetails

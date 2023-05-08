@@ -50,8 +50,9 @@ export class Connext extends EcoBridgeChildBase {
     supportedChains: supportedChainsArr,
     bridgeId,
     displayName = 'Connext',
+    displayUrl,
   }: EcoBridgeChildBaseConstructor) {
-    super({ supportedChains: supportedChainsArr, bridgeId, displayName })
+    super({ supportedChains: supportedChainsArr, bridgeId, displayName, displayUrl })
     this.setBaseActions(this.actions)
   }
 

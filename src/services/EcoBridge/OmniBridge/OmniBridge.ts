@@ -71,8 +71,13 @@ export class OmniBridge extends EcoBridgeChildBase {
     return omniBridgeSelectors[this.bridgeId as OmniBridgeList]
   }
 
-  constructor({ supportedChains: supportedChainsArr, bridgeId, displayName }: EcoBridgeChildBaseConstructor) {
-    super({ supportedChains: supportedChainsArr, bridgeId, displayName })
+  constructor({
+    supportedChains: supportedChainsArr,
+    bridgeId,
+    displayName,
+    displayUrl,
+  }: EcoBridgeChildBaseConstructor) {
+    super({ supportedChains: supportedChainsArr, bridgeId, displayName, displayUrl })
     this.setBaseActions(this.actions)
 
     if (supportedChainsArr.length !== 1) throw this.ecoBridgeUtils.logger.error('Invalid config')

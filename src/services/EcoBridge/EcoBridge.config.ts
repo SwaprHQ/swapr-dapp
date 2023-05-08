@@ -12,21 +12,33 @@ import { XdaiBridge } from './Xdai/XdaiBridge'
 const socketBridgeId = 'socket'
 const lifiBridgeId = 'lifi'
 
+export const BRIDGES_URLS = {
+  ARBITRUM: 'https://bridge.arbitrum.io/',
+  CONNEXT: 'https://bridge.connext.network/',
+  LIFI: 'https://li.fi/',
+  OMNIBRIDGE: 'https://omnibridge.gnosischain.com/',
+  SOCKET: 'https://socket.tech/',
+  XDAI: 'https://bridge.gnosischain.com/',
+}
+
 //supported chains are bidirectional
 export const ecoBridgeConfig: EcoBridgeChildBase[] = [
   new ArbitrumBridge({
     bridgeId: 'arbitrum:testnet',
     displayName: 'Arbitrum Test',
+    displayUrl: BRIDGES_URLS.ARBITRUM,
     supportedChains: [{ from: ChainId.GOERLI, to: ChainId.ARBITRUM_GOERLI }],
   }),
   new ArbitrumBridge({
     bridgeId: 'arbitrum:mainnet',
     displayName: 'Arbitrum',
+    displayUrl: BRIDGES_URLS.ARBITRUM,
     supportedChains: [{ from: ChainId.MAINNET, to: ChainId.ARBITRUM_ONE }],
   }),
   new SocketBridge({
     bridgeId: socketBridgeId,
     displayName: 'Socket',
+    displayUrl: BRIDGES_URLS.SOCKET,
     supportedChains: bridgeSupportedChains([
       ChainId.ARBITRUM_ONE,
       ChainId.MAINNET,
@@ -39,11 +51,13 @@ export const ecoBridgeConfig: EcoBridgeChildBase[] = [
   new XdaiBridge({
     bridgeId: 'xdai',
     displayName: 'xDai Bridge',
+    displayUrl: BRIDGES_URLS.XDAI,
     supportedChains: [{ from: ChainId.MAINNET, to: ChainId.XDAI }],
   }),
   new Connext({
     bridgeId: 'connext',
     displayName: 'Connext',
+    displayUrl: BRIDGES_URLS.CONNEXT,
     supportedChains: bridgeSupportedChains([
       ChainId.ARBITRUM_ONE,
       ChainId.MAINNET,
@@ -56,11 +70,13 @@ export const ecoBridgeConfig: EcoBridgeChildBase[] = [
   new OmniBridge({
     bridgeId: 'omnibridge:eth-xdai',
     displayName: 'OmniBridge',
+    displayUrl: BRIDGES_URLS.OMNIBRIDGE,
     supportedChains: [{ from: ChainId.XDAI, to: ChainId.MAINNET }],
   }),
   new LifiBridge({
     bridgeId: lifiBridgeId,
     displayName: 'Lifi',
+    displayUrl: BRIDGES_URLS.LIFI,
     supportedChains: bridgeSupportedChains([
       ChainId.ARBITRUM_ONE,
       ChainId.MAINNET,

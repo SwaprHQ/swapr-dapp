@@ -47,8 +47,8 @@ export class XdaiBridge extends EcoBridgeChildBase {
   private _foreignChainId = ChainId.MAINNET
   private _daiTokenOnMainnet: Contract | undefined = undefined
 
-  constructor({ supportedChains, bridgeId, displayName = 'xDai Bridge' }: EcoBridgeChildBaseConstructor) {
-    super({ supportedChains, bridgeId, displayName })
+  constructor({ supportedChains, bridgeId, displayName = 'xDai Bridge', displayUrl }: EcoBridgeChildBaseConstructor) {
+    super({ supportedChains, bridgeId, displayName, displayUrl })
     this.setBaseActions(this.actions)
   }
 

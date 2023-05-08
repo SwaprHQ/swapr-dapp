@@ -8,7 +8,7 @@ import { AppState } from '../../../state'
 import { listToTokenMap } from '../../../state/lists/hooks'
 import { arbitrumSelectors } from '../Arbitrum/ArbitrumBridge.selectors'
 import { connextSelectors } from '../Connext/Connext.selectors'
-import { ecoBridgeConfig } from '../EcoBridge.config'
+import { BRIDGES_URLS, ecoBridgeConfig } from '../EcoBridge.config'
 import {
   ArbitrumList,
   BridgeList,
@@ -44,7 +44,8 @@ import { xdaiSelectors } from '../Xdai/XdaiBridge.selectors'
  */
 
 const createSelectBridgingDetails = (
-  bridgeId: ConnextList | OmniBridgeList | XdaiBridgeList | ArbitrumList | SocketList | LifiList
+  bridgeId: ConnextList | OmniBridgeList | XdaiBridgeList | ArbitrumList | SocketList | LifiList,
+  bridgeUrl: string
 ) =>
   createSelector(
     [
@@ -55,6 +56,7 @@ const createSelectBridgingDetails = (
     (details, loading, errorMessage) => {
       return {
         bridgeId,
+        bridgeUrl,
         details,
         loading,
         errorMessage,
@@ -71,26 +73,26 @@ export const selectSupportedBridges = createSelector(
   (fromChainId, toChainId, isBridgeSwapActive) => {
     if (!fromChainId || !toChainId) return []
 
-    const supportedBridges = Object.values(ecoBridgeConfig).reduce<{ bridgeId: BridgeList; name: string }[]>(
-      (total, bridgeInfo) => {
-        const bridge = {
-          name: bridgeInfo.displayName,
-          bridgeId: bridgeInfo.bridgeId,
+    const supportedBridges = Object.values(ecoBridgeConfig).reduce<
+      { bridgeId: BridgeList; name: string; url: string }[]
+    >((total, bridgeInfo) => {
+      const bridge = {
+        name: bridgeInfo.displayName,
+        url: bridgeInfo.displayUrl,
+        bridgeId: bridgeInfo.bridgeId,
+      }
+
+      bridgeInfo.supportedChains.forEach(({ from: supportedFrom, to: supportedTo }) => {
+        if (
+          (supportedFrom === fromChainId && supportedTo === toChainId) ||
+          (supportedFrom === toChainId && supportedTo === fromChainId)
+        ) {
+          total.push(bridge)
         }
+      })
 
-        bridgeInfo.supportedChains.forEach(({ from: supportedFrom, to: supportedTo }) => {
-          if (
-            (supportedFrom === fromChainId && supportedTo === toChainId) ||
-            (supportedFrom === toChainId && supportedTo === fromChainId)
-          ) {
-            total.push(bridge)
-          }
-        })
-
-        return total
-      },
-      []
-    )
+      return total
+    }, [])
 
     return isBridgeSwapActive
       ? supportedBridges.filter(bridge => ['socket', 'lifi'].includes(bridge.bridgeId))
@@ -336,13 +338,13 @@ export const selectBridgeSupportedTokensOnChain = createSelector(
   }
 )
 
-const connextBridgeDetails = createSelectBridgingDetails('connext')
-const socketBridgeDetails = createSelectBridgingDetails('socket')
-const arbitrumMainnetBridgeDetails = createSelectBridgingDetails('arbitrum:mainnet')
-const arbitrumTestnetBridgeDetails = createSelectBridgingDetails('arbitrum:testnet')
-const omnibridgeBridgeDetails = createSelectBridgingDetails('omnibridge:eth-xdai')
-const xdaiBridgeDetails = createSelectBridgingDetails('xdai')
-const lifiBridgeDetails = createSelectBridgingDetails('lifi')
+const connextBridgeDetails = createSelectBridgingDetails('connext', BRIDGES_URLS.CONNEXT)
+const socketBridgeDetails = createSelectBridgingDetails('socket', BRIDGES_URLS.SOCKET)
+const arbitrumMainnetBridgeDetails = createSelectBridgingDetails('arbitrum:mainnet', BRIDGES_URLS.ARBITRUM)
+const arbitrumTestnetBridgeDetails = createSelectBridgingDetails('arbitrum:testnet', BRIDGES_URLS.ARBITRUM)
+const omnibridgeBridgeDetails = createSelectBridgingDetails('omnibridge:eth-xdai', BRIDGES_URLS.OMNIBRIDGE)
+const xdaiBridgeDetails = createSelectBridgingDetails('xdai', BRIDGES_URLS.XDAI)
+const lifiBridgeDetails = createSelectBridgingDetails('lifi', BRIDGES_URLS.LIFI)
 
 export const selectSupportedBridgesForUI = createSelector(
   [
@@ -365,9 +367,13 @@ export const selectSupportedBridgesForUI = createSelector(
     xdaiDetails,
     lifiDetails
   ) => {
-    const bridgeNameMap = bridges.reduce<{ [bridgeId: string]: string }>((total, next) => {
-      total[next.bridgeId] = next.name
-      return total
+    const bridgeMap = bridges.reduce<{ [bridgeId: string]: { name: string; url: string } }>((bridgeMap, next) => {
+      bridgeMap[next.bridgeId] = {
+        name: next.name,
+        url: next.url,
+      }
+
+      return bridgeMap
     }, {})
 
     const supportedBridges = [
@@ -379,9 +385,10 @@ export const selectSupportedBridgesForUI = createSelector(
       xdaiDetails,
       lifiDetails,
     ].reduce<SupportedBridges[]>((total, bridge) => {
-      if (bridgeNameMap[bridge.bridgeId] !== undefined) {
+      if (bridgeMap[bridge.bridgeId] !== undefined) {
         total.push({
-          name: bridgeNameMap[bridge.bridgeId],
+          name: bridgeMap[bridge.bridgeId].name,
+          url: bridgeMap[bridge.bridgeId].url,
           bridgeId: bridge.bridgeId,
           details: ['loading', 'failed'].includes(bridge.loading) ? {} : bridge.details,
           status: bridge.loading,

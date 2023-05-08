@@ -4,6 +4,7 @@
   "bridgeModal.heading.collecting": "Bridging Collecting",
   "bridgeModal.heading.success": "Bridging Successful",
   "bridgeModal.heading.disclaimer": "Bridging {{typedValue}} {{symbol}}",
+  "bridge.checkoutBridgeUrl": "For more information, check this bridge at: {{activeBridgeUrl}}",
   "bridge.txnThrough": "This transaction is routed through <0>{{bridgeName}}</0>",
   "bridge.walletControl": "{{bridgeName}} asks you to sign a transaction that gives them control to your wallet.",
   "bridge.responsible": "Swapr is <0>not</0> responsible for any transactions outside of its control.",
