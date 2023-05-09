@@ -1,5 +1,4 @@
 import {
-  BNB,
   ChainId,
   Currency,
   CurrencyAmount,
@@ -105,7 +104,7 @@ export const PRE_SELECT_OUTPUT_CURRENCY_ID: { [chainId in ChainId]: string } = {
   [ChainId.ARBITRUM_ONE]: USDC[ChainId.ARBITRUM_ONE].address,
   [ChainId.POLYGON]: WETH[ChainId.POLYGON].address,
   [ChainId.OPTIMISM_MAINNET]: OP[ChainId.OPTIMISM_MAINNET].address,
-  [ChainId.BSC_MAINNET]: BNB.address!,
+  [ChainId.BSC_MAINNET]: DAI[ChainId.BSC_MAINNET].address,
   [ChainId.RINKEBY]: '',
   [ChainId.ARBITRUM_RINKEBY]: '',
   [ChainId.GOERLI]: '',
