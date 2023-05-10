@@ -5,7 +5,7 @@ import { useSelector } from 'react-redux'
 import { ButtonPrimary } from '../../../components/Button'
 import { ConfirmationPendingContent, TransactionErrorContent } from '../../../components/TransactionConfirmationModal'
 import { AppState } from '../../../state'
-import { TYPE } from '../../../theme'
+import { ExternalLink, TYPE } from '../../../theme'
 
 import {
   ButtonAccept,
@@ -33,7 +33,7 @@ export default function BridgeModalContent({
 }: BridgeModalContentProps) {
   const { t } = useTranslation('bridge')
 
-  const activeBridgeUrl = useSelector((state: AppState) => state.ecoBridge.common.activeBridgeUrl)
+  const activeBridgeUrl = useSelector((state: AppState) => state.ecoBridge.common.activeBridgeUrl) ?? '#'
 
   switch (modalType) {
     case 'pending':
@@ -95,11 +95,9 @@ export default function BridgeModalContent({
               <Trans i18nKey="bridge:bridge.responsible" components={[<span key="0"></span>]} />
             </DisclaimerText>
             <DisclaimerText>
-              <Trans
-                i18nKey="bridge:bridge.checkoutBridgeUrl"
-                values={{ activeBridgeUrl }}
-                components={[<span key="0"></span>]}
-              />
+              <Trans i18nKey="bridge:bridge.checkoutBridgeUrl" values={{ activeBridgeUrl }}>
+                <ExternalLink href={activeBridgeUrl}>{activeBridgeUrl}</ExternalLink>
+              </Trans>
             </DisclaimerText>
           </DisclaimerTextWrapper>
           <ButtonAccept
