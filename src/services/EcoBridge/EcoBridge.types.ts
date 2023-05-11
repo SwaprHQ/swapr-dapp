@@ -10,6 +10,16 @@ import { WrappedTokenInfo } from '../../state/lists/wrapped-token-info'
 
 import { EcoBridgeChildBase } from './EcoBridge.utils'
 
+export enum BridgeIds {
+  ARBITRUM_MAINNET = 'arbitrum:mainnet',
+  ARBITRUM_TESTNET = 'arbitrum:testnet',
+  CONNEXT = 'connext',
+  LIFI = 'lifi',
+  OMNIBRIDGE = 'omnibridge:eth-xdai',
+  SOCKET = 'socket',
+  XDAI = 'xdai',
+}
+
 export interface EcoBridgeChildBaseState {
   lists: { [id: string]: TokenList }
   listsStatus: SyncState
@@ -52,15 +62,24 @@ export interface EcoBridgeChildBaseProps
 
 export interface EcoBridgeChildBaseInit extends EcoBridgeChangeHandler, EcoBridgeInitialEnv {}
 
+/**
+ * @TODO we need to start refactoring these $bridgeList types and start using BridgeIds enum
+ * instead at some point
+ */
 export type ConnextList = 'connext'
 export type SocketList = 'socket'
 export type XdaiBridgeList = 'xdai'
 export type OmniBridgeList = 'omnibridge:eth-xdai'
 export type ArbitrumList = 'arbitrum:mainnet' | 'arbitrum:testnet'
 export type LifiList = 'lifi'
-
 export type BridgeList = ArbitrumList | SocketList | OmniBridgeList | ConnextList | XdaiBridgeList | LifiList
 export type OptionalBridgeList = BridgeList | undefined
+
+export interface EcoBridgeConfig {
+  id: BridgeList
+  name: string
+  url: string
+}
 
 export interface EcoBridgeChildBaseConstructor {
   supportedChains: SupportedChainsConfig[]
