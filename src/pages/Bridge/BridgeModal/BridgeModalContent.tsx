@@ -95,8 +95,8 @@ export default function BridgeModalContent({
               <Trans i18nKey="bridge:bridge.responsible" components={[<span key="0"></span>]} />
             </DisclaimerText>
             <DisclaimerText>
-              <Trans i18nKey="bridge:bridge.checkoutBridgeUrl" values={{ activeBridgeUrl }}>
-                <ExternalLink href={activeBridgeUrl}>{activeBridgeUrl}</ExternalLink>
+              <Trans i18nKey="bridge:bridge.checkoutBridgeUrl" values={{ bridgeName }}>
+                <ExternalLink href={activeBridgeUrl}>{bridgeName}</ExternalLink>
               </Trans>
             </DisclaimerText>
           </DisclaimerTextWrapper>
