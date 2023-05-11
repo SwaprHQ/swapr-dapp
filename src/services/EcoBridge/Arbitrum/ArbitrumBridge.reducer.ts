@@ -5,7 +5,7 @@ import { L2ToL1MessageStatus } from '@arbitrum/sdk'
 import { PayloadAction } from '@reduxjs/toolkit'
 
 import { ArbitrumBridgeTxn, ArbitrumBridgeTxnsState } from '../../../state/bridgeTransactions/types'
-import { ArbitrumList } from '../EcoBridge.types'
+import { ArbitrumIdList, BridgeIds } from '../EcoBridge.types'
 import { createEcoBridgeChildBaseSlice } from '../EcoBridge.utils'
 
 import { arbitrumTransactionsAdapter } from './ArbitrumBridge.adapter'
@@ -17,7 +17,7 @@ const initialState: ArbitrumInitialState = {
   transactions: arbitrumTransactionsAdapter.getInitialState({}),
 }
 
-export const createArbitrumSlice = (bridgeId: ArbitrumList) =>
+export const createArbitrumSlice = (bridgeId: ArbitrumIdList) =>
   createEcoBridgeChildBaseSlice({
     name: bridgeId,
     initialState,
@@ -100,9 +100,9 @@ export const createArbitrumSlice = (bridgeId: ArbitrumList) =>
     },
   })
 
-const arbitrumSlices: { [k in ArbitrumList]: ReturnType<typeof createArbitrumSlice> } = {
-  'arbitrum:mainnet': createArbitrumSlice('arbitrum:mainnet'),
-  'arbitrum:testnet': createArbitrumSlice('arbitrum:testnet'),
+const arbitrumSlices: { [k in ArbitrumIdList]: ReturnType<typeof createArbitrumSlice> } = {
+  [BridgeIds.ARBITRUM_MAINNET]: createArbitrumSlice(BridgeIds.ARBITRUM_MAINNET),
+  [BridgeIds.ARBITRUM_TESTNET]: createArbitrumSlice(BridgeIds.ARBITRUM_TESTNET),
 }
 
 type ArbitrumReducers = { [k in keyof typeof arbitrumSlices]: ReturnType<typeof createArbitrumSlice>['reducer'] }
@@ -114,7 +114,7 @@ type ArbitrumSliceExtract = {
   arbitrumActions: ArbitrumActions
 }
 
-export const { arbitrumReducers, arbitrumActions } = (Object.keys(arbitrumSlices) as ArbitrumList[]).reduce(
+export const { arbitrumReducers, arbitrumActions } = (Object.keys(arbitrumSlices) as ArbitrumIdList[]).reduce(
   (total, key) => {
     total.arbitrumReducers[key] = arbitrumSlices[key].reducer
     total.arbitrumActions[key] = arbitrumSlices[key].actions

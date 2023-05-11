@@ -18,7 +18,7 @@ import {
   EcoBridgeChildBaseConstructor,
   EcoBridgeChildBaseInit,
   SyncState,
-  XdaiBridgeList,
+  XdaiBridgeIdList,
 } from '../EcoBridge.types'
 import { ButtonStatus, EcoBridgeChildBase, getNativeCurrencyPrice } from '../EcoBridge.utils'
 
@@ -53,11 +53,11 @@ export class XdaiBridge extends EcoBridgeChildBase {
   }
 
   private get actions() {
-    return xdaiActions[this.bridgeId as XdaiBridgeList]
+    return xdaiActions[this.bridgeId as XdaiBridgeIdList]
   }
 
   private get selectors() {
-    return xdaiSelectors[this.bridgeId as XdaiBridgeList]
+    return xdaiSelectors[this.bridgeId as XdaiBridgeIdList]
   }
 
   private _createDaiTokenOnMainnet = () => {
@@ -282,7 +282,7 @@ export class XdaiBridge extends EcoBridgeChildBase {
       const collectableTransaction = xdaiBridgeTransactionAdapter
         .getSelectors()
         .selectById(
-          this.store.getState().ecoBridge[this.bridgeId as XdaiBridgeList].transactions,
+          this.store.getState().ecoBridge[this.bridgeId as XdaiBridgeIdList].transactions,
           collectableTransactionHash
         )
 

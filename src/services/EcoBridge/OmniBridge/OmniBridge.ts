@@ -17,7 +17,7 @@ import {
   EcoBridgeChangeHandler,
   EcoBridgeChildBaseConstructor,
   EcoBridgeChildBaseInit,
-  OmniBridgeList,
+  OmniBridgeIdList,
   SyncState,
 } from '../EcoBridge.types'
 import { ButtonStatus, EcoBridgeChildBase, getNativeCurrencyPrice } from '../EcoBridge.utils'
@@ -65,10 +65,10 @@ export class OmniBridge extends EcoBridgeChildBase {
   private _homeAmbContract: Contract | undefined
 
   private get actions() {
-    return omniBridgeActions[this.bridgeId as OmniBridgeList]
+    return omniBridgeActions[this.bridgeId as OmniBridgeIdList]
   }
   private get selectors() {
-    return omniBridgeSelectors[this.bridgeId as OmniBridgeList]
+    return omniBridgeSelectors[this.bridgeId as OmniBridgeIdList]
   }
 
   constructor({

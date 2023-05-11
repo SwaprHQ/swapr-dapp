@@ -2,13 +2,14 @@ import { createSlice, PayloadAction, SliceCaseReducers, ValidateSliceCaseReducer
 import { TokenList } from '@uniswap/token-lists'
 
 import { subgraphClients } from '../../apollo/client'
+import { BRIDGES } from '../../constants'
 import { GetBundleQuery, GetBundleDocument } from '../../graphql/generated/schema'
 import { BridgeTransactionSummary } from '../../state/bridgeTransactions/types'
 import { SWPRSupportedChains } from '../../utils/chainSupportsSWPR'
 
 import {
   BridgeDetails,
-  BridgeList,
+  BridgeIdList,
   BridgeModalData,
   BridgeModalStatus,
   BridgingDetailsErrorMessage,
@@ -43,18 +44,18 @@ const reduceMessage = (message?: string) => {
   return message.slice(0, getIndexOfSpecialCharacter(message))
 }
 
-export const getErrorMsg = (error: any, bridgeId?: BridgeList) => {
+export const getErrorMsg = (error: any, bridgeId?: BridgeIdList) => {
   if (error?.code === 4001) {
     return 'Transaction rejected'
   }
-  if (bridgeId === 'socket' && error.status === 500 && !error.ok) {
+  if (bridgeId === BRIDGES.SOCKET.id && error.status === 500 && !error.ok) {
     return 'Socket API is temporarily unavailable'
   }
   return `Bridge failed: ${reduceMessage(error.message)}`
 }
 
 export abstract class EcoBridgeChildBase {
-  public readonly bridgeId: BridgeList
+  public readonly bridgeId: BridgeIdList
   public readonly displayName: string
   public readonly displayUrl: string
   public readonly supportedChains: EcoBridgeChildBaseConstructor['supportedChains']
@@ -137,7 +138,7 @@ export abstract class EcoBridgeChildBase {
     logger: this._loggerUtils,
     ui: {
       modal: {
-        setBridgeModalStatus: (status: BridgeModalStatus, bridgeId?: BridgeList, error?: any) => {
+        setBridgeModalStatus: (status: BridgeModalStatus, bridgeId?: BridgeIdList, error?: any) => {
           this.store.dispatch(
             this.ecoBridgeUIActions.setBridgeModalStatus({
               status,

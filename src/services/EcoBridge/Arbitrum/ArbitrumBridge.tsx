@@ -23,7 +23,7 @@ import { SWPRSupportedChains } from '../../../utils/chainSupportsSWPR'
 import { formatGasOrFees } from '../../../utils/formatNumber'
 import getTokenList from '../../../utils/getTokenList'
 import {
-  ArbitrumList,
+  ArbitrumIdList,
   BridgeModalStatus,
   EcoBridgeChangeHandler,
   EcoBridgeChildBaseConstructor,
@@ -49,11 +49,11 @@ export class ArbitrumBridge extends EcoBridgeChildBase {
   private _initialPendingWithdrawalsChecked = false
 
   private get actions() {
-    return arbitrumActions[this.bridgeId as ArbitrumList]
+    return arbitrumActions[this.bridgeId as ArbitrumIdList]
   }
 
   public get selectors() {
-    return arbitrumSelectors[this.bridgeId as ArbitrumList]
+    return arbitrumSelectors[this.bridgeId as ArbitrumIdList]
   }
 
   public get ethBridger() {
@@ -151,7 +151,7 @@ export class ArbitrumBridge extends EcoBridgeChildBase {
 
       const l1TransactionReceipt = arbitrumTransactionsAdapter
         .getSelectors()
-        .selectById(this.store.getState().ecoBridge[this.bridgeId as ArbitrumList].transactions, txHash)?.receipt
+        .selectById(this.store.getState().ecoBridge[this.bridgeId as ArbitrumIdList].transactions, txHash)?.receipt
 
       if (!l1TransactionReceipt) return
 

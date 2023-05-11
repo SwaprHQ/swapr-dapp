@@ -13,7 +13,7 @@ import {
   EcoBridgeChildBaseConstructor,
   EcoBridgeChildBaseInit,
   SyncState,
-  LifiList,
+  LifiIdList,
 } from '../EcoBridge.types'
 import { ButtonStatus, EcoBridgeChildBase } from '../EcoBridge.utils'
 import { overrideTokensAddresses } from '../Socket/Socket.utils'
@@ -44,11 +44,11 @@ export class LifiBridge extends EcoBridgeChildBase {
   }
 
   #actions() {
-    return lifiActions[this.bridgeId as LifiList]
+    return lifiActions[this.bridgeId as LifiIdList]
   }
 
   #selectors() {
-    return lifiSelectors[this.bridgeId as LifiList]
+    return lifiSelectors[this.bridgeId as LifiIdList]
   }
 
   #pendingTxListener = async () => {

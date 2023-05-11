@@ -1,9 +1,9 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 
-import { BridgeList, OptionalBridgeList } from '../EcoBridge.types'
+import { BridgeIdList, OptionalBridgeIdList } from '../EcoBridge.types'
 
 interface CommonState {
-  activeBridge?: BridgeList
+  activeBridge?: BridgeIdList
   activeBridgeUrl?: string
   activeLists: string[]
   activeRouteId?: string
@@ -19,7 +19,7 @@ const commonSlice = createSlice({
   initialState,
   name: 'common',
   reducers: {
-    setActiveBridge: (state, { payload }: PayloadAction<OptionalBridgeList>) => {
+    setActiveBridge: (state, { payload }: PayloadAction<OptionalBridgeIdList>) => {
       state.activeBridge = payload
     },
     setActiveBridgeUrl: (state, { payload }: PayloadAction<string>) => {

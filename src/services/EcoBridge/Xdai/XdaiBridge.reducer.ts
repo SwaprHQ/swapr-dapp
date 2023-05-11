@@ -2,7 +2,7 @@ import { EntityState, PayloadAction } from '@reduxjs/toolkit'
 import { TokenList } from '@uniswap/token-lists'
 
 import { BridgeTransactionStatus } from '../../../state/bridgeTransactions/types'
-import { BridgeDetails, SyncState, XdaiBridgeList } from '../EcoBridge.types'
+import { BridgeDetails, BridgeIds, SyncState, XdaiBridgeIdList } from '../EcoBridge.types'
 import { createEcoBridgeChildBaseSlice } from '../EcoBridge.utils'
 
 import { xdaiBridgeTransactionAdapter } from './XdaiBridge.adapter'
@@ -26,7 +26,7 @@ const initialState: XdaiBridgeState = {
   lastMetadataCt: 0,
 }
 
-const createXdaiSlice = (bridgeId: XdaiBridgeList) =>
+const createXdaiSlice = (bridgeId: XdaiBridgeIdList) =>
   createEcoBridgeChildBaseSlice({
     name: bridgeId,
     initialState,
@@ -79,8 +79,8 @@ const createXdaiSlice = (bridgeId: XdaiBridgeList) =>
     },
   })
 
-const xdaiSlices: { [k in XdaiBridgeList]: ReturnType<typeof createXdaiSlice> } = {
-  xdai: createXdaiSlice('xdai'),
+const xdaiSlices: { [k in XdaiBridgeIdList]: ReturnType<typeof createXdaiSlice> } = {
+  xdai: createXdaiSlice(BridgeIds.XDAI),
 }
 
 type XdaiReducers = { [k in keyof typeof xdaiSlices]: ReturnType<typeof createXdaiSlice>['reducer'] }
@@ -92,7 +92,7 @@ type XdaiSliceExtract = {
   xdaiActions: XdaiActions
 }
 
-export const { xdaiReducers, xdaiActions } = (Object.keys(xdaiSlices) as XdaiBridgeList[]).reduce(
+export const { xdaiReducers, xdaiActions } = (Object.keys(xdaiSlices) as XdaiBridgeIdList[]).reduce(
   (total, key) => {
     total.xdaiReducers[key] = xdaiSlices[key].reducer
     total.xdaiActions[key] = xdaiSlices[key].actions

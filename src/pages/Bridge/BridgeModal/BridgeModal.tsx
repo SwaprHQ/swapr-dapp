@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 
 import Modal from '../../../components/Modal'
+import { BRIDGES } from '../../../constants'
 import { BridgeModalState, BridgeModalStatus } from '../../../services/EcoBridge/EcoBridge.types'
 import { AppState } from '../../../state'
 import { getNetworkInfo } from '../../../utils/networksList'
@@ -71,32 +72,29 @@ export const BridgeModal = ({
         setModalType(null)
     }
 
-    if (activeBridge === 'socket') {
-      setIsWarning(true)
-      setBridgeName('Socket Network')
-    }
-
     if (activeBridge?.includes('arbitrum')) {
       setIsWarning(false)
       setBridgeName('Arbitrum One Bridge')
     }
-
-    if (activeBridge === 'xdai') {
-      setIsWarning(false)
-      setBridgeName('xDai Bridge')
-    }
-
-    if (activeBridge === 'connext') {
+    if (activeBridge === BRIDGES.CONNEXT.id) {
       setIsWarning(false)
       setBridgeName('Connext Network')
     }
-    if (activeBridge?.includes('omnibridge')) {
+    if (activeBridge === BRIDGES.LIFI.id) {
+      setIsWarning(false)
+      setBridgeName('Lifi Bridge')
+    }
+    if (activeBridge?.includes(BRIDGES.OMNIBRIDGE.id)) {
       setIsWarning(false)
       setBridgeName('OmniBridge')
     }
-    if (activeBridge === 'lifi') {
+    if (activeBridge === BRIDGES.SOCKET.id) {
+      setIsWarning(true)
+      setBridgeName('Socket Network')
+    }
+    if (activeBridge === BRIDGES.XDAI.id) {
       setIsWarning(false)
-      setBridgeName('Lifi Bridge')
+      setBridgeName('xDai Bridge')
     }
   }, [activeBridge, status, symbol, t, typedValue])
 

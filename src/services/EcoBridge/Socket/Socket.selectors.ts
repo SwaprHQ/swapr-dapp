@@ -2,20 +2,20 @@ import { createSelector } from 'reselect'
 
 import { AppState } from '../../../state'
 import { BridgeTransactionStatus, BridgeTransactionSummary } from '../../../state/bridgeTransactions/types'
-import { SocketList } from '../EcoBridge.types'
+import { BridgeIds, SocketIdList } from '../EcoBridge.types'
 
 import { SOCKET_PENDING_REASONS, SocketTx, SocketTxStatus } from './Socket.types'
 
-const createSelectRoutes = (bridgeId: SocketList) =>
+const createSelectRoutes = (bridgeId: SocketIdList) =>
   createSelector([(state: AppState) => state.ecoBridge[bridgeId].routes], routes => routes)
 
-const createSelectApprovalData = (bridgeId: SocketList) =>
+const createSelectApprovalData = (bridgeId: SocketIdList) =>
   createSelector([(state: AppState) => state.ecoBridge[bridgeId].approvalData], approvalData => approvalData)
 
-const createSelectTxBridgingData = (bridgeId: SocketList) =>
+const createSelectTxBridgingData = (bridgeId: SocketIdList) =>
   createSelector([(state: AppState) => state.ecoBridge[bridgeId].txBridgingData], txBridgingData => txBridgingData)
 
-const createSelectOwnedTransactions = (bridgeId: SocketList) =>
+const createSelectOwnedTransactions = (bridgeId: SocketIdList) =>
   createSelector(
     [
       (state: AppState) => state.ecoBridge[bridgeId].transactions,
@@ -53,7 +53,7 @@ const createSelectFailedTransactions = (selectOwnedTxs: ReturnType<typeof create
   })
 
 const createSelectBridgeTransactionsSummary = (
-  bridgeId: SocketList,
+  bridgeId: SocketIdList,
   selectOwnedTxs: ReturnType<typeof createSelectOwnedTransactions>
 ) =>
   createSelector([selectOwnedTxs], txs => {
@@ -115,7 +115,7 @@ export interface SocketBridgeSelectors {
   selectFailedTransactions: ReturnType<typeof createSelectFailedTransactions>
   selectBridgeTransactionsSummary: ReturnType<typeof createSelectBridgeTransactionsSummary>
 }
-export const socketSelectorsFactory = (socketBridges: SocketList[]) => {
+export const socketSelectorsFactory = (socketBridges: SocketIdList[]) => {
   return socketBridges.reduce((total, bridgeId) => {
     const selectOwnedTransactions = createSelectOwnedTransactions(bridgeId)
     const selectRoutes = createSelectRoutes(bridgeId)
@@ -137,7 +137,7 @@ export const socketSelectorsFactory = (socketBridges: SocketList[]) => {
 
     total[bridgeId] = selectors
     return total
-  }, {} as { [k in SocketList]: SocketBridgeSelectors })
+  }, {} as { [k in SocketIdList]: SocketBridgeSelectors })
 }
 
-export const socketSelectors = socketSelectorsFactory(['socket'])
+export const socketSelectors = socketSelectorsFactory([BridgeIds.SOCKET])

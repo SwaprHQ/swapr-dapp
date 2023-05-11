@@ -2,7 +2,7 @@ import { ChainId } from '@swapr/sdk'
 
 import { TokenInfo } from '@uniswap/token-lists'
 
-import { BridgeList } from '../EcoBridge.types'
+import { BridgeIdList } from '../EcoBridge.types'
 
 import { Route } from './api/generated'
 
@@ -30,7 +30,7 @@ export type SocketTx = {
   toValue: string
   fromChainId: ChainId
   toChainId: ChainId
-  bridgeId: BridgeList
+  bridgeId: BridgeIdList
   timestampResolved?: number
   status: SocketTxStatus
   sender: string

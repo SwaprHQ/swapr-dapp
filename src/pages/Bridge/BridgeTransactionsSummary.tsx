@@ -3,6 +3,7 @@ import styled from 'styled-components'
 
 import { useAnalytics } from '../../analytics'
 import { AdvancedDetailsFooter } from '../../components/AdvancedDetailsFooter'
+import { BRIDGES } from '../../constants'
 import { BridgeTransactionStatus, BridgeTransactionSummary } from '../../state/bridgeTransactions/types'
 import { getExplorerLink } from '../../utils'
 import { getNetworkInfo } from '../../utils/networksList'
@@ -172,7 +173,7 @@ const BridgeTransactionsSummaryRow = ({ tx, handleTriggerCollect }: BridgeTransa
   const toChainName = toChainId ? getNetworkInfo(toChainId).name : ''
 
   const toLink =
-    bridgeId === 'socket'
+    bridgeId === BRIDGES.SOCKET.id
       ? log[0] && log[1] && getExplorerLink(log[0].chainId, log[0].txHash, 'transaction', bridgeId)
       : log[1] && getExplorerLink(log[1].chainId, log[1].txHash, 'transaction', bridgeId)
 

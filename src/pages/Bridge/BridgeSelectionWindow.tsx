@@ -14,7 +14,7 @@ import {
   SelectionListWindowWrapper,
 } from '../../components/SelectionList'
 import { useActiveBridge, useAvailableBridges } from '../../services/EcoBridge/EcoBridge.hooks'
-import { BridgeDetails, BridgeList, OptionalBridgeList, SyncState } from '../../services/EcoBridge/EcoBridge.types'
+import { BridgeDetails, BridgeIdList, OptionalBridgeIdList, SyncState } from '../../services/EcoBridge/EcoBridge.types'
 import { commonActions } from '../../services/EcoBridge/store/Common.reducer'
 import { ecoBridgeUIActions } from '../../services/EcoBridge/store/UI.reducer'
 
@@ -23,7 +23,7 @@ export const BridgeSelectionWindow = () => {
   const activeBridge = useActiveBridge()
   const availableBridges = useAvailableBridges()
 
-  const handleSelectBridge = (id: OptionalBridgeList, url: string, receiveAmount?: string, routeId?: string) => {
+  const handleSelectBridge = (id: OptionalBridgeIdList, url: string, receiveAmount?: string, routeId?: string) => {
     dispatch(commonActions.setActiveBridge(id))
     dispatch(commonActions.setActiveBridgeUrl(url))
     dispatch(ecoBridgeUIActions.setTo({ value: receiveAmount }))
@@ -72,13 +72,13 @@ export const BridgeSelectionWindow = () => {
 }
 
 interface BridgeProps {
-  id: BridgeList
+  id: BridgeIdList
   name: string
   url: string
-  activeBridge: OptionalBridgeList
+  activeBridge: OptionalBridgeIdList
   details: BridgeDetails
   status: SyncState
-  handleSelectBridge: (id: OptionalBridgeList, url: string, receiveAmount?: string, routeId?: string) => void
+  handleSelectBridge: (id: OptionalBridgeIdList, url: string, receiveAmount?: string, routeId?: string) => void
 }
 
 const Bridge = ({ id, name, url, activeBridge, details, status, handleSelectBridge }: BridgeProps) => {

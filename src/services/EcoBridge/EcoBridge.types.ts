@@ -33,7 +33,7 @@ export type EcoBridgeProviders = {
   [key in ChainId]?: JsonRpcProvider | Web3Provider
 }
 
-export type Bridges = { [k in BridgeList]: EcoBridgeChildBase }
+export type Bridges = { [k in BridgeIdList]: EcoBridgeChildBase }
 
 export interface EcoBridgeConstructorParams {
   store: Store<AppState>
@@ -62,21 +62,23 @@ export interface EcoBridgeChildBaseProps
 
 export interface EcoBridgeChildBaseInit extends EcoBridgeChangeHandler, EcoBridgeInitialEnv {}
 
-/**
- * @TODO we need to start refactoring these $bridgeList types and start using BridgeIds enum
- * instead at some point
- */
-export type ConnextList = 'connext'
-export type SocketList = 'socket'
-export type XdaiBridgeList = 'xdai'
-export type OmniBridgeList = 'omnibridge:eth-xdai'
-export type ArbitrumList = 'arbitrum:mainnet' | 'arbitrum:testnet'
-export type LifiList = 'lifi'
-export type BridgeList = ArbitrumList | SocketList | OmniBridgeList | ConnextList | XdaiBridgeList | LifiList
-export type OptionalBridgeList = BridgeList | undefined
+export type BridgeIdList =
+  | ArbitrumIdList
+  | ConnextIdList
+  | LifiIdList
+  | OmniBridgeIdList
+  | SocketIdList
+  | XdaiBridgeIdList
+export type ArbitrumIdList = BridgeIds.ARBITRUM_MAINNET | BridgeIds.ARBITRUM_TESTNET
+export type ConnextIdList = BridgeIds.CONNEXT
+export type LifiIdList = BridgeIds.LIFI
+export type OmniBridgeIdList = BridgeIds.OMNIBRIDGE
+export type SocketIdList = BridgeIds.SOCKET
+export type XdaiBridgeIdList = BridgeIds.XDAI
+export type OptionalBridgeIdList = BridgeIdList | undefined
 
 export interface EcoBridgeConfig {
-  id: BridgeList
+  id: BridgeIdList
   name: string
   url: string
 }
@@ -85,7 +87,7 @@ export interface EcoBridgeChildBaseConstructor {
   supportedChains: SupportedChainsConfig[]
   displayName: string
   displayUrl: string
-  bridgeId: BridgeList
+  bridgeId: BridgeIdList
 }
 
 export interface TokenMap {
@@ -117,7 +119,7 @@ export interface BridgeDetails {
 export type SupportedBridges = {
   name: string
   url: string
-  bridgeId: BridgeList
+  bridgeId: BridgeIdList
   status: SyncState
   details: BridgeDetails
   errorMessage?: BridgingDetailsErrorMessage

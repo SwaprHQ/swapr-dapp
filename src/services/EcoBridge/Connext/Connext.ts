@@ -10,11 +10,12 @@ import { getHardcodedGasLimits } from '@connext/nxtp-utils'
 import { TokenInfo } from '@uniswap/token-lists'
 import { ethers, utils } from 'ethers'
 
+import { BRIDGES } from '../../../constants'
 import { SWPRSupportedChains } from '../../../utils/chainSupportsSWPR'
 import { formatGasOrFees } from '../../../utils/formatNumber'
 import {
   BridgeModalStatus,
-  ConnextList,
+  ConnextIdList,
   EcoBridgeChangeHandler,
   EcoBridgeChildBaseConstructor,
   EcoBridgeChildBaseInit,
@@ -39,11 +40,11 @@ export class Connext extends EcoBridgeChildBase {
   private _quote: ConnextQuote | undefined
 
   private get actions() {
-    return connextActions[this.bridgeId as ConnextList]
+    return connextActions[this.bridgeId as ConnextIdList]
   }
 
   private get selectors() {
-    return connextSelectors[this.bridgeId as ConnextList]
+    return connextSelectors[this.bridgeId as ConnextIdList]
   }
 
   constructor({
@@ -270,7 +271,7 @@ export class Connext extends EcoBridgeChildBase {
   }
 
   public fetchStaticLists = async () => {
-    this.store.dispatch(this.commonActions.activateLists(['connext']))
+    this.store.dispatch(this.commonActions.activateLists([BRIDGES.CONNEXT.id]))
   }
 
   public triggerBridging = async () => {
