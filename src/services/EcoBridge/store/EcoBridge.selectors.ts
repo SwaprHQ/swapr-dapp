@@ -3,12 +3,12 @@ import { ChainId, Token } from '@swapr/sdk'
 import { createSelector } from '@reduxjs/toolkit'
 import { TokenList } from '@uniswap/token-lists'
 
-import { DEFAULT_TOKEN_LIST } from '../../../constants'
+import { BRIDGES, DEFAULT_TOKEN_LIST } from '../../../constants'
 import { AppState } from '../../../state'
 import { listToTokenMap } from '../../../state/lists/hooks'
 import { arbitrumSelectors } from '../Arbitrum/ArbitrumBridge.selectors'
 import { connextSelectors } from '../Connext/Connext.selectors'
-import { BRIDGES_URLS, ecoBridgeConfig } from '../EcoBridge.config'
+import { ecoBridgeConfig } from '../EcoBridge.config'
 import {
   ArbitrumList,
   BridgeList,
@@ -338,13 +338,19 @@ export const selectBridgeSupportedTokensOnChain = createSelector(
   }
 )
 
-const connextBridgeDetails = createSelectBridgingDetails('connext', BRIDGES_URLS.CONNEXT)
-const socketBridgeDetails = createSelectBridgingDetails('socket', BRIDGES_URLS.SOCKET)
-const arbitrumMainnetBridgeDetails = createSelectBridgingDetails('arbitrum:mainnet', BRIDGES_URLS.ARBITRUM)
-const arbitrumTestnetBridgeDetails = createSelectBridgingDetails('arbitrum:testnet', BRIDGES_URLS.ARBITRUM)
-const omnibridgeBridgeDetails = createSelectBridgingDetails('omnibridge:eth-xdai', BRIDGES_URLS.OMNIBRIDGE)
-const xdaiBridgeDetails = createSelectBridgingDetails('xdai', BRIDGES_URLS.XDAI)
-const lifiBridgeDetails = createSelectBridgingDetails('lifi', BRIDGES_URLS.LIFI)
+const arbitrumMainnetBridgeDetails = createSelectBridgingDetails(
+  BRIDGES.ARBITRUM_MAINNET.id,
+  BRIDGES.ARBITRUM_MAINNET.url
+)
+const arbitrumTestnetBridgeDetails = createSelectBridgingDetails(
+  BRIDGES.ARBITRUM_TESTNET.id,
+  BRIDGES.ARBITRUM_TESTNET.url
+)
+const connextBridgeDetails = createSelectBridgingDetails(BRIDGES.CONNEXT.id, BRIDGES.CONNEXT.url)
+const lifiBridgeDetails = createSelectBridgingDetails(BRIDGES.LIFI.id, BRIDGES.LIFI.url)
+const omnibridgeBridgeDetails = createSelectBridgingDetails(BRIDGES.OMNIBRIDGE.id, BRIDGES.OMNIBRIDGE.url)
+const socketBridgeDetails = createSelectBridgingDetails(BRIDGES.SOCKET.id, BRIDGES.SOCKET.url)
+const xdaiBridgeDetails = createSelectBridgingDetails(BRIDGES.XDAI.id, BRIDGES.XDAI.url)
 
 export const selectSupportedBridgesForUI = createSelector(
   [
