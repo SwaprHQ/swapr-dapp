@@ -168,7 +168,6 @@ export const BASES_TO_CHECK_TRADES_AGAINST: ChainTokenList = {
 // by default, so no need to add the wrapper to the list)
 export const SUGGESTED_BASES: ChainTokenList = {
   [ChainId.MAINNET]: [
-    DXD[ChainId.MAINNET],
     DAI[ChainId.MAINNET],
     USDC[ChainId.MAINNET],
     USDT[ChainId.MAINNET],
@@ -178,7 +177,6 @@ export const SUGGESTED_BASES: ChainTokenList = {
   [ChainId.RINKEBY]: [],
   [ChainId.ARBITRUM_ONE]: [
     WETH[ChainId.ARBITRUM_ONE],
-    DXD[ChainId.ARBITRUM_ONE],
     SWPR[ChainId.ARBITRUM_ONE],
     WBTC[ChainId.ARBITRUM_ONE],
     USDC[ChainId.ARBITRUM_ONE],
@@ -186,7 +184,7 @@ export const SUGGESTED_BASES: ChainTokenList = {
   ],
   [ChainId.ARBITRUM_RINKEBY]: [WETH[ChainId.ARBITRUM_RINKEBY], DXD[ChainId.ARBITRUM_RINKEBY]],
   [ChainId.ARBITRUM_GOERLI]: [WETH[ChainId.ARBITRUM_GOERLI]],
-  [ChainId.XDAI]: [WXDAI[ChainId.XDAI], DXD[ChainId.XDAI], WETH[ChainId.XDAI], USDC[ChainId.XDAI], SWPR[ChainId.XDAI]],
+  [ChainId.XDAI]: [WXDAI[ChainId.XDAI], WETH[ChainId.XDAI], USDC[ChainId.XDAI], SWPR[ChainId.XDAI]],
   [ChainId.POLYGON]: [
     WMATIC[ChainId.POLYGON],
     WETH[ChainId.POLYGON],
