@@ -102,7 +102,7 @@ export const OP: { [key: number]: Token } = {
 /**
  * Used to store bridges details such as id, name and landing URL
  */
-export const BRIDGES: { [ChainName: string]: EcoBridgeConfig } = {
+export const BRIDGES: Record<string, EcoBridgeConfig> = {
   ARBITRUM_MAINNET: {
     id: BridgeIds.ARBITRUM_MAINNET,
     name: 'Arbitrum',
