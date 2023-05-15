@@ -2,6 +2,7 @@ import {
   ChainId,
   Currency,
   CurrencyAmount,
+  ARB,
   DAI,
   DXD,
   GNO,
@@ -168,6 +169,7 @@ export const BASES_TO_CHECK_TRADES_AGAINST: ChainTokenList = {
 // by default, so no need to add the wrapper to the list)
 export const SUGGESTED_BASES: ChainTokenList = {
   [ChainId.MAINNET]: [
+    ARB[ChainId.MAINNET],
     DAI[ChainId.MAINNET],
     USDC[ChainId.MAINNET],
     USDT[ChainId.MAINNET],
@@ -176,6 +178,7 @@ export const SUGGESTED_BASES: ChainTokenList = {
   ],
   [ChainId.RINKEBY]: [],
   [ChainId.ARBITRUM_ONE]: [
+    ARB[ChainId.ARBITRUM_ONE],
     WETH[ChainId.ARBITRUM_ONE],
     SWPR[ChainId.ARBITRUM_ONE],
     WBTC[ChainId.ARBITRUM_ONE],
@@ -183,7 +186,7 @@ export const SUGGESTED_BASES: ChainTokenList = {
     USDT[ChainId.ARBITRUM_ONE],
   ],
   [ChainId.ARBITRUM_RINKEBY]: [WETH[ChainId.ARBITRUM_RINKEBY], DXD[ChainId.ARBITRUM_RINKEBY]],
-  [ChainId.ARBITRUM_GOERLI]: [WETH[ChainId.ARBITRUM_GOERLI]],
+  [ChainId.ARBITRUM_GOERLI]: [WETH[ChainId.ARBITRUM_GOERLI], ARB[ChainId.ARBITRUM_GOERLI]],
   [ChainId.XDAI]: [WXDAI[ChainId.XDAI], WETH[ChainId.XDAI], USDC[ChainId.XDAI], SWPR[ChainId.XDAI]],
   [ChainId.POLYGON]: [
     WMATIC[ChainId.POLYGON],
