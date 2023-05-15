@@ -7716,7 +7716,7 @@ __metadata:
     "@storybook/testing-library": 0.1.0
     "@swapr/core": ^0.3.19
     "@swapr/periphery": ^0.3.22
-    "@swapr/sdk": 1.8.2
+    "@swapr/sdk": "SwaprHQ/swapr-sdk#feat/add-arb-token"
     "@synthetixio/synpress": ^2.3.3
     "@tanstack/react-query": 4.24.6
     "@testing-library/cypress": ^9.0.0
@@ -7857,9 +7857,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@swapr/sdk@npm:1.8.2":
+"@swapr/sdk@SwaprHQ/swapr-sdk#feat/add-arb-token":
   version: 1.8.2
-  resolution: "@swapr/sdk@npm:1.8.2"
+  resolution: "@swapr/sdk@https://github.com/SwaprHQ/swapr-sdk.git#commit=5600b3325c9e8e0f4aa815e29f8d601c535892a3"
   dependencies:
     "@cowprotocol/cow-sdk": ^1.0.2-RC.0
     "@ethersproject/abi": ^5.6.4
@@ -7890,7 +7890,7 @@ __metadata:
     tslib: ^2.3.1
   peerDependencies:
     ethers: ^5.4.0
-  checksum: 4f1fc1c95ed2166bb40414b1bc6c69837b7c11cfc7a5e575af34f161836ab1e562b0c1653ed61e2c7d7f52424e5da56ffa0a18775c35547100c3aa43d5619460
+  checksum: 2c62d1c0ab27306f57c709247fe7fc1569097b1fa1c12e40e2557bc036e5fbb9395d0715a9843c1e3919b04a0c3febb2a3ae989ac8243248ebbdb078dcd64663
   languageName: node
   linkType: hard
 
