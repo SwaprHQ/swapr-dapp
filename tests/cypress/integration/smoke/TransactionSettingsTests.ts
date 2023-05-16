@@ -26,7 +26,7 @@ describe('Transactions Settings Smoke Test', () => {
   it('Check Code hyperlink [TC-49]', () => {
     TransactionSettings.getCodeHyperlink()
       .should('have.attr', 'href')
-      .and('include', 'https://github.com/ImpeccableHQ/swapr-dapp')
+      .and('include', 'https://github.com/SwaprHQ/swapr-dapp')
   })
   it('Check Discord hyperlink [TC-49]', () => {
     TransactionSettings.getDiscordHyperlink()
