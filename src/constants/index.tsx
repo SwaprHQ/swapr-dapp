@@ -1,23 +1,26 @@
 import {
-  ChainId,
-  Currency,
-  CurrencyAmount,
   ARB,
+  BUSD,
+  CAKE,
   DAI,
   DXD,
   GNO,
-  JSBI,
-  Percent,
-  RoutablePlatform,
   SWPR,
-  Token,
-  UniswapV2RoutablePlatform,
   USDC,
   USDT,
+  WBNB,
   WBTC,
   WETH,
   WMATIC,
   WXDAI,
+  ChainId,
+  Currency,
+  CurrencyAmount,
+  JSBI,
+  Percent,
+  RoutablePlatform,
+  Token,
+  UniswapV2RoutablePlatform,
 } from '@swapr/sdk'
 
 import { AbstractConnector } from '@web3-react/abstract-connector'
@@ -100,18 +103,18 @@ export const OP: { [key: number]: Token } = {
 }
 
 export const PRE_SELECT_OUTPUT_CURRENCY_ID: { [chainId in ChainId]: string } = {
-  [ChainId.MAINNET]: DAI[ChainId.MAINNET].address,
-  [ChainId.GNOSIS]: GNO.address,
-  [ChainId.ARBITRUM_ONE]: USDC[ChainId.ARBITRUM_ONE].address,
-  [ChainId.POLYGON]: WETH[ChainId.POLYGON].address,
-  [ChainId.OPTIMISM_MAINNET]: OP[ChainId.OPTIMISM_MAINNET].address,
-  [ChainId.BSC_MAINNET]: Token.BUSD[ChainId.BSC_MAINNET].address,
-  [ChainId.RINKEBY]: '',
-  [ChainId.ARBITRUM_RINKEBY]: '',
-  [ChainId.GOERLI]: '',
   [ChainId.ARBITRUM_GOERLI]: '',
-  [ChainId.OPTIMISM_GOERLI]: '',
+  [ChainId.ARBITRUM_ONE]: ARB[ChainId.ARBITRUM_ONE].address,
+  [ChainId.ARBITRUM_RINKEBY]: '',
+  [ChainId.BSC_MAINNET]: BUSD[ChainId.BSC_MAINNET].address,
   [ChainId.BSC_TESTNET]: '',
+  [ChainId.GNOSIS]: GNO.address,
+  [ChainId.GOERLI]: '',
+  [ChainId.MAINNET]: DAI[ChainId.MAINNET].address,
+  [ChainId.OPTIMISM_GOERLI]: '',
+  [ChainId.OPTIMISM_MAINNET]: OP[ChainId.OPTIMISM_MAINNET].address,
+  [ChainId.POLYGON]: WETH[ChainId.POLYGON].address,
+  [ChainId.RINKEBY]: '',
 }
 
 // used to construct intermediary pairs for trading
@@ -155,10 +158,10 @@ export const BASES_TO_CHECK_TRADES_AGAINST: ChainTokenList = {
   ],
   [ChainId.GOERLI]: [],
   [ChainId.BSC_MAINNET]: [
-    Token.BUSD[ChainId.BSC_MAINNET],
-    Token.CAKE[ChainId.BSC_MAINNET],
+    BUSD[ChainId.BSC_MAINNET],
+    CAKE[ChainId.BSC_MAINNET],
     DAI[ChainId.BSC_MAINNET],
-    Token.WBNB[ChainId.BSC_MAINNET],
+    WBNB[ChainId.BSC_MAINNET],
     USDC[ChainId.BSC_MAINNET],
     USDT[ChainId.BSC_MAINNET],
   ],
@@ -205,9 +208,9 @@ export const SUGGESTED_BASES: ChainTokenList = {
   ],
   [ChainId.GOERLI]: [],
   [ChainId.BSC_MAINNET]: [
-    Token.WBNB[ChainId.BSC_MAINNET],
-    Token.BUSD[ChainId.BSC_MAINNET],
-    Token.CAKE[ChainId.BSC_MAINNET],
+    WBNB[ChainId.BSC_MAINNET],
+    BUSD[ChainId.BSC_MAINNET],
+    CAKE[ChainId.BSC_MAINNET],
     DAI[ChainId.BSC_MAINNET],
     USDC[ChainId.BSC_MAINNET],
     USDT[ChainId.BSC_MAINNET],
@@ -233,8 +236,8 @@ export const BASES_TO_TRACK_LIQUIDITY_FOR: ChainTokenList = {
   [ChainId.OPTIMISM_GOERLI]: [WETH[ChainId.OPTIMISM_GOERLI]],
   [ChainId.OPTIMISM_MAINNET]: [WETH[ChainId.OPTIMISM_MAINNET]],
   [ChainId.GOERLI]: [WETH[ChainId.OPTIMISM_MAINNET]],
-  [ChainId.BSC_MAINNET]: [Token.WBNB[ChainId.BSC_MAINNET]],
-  [ChainId.BSC_TESTNET]: [Token.WBNB[ChainId.BSC_TESTNET]],
+  [ChainId.BSC_MAINNET]: [WBNB[ChainId.BSC_MAINNET]],
+  [ChainId.BSC_TESTNET]: [WBNB[ChainId.BSC_TESTNET]],
 }
 
 export const PINNED_PAIRS: {
