@@ -13,13 +13,12 @@ import { useSwaprSinglelSidedStakeCampaigns } from '../../hooks/singleSidedStake
 import { useGasInfo } from '../../hooks/useGasInfo'
 import { useLiquidityMiningCampaignPosition } from '../../hooks/useLiquidityMiningCampaignPosition'
 import { ApplicationModal } from '../../state/application/actions'
-import { useModalOpen, useToggleShowClaimPopup, useToggleShowExpeditionsPopup } from '../../state/application/hooks'
+import { useModalOpen, useToggleShowClaimPopup } from '../../state/application/hooks'
 import { useDarkModeManager, useUpdateSelectedChartOption } from '../../state/user/hooks'
 import { ChartOption } from '../../state/user/reducer'
 import { useTokenBalance } from '../../state/wallet/hooks'
 import { breakpoints } from '../../utils/theme'
 import ClaimModal from '../Claim/ClaimModal'
-import ExpeditionsModal from '../expeditions/ExpeditionsModal'
 import { UnsupportedNetworkPopover } from '../NetworkUnsupportedPopover'
 import Row, { RowFixed, RowFlat } from '../Row'
 import { Settings } from '../Settings'
@@ -27,7 +26,6 @@ import { SwaprVersionLogo } from '../SwaprVersionLogo'
 import Web3Status from '../Web3Status'
 
 import { Balances } from './Balances'
-import { HeaderButton } from './HeaderButton'
 import { HeaderLink, HeaderMobileLink } from './HeaderLink'
 import { HeaderLinkBadge } from './HeaderLinkBadge'
 import MobileOptions from './MobileOptions'
@@ -209,8 +207,10 @@ function Header() {
   const { loading, data } = useSwaprSinglelSidedStakeCampaigns()
   const { stakedTokenAmount } = useLiquidityMiningCampaignPosition(data, account ? account : undefined)
 
+  /*  Expeditions hidden by SWA-27 request
+   * const toggleExpeditionsPopup = useToggleShowExpeditionsPopup()
+   */
   const toggleClaimPopup = useToggleShowClaimPopup()
-  const toggleExpeditionsPopup = useToggleShowExpeditionsPopup()
   const accountOrUndefined = useMemo(() => account || undefined, [account])
   const newSwpr = useMemo(() => (chainId ? SWPR[chainId] : undefined), [chainId])
   const newSwprBalance = useTokenBalance(accountOrUndefined, newSwpr)
@@ -252,7 +252,8 @@ function Header() {
           data && !loading ? `/rewards/single-sided-campaign/${data.stakeToken.address}/${data.address}` : undefined
         }
       />
-      <ExpeditionsModal onDismiss={toggleExpeditionsPopup} />
+      {/* Expeditions hidden by SWA-27 request */}
+      {/* <ExpeditionsModal onDismiss={toggleExpeditionsPopup} /> */}
       <HeaderRow isDark={isDark}>
         <Title to={swapRoute}>
           <SwaprVersionLogo />
@@ -304,9 +305,10 @@ function Header() {
         <Flex maxHeight={'22px'} justifyContent={'end'}>
           {account && (
             <>
-              <HeaderButton onClick={toggleExpeditionsPopup} style={{ marginRight: '7px' }}>
+              {/* Expeditions hidden by SWA-27 request */}
+              {/* <HeaderButton onClick={toggleExpeditionsPopup} style={{ marginRight: '7px' }}>
                 &#10024;&nbsp;Expeditions
-              </HeaderButton>
+              </HeaderButton> */}
               <Balances />
             </>
           )}
