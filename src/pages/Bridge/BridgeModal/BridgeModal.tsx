@@ -29,7 +29,6 @@ export const BridgeModal = ({
   const [heading, setHeading] = useState('')
   const [disableConfirm, setDisableConfirm] = useState(false)
   const [modalType, setModalType] = useState<BridgeModalType | null>(null)
-  const [isWarning, setIsWarning] = useState(false)
   const [bridgeName, setBridgeName] = useState('')
 
   const { t } = useTranslation('bridge')
@@ -72,29 +71,10 @@ export const BridgeModal = ({
         setModalType(null)
     }
 
-    if (activeBridge?.includes('arbitrum')) {
-      setIsWarning(false)
-      setBridgeName('Arbitrum One Bridge')
-    }
-    if (activeBridge === BRIDGES.CONNEXT.id) {
-      setIsWarning(false)
-      setBridgeName('Connext Network')
-    }
-    if (activeBridge === BRIDGES.LIFI.id) {
-      setIsWarning(false)
-      setBridgeName('Lifi Bridge')
-    }
-    if (activeBridge?.includes(BRIDGES.OMNIBRIDGE.id)) {
-      setIsWarning(false)
-      setBridgeName('OmniBridge')
-    }
-    if (activeBridge === BRIDGES.SOCKET.id) {
-      setIsWarning(true)
-      setBridgeName('Socket Network')
-    }
-    if (activeBridge === BRIDGES.XDAI.id) {
-      setIsWarning(false)
-      setBridgeName('xDai Bridge')
+    if (activeBridge) {
+      const selectedBridge = Object.values(BRIDGES).find(bridge => bridge.id === activeBridge)
+
+      setBridgeName(selectedBridge?.name ?? '')
     }
   }, [activeBridge, status, symbol, t, typedValue])
 
@@ -126,7 +106,6 @@ export const BridgeModal = ({
         disableConfirm={disableConfirm}
         setDisableConfirm={setDisableConfirm}
         bridgeName={bridgeName}
-        isWarning={isWarning}
       />
     </Modal>
   )

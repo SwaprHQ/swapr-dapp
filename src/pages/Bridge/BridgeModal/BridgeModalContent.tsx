@@ -28,7 +28,6 @@ export default function BridgeModalContent({
   onConfirm,
   disableConfirm,
   setDisableConfirm,
-  isWarning,
   bridgeName,
 }: BridgeModalContentProps) {
   const { t } = useTranslation('bridge')
@@ -90,7 +89,6 @@ export default function BridgeModalContent({
             <DisclaimerText>
               <Trans i18nKey="bridge:bridge.txnThrough" values={{ bridgeName }} components={[<span key="0"></span>]} />
             </DisclaimerText>
-            {isWarning && <DisclaimerText>{t('bridge.walletControl', { bridgeName })}</DisclaimerText>}
             <DisclaimerText>
               <Trans i18nKey="bridge:bridge.responsible" components={[<span key="0"></span>]} />
             </DisclaimerText>

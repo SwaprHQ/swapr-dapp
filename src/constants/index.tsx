@@ -105,17 +105,17 @@ export const OP: { [key: number]: Token } = {
 export const BRIDGES: Record<string, EcoBridgeConfig> = {
   ARBITRUM_MAINNET: {
     id: BridgeIds.ARBITRUM_MAINNET,
-    name: 'Arbitrum',
+    name: 'Arbitrum One',
     url: 'https://bridge.arbitrum.io/',
   },
   ARBITRUM_TESTNET: {
     id: BridgeIds.ARBITRUM_TESTNET,
-    name: 'Arbitrum Test',
+    name: 'Arbitrum Goerli',
     url: 'https://bridge.arbitrum.io/',
   },
   CONNEXT: {
     id: BridgeIds.CONNEXT,
-    name: 'Connext',
+    name: 'Connext Network',
     url: 'https://bridge.connext.network/',
   },
   LIFI: {
@@ -130,7 +130,7 @@ export const BRIDGES: Record<string, EcoBridgeConfig> = {
   },
   SOCKET: {
     id: BridgeIds.SOCKET,
-    name: 'Socket',
+    name: 'Socket Network',
     url: 'https://socket.tech/',
   },
   XDAI: {

@@ -6,7 +6,6 @@ export interface BridgeModalContentProps {
   text: string
   error: string
   heading: string
-  isWarning: boolean
   onConfirm: () => void
   disableConfirm: boolean
   setDisableConfirm: (val: boolean) => void
