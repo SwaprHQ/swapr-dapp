@@ -5,7 +5,7 @@ import { Logger } from '@connext/nxtp-utils'
  */
 export class SilentLogger extends Logger {
   constructor(...args: any[]) {
-    super(args)
+    super(args as any)
     this['print'] = () => {
       return
     }

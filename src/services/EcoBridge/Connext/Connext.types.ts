@@ -1,6 +1,14 @@
+import { SdkBase, SdkPool, SdkRouter, SdkUtils } from '@connext/sdk'
 import { EntityState } from '@reduxjs/toolkit'
 
 import { BridgeTransactionSummary } from '../../../state/bridgeTransactions/types'
+
+export type ConnextSDK = {
+  sdkBase: SdkBase
+  sdkUtils: SdkUtils
+  sdkRouter: SdkRouter
+  sdkPool: SdkPool
+}
 
 export type ConnextToken = {
   id: string

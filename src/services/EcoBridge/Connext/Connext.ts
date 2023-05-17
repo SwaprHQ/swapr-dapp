@@ -4,9 +4,10 @@ import { Contract, ContractTransaction } from '@ethersproject/contracts'
 import { formatUnits, parseUnits } from '@ethersproject/units'
 import { ChainId, Currency, DAI, WETH } from '@swapr/sdk'
 
-import ERC20 from '@connext/nxtp-contracts/artifacts/contracts/interfaces/IERC20Minimal.sol/IERC20Minimal.json'
-import { getDeployedTransactionManagerContract, NxtpSdk } from '@connext/nxtp-sdk'
+import ERC20 from '@connext/contracts/artifacts/IERC20.json'
+import { getDeployedConnextContract } from '@connext/nxtp-txservice'
 import { getHardcodedGasLimits } from '@connext/nxtp-utils'
+import connextSDK, { SdkShared } from '@connext/sdk'
 import { TokenInfo } from '@uniswap/token-lists'
 import { ethers, utils } from 'ethers'
 
@@ -29,6 +30,7 @@ import { connextActions } from './Connext.reducer'
 import { connextSelectors } from './Connext.selectors'
 import {
   ConnextQuote,
+  ConnextSDK,
   ConnextTransaction,
   ConnextTransactionsSubgraph,
   ConnextTransactionStatus,
@@ -36,7 +38,8 @@ import {
 import { getReceivingTransaction, getTransactionsQuery, SilentLogger } from './Connext.utils'
 
 export class Connext extends EcoBridgeChildBase {
-  private _connextSdk: NxtpSdk | undefined
+  private _connextSdk: ConnextSDK | undefined
+  // private _connextShared: SdkShared | undefined
   private _quote: ConnextQuote | undefined
 
   private get actions() {
@@ -79,12 +82,26 @@ export class Connext extends EcoBridgeChildBase {
   private _createConnextSdk = async (signer: Signer) => {
     const silentLogger = new SilentLogger()
     try {
-      const connextSdk = await NxtpSdk.create({
-        chainConfig: connextSdkChainConfig,
-        signer,
-        skipPolling: false,
-        logger: silentLogger,
-      })
+      const connextSdk = await connextSDK.create(
+        {
+          chains: connextSdkChainConfig,
+          signerAddress: await signer.getAddress(),
+          // skipPolling: false,
+        },
+        silentLogger
+      )
+      const _chainData = connextSdk.sdkUtils.chainData
+      // const connextShared = new SdkShared(
+      //   {
+      //     chains: connextSdkChainConfig,
+      //     signerAddress: await signer.getAddress(),
+      //     // skipPolling: false,
+      //   },
+      //   silentLogger,
+      //   _chainData
+      // )
+
+      // this._connextShared = connextShared
 
       if (connextSdk) {
         this._connextSdk = connextSdk
@@ -106,7 +123,7 @@ export class Connext extends EcoBridgeChildBase {
 
       const amount = parseUnits(value, decimals)
 
-      const managerContract = getDeployedTransactionManagerContract(chainId)
+      const managerContract = getDeployedConnextContract(chainId)
 
       if (!managerContract) return
 
@@ -398,15 +415,15 @@ export class Connext extends EcoBridgeChildBase {
       if (!toTokenAddress || !this._account || !this._connextSdk)
         throw this.ecoBridgeUtils.logger.error('Not enough information to find quote')
 
-      const quote = await this._connextSdk.getTransferQuote({
-        sendingChainId: fromChainId,
-        sendingAssetId: isNative ? ethers.constants.AddressZero : fromTokenAddress,
-        receivingChainId: toChainId,
-        receivingAssetId: toTokenAddress,
-        receivingAddress: this._account,
-        amount: parseUnits(value, decimals).toString(),
-        transactionId: utils.hexlify(utils.randomBytes(32)),
-      })
+      const originDomain = SdkShared.chainIdToDomain(fromChainId)
+      const destinationDomain = SdkShared.chainIdToDomain(toChainId)
+
+      const quote = await this._connextSdk.sdkPool.calculateAmountReceived(
+        originDomain.toString(),
+        destinationDomain.toString(),
+        fromTokenAddress,
+        parseUnits(value, decimals).toString()
+      )
 
       if (!quote) throw this.ecoBridgeUtils.logger.error('Cannot fetch quote')
 
