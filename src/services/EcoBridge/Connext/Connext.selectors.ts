@@ -4,13 +4,13 @@ import { createSelector } from '@reduxjs/toolkit'
 
 import { AppState } from '../../../state'
 import { BridgeTransactionStatus, BridgeTransactionSummary } from '../../../state/bridgeTransactions/types'
-import { ConnextList } from '../EcoBridge.types'
+import { BridgeIds, ConnextIdList } from '../EcoBridge.types'
 
 import { connextTransactionsAdapter } from './Connext.adapter'
 import { CONNEXT_TOKENS } from './Connext.lists'
 import { ConnextTransactionStatus, TransactionsSummary } from './Connext.types'
 
-const createSelectOwnedTransactions = (bridgeId: ConnextList) => {
+const createSelectOwnedTransactions = (bridgeId: ConnextIdList) => {
   const transactionsSelector = createSelector([(state: AppState) => state.ecoBridge[bridgeId].transactions], txs =>
     connextTransactionsAdapter.getSelectors().selectAll(txs)
   )
@@ -29,7 +29,7 @@ const createSelectOwnedTransactions = (bridgeId: ConnextList) => {
 }
 
 const createSelectBridgeTransactionsSummary = (
-  bridgeId: ConnextList,
+  bridgeId: ConnextIdList,
   selectOwnedTransactions: ReturnType<typeof createSelectOwnedTransactions>
 ) => {
   return createSelector([selectOwnedTransactions], transactions => {
@@ -127,20 +127,20 @@ const createSelectBridgeTransactionsSummary = (
 }
 
 const createSelectPendingTransactions = (
-  bridgeId: ConnextList,
+  bridgeId: ConnextIdList,
   bridgeTransactionSummary: ReturnType<typeof createSelectBridgeTransactionsSummary>
 ) =>
   createSelector([bridgeTransactionSummary], txs =>
     txs.filter(({ status }) => status === BridgeTransactionStatus.PENDING)
   )
 
-const createSelectTransaction = (bridgeId: ConnextList) =>
+const createSelectTransaction = (bridgeId: ConnextIdList) =>
   createSelector(
     [(state: AppState) => state.ecoBridge[bridgeId].transactions, (state: AppState, txHash: string) => txHash],
     (txs, txHash) => connextTransactionsAdapter.getSelectors().selectById(txs, txHash)
   )
 
-const createSelectAllTransactions = (bridgeId: ConnextList) =>
+const createSelectAllTransactions = (bridgeId: ConnextIdList) =>
   createSelector([(state: AppState) => state.ecoBridge[bridgeId].transactions], txs =>
     connextTransactionsAdapter.getSelectors().selectAll(txs)
   )
@@ -153,7 +153,7 @@ export interface ConnextBridgeSelectors {
   selectAllTransactions: ReturnType<typeof createSelectAllTransactions>
 }
 
-export const connextSelectorsFactory = (connextBridges: ConnextList[]) => {
+export const connextSelectorsFactory = (connextBridges: ConnextIdList[]) => {
   return connextBridges.reduce((total, bridgeId) => {
     const selectOwnedTransactions = createSelectOwnedTransactions(bridgeId)
     const selectBridgeTransactionsSummary = createSelectBridgeTransactionsSummary(bridgeId, selectOwnedTransactions)
@@ -171,7 +171,7 @@ export const connextSelectorsFactory = (connextBridges: ConnextList[]) => {
 
     total[bridgeId] = selectors
     return total
-  }, {} as { [k in ConnextList]: ConnextBridgeSelectors })
+  }, {} as { [k in ConnextIdList]: ConnextBridgeSelectors })
 }
 
-export const connextSelectors = connextSelectorsFactory(['connext'])
+export const connextSelectors = connextSelectorsFactory([BridgeIds.CONNEXT])

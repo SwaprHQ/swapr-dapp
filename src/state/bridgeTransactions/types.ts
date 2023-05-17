@@ -3,7 +3,7 @@ import { ChainId } from '@swapr/sdk'
 
 import { L2ToL1MessageStatus } from '@arbitrum/sdk'
 
-import { BridgeList } from '../../services/EcoBridge/EcoBridge.types'
+import { BridgeIdList } from '../../services/EcoBridge/EcoBridge.types'
 
 export type BridgeTxnType =
   | 'deposit'
@@ -67,7 +67,7 @@ export type BridgeTransactionSummary = Pick<
   toChainId: ChainId
   log: BridgeTransactionLog[]
   status: BridgeTransactionStatus
-  bridgeId: BridgeList
+  bridgeId: BridgeIdList
   pendingReason?: string
   fromValue: string
   toValue: string

@@ -1,3 +1,5 @@
+import { BRIDGES } from '../../../constants'
+
 import { ConfigPerChain, Mode, OmnibridgeConfig, OmnibridgeOverrides } from './OmniBridge.types'
 
 //official OmniBridge config
@@ -201,8 +203,8 @@ const ETH_XDAI_OVERRIDES = {
 }
 
 export const OVERRIDES: { [direction: string]: OmnibridgeOverrides } = {
-  'omnibridge:eth-xdai': ETH_XDAI_OVERRIDES,
+  [BRIDGES.OMNIBRIDGE.id]: ETH_XDAI_OVERRIDES,
 }
 export const BRIDGE_CONFIG: { [direction: string]: OmnibridgeConfig } = {
-  'omnibridge:eth-xdai': ETH_XDAI_BRIDGE_CONFIG,
+  [BRIDGES.OMNIBRIDGE.id]: ETH_XDAI_BRIDGE_CONFIG,
 }

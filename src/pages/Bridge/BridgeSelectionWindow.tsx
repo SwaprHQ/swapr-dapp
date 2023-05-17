@@ -14,7 +14,7 @@ import {
   SelectionListWindowWrapper,
 } from '../../components/SelectionList'
 import { useActiveBridge, useAvailableBridges } from '../../services/EcoBridge/EcoBridge.hooks'
-import { BridgeDetails, BridgeList, OptionalBridgeList, SyncState } from '../../services/EcoBridge/EcoBridge.types'
+import { BridgeDetails, BridgeIdList, OptionalBridgeIdList, SyncState } from '../../services/EcoBridge/EcoBridge.types'
 import { commonActions } from '../../services/EcoBridge/store/Common.reducer'
 import { ecoBridgeUIActions } from '../../services/EcoBridge/store/UI.reducer'
 
@@ -23,8 +23,9 @@ export const BridgeSelectionWindow = () => {
   const activeBridge = useActiveBridge()
   const availableBridges = useAvailableBridges()
 
-  const handleSelectBridge = (id: OptionalBridgeList, receiveAmount?: string, routeId?: string) => {
+  const handleSelectBridge = (id: OptionalBridgeIdList, url: string, receiveAmount?: string, routeId?: string) => {
     dispatch(commonActions.setActiveBridge(id))
+    dispatch(commonActions.setActiveBridgeUrl(url))
     dispatch(ecoBridgeUIActions.setTo({ value: receiveAmount }))
     if (routeId) {
       dispatch(commonActions.setActiveRouteId(routeId))
@@ -46,11 +47,12 @@ export const BridgeSelectionWindow = () => {
               Amount
             </SelectionListLabel>
           </SelectionListLabelWrapper>
-          {availableBridges.map(({ bridgeId, name, details, status }) => (
+          {availableBridges.map(({ bridgeId, name, url, details, status }) => (
             <Bridge
               id={bridgeId}
               key={bridgeId}
               name={name}
+              url={url}
               activeBridge={activeBridge}
               details={details}
               status={status}
@@ -70,15 +72,16 @@ export const BridgeSelectionWindow = () => {
 }
 
 interface BridgeProps {
-  id: BridgeList
+  id: BridgeIdList
   name: string
-  activeBridge: OptionalBridgeList
+  url: string
+  activeBridge: OptionalBridgeIdList
   details: BridgeDetails
   status: SyncState
-  handleSelectBridge: (id: OptionalBridgeList, receiveAmount?: string, routeId?: string) => void
+  handleSelectBridge: (id: OptionalBridgeIdList, url: string, receiveAmount?: string, routeId?: string) => void
 }
 
-const Bridge = ({ id, name, activeBridge, details, status, handleSelectBridge }: BridgeProps) => {
+const Bridge = ({ id, name, url, activeBridge, details, status, handleSelectBridge }: BridgeProps) => {
   const isSelected = id === activeBridge
   const isLoading = status === 'loading'
   const show = status !== 'loading' && details
@@ -90,7 +93,7 @@ const Bridge = ({ id, name, activeBridge, details, status, handleSelectBridge }:
       isLoading={isLoading}
       onClick={() => {
         if (!isLoading) {
-          handleSelectBridge(id, details.receiveAmount, details.routeId)
+          handleSelectBridge(id, url, details.receiveAmount, details.routeId)
         }
       }}
     >

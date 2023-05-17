@@ -3,22 +3,22 @@ import { createSelector } from 'reselect'
 
 import { AppState } from '../../../state'
 import { BridgeTransactionSummary } from '../../../state/bridgeTransactions/types'
-import { LifiList } from '../EcoBridge.types'
+import { BridgeIds, LifiIdList } from '../EcoBridge.types'
 
 import { LIFI_TXN_STATUS, LIFI_PENDING_REASONS } from './Lifi.constants'
 import { LifiTransactionStatus } from './Lifi.types'
 import { getStatus, validateSendingToken } from './Lifi.utils'
 
-const createSelectRoute = (bridgeId: LifiList) =>
+const createSelectRoute = (bridgeId: LifiIdList) =>
   createSelector([(state: AppState) => state.ecoBridge[bridgeId].route], route => route)
 
-const createSelectApprovalData = (bridgeId: LifiList) =>
+const createSelectApprovalData = (bridgeId: LifiIdList) =>
   createSelector([(state: AppState) => state.ecoBridge[bridgeId].approvalData], approvalData => approvalData)
 
-const createSelectTxBridgingData = (bridgeId: LifiList) =>
+const createSelectTxBridgingData = (bridgeId: LifiIdList) =>
   createSelector([(state: AppState) => state.ecoBridge[bridgeId].txBridgingData], txBridgingData => txBridgingData)
 
-const createSelectOwnedTransactions = (bridgeId: LifiList) =>
+const createSelectOwnedTransactions = (bridgeId: LifiIdList) =>
   createSelector(
     [
       (state: AppState) => state.ecoBridge[bridgeId].transactions,
@@ -59,7 +59,7 @@ const createSelectFailedTransactions = (selectOwnedTxs: ReturnType<typeof create
   })
 
 const createSelectBridgeTransactionsSummary = (
-  bridgeId: LifiList,
+  bridgeId: LifiIdList,
   selectOwnedTxs: ReturnType<typeof createSelectOwnedTransactions>
 ) =>
   createSelector([selectOwnedTxs], txs => {
@@ -129,7 +129,7 @@ export interface LifiBridgeSelectors {
   selectBridgeTransactionsSummary: ReturnType<typeof createSelectBridgeTransactionsSummary>
 }
 
-export const lifiSelectorsFactory = (lifiBridges: LifiList[]) => {
+export const lifiSelectorsFactory = (lifiBridges: LifiIdList[]) => {
   return lifiBridges.reduce((total, bridgeId) => {
     const selectOwnedTransactions = createSelectOwnedTransactions(bridgeId)
     const selectRoute = createSelectRoute(bridgeId)
@@ -151,7 +151,7 @@ export const lifiSelectorsFactory = (lifiBridges: LifiList[]) => {
 
     total[bridgeId] = selectors
     return total
-  }, {} as { [k in LifiList]: LifiBridgeSelectors })
+  }, {} as { [k in LifiIdList]: LifiBridgeSelectors })
 }
 
-export const lifiSelectors = lifiSelectorsFactory(['lifi'])
+export const lifiSelectors = lifiSelectorsFactory([BridgeIds.LIFI])

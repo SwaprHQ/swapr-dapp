@@ -5,14 +5,14 @@ import { Currency } from '@swapr/sdk'
 import { TokenInfo, TokenList } from '@uniswap/token-lists'
 
 import SocketLogo from '../../../assets/images/socket-logo.png'
-import { SOCKET_NATIVE_TOKEN_ADDRESS } from '../../../constants'
+import { BRIDGES, SOCKET_NATIVE_TOKEN_ADDRESS } from '../../../constants'
 import { formatGasOrFees } from '../../../utils/formatNumber'
 import {
   BridgeModalStatus,
   EcoBridgeChangeHandler,
   EcoBridgeChildBaseConstructor,
   EcoBridgeChildBaseInit,
-  SocketList,
+  SocketIdList,
   SyncState,
 } from '../EcoBridge.types'
 import { ButtonStatus, EcoBridgeChildBase } from '../EcoBridge.utils'
@@ -40,17 +40,17 @@ export class SocketBridge extends EcoBridgeChildBase {
   private _tokenLists: SocketTokenMap = {}
   private _abortControllers: { [id: string]: AbortController } = {}
 
-  constructor({ supportedChains, bridgeId, displayName = 'Socket' }: EcoBridgeChildBaseConstructor) {
-    super({ supportedChains, bridgeId, displayName })
+  constructor({ supportedChains, bridgeId, displayName = 'Socket', displayUrl }: EcoBridgeChildBaseConstructor) {
+    super({ supportedChains, bridgeId, displayName, displayUrl })
     this.setBaseActions(this.actions)
   }
 
   private get actions() {
-    return socketActions[this.bridgeId as SocketList]
+    return socketActions[this.bridgeId as SocketIdList]
   }
 
   private get selectors() {
-    return socketSelectors[this.bridgeId as SocketList]
+    return socketSelectors[this.bridgeId as SocketIdList]
   }
 
   private renewAbortController = (key: string) => {
@@ -538,14 +538,14 @@ export class SocketBridge extends EcoBridgeChildBase {
 
   public fetchStaticLists = async () => {
     try {
-      const socketListsResponse = await fetch(SOCKET_LISTS_URL)
-      const socketLists: { data: SocketTokenMap } = await socketListsResponse.json()
-      this._tokenLists = socketLists.data
+      const SocketIdListsResponse = await fetch(SOCKET_LISTS_URL)
+      const SocketIdLists: { data: SocketTokenMap } = await SocketIdListsResponse.json()
+      this._tokenLists = SocketIdLists.data
     } catch (e) {
       throw this.ecoBridgeUtils.logger.error('Failed to fetch Socket token lists')
     }
 
-    this.store.dispatch(this.commonActions.activateLists(['socket']))
+    this.store.dispatch(this.commonActions.activateLists([BRIDGES.SOCKET.id]))
   }
 
   private pendingTxListener = async () => {

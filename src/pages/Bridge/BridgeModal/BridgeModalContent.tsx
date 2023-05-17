@@ -1,9 +1,11 @@
 import { AlertCircle } from 'react-feather'
 import { Trans, useTranslation } from 'react-i18next'
+import { useSelector } from 'react-redux'
 
 import { ButtonPrimary } from '../../../components/Button'
 import { ConfirmationPendingContent, TransactionErrorContent } from '../../../components/TransactionConfirmationModal'
-import { TYPE } from '../../../theme'
+import { AppState } from '../../../state'
+import { ExternalLink, TYPE } from '../../../theme'
 
 import {
   ButtonAccept,
@@ -26,10 +28,12 @@ export default function BridgeModalContent({
   onConfirm,
   disableConfirm,
   setDisableConfirm,
-  isWarning,
   bridgeName,
 }: BridgeModalContentProps) {
   const { t } = useTranslation('bridge')
+
+  const activeBridgeUrl = useSelector((state: AppState) => state.ecoBridge.common.activeBridgeUrl) ?? '#'
+
   switch (modalType) {
     case 'pending':
       return <ConfirmationPendingContent onDismiss={onDismiss} pendingText={text} />
@@ -81,13 +85,17 @@ export default function BridgeModalContent({
           <TYPE.Main fontSize="14px" fontWeight="500" color="#EBE9F8" textAlign="center" lineHeight="1.6">
             {text}
           </TYPE.Main>
-          <DisclaimerTextWrapper isWarning={isWarning}>
+          <DisclaimerTextWrapper>
             <DisclaimerText>
               <Trans i18nKey="bridge:bridge.txnThrough" values={{ bridgeName }} components={[<span key="0"></span>]} />
             </DisclaimerText>
-            {isWarning && <DisclaimerText>{t('bridge.walletControl', { bridgeName })}</DisclaimerText>}
             <DisclaimerText>
               <Trans i18nKey="bridge:bridge.responsible" components={[<span key="0"></span>]} />
+            </DisclaimerText>
+            <DisclaimerText>
+              <Trans i18nKey="bridge:bridge.checkoutBridgeUrl" values={{ bridgeName }}>
+                <ExternalLink href={activeBridgeUrl}>{bridgeName}</ExternalLink>
+              </Trans>
             </DisclaimerText>
           </DisclaimerTextWrapper>
           <ButtonAccept
@@ -98,7 +106,6 @@ export default function BridgeModalContent({
               setDisableConfirm(true)
               onConfirm()
             }}
-            isWarning={isWarning}
           >
             {t('bridge.confirmText')}
           </ButtonAccept>

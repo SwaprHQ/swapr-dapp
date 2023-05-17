@@ -42,6 +42,7 @@ import UniswapLogo from '../assets/images/uniswap-logo.svg'
 import VelodromeLogo from '../assets/images/velodrome-logo.svg'
 import WalletConnect from '../assets/images/wallet-connect.svg'
 import { injected, walletConnect, walletLink } from '../connectors'
+import { BridgeIds, EcoBridgeConfig } from '../services/EcoBridge/EcoBridge.types'
 
 export const ZERO_ADDRESS = '0x0000000000000000000000000000000000000000'
 export const SOCKET_NATIVE_TOKEN_ADDRESS = '0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee'
@@ -96,6 +97,47 @@ export const OP: { [key: number]: Token } = {
     'OP',
     'Optimism'
   ),
+}
+
+/**
+ * Used to store bridges details such as id, name and landing URL
+ */
+export const BRIDGES: Record<string, EcoBridgeConfig> = {
+  ARBITRUM_MAINNET: {
+    id: BridgeIds.ARBITRUM_MAINNET,
+    name: 'Arbitrum One',
+    url: 'https://bridge.arbitrum.io/',
+  },
+  ARBITRUM_TESTNET: {
+    id: BridgeIds.ARBITRUM_TESTNET,
+    name: 'Arbitrum Goerli',
+    url: 'https://bridge.arbitrum.io/',
+  },
+  CONNEXT: {
+    id: BridgeIds.CONNEXT,
+    name: 'Connext Network',
+    url: 'https://bridge.connext.network/',
+  },
+  LIFI: {
+    id: BridgeIds.LIFI,
+    name: 'Lifi',
+    url: 'https://li.fi/',
+  },
+  OMNIBRIDGE: {
+    id: BridgeIds.OMNIBRIDGE,
+    name: 'OmniBridge',
+    url: 'https://omnibridge.gnosischain.com/',
+  },
+  SOCKET: {
+    id: BridgeIds.SOCKET,
+    name: 'Socket Network',
+    url: 'https://socket.tech/',
+  },
+  XDAI: {
+    id: BridgeIds.XDAI,
+    name: 'xDai Bridge',
+    url: 'https://bridge.gnosischain.com/',
+  },
 }
 
 export const PRE_SELECT_OUTPUT_CURRENCY_ID: { [chainId in ChainId]: string } = {

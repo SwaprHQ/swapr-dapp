@@ -1,6 +1,6 @@
 import { type ChainId } from '@swapr/sdk'
 
-import { type BridgeList } from '../../services/EcoBridge/EcoBridge.types'
+import { type BridgeIdList } from '../../services/EcoBridge/EcoBridge.types'
 import { type BridgeTransactionLog } from '../../state/bridgeTransactions/types'
 import { type TransactionDetails } from '../../state/transactions/reducer'
 import { type LimitOrderTransaction } from '../Swap/LimitOrderBox/utils/hooks'
@@ -55,7 +55,7 @@ export interface BridgeTransaction
   extends Omit<SwapTransaction, 'summary' | 'type' | 'addedTime' | 'swapProtocol' | 'alternateReceiver'> {
   type: TransactionType.Bridge
   pendingReason?: string
-  bridgeId: BridgeList
+  bridgeId: BridgeIdList
   logs: BridgeTransactionLog[]
 }
 

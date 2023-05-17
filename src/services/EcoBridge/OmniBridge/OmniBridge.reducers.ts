@@ -2,7 +2,7 @@ import { TransactionReceipt } from '@ethersproject/abstract-provider'
 
 import { PayloadAction } from '@reduxjs/toolkit'
 
-import { OmniBridgeList } from '../EcoBridge.types'
+import { BridgeIds, OmniBridgeIdList } from '../EcoBridge.types'
 import { createEcoBridgeChildBaseSlice } from '../EcoBridge.utils'
 
 import { omniTransactionsAdapter } from './OmniBridge.adapter'
@@ -12,7 +12,7 @@ const initialState: OmnibridgeInitialState = {
   transactions: omniTransactionsAdapter.getInitialState({}),
 }
 
-export const createOmniBridgeSlice = (bridgeId: OmniBridgeList) =>
+export const createOmniBridgeSlice = (bridgeId: OmniBridgeIdList) =>
   createEcoBridgeChildBaseSlice({
     name: bridgeId,
     initialState,
@@ -80,7 +80,7 @@ export const createOmniBridgeSlice = (bridgeId: OmniBridgeList) =>
   })
 
 const omniBridgeSlices = {
-  'omnibridge:eth-xdai': createOmniBridgeSlice('omnibridge:eth-xdai'),
+  [BridgeIds.OMNIBRIDGE]: createOmniBridgeSlice(BridgeIds.OMNIBRIDGE),
 }
 
 type OmniBridgeReducers = { [k in keyof typeof omniBridgeSlices]: ReturnType<typeof createOmniBridgeSlice>['reducer'] }

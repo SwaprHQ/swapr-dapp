@@ -4,11 +4,11 @@ import { AppState } from '../../../state'
 import { BridgeTransactionStatus, BridgeTransactionSummary } from '../../../state/bridgeTransactions/types'
 import { normalizeInputValue } from '../../../utils'
 import { ArbitrumPendingReasons } from '../Arbitrum/ArbitrumBridge.types'
-import { XdaiBridgeList } from '../EcoBridge.types'
+import { BridgeIds, XdaiBridgeIdList } from '../EcoBridge.types'
 
 import { xdaiBridgeTransactionAdapter } from './XdaiBridge.adapter'
 
-const createSelectOwnedTransactions = (bridgeId: XdaiBridgeList) => {
+const createSelectOwnedTransactions = (bridgeId: XdaiBridgeIdList) => {
   const transactionsSelector = createSelector(
     [(state: AppState) => state.ecoBridge[bridgeId].transactions],
     transactions => xdaiBridgeTransactionAdapter.getSelectors().selectAll(transactions)
@@ -28,7 +28,7 @@ const createSelectOwnedTransactions = (bridgeId: XdaiBridgeList) => {
 }
 
 const createSelectBridgeTransactionsSummary = (
-  bridgeId: XdaiBridgeList,
+  bridgeId: XdaiBridgeIdList,
   ownedTransactions: ReturnType<typeof createSelectOwnedTransactions>
 ) =>
   createSelector([ownedTransactions], transactions => {
@@ -91,7 +91,7 @@ export interface XdaiBridgeSelectors {
   selectPendingTransactions: ReturnType<typeof createSelectPendingTransactions>
 }
 
-export const xdaiSelectorsFactory = (xdaiBridges: XdaiBridgeList[]) => {
+export const xdaiSelectorsFactory = (xdaiBridges: XdaiBridgeIdList[]) => {
   return xdaiBridges.reduce((total, bridgeId) => {
     const selectOwnedTransactions = createSelectOwnedTransactions(bridgeId)
     const selectBridgeTransactionsSummary = createSelectBridgeTransactionsSummary(bridgeId, selectOwnedTransactions)
@@ -105,7 +105,7 @@ export const xdaiSelectorsFactory = (xdaiBridges: XdaiBridgeList[]) => {
 
     total[bridgeId] = selectors
     return total
-  }, {} as { [k in XdaiBridgeList]: XdaiBridgeSelectors })
+  }, {} as { [k in XdaiBridgeIdList]: XdaiBridgeSelectors })
 }
 
-export const xdaiSelectors = xdaiSelectorsFactory(['xdai'])
+export const xdaiSelectors = xdaiSelectorsFactory([BridgeIds.XDAI])

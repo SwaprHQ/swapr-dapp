@@ -4,6 +4,7 @@ import { Repeat } from 'react-feather'
 import { Box, Flex } from 'rebass'
 import styled from 'styled-components'
 
+import { BRIDGES } from '../../../constants'
 import { getExplorerLink } from '../../../utils'
 import { formatNumber } from '../../../utils/formatNumber'
 import { getNetworkInfo } from '../../../utils/networksList'
@@ -34,7 +35,7 @@ export function BridgeTransactionRow({ transaction, showBackgroundStatus }: Brid
 
   const fromLink = getExplorerLink(logs[0]?.chainId, logs[0]?.txHash, 'transaction', bridgeId)
   const toLink =
-    bridgeId === 'socket'
+    bridgeId === BRIDGES.SOCKET.id
       ? logs[0] && logs[1] && getExplorerLink(logs[0].chainId, logs[0].txHash, 'transaction', bridgeId)
       : logs[1] && getExplorerLink(logs[1].chainId, logs[1].txHash, 'transaction', bridgeId)
 

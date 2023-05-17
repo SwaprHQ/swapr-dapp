@@ -1,6 +1,7 @@
 import { useMemo } from 'react'
 import { useSelector } from 'react-redux'
 
+import { BRIDGES } from '../../constants'
 import { useActiveWeb3React } from '../../hooks'
 import { Transaction, TransactionStatus } from '../../pages/Account/Account.types'
 import { formatTransactions } from '../../pages/Account/utils/accountUtils'
@@ -30,7 +31,8 @@ export const useAllTrades = (): {
   const allLimitOrderTransactions = useLimitOrderTransactions(chainId, account)
 
   const allSwapBridgeTransactions = useAllBridgeTransactions(true).filter(
-    transaction => transaction.bridgeId === 'socket' && transaction.sellToken.symbol !== transaction.buyToken.symbol
+    transaction =>
+      transaction.bridgeId === BRIDGES.SOCKET.id && transaction.sellToken.symbol !== transaction.buyToken.symbol
   )
 
   const transactions = useMemo(() => {

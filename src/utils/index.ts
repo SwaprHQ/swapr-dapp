@@ -9,7 +9,7 @@ import { ChainId, Currency, CurrencyAmount, JSBI, Pair, Percent, Token, UniswapV
 import Decimal from 'decimal.js-light'
 import { commify } from 'ethers/lib/utils'
 
-import { NetworkDetails } from '../constants'
+import { BRIDGES, NetworkDetails } from '../constants'
 import { TokenAddressMap } from '../state/lists/hooks'
 import { SwapProtocol } from '../state/transactions/reducer'
 
@@ -67,7 +67,7 @@ export function getExplorerLink(
     return getGnosisProtocolExplorerOrderLink(chainId, hash)
   }
 
-  if (protocol === 'socket') return getSocketExplorerLink(hash)
+  if (protocol === BRIDGES.SOCKET.id) return getSocketExplorerLink(hash)
 
   const prefix = getExplorerPrefix(chainId)
   // exception. blockscout doesn't have a token-specific address

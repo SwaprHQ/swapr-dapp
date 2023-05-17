@@ -3,12 +3,12 @@ import { createSelector } from '@reduxjs/toolkit'
 import { AppState } from '../../../state'
 import { BridgeTransactionStatus, BridgeTransactionSummary } from '../../../state/bridgeTransactions/types'
 import { normalizeInputValue } from '../../../utils'
-import { OmniBridgeList } from '../EcoBridge.types'
+import { BridgeIds, OmniBridgeIdList } from '../EcoBridge.types'
 
 import { omniTransactionsAdapter } from './OmniBridge.adapter'
 import { getTransactionStatus } from './OmniBridge.utils'
 
-const createSelectOwnedTransactions = (bridgeId: OmniBridgeList) => {
+const createSelectOwnedTransactions = (bridgeId: OmniBridgeIdList) => {
   const transactionsSelector = createSelector(
     [(state: AppState) => state.ecoBridge[bridgeId].transactions],
     transactions => omniTransactionsAdapter.getSelectors().selectAll(transactions)
@@ -28,7 +28,7 @@ const createSelectOwnedTransactions = (bridgeId: OmniBridgeList) => {
 }
 
 const createSelectBridgeTransactionsSummary = (
-  bridgeId: OmniBridgeList,
+  bridgeId: OmniBridgeIdList,
   selectOwnedTxs: ReturnType<typeof createSelectOwnedTransactions>
 ) =>
   createSelector([selectOwnedTxs], txs => {
@@ -92,7 +92,7 @@ const createSelectBridgeTransactionsSummary = (
 const createSelectPendingTransactions = (selectOwnedTxs: ReturnType<typeof createSelectOwnedTransactions>) =>
   createSelector([selectOwnedTxs], txs => txs.filter(tx => tx.status === BridgeTransactionStatus.PENDING))
 
-const createSelectAllTransactions = (bridgeId: OmniBridgeList) =>
+const createSelectAllTransactions = (bridgeId: OmniBridgeIdList) =>
   createSelector([(state: AppState) => state.ecoBridge[bridgeId].transactions], txs =>
     omniTransactionsAdapter.getSelectors().selectAll(txs)
   )
@@ -104,7 +104,7 @@ export interface OmniBridgeSelectors {
   selectAllTransactions: ReturnType<typeof createSelectAllTransactions>
 }
 
-export const omniBridgeSelectorsFactory = (omniBridges: OmniBridgeList[]) => {
+export const omniBridgeSelectorsFactory = (omniBridges: OmniBridgeIdList[]) => {
   return omniBridges.reduce(
     (total, bridgeId) => {
       const selectOwnedTransactions = createSelectOwnedTransactions(bridgeId)
@@ -123,9 +123,9 @@ export const omniBridgeSelectorsFactory = (omniBridges: OmniBridgeList[]) => {
       return total
     },
     {} as {
-      [k in OmniBridgeList]: OmniBridgeSelectors
+      [k in OmniBridgeIdList]: OmniBridgeSelectors
     }
   )
 }
 
-export const omniBridgeSelectors = omniBridgeSelectorsFactory(['omnibridge:eth-xdai'])
+export const omniBridgeSelectors = omniBridgeSelectorsFactory([BridgeIds.OMNIBRIDGE])

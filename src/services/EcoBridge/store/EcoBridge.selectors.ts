@@ -3,24 +3,25 @@ import { ChainId, Token } from '@swapr/sdk'
 import { createSelector } from '@reduxjs/toolkit'
 import { TokenList } from '@uniswap/token-lists'
 
-import { DEFAULT_TOKEN_LIST } from '../../../constants'
+import { BRIDGES, DEFAULT_TOKEN_LIST } from '../../../constants'
 import { AppState } from '../../../state'
 import { listToTokenMap } from '../../../state/lists/hooks'
 import { arbitrumSelectors } from '../Arbitrum/ArbitrumBridge.selectors'
 import { connextSelectors } from '../Connext/Connext.selectors'
 import { ecoBridgeConfig } from '../EcoBridge.config'
 import {
-  ArbitrumList,
-  BridgeList,
+  ArbitrumIdList,
+  BridgeIdList,
   BridgeTxsFilter,
-  ConnextList,
-  OmniBridgeList,
-  SocketList,
+  ConnextIdList,
+  OmniBridgeIdList,
+  SocketIdList,
   SupportedBridges,
   SyncState,
   TokenMap,
-  XdaiBridgeList,
-  LifiList,
+  XdaiBridgeIdList,
+  LifiIdList,
+  BridgeIds,
 } from '../EcoBridge.types'
 import { lifiSelectors } from '../Lifi/Lifi.selectors'
 import { omniBridgeSelectors } from '../OmniBridge/OmniBridge.selectors'
@@ -44,7 +45,8 @@ import { xdaiSelectors } from '../Xdai/XdaiBridge.selectors'
  */
 
 const createSelectBridgingDetails = (
-  bridgeId: ConnextList | OmniBridgeList | XdaiBridgeList | ArbitrumList | SocketList | LifiList
+  bridgeId: ConnextIdList | OmniBridgeIdList | XdaiBridgeIdList | ArbitrumIdList | SocketIdList | LifiIdList,
+  bridgeUrl: string
 ) =>
   createSelector(
     [
@@ -55,6 +57,7 @@ const createSelectBridgingDetails = (
     (details, loading, errorMessage) => {
       return {
         bridgeId,
+        bridgeUrl,
         details,
         loading,
         errorMessage,
@@ -71,29 +74,29 @@ export const selectSupportedBridges = createSelector(
   (fromChainId, toChainId, isBridgeSwapActive) => {
     if (!fromChainId || !toChainId) return []
 
-    const supportedBridges = Object.values(ecoBridgeConfig).reduce<{ bridgeId: BridgeList; name: string }[]>(
-      (total, bridgeInfo) => {
-        const bridge = {
-          name: bridgeInfo.displayName,
-          bridgeId: bridgeInfo.bridgeId,
+    const supportedBridges = Object.values(ecoBridgeConfig).reduce<
+      { bridgeId: BridgeIdList; name: string; url: string }[]
+    >((total, bridgeInfo) => {
+      const bridge = {
+        name: bridgeInfo.displayName,
+        url: bridgeInfo.displayUrl,
+        bridgeId: bridgeInfo.bridgeId,
+      }
+
+      bridgeInfo.supportedChains.forEach(({ from: supportedFrom, to: supportedTo }) => {
+        if (
+          (supportedFrom === fromChainId && supportedTo === toChainId) ||
+          (supportedFrom === toChainId && supportedTo === fromChainId)
+        ) {
+          total.push(bridge)
         }
+      })
 
-        bridgeInfo.supportedChains.forEach(({ from: supportedFrom, to: supportedTo }) => {
-          if (
-            (supportedFrom === fromChainId && supportedTo === toChainId) ||
-            (supportedFrom === toChainId && supportedTo === fromChainId)
-          ) {
-            total.push(bridge)
-          }
-        })
-
-        return total
-      },
-      []
-    )
+      return total
+    }, [])
 
     return isBridgeSwapActive
-      ? supportedBridges.filter(bridge => ['socket', 'lifi'].includes(bridge.bridgeId))
+      ? supportedBridges.filter(bridge => [BRIDGES.LIFI.id, BRIDGES.SOCKET.id].includes(bridge.bridgeId))
       : supportedBridges
   }
 )
@@ -101,13 +104,13 @@ export const selectSupportedBridges = createSelector(
 // TXS
 export const selectBridgeTransactions = createSelector(
   [
-    arbitrumSelectors['arbitrum:testnet'].selectBridgeTransactionsSummary,
-    arbitrumSelectors['arbitrum:mainnet'].selectBridgeTransactionsSummary,
-    socketSelectors['socket'].selectBridgeTransactionsSummary,
-    omniBridgeSelectors['omnibridge:eth-xdai'].selectBridgeTransactionsSummary,
-    connextSelectors['connext'].selectBridgeTransactionsSummary,
-    xdaiSelectors['xdai'].selectBridgeTransactionsSummary,
-    lifiSelectors['lifi'].selectBridgeTransactionsSummary,
+    arbitrumSelectors[BridgeIds.ARBITRUM_MAINNET].selectBridgeTransactionsSummary,
+    arbitrumSelectors[BridgeIds.ARBITRUM_TESTNET].selectBridgeTransactionsSummary,
+    connextSelectors[BridgeIds.CONNEXT].selectBridgeTransactionsSummary,
+    lifiSelectors[BridgeIds.LIFI].selectBridgeTransactionsSummary,
+    omniBridgeSelectors[BridgeIds.OMNIBRIDGE].selectBridgeTransactionsSummary,
+    socketSelectors[BridgeIds.SOCKET].selectBridgeTransactionsSummary,
+    xdaiSelectors[BridgeIds.XDAI].selectBridgeTransactionsSummary,
   ],
   (
     txsSummaryTestnet,
@@ -173,27 +176,28 @@ export const selectBridgeCollectableTx = createSelector(
 // LISTS
 
 export const selectBridgeListsLoadingStatus = createSelector(
+  // We're missing LiFi from ths list, is that on purpose?
   [
-    (state: AppState) => state.ecoBridge['arbitrum:testnet'].listsStatus,
-    (state: AppState) => state.ecoBridge['arbitrum:mainnet'].listsStatus,
-    (state: AppState) => state.ecoBridge['socket'].listsStatus,
-    (state: AppState) => state.ecoBridge['xdai'].listsStatus,
-    (state: AppState) => state.ecoBridge['connext'].listsStatus,
-    (state: AppState) => state.ecoBridge['omnibridge:eth-xdai'].listsStatus,
+    (state: AppState) => state.ecoBridge[BridgeIds.ARBITRUM_MAINNET].listsStatus,
+    (state: AppState) => state.ecoBridge[BridgeIds.ARBITRUM_TESTNET].listsStatus,
+    (state: AppState) => state.ecoBridge[BridgeIds.CONNEXT].listsStatus,
+    (state: AppState) => state.ecoBridge[BridgeIds.OMNIBRIDGE].listsStatus,
+    (state: AppState) => state.ecoBridge[BridgeIds.SOCKET].listsStatus,
+    (state: AppState) => state.ecoBridge[BridgeIds.XDAI].listsStatus,
   ],
   // Because of redux-persist initial state is undefined
   (...statuses) => statuses.some(status => ['loading', 'idle', undefined].includes(status))
 )
 
-export const selectBridgeLists = createSelector(
+export const selectBridgeIdLists = createSelector(
   [
-    (state: AppState) => state.ecoBridge['arbitrum:testnet'].lists,
-    (state: AppState) => state.ecoBridge['arbitrum:mainnet'].lists,
-    (state: AppState) => state.ecoBridge['socket'].lists,
-    (state: AppState) => state.ecoBridge['connext'].lists,
-    (state: AppState) => state.ecoBridge['omnibridge:eth-xdai'].lists,
-    (state: AppState) => state.ecoBridge['xdai'].lists,
-    (state: AppState) => state.ecoBridge['lifi'].lists,
+    (state: AppState) => state.ecoBridge[BridgeIds.ARBITRUM_MAINNET].lists,
+    (state: AppState) => state.ecoBridge[BridgeIds.ARBITRUM_TESTNET].lists,
+    (state: AppState) => state.ecoBridge[BridgeIds.CONNEXT].lists,
+    (state: AppState) => state.ecoBridge[BridgeIds.LIFI].lists,
+    (state: AppState) => state.ecoBridge[BridgeIds.OMNIBRIDGE].lists,
+    (state: AppState) => state.ecoBridge[BridgeIds.SOCKET].lists,
+    (state: AppState) => state.ecoBridge[BridgeIds.XDAI].lists,
     (state: AppState) => state.lists.byUrl[DEFAULT_TOKEN_LIST].current,
   ],
   (
@@ -231,7 +235,7 @@ export const selectBridgeLists = createSelector(
  */
 
 export const selectSupportedLists = createSelector(
-  [selectBridgeLists, selectSupportedBridges],
+  [selectBridgeIdLists, selectSupportedBridges],
   (tokenLists, supportedBridges) => {
     const supportedIds = supportedBridges.map(bridge => bridge.bridgeId)
     const supportedTokenLists = Object.entries(tokenLists).reduce<{ [id: string]: TokenList }>(
@@ -257,7 +261,7 @@ export const selectSupportedLists = createSelector(
  * Returns {[address: string]: Token} for provided chainId
  */
 
-export const selectBridgeTokens = createSelector([selectBridgeLists], allLists => {
+export const selectBridgeTokens = createSelector([selectBridgeIdLists], allLists => {
   const allTokens = Object.values(allLists).reduce<{ [chainId: number]: { [address: string]: Token } }>(
     (allTokens, list) => {
       const tokenMapsByChain = listToTokenMap(list)
@@ -289,7 +293,7 @@ export const selectBridgeActiveTokens = createSelector(
     (state: AppState) => state.ecoBridge.ui.isBridgeSwapActive,
   ],
   (supportedLists, activeLists, isBridgeSwapActive) => {
-    const lists = isBridgeSwapActive ? ['socket'] : activeLists
+    const lists = isBridgeSwapActive ? [BRIDGES.SOCKET.id] : activeLists
 
     if (!lists.length) return {}
 
@@ -336,13 +340,19 @@ export const selectBridgeSupportedTokensOnChain = createSelector(
   }
 )
 
-const connextBridgeDetails = createSelectBridgingDetails('connext')
-const socketBridgeDetails = createSelectBridgingDetails('socket')
-const arbitrumMainnetBridgeDetails = createSelectBridgingDetails('arbitrum:mainnet')
-const arbitrumTestnetBridgeDetails = createSelectBridgingDetails('arbitrum:testnet')
-const omnibridgeBridgeDetails = createSelectBridgingDetails('omnibridge:eth-xdai')
-const xdaiBridgeDetails = createSelectBridgingDetails('xdai')
-const lifiBridgeDetails = createSelectBridgingDetails('lifi')
+const arbitrumMainnetBridgeDetails = createSelectBridgingDetails(
+  BRIDGES.ARBITRUM_MAINNET.id,
+  BRIDGES.ARBITRUM_MAINNET.url
+)
+const arbitrumTestnetBridgeDetails = createSelectBridgingDetails(
+  BRIDGES.ARBITRUM_TESTNET.id,
+  BRIDGES.ARBITRUM_TESTNET.url
+)
+const connextBridgeDetails = createSelectBridgingDetails(BRIDGES.CONNEXT.id, BRIDGES.CONNEXT.url)
+const lifiBridgeDetails = createSelectBridgingDetails(BRIDGES.LIFI.id, BRIDGES.LIFI.url)
+const omnibridgeBridgeDetails = createSelectBridgingDetails(BRIDGES.OMNIBRIDGE.id, BRIDGES.OMNIBRIDGE.url)
+const socketBridgeDetails = createSelectBridgingDetails(BRIDGES.SOCKET.id, BRIDGES.SOCKET.url)
+const xdaiBridgeDetails = createSelectBridgingDetails(BRIDGES.XDAI.id, BRIDGES.XDAI.url)
 
 export const selectSupportedBridgesForUI = createSelector(
   [
@@ -365,9 +375,13 @@ export const selectSupportedBridgesForUI = createSelector(
     xdaiDetails,
     lifiDetails
   ) => {
-    const bridgeNameMap = bridges.reduce<{ [bridgeId: string]: string }>((total, next) => {
-      total[next.bridgeId] = next.name
-      return total
+    const bridgeMap = bridges.reduce<{ [bridgeId: string]: { name: string; url: string } }>((bridgeMap, next) => {
+      bridgeMap[next.bridgeId] = {
+        name: next.name,
+        url: next.url,
+      }
+
+      return bridgeMap
     }, {})
 
     const supportedBridges = [
@@ -379,9 +393,10 @@ export const selectSupportedBridgesForUI = createSelector(
       xdaiDetails,
       lifiDetails,
     ].reduce<SupportedBridges[]>((total, bridge) => {
-      if (bridgeNameMap[bridge.bridgeId] !== undefined) {
+      if (bridgeMap[bridge.bridgeId] !== undefined) {
         total.push({
-          name: bridgeNameMap[bridge.bridgeId],
+          name: bridgeMap[bridge.bridgeId].name,
+          url: bridgeMap[bridge.bridgeId].url,
           bridgeId: bridge.bridgeId,
           details: ['loading', 'failed'].includes(bridge.loading) ? {} : bridge.details,
           status: bridge.loading,
