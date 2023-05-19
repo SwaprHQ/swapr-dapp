@@ -1,3 +1,4 @@
+import { CSSProperties } from 'react'
 import { Box } from 'rebass/styled-components'
 import styled from 'styled-components'
 
@@ -7,7 +8,7 @@ const Row = styled(Box)<{
   border?: string
   borderRadius?: string
   flex?: string
-  justify?: string
+  justify?: CSSProperties['justifyContent']
   gap?: string
 }>`
   width: 100%;
@@ -22,8 +23,8 @@ const Row = styled(Box)<{
   gap: ${({ gap }) => gap && gap};
 `
 
-export const RowBetween = styled(Row)<{ gap?: number }>`
-  justify-content: space-between;
+export const RowBetween = styled(Row)<{ gap?: number; justify?: CSSProperties['justifyContent'] }>`
+  justify-content: ${({ justify }) => justify ?? 'space-between'};
   ${({ gap }) => gap && `gap: ${gap}px;`}
 `
 

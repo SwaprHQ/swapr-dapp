@@ -219,7 +219,7 @@ export const VERSION = {
 
 // TODO: To be reverted later
 export const SOCKET_LISTS_URL =
-  'https://raw.githubusercontent.com/ImpeccableHQ/swapr-ecobridge-socket-lists/master/lists/socketList-bidirectional.json'
+  'https://raw.githubusercontent.com/SwaprHQ/swapr-ecobridge-socket-lists/master/lists/socketList-bidirectional.json'
 // Pairs all provided chains
 export const bridgeSupportedChains = (supportedChains: ChainId[]) =>
   supportedChains

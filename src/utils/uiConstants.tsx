@@ -5,18 +5,13 @@ import EcoRouterArticle from './../assets/images/blog/ecorouter-article.png'
 import MevArticle from './../assets/images/blog/mev-article.png'
 import BNBLogo from './../assets/images/BNBLogo.svg'
 import Bridge from './../assets/images/features/bridge.png'
-import DiyFarm from './../assets/images/features/diy-farm.png'
 import EcoRouting from './../assets/images/features/eco-routing.png'
 import Farming from './../assets/images/features/farm.png'
 import Swap from './../assets/images/features/swap.png'
-import Vote from './../assets/images/features/vote.png'
 import gnosisChainLogo from './../assets/images/gnosis-chain.svg'
 import BaoSwapStats from './../assets/images/isologo-baoswap.svg'
-import Discord from './../assets/images/isologo-discord.svg'
-import Github from './../assets/images/isologo-github.svg'
 import HoneySwapStats from './../assets/images/isologo-honeyswap.svg'
 import SushiSwapStats from './../assets/images/isologo-sushiswap.svg'
-import Twitter from './../assets/images/isologo-twitter.svg'
 import UniSwapStats from './../assets/images/isologo-uniswap.svg'
 import RoutingLevinSwap from './../assets/images/levinswap.svg'
 import ArbitrumLogo from './../assets/images/logo-Arbitrum.svg'
@@ -53,12 +48,7 @@ export const mainNavigation = [
 ]
 
 export const HeroContent = {
-  mainText: (
-    <span>
-      Swap, Farm, Bridge and
-      <br /> Vote on Defi unchained.
-    </span>
-  ),
+  mainText: <span>Swap, Bridge, Farm across chains.</span>,
   heroLogos: [
     {
       img: EthereumLogo,
@@ -184,7 +174,7 @@ export type FeatureContent = {
 
 export const FeaturesContent: Readonly<FeatureContent> = {
   topBanner: {
-    title: 'Swap, Farm, Bridge & Vote. DeFi unchained.',
+    title: 'Swap, Bridge and Farm across chains.',
     logos: [EthereumLogo, ArbitrumLogo, gnosisChainLogo, PolygonLogo, OptimismLogo, BNBLogo],
   },
   preHeader: 'Swapr Features',
@@ -201,6 +191,26 @@ export const FeaturesContent: Readonly<FeatureContent> = {
           onClick: () => {
             scrollTo('app-wrapper')
           },
+          type: 'primary',
+          external: false,
+        },
+        {
+          label: 'READ MORE',
+          href: 'https://dxdocs.eth.limo/docs/Products/swapr/',
+          type: 'dark',
+          external: true,
+        },
+      ],
+    },
+    {
+      title: 'BRIDGE',
+      content: 'Bridge directly to or from multiple chains: Ethereum, Gnosis, Arbitrum, Polygon, Optimism.',
+      image: Bridge,
+      animation: animations['06_Bridge'],
+      buttons: [
+        {
+          label: 'BRIDGE',
+          href: '/#/bridge',
           type: 'primary',
           external: false,
         },
@@ -235,26 +245,6 @@ export const FeaturesContent: Readonly<FeatureContent> = {
       ],
     },
     {
-      title: 'VOTE',
-      content: 'LPs on the Swapr protocol can vote to adjust the fees on their pools.',
-      image: Vote,
-      animation: animations['03_Vote'],
-      buttons: [
-        {
-          label: 'VOTE',
-          href: 'https://snapshot.org/#/swpr.eth',
-          type: 'primary',
-          external: true,
-        },
-        {
-          label: 'READ MORE',
-          href: 'https://dxdocs.eth.limo/docs/Products/swapr/',
-          type: 'dark',
-          external: true,
-        },
-      ],
-    },
-    {
       title: 'FARMING',
       content: 'Users can participate in permissionless farming campaigns directly in the Swapr interface.',
       image: Farming,
@@ -273,110 +263,6 @@ export const FeaturesContent: Readonly<FeatureContent> = {
           external: true,
         },
       ],
-    },
-    {
-      title: 'DIY FARM',
-      content: 'The Swapr protocol allows anyone to create farming campaigns. Any pair, any reward.',
-      image: DiyFarm,
-      animation: animations['05_DIY_Farm'],
-      buttons: [
-        {
-          label: 'CREATE CAMPAIGN',
-          href: '/#/liquidity-mining/create',
-          type: 'primary',
-          external: false,
-        },
-        {
-          label: 'READ MORE',
-          href: 'https://dxdocs.eth.limo/docs/Products/swapr/',
-          type: 'dark',
-          external: true,
-        },
-      ],
-    },
-    {
-      title: 'BRIDGE',
-      content: 'Bridge directly to or from multiple chains: Ethereum, Gnosis, Arbitrum, Polygon, Optimism.',
-      image: Bridge,
-      animation: animations['06_Bridge'],
-      buttons: [
-        {
-          label: 'BRIDGE',
-          href: '/#/bridge',
-          type: 'primary',
-          external: false,
-        },
-        {
-          label: 'READ MORE',
-          href: 'https://dxdocs.eth.limo/docs/Products/swapr/',
-          type: 'dark',
-          external: true,
-        },
-      ],
-    },
-  ],
-} as const
-
-export const CommunityBannerContent = {
-  preHeader: 'A DXdao Product',
-  content: 'Owned and funded by the Community',
-  buttons: [
-    {
-      label: 'GET INVOLVED',
-      href: 'https://dxdao.eth.limo/',
-      type: 'primary',
-    },
-    {
-      label: 'FORUM',
-      href: 'https://daotalk.org/c/dx-dao/15',
-      type: 'dark',
-    },
-  ],
-} as const
-
-export const CommunityLinksContent = {
-  preHeader: 'Swapr Protocol',
-  title: (
-    <span>
-      Join an unstoppable <br />
-      community
-    </span>
-  ),
-  links: [
-    {
-      image: Discord,
-      alt: 'Discord Logo',
-      title: 'Discord',
-      content: 'Join in on community discussion on the Swapr Discord.',
-      button: {
-        label: 'JOIN DISCORD',
-        href: 'https://discord.gg/QFkNsjTkzD',
-      },
-    },
-    {
-      image: Github,
-      alt: 'GitHub Logo',
-      title: 'GitHub',
-      content: (
-        <>
-          Contribute to the <br />
-          Swapr repositories on GitHub.
-        </>
-      ),
-      button: {
-        label: 'VISIT GITHUB',
-        href: 'https://github.com/levelkdev/dxswap-dapp',
-      },
-    },
-    {
-      image: Twitter,
-      alt: 'Twitter Logo',
-      title: 'Twitter',
-      content: 'Get the latest Swapr announcements on the Swapr Twitter.',
-      button: {
-        label: 'Follow on Twitter',
-        href: 'https://twitter.com/SwaprEth',
-      },
     },
   ],
 } as const
@@ -442,33 +328,8 @@ export const FooterContent = {
           href: 'https://twitter.com/SwaprEth',
         },
         {
-          label: 'Keybase',
-          href: 'https://keybase.io/team/dx_dao',
-        },
-        {
           label: 'Forum',
           href: 'https://daotalk.org/c/dx-dao/15',
-        },
-      ],
-    },
-    {
-      title: 'Documentation',
-      footerLinks: [
-        {
-          label: 'DIY Campaigns',
-          href: 'https://dxdocs.eth.limo/docs/Products/swapr/DIY%20Liquidity%20Mining/',
-        },
-        {
-          label: 'Roadmap',
-          href: 'https://dxdocs.eth.limo/docs/Products/swapr/roadmap/',
-        },
-        {
-          label: "We're hiring",
-          href: 'https://dxdocs.eth.limo/docs/ContributorHub/open-positions-and-bounties/',
-        },
-        {
-          label: 'SWPR Token',
-          href: 'https://dxdocs.eth.limo/docs/Products/swapr/tokenomics/',
         },
       ],
     },

@@ -26,6 +26,7 @@ const BlogNavigation = () => {
 const StyledBlogNavigation = styled(Layout)`
   &#blog-navigation {
     margin-bottom: 160px;
+    margin-top: 160px;
     .blog-list {
       display: flex;
       justify-content: space-between;
