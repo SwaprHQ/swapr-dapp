@@ -26,6 +26,7 @@ import { ReactNode } from 'react'
 import OneInchLogo from '../assets/images/1inch-logo.svg'
 import RightArrow from '../assets/images/arrow-right.svg'
 import BaoswapLogo from '../assets/images/baoswap-logo.png'
+import BiSwapLogo from '../assets/images/biswap-logo.svg'
 import PancakeSwapLogo from '../assets/images/bunny-mono.png'
 import Coinbase from '../assets/images/coinbase.svg'
 import CoWLogo from '../assets/images/cow-protocol.svg'
@@ -614,6 +615,7 @@ export const RoutablePlatformKeysByNetwork = {
     RoutablePlatform.ONE_INCH.name,
   ],
   [ChainId.BSC_MAINNET]: [
+    UniswapV2RoutablePlatform.BISWAP.name,
     UniswapV2RoutablePlatform.SUSHISWAP.name,
     UniswapV2RoutablePlatform.PANCAKESWAP.name,
     RoutablePlatform.ONE_INCH.name,
@@ -688,6 +690,12 @@ export const ROUTABLE_PLATFORM_STYLE: {
     gradientColor: '#FB52A1',
     name: UniswapV2RoutablePlatform.BAOSWAP.name,
   },
+  [UniswapV2RoutablePlatform.BISWAP.name]: {
+    logo: BiSwapLogo,
+    alt: UniswapV2RoutablePlatform.BISWAP.name,
+    gradientColor: '#FB52A1',
+    name: UniswapV2RoutablePlatform.BISWAP.name,
+  },
   [UniswapV2RoutablePlatform.LEVINSWAP.name]: {
     logo: LevinswapLogo,
     alt: UniswapV2RoutablePlatform.LEVINSWAP.name,
@@ -758,6 +766,7 @@ export const ROUTABLE_PLATFORM_LOGO: {
   [UniswapV2RoutablePlatform.SWAPR.name]: <img width={16} height={16} src={SwaprLogo} alt="swapr" />,
   [UniswapV2RoutablePlatform.HONEYSWAP.name]: <img width={16} height={16} src={HoneyswapLogo} alt="honeyswap" />,
   [UniswapV2RoutablePlatform.BAOSWAP.name]: <img width={16} height={16} src={BaoswapLogo} alt="baoswap" />,
+  [UniswapV2RoutablePlatform.BISWAP.name]: <img width={16} height={16} src={BiSwapLogo} alt="biswap" />,
   [UniswapV2RoutablePlatform.LEVINSWAP.name]: <img width={16} height={16} src={LevinswapLogo} alt="levinswap" />,
   [UniswapV2RoutablePlatform.QUICKSWAP.name]: <img width={16} height={16} src={QuickswapLogo} alt="quickswap" />,
   [UniswapV2RoutablePlatform.DFYN.name]: <img width={16} height={16} src={DFYNLogo} alt="dfyn" />,

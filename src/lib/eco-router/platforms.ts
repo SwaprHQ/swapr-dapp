@@ -12,6 +12,7 @@ export function getUniswapV2PlatformList(chainId: ChainId): UniswapV2RoutablePla
     UniswapV2RoutablePlatform.DFYN,
     UniswapV2RoutablePlatform.QUICKSWAP,
     UniswapV2RoutablePlatform.PANCAKESWAP,
+    UniswapV2RoutablePlatform.BISWAP,
   ].filter(platform => platform.supportsChain(chainId))
 }
 
@@ -35,5 +36,6 @@ export function getSupportedPlatformsByChainId(chainId: ChainId) {
     UniswapV2RoutablePlatform.DFYN,
     UniswapV2RoutablePlatform.QUICKSWAP,
     UniswapV2RoutablePlatform.PANCAKESWAP,
+    UniswapV2RoutablePlatform.BISWAP,
   ].filter(platform => platform.supportsChain(chainId))
 }
