@@ -652,6 +652,9 @@ export const RoutablePlatformKeysByNetwork = {
   [ChainId.BSC_TESTNET]: [],
 }
 
+/**
+ * @TODO check why we have 2 different UNISWAP routable platforms
+ */
 export const ROUTABLE_PLATFORM_STYLE: {
   [routablePaltformName: string]: {
     logo: string
@@ -660,29 +663,17 @@ export const ROUTABLE_PLATFORM_STYLE: {
     name: string
   }
 } = {
-  [UniswapV2RoutablePlatform.UNISWAP.name]: {
-    logo: UniswapLogo,
-    alt: UniswapV2RoutablePlatform.UNISWAP.name,
+  [RoutablePlatform.ZEROX.name]: {
+    logo: ZeroXLogo,
+    alt: RoutablePlatform.ZEROX.name,
     gradientColor: '#FB52A1',
-    name: UniswapV2RoutablePlatform.UNISWAP.name,
+    name: RoutablePlatform.ZEROX.name,
   },
-  [UniswapV2RoutablePlatform.SUSHISWAP.name]: {
-    logo: SushiswapNewLogo,
-    alt: UniswapV2RoutablePlatform.SUSHISWAP.name,
+  [RoutablePlatform.ONE_INCH.name]: {
+    logo: OneInchLogo,
+    alt: RoutablePlatform.ONE_INCH.name,
     gradientColor: '#FB52A1',
-    name: 'Sushi',
-  },
-  [UniswapV2RoutablePlatform.SWAPR.name]: {
-    logo: SwaprLogo,
-    alt: UniswapV2RoutablePlatform.SWAPR.name,
-    gradientColor: '#FB52A1',
-    name: UniswapV2RoutablePlatform.SWAPR.name,
-  },
-  [UniswapV2RoutablePlatform.HONEYSWAP.name]: {
-    logo: HoneyswapLogo,
-    alt: UniswapV2RoutablePlatform.HONEYSWAP.name,
-    gradientColor: '#FB52A1',
-    name: UniswapV2RoutablePlatform.HONEYSWAP.name,
+    name: RoutablePlatform.ONE_INCH.name,
   },
   [UniswapV2RoutablePlatform.BAOSWAP.name]: {
     logo: BaoswapLogo,
@@ -696,29 +687,11 @@ export const ROUTABLE_PLATFORM_STYLE: {
     gradientColor: '#FB52A1',
     name: UniswapV2RoutablePlatform.BISWAP.name,
   },
-  [UniswapV2RoutablePlatform.LEVINSWAP.name]: {
-    logo: LevinswapLogo,
-    alt: UniswapV2RoutablePlatform.LEVINSWAP.name,
+  [RoutablePlatform.GNOSIS_PROTOCOL.name]: {
+    logo: CoWLogo,
+    alt: RoutablePlatform.GNOSIS_PROTOCOL.name,
     gradientColor: '#FB52A1',
-    name: UniswapV2RoutablePlatform.LEVINSWAP.name,
-  },
-  [UniswapV2RoutablePlatform.QUICKSWAP.name]: {
-    logo: QuickswapLogo,
-    alt: UniswapV2RoutablePlatform.QUICKSWAP.name,
-    gradientColor: '#FB52A1',
-    name: UniswapV2RoutablePlatform.QUICKSWAP.name,
-  },
-  [UniswapV2RoutablePlatform.DFYN.name]: {
-    logo: DFYNLogo,
-    alt: UniswapV2RoutablePlatform.DFYN.name,
-    gradientColor: '#FB52A1',
-    name: UniswapV2RoutablePlatform.DFYN.name,
-  },
-  [UniswapV2RoutablePlatform.PANCAKESWAP.name]: {
-    logo: PancakeSwapLogo,
-    alt: UniswapV2RoutablePlatform.PANCAKESWAP.name,
-    gradientColor: '#FB52A1',
-    name: UniswapV2RoutablePlatform.PANCAKESWAP.name,
+    name: RoutablePlatform.GNOSIS_PROTOCOL.name,
   },
   [RoutablePlatform.CURVE.name]: {
     logo: CurveLogo,
@@ -726,17 +699,47 @@ export const ROUTABLE_PLATFORM_STYLE: {
     gradientColor: '#FB52A1',
     name: RoutablePlatform.CURVE.name,
   },
-  [RoutablePlatform.ZEROX.name]: {
-    logo: ZeroXLogo,
-    alt: RoutablePlatform.ZEROX.name,
+  [UniswapV2RoutablePlatform.DFYN.name]: {
+    logo: DFYNLogo,
+    alt: UniswapV2RoutablePlatform.DFYN.name,
     gradientColor: '#FB52A1',
-    name: RoutablePlatform.ZEROX.name,
+    name: UniswapV2RoutablePlatform.DFYN.name,
   },
-  [RoutablePlatform.GNOSIS_PROTOCOL.name]: {
-    logo: CoWLogo,
-    alt: RoutablePlatform.GNOSIS_PROTOCOL.name,
+  [UniswapV2RoutablePlatform.HONEYSWAP.name]: {
+    logo: HoneyswapLogo,
+    alt: UniswapV2RoutablePlatform.HONEYSWAP.name,
     gradientColor: '#FB52A1',
-    name: RoutablePlatform.GNOSIS_PROTOCOL.name,
+    name: UniswapV2RoutablePlatform.HONEYSWAP.name,
+  },
+  [UniswapV2RoutablePlatform.LEVINSWAP.name]: {
+    logo: LevinswapLogo,
+    alt: UniswapV2RoutablePlatform.LEVINSWAP.name,
+    gradientColor: '#FB52A1',
+    name: UniswapV2RoutablePlatform.LEVINSWAP.name,
+  },
+  [UniswapV2RoutablePlatform.PANCAKESWAP.name]: {
+    logo: PancakeSwapLogo,
+    alt: UniswapV2RoutablePlatform.PANCAKESWAP.name,
+    gradientColor: '#FB52A1',
+    name: UniswapV2RoutablePlatform.PANCAKESWAP.name,
+  },
+  [UniswapV2RoutablePlatform.QUICKSWAP.name]: {
+    logo: QuickswapLogo,
+    alt: UniswapV2RoutablePlatform.QUICKSWAP.name,
+    gradientColor: '#FB52A1',
+    name: UniswapV2RoutablePlatform.QUICKSWAP.name,
+  },
+  [UniswapV2RoutablePlatform.SUSHISWAP.name]: {
+    logo: SushiswapNewLogo,
+    alt: UniswapV2RoutablePlatform.SUSHISWAP.name,
+    gradientColor: '#FB52A1',
+    name: 'Sushi',
+  },
+  [UniswapV2RoutablePlatform.SWAPR.name]: {
+    logo: SwaprLogo,
+    alt: UniswapV2RoutablePlatform.SWAPR.name,
+    gradientColor: '#FB52A1',
+    name: UniswapV2RoutablePlatform.SWAPR.name,
   },
   [RoutablePlatform.UNISWAP.name]: {
     logo: UniswapLogo,
@@ -744,39 +747,39 @@ export const ROUTABLE_PLATFORM_STYLE: {
     gradientColor: '#FB52A1',
     name: RoutablePlatform.UNISWAP.name,
   },
+  [UniswapV2RoutablePlatform.UNISWAP.name]: {
+    logo: UniswapLogo,
+    alt: UniswapV2RoutablePlatform.UNISWAP.name,
+    gradientColor: '#FB52A1',
+    name: UniswapV2RoutablePlatform.UNISWAP.name,
+  },
   [RoutablePlatform.VELODROME.name]: {
     logo: VelodromeLogo,
     alt: RoutablePlatform.VELODROME.name,
     gradientColor: '#FB52A1',
     name: RoutablePlatform.VELODROME.name,
   },
-  [RoutablePlatform.ONE_INCH.name]: {
-    logo: OneInchLogo,
-    alt: RoutablePlatform.ONE_INCH.name,
-    gradientColor: '#FB52A1',
-    name: RoutablePlatform.ONE_INCH.name,
-  },
 }
 
 export const ROUTABLE_PLATFORM_LOGO: {
   [routablePaltformName: string]: ReactNode
 } = {
-  [UniswapV2RoutablePlatform.UNISWAP.name]: <img width={16} height={16} src={UniswapLogo} alt="uniswap" />,
-  [UniswapV2RoutablePlatform.SUSHISWAP.name]: <img width={16} height={16} src={SushiswapNewLogo} alt="sushiswap" />,
-  [UniswapV2RoutablePlatform.SWAPR.name]: <img width={16} height={16} src={SwaprLogo} alt="swapr" />,
-  [UniswapV2RoutablePlatform.HONEYSWAP.name]: <img width={16} height={16} src={HoneyswapLogo} alt="honeyswap" />,
+  [RoutablePlatform.ZEROX.name]: <img width={16} height={16} src={ZeroXLogo} alt="ZeroX" />,
+  [RoutablePlatform.ONE_INCH.name]: <img width={16} height={16} src={OneInchLogo} alt="One Inch" />,
   [UniswapV2RoutablePlatform.BAOSWAP.name]: <img width={16} height={16} src={BaoswapLogo} alt="baoswap" />,
   [UniswapV2RoutablePlatform.BISWAP.name]: <img width={16} height={16} src={BiSwapLogo} alt="biswap" />,
-  [UniswapV2RoutablePlatform.LEVINSWAP.name]: <img width={16} height={16} src={LevinswapLogo} alt="levinswap" />,
-  [UniswapV2RoutablePlatform.QUICKSWAP.name]: <img width={16} height={16} src={QuickswapLogo} alt="quickswap" />,
-  [UniswapV2RoutablePlatform.DFYN.name]: <img width={16} height={16} src={DFYNLogo} alt="dfyn" />,
-  [UniswapV2RoutablePlatform.PANCAKESWAP.name]: <img width={16} height={16} src={PancakeSwapLogo} alt="pancakeswap" />,
-  [RoutablePlatform.CURVE.name]: <img width={16} height={16} src={CurveLogo} alt="Curve" />,
-  [RoutablePlatform.ZEROX.name]: <img width={16} height={16} src={ZeroXLogo} alt="ZeroX" />,
   [RoutablePlatform.GNOSIS_PROTOCOL.name]: <img width={16} height={16} src={CoWLogo} alt="CoW" />,
-  [RoutablePlatform.VELODROME.name]: <img width={16} height={16} src={VelodromeLogo} alt="Velodrome" />,
+  [RoutablePlatform.CURVE.name]: <img width={16} height={16} src={CurveLogo} alt="Curve" />,
+  [UniswapV2RoutablePlatform.DFYN.name]: <img width={16} height={16} src={DFYNLogo} alt="dfyn" />,
+  [UniswapV2RoutablePlatform.HONEYSWAP.name]: <img width={16} height={16} src={HoneyswapLogo} alt="honeyswap" />,
+  [UniswapV2RoutablePlatform.LEVINSWAP.name]: <img width={16} height={16} src={LevinswapLogo} alt="levinswap" />,
+  [UniswapV2RoutablePlatform.PANCAKESWAP.name]: <img width={16} height={16} src={PancakeSwapLogo} alt="pancakeswap" />,
+  [UniswapV2RoutablePlatform.QUICKSWAP.name]: <img width={16} height={16} src={QuickswapLogo} alt="quickswap" />,
+  [UniswapV2RoutablePlatform.SUSHISWAP.name]: <img width={16} height={16} src={SushiswapNewLogo} alt="sushiswap" />,
+  [UniswapV2RoutablePlatform.SWAPR.name]: <img width={16} height={16} src={SwaprLogo} alt="swapr" />,
   [RoutablePlatform.UNISWAP.name]: <img width={16} height={16} src={UniswapLogo} alt="Uniswap Unicorn" />,
-  [RoutablePlatform.ONE_INCH.name]: <img width={16} height={16} src={OneInchLogo} alt="One Inch" />,
+  [UniswapV2RoutablePlatform.UNISWAP.name]: <img width={16} height={16} src={UniswapLogo} alt="uniswap" />,
+  [RoutablePlatform.VELODROME.name]: <img width={16} height={16} src={VelodromeLogo} alt="Velodrome" />,
 }
 
 export const ChainLabel: any = {
