@@ -21,6 +21,7 @@ import xDaiLogo from './../assets/images/logo-xDai.svg'
 import OptimismLogo from './../assets/images/optimism.svg'
 import RoutingOneInch from './../assets/images/routing-1inch.svg'
 import RoutingBaoSwap from './../assets/images/routing-BaoSwap.svg'
+import RoutingBiSwap from './../assets/images/routing-biswap.svg'
 import RoutingCoW from './../assets/images/routing-cow.svg'
 import RoutingCurve from './../assets/images/routing-curve.svg'
 import RoutingDFYN from './../assets/images/routing-DFYN.svg'
@@ -29,6 +30,8 @@ import RoutingPancakeSwap from './../assets/images/routing-pancakeswap.svg'
 import RoutingQuickSwap from './../assets/images/routing-Quickswap.svg'
 import RoutingSushiSwap from './../assets/images/routing-SushiSwap.svg'
 import RoutingUniswap from './../assets/images/routing-Uniswap.svg'
+import RoutingVelodrome from './../assets/images/routing-velodrome.svg'
+import RoutingZerox from './../assets/images/routing-zerox.svg'
 import { scrollTo } from './helperFunctions'
 
 export const mainNavigation = [
@@ -93,27 +96,21 @@ export const RoutingThroughContent = {
   title: 'ROUTING THROUGH',
   companies: [
     {
-      title: 'Uniswap',
-      img: RoutingUniswap,
+      title: '0x',
+      img: RoutingZerox,
     },
     {
-      title: 'SushiSwap',
-      img: RoutingSushiSwap,
+      title: '1inch',
+      img: RoutingOneInch,
     },
     {
       title: 'BaoSwap',
       img: RoutingBaoSwap,
     },
     {
-      title: 'HoneySwap',
-      img: RoutingHoneySwap,
+      title: 'BiSwap',
+      img: RoutingBiSwap,
     },
-    {
-      title: 'Levinswap',
-      img: RoutingLevinSwap,
-    },
-    { title: 'QuickSwap', img: RoutingQuickSwap },
-    { title: 'DFYN', img: RoutingDFYN },
     {
       title: 'CoW',
       img: RoutingCoW,
@@ -122,13 +119,31 @@ export const RoutingThroughContent = {
       title: 'Curve',
       img: RoutingCurve,
     },
+    { title: 'DFYN', img: RoutingDFYN },
+    {
+      title: 'HoneySwap',
+      img: RoutingHoneySwap,
+    },
+    {
+      title: 'Levinswap',
+      img: RoutingLevinSwap,
+    },
     {
       title: 'PancakeSwap',
       img: RoutingPancakeSwap,
     },
+    { title: 'QuickSwap', img: RoutingQuickSwap },
     {
-      title: '1inch',
-      img: RoutingOneInch,
+      title: 'SushiSwap',
+      img: RoutingSushiSwap,
+    },
+    {
+      title: 'Uniswap',
+      img: RoutingUniswap,
+    },
+    {
+      title: 'Velodrome',
+      img: RoutingVelodrome,
     },
   ],
 }
