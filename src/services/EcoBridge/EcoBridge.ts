@@ -61,7 +61,6 @@ export class EcoBridge {
 
     this.store = store
     this.bridges = bridges
-
     this.staticProviders = initiateEcoBridgeProviders()
 
     let resolve = () => undefined as void

@@ -73,8 +73,9 @@ export async function deleteOpenOrders(chainId: ChainId, uid: string, signer: Si
   if (signature) {
     try {
       await cowSdk.cowApi.sendSignedOrderCancellation({
-        //@ts-ignore
+        //@ts-expect-error
         chainId,
+        //@ts-expect-error
         cancellation: { orderUid: uid, signature, signingScheme: SigningScheme.EIP712 },
       })
       const response = await cowSdk.cowApi.getOrder(uid)

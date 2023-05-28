@@ -213,11 +213,11 @@ export const CurrencyList = ({
   return (
     <Flex overflowY="auto" flex="1">
       <AutoSizer style={{ height: '100%', width: '100%', overflow: 'hidden' }}>
-        {({ width, height }) => (
+        {(props: { width: string | number; height: string | number }) => (
           <StyledFixedSizeList<ComponentType<FixedSizeListProps<Currency[] | (string | Token)[]>>>
             ref={fixedListRef}
-            width={width}
-            height={height}
+            width={props.width}
+            height={props.height}
             itemData={itemData}
             itemCount={itemData.length}
             itemSize={56}

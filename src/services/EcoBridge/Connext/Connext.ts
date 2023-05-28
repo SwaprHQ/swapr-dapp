@@ -1,15 +1,14 @@
 import { Signer } from '@ethersproject/abstract-signer'
 import { BigNumber } from '@ethersproject/bignumber'
-import { Contract, ContractTransaction } from '@ethersproject/contracts'
+import { Contract } from '@ethersproject/contracts'
 import { formatUnits, parseUnits } from '@ethersproject/units'
-import { ChainId, Currency, DAI, WETH } from '@swapr/sdk'
+import { ChainId, Currency } from '@swapr/sdk'
 
 import ERC20 from '@connext/contracts/artifacts/IERC20.json'
 import { getDeployedConnextContract } from '@connext/nxtp-txservice'
 import { getHardcodedGasLimits } from '@connext/nxtp-utils'
-import connextSDK, { SdkShared } from '@connext/sdk'
+import { SdkShared, create } from '@connext/sdk'
 import { TokenInfo } from '@uniswap/token-lists'
-import { ethers, utils } from 'ethers'
 
 import { BRIDGES } from '../../../constants'
 import { SWPRSupportedChains } from '../../../utils/chainSupportsSWPR'
@@ -24,7 +23,7 @@ import {
 } from '../EcoBridge.types'
 import { ButtonStatus, EcoBridgeChildBase, getNativeCurrencyPrice } from '../EcoBridge.utils'
 
-import { connextSdkChainConfig } from './Connext.config'
+import { connextSdkConfig } from './Connext.config'
 import { CONNEXT_TOKENS } from './Connext.lists'
 import { connextActions } from './Connext.reducer'
 import { connextSelectors } from './Connext.selectors'
@@ -35,11 +34,11 @@ import {
   ConnextTransactionsSubgraph,
   ConnextTransactionStatus,
 } from './Connext.types'
-import { getReceivingTransaction, getTransactionsQuery, SilentLogger } from './Connext.utils'
+import { SilentLogger, getReceivingTransaction, getTransactionsQuery } from './Connext.utils'
 
 export class Connext extends EcoBridgeChildBase {
-  private _connextSdk: ConnextSDK | undefined
-  // private _connextShared: SdkShared | undefined
+  private sdk: ConnextSDK | undefined
+
   private _quote: ConnextQuote | undefined
 
   private get actions() {
@@ -68,43 +67,46 @@ export class Connext extends EcoBridgeChildBase {
 
     await this._createConnextSdk(this._activeProvider.getSigner())
 
-    await this.fetchHistory()
+    // TODO: fetch history
+    // await this.fetchHistory()
 
     this.ecoBridgeUtils.listeners.start([{ listener: this.pendingTransactionsListener }])
   }
 
   public onSignerChange = async ({ ...signerData }: EcoBridgeChangeHandler) => {
     //update sdk config with new signer
-    await this._createConnextSdk(signerData.activeProvider.getSigner())
+    const signerAddress = signerData.activeProvider.getSigner()
+
+    if (this.sdk?.sdkBase) {
+      await this.sdk.sdkBase.changeSignerAddress(signerAddress._address)
+    }
+
+    if (this.sdk?.sdkRouter) {
+      await this.sdk.sdkRouter.changeSignerAddress(signerAddress._address)
+    }
+
+    if (this.sdk?.sdkPool) {
+      await this.sdk.sdkPool.changeSignerAddress(signerAddress._address)
+    }
+
     this.setSignerData(signerData)
   }
 
   private _createConnextSdk = async (signer: Signer) => {
     const silentLogger = new SilentLogger()
+
     try {
-      const connextSdk = await connextSDK.create(
+      const signerAddress = await signer.getAddress()
+      const sdk = await create(
         {
-          chains: connextSdkChainConfig,
-          signerAddress: await signer.getAddress(),
-          // skipPolling: false,
+          chains: connextSdkConfig,
+          signerAddress: signerAddress,
         },
         silentLogger
       )
-      const _chainData = connextSdk.sdkUtils.chainData
-      // const connextShared = new SdkShared(
-      //   {
-      //     chains: connextSdkChainConfig,
-      //     signerAddress: await signer.getAddress(),
-      //     // skipPolling: false,
-      //   },
-      //   silentLogger,
-      //   _chainData
-      // )
 
-      // this._connextShared = connextShared
-
-      if (connextSdk) {
-        this._connextSdk = connextSdk
+      if (sdk) {
+        this.sdk = sdk
       }
     } catch (e) {
       throw this.ecoBridgeUtils.logger.error('Connext: Failed to create connext sdk')
@@ -113,25 +115,23 @@ export class Connext extends EcoBridgeChildBase {
 
   public approve = async () => {
     try {
-      if (!this._activeProvider) return
+      if (!this._activeProvider || !this.sdk) return
 
       const {
         from: { address, value, decimals, chainId },
       } = this.store.getState().ecoBridge.ui
 
-      const token = new Contract(address, ERC20.abi, this._activeProvider.getSigner())
-
+      const signer = this._activeProvider?.getSigner()
       const amount = parseUnits(value, decimals)
-
-      const managerContract = getDeployedConnextContract(chainId)
-
-      if (!managerContract) return
-
-      const transaction: ContractTransaction = await token.approve(managerContract.address, amount.toString())
+      const erc20 = new Contract(address, ERC20.abi, signer)
 
       this.ecoBridgeUtils.ui.statusButton.setStatus(ButtonStatus.APPROVING)
 
-      const receipt = await transaction.wait()
+      const managerContract = getDeployedConnextContract(chainId)
+      if (!managerContract) return
+
+      const approveTx = await erc20.approve(managerContract, amount)
+      const receipt = await approveTx.wait()
 
       if (receipt) {
         this.ecoBridgeUtils.ui.statusButton.setStatus(ButtonStatus.BRIDGE)
@@ -147,7 +147,7 @@ export class Connext extends EcoBridgeChildBase {
 
       const transactionHash = this.store.getState().ecoBridge.ui.collectableTxHash
 
-      if (!transactionHash || !this._account || !this._connextSdk)
+      if (!transactionHash || !this._account || !this.sdk)
         throw this.ecoBridgeUtils.logger.error('Cannot execute collect method')
 
       const allTransactions = this.selectors.selectOwnedTransactions(this.store.getState(), this._account)
@@ -186,8 +186,8 @@ export class Connext extends EcoBridgeChildBase {
         sendingChainId,
         receivingChainId,
       } = transactionToCollect
-
-      const receipt = await this._connextSdk.fulfillTransfer(
+      //@ts-expect-error
+      const receipt = await this.sdk.fulfillTransfer(
         {
           txData: {
             amount,
@@ -293,156 +293,118 @@ export class Connext extends EcoBridgeChildBase {
 
   public triggerBridging = async () => {
     try {
-      if (!this._connextSdk || !this._account || !this._quote)
+      if (!this.sdk || !this._account || !this._quote) {
         throw this.ecoBridgeUtils.logger.error('Cannot trigger transaction')
+      }
+
+      const signer = this._activeProvider?.getSigner()
 
       this.ecoBridgeUtils.ui.modal.setBridgeModalStatus(BridgeModalStatus.PENDING)
 
-      const { from, to } = this.store.getState().ecoBridge.ui
-      const { bid, gasFeeInReceivingToken, bidSignature } = this._quote
+      const { from } = this.store.getState().ecoBridge.ui
+      //TODO: get amount from quote
+      const amount = '0' // get from quote;
+      const walletAddress = this._account
 
-      const transferData = {
-        bid,
-        gasFeeInReceivingToken,
-        bidSignature,
-      }
-      const {
+      const bridgeRequest = await this.sdk.sdkBase.xcall({
         amount,
-        callDataHash,
-        callTo,
-        expiry,
-        receivingAssetId,
-        receivingAddress,
-        encryptedCallData,
-        initiator,
-        receivingChainTxManagerAddress,
-        user,
-        sendingAssetId,
-        router,
-        amountReceived,
-      } = bid
+        asset: from.address,
+        to: walletAddress,
+        origin: '',
+        destination: '',
+      })
 
-      const { prepareResponse, transactionId } = await this._connextSdk.prepareTransfer(transferData, false)
+      console.warn('Value', bridgeRequest?.value?.toString())
 
-      const summary: ConnextTransaction = {
-        amount,
-        amountReceived,
-        bidSignature,
-        callDataHash,
-        chainId: from.chainId.toString(),
-        callTo,
-        expiry: expiry.toString(),
-        receivingAddress,
-        receivingAssetId,
-        receivingChainId: to.chainId.toString(),
-        encryptedCallData,
-        initiator,
-        prepareCaller: this._account,
-        prepareTransactionHash: prepareResponse.hash,
-        preparedBlockNumber: prepareResponse.blockNumber?.toString() ?? '0',
-        preparedTimestamp: prepareResponse.timestamp?.toString() ?? '0',
-        receivingChainTxManagerAddress,
-        router: { id: router },
-        sendingAssetId,
-        sendingChainId: from.chainId.toString(),
-        status: ConnextTransactionStatus.PREPARED,
-        transactionId,
-        user: { id: user },
-        callData: null,
-        cancelCaller: null,
-        cancelMeta: null,
-        cancelTimestamp: null,
-        cancelTransactionHash: null,
-        encodedBid: undefined,
-        fulfillTransactionHash: null,
-        signature: null,
+      if (bridgeRequest && signer) {
+        try {
+          let gasLimit = await signer.estimateGas(bridgeRequest)
+
+          if (gasLimit) {
+            bridgeRequest.gasLimit = gasLimit
+          }
+        } catch (error) {}
+
+        const bridgeCallResponse = await signer.sendTransaction(bridgeRequest)
+
+        const { hash } = { ...bridgeCallResponse }
+
+        const xcall_receipt = await signer.provider.waitForTransaction(hash)
+
+        const { transactionHash, status } = { ...xcall_receipt }
+
+        console.log(transactionHash, status)
       }
-
-      this.store.dispatch(this.baseActions.addTransaction(summary))
-      this.ecoBridgeUtils.ui.modal.setBridgeModalStatus(BridgeModalStatus.INITIATED)
     } catch (error) {
       this.ecoBridgeUtils.ui.modal.setBridgeModalStatus(BridgeModalStatus.ERROR, this.bridgeId, error)
     }
   }
+
   public getBridgingMetadata = async () => {
     try {
       const requestId = this.ecoBridgeUtils.metadataStatus.start()
 
-      const {
+      let {
         from: { chainId: fromChainId, address: fromTokenAddress, value, decimals },
         to: { chainId: toChainId },
       } = this.store.getState().ecoBridge.ui
 
-      let toTokenAddress: string | undefined = undefined
-
       const isNative = fromTokenAddress === Currency.getNative(fromChainId).symbol
 
-      const normalizedFromTokenAddress = fromTokenAddress.toLowerCase()
+      let receiveLocal = false
 
       if (isNative) {
+        if (fromChainId === ChainId.MAINNET && fromTokenAddress.toLowerCase() === 'eth' && Currency.ETHER.address) {
+          fromTokenAddress = Currency.ETHER.address
+        }
         //eth to weth
         if (
           fromChainId === ChainId.MAINNET ||
           fromChainId === ChainId.ARBITRUM_ONE ||
           fromChainId === ChainId.OPTIMISM_MAINNET
         ) {
-          if (toChainId === ChainId.XDAI) toTokenAddress = WETH[ChainId.XDAI].address
-
-          if (toChainId === ChainId.POLYGON) toTokenAddress = WETH[ChainId.POLYGON].address
+          if (toChainId === ChainId.XDAI || toChainId === ChainId.POLYGON) receiveLocal = true
         }
         if (fromChainId === ChainId.XDAI) {
-          if (toChainId === ChainId.MAINNET) toTokenAddress = DAI[ChainId.MAINNET].address
-
-          if (toChainId === ChainId.ARBITRUM_ONE) toTokenAddress = DAI[ChainId.ARBITRUM_ONE].address
-
-          if (toChainId === ChainId.POLYGON) toTokenAddress = DAI[ChainId.POLYGON].address
-
-          if (toChainId === ChainId.OPTIMISM_MAINNET) toTokenAddress = DAI[ChainId.OPTIMISM_MAINNET].address
+          if (
+            toChainId === ChainId.MAINNET ||
+            toChainId === ChainId.ARBITRUM_ONE ||
+            toChainId === ChainId.POLYGON ||
+            toChainId === ChainId.OPTIMISM_MAINNET
+          )
+            receiveLocal = true
         }
-      } else {
-        toTokenAddress = CONNEXT_TOKENS.reduce<string | undefined>((tokenAddressOnDestinationChain, token) => {
-          //find from token on Connext's token list
-          const fromToken = token.contracts[fromChainId]
-
-          if (fromToken && fromToken.contract_address.toLowerCase() === normalizedFromTokenAddress) {
-            const toToken = token.contracts[toChainId]
-            tokenAddressOnDestinationChain = toToken?.contract_address
-          }
-          return tokenAddressOnDestinationChain
-        }, undefined)
       }
 
-      if (!toTokenAddress || !this._account || !this._connextSdk)
-        throw this.ecoBridgeUtils.logger.error('Not enough information to find quote')
+      if (!this._account || !this.sdk) throw this.ecoBridgeUtils.logger.error('Not enough information to find quote')
 
-      const originDomain = SdkShared.chainIdToDomain(fromChainId)
-      const destinationDomain = SdkShared.chainIdToDomain(toChainId)
+      const originDomain = SdkShared.chainIdToDomain(fromChainId).toString()
+      const destinationDomain = SdkShared.chainIdToDomain(toChainId).toString()
+      const fromAmount = parseUnits(value, decimals).toBigInt().toString()
 
-      const quote = await this._connextSdk.sdkPool.calculateAmountReceived(
-        originDomain.toString(),
-        destinationDomain.toString(),
+      const quote = await this.sdk.sdkBase.calculateAmountReceived(
+        originDomain,
+        destinationDomain,
         fromTokenAddress,
-        parseUnits(value, decimals).toString()
+        fromAmount,
+        receiveLocal,
+        true
       )
 
       if (!quote) throw this.ecoBridgeUtils.logger.error('Cannot fetch quote')
 
       this._quote = quote
 
-      const {
-        bid: { amount, amountReceived },
-      } = quote
+      const { amountReceived, routerFee } = quote
 
-      const fee = formatGasOrFees(Number(formatUnits(amount)) - Number(formatUnits(amountReceived)))
-
-      const { prepare } = await getHardcodedGasLimits(fromChainId)
+      const { execute } = await getHardcodedGasLimits(originDomain.toString())
 
       const gasPrice = await this._activeProvider?.getGasPrice()
 
       let gasInUSD: string | undefined = undefined
 
       if (gasPrice && ![ChainId.POLYGON, ChainId.OPTIMISM_MAINNET].includes(fromChainId)) {
-        const gasInGwei = BigNumber.from(gasPrice).mul(prepare)
+        const gasInGwei = BigNumber.from(gasPrice).mul(execute)
         const totalGas = formatUnits(gasInGwei)
 
         const nativeCurrencyPrice = await getNativeCurrencyPrice(this._activeChainId as SWPRSupportedChains)
@@ -455,16 +417,18 @@ export class Connext extends EcoBridgeChildBase {
       this.store.dispatch(
         this.baseActions.setBridgeDetails({
           receiveAmount: Number(formatUnits(amountReceived, decimals)).toFixed(this._receiveAmountDecimalPlaces),
-          fee,
+          fee: routerFee.toString(),
           estimateTime: '15 MIN',
           requestId,
           gas: gasInUSD,
         })
       )
     } catch (e) {
+      debugger
       this.ecoBridgeUtils.metadataStatus.fail()
     }
   }
+
   public validate = async () => {
     try {
       if (!this._activeProvider || !this._account || !this._quote) return
@@ -481,16 +445,14 @@ export class Connext extends EcoBridgeChildBase {
       }
 
       const token = new Contract(fromTokenAddress, ERC20.abi, this._activeProvider.getSigner())
-
+      // @ts-expect-error
       const managerContract = getDeployedTransactionManagerContract(fromChainId)
 
       if (!managerContract) throw this.ecoBridgeUtils.logger.error('Cannot get managerContractAddress')
 
       const allowance: BigNumber = await token.allowance(this._account, managerContract.address)
 
-      const {
-        bid: { amount },
-      } = this._quote
+      const { amountReceived: amount } = this._quote
 
       if (allowance.gte(BigNumber.from(amount))) {
         this.ecoBridgeUtils.ui.statusButton.setStatus(ButtonStatus.BRIDGE)
@@ -503,7 +465,7 @@ export class Connext extends EcoBridgeChildBase {
   }
 
   public fetchHistory = async () => {
-    if (!this._account || !this._connextSdk) return
+    if (!this._account || !this.sdk) return
 
     const query = getTransactionsQuery(this._account)
 
@@ -518,7 +480,8 @@ export class Connext extends EcoBridgeChildBase {
     const queryTransactionsPerChain = connextSupportedChains
       .filter((chain, index) => connextSupportedChains.indexOf(chain) === index)
       .map(chain => {
-        return this._connextSdk?.querySubgraph(chain, query)
+        //@ts-expect-error
+        return this.sdk?.querySubgraph(chain, query)
       })
 
     try {
@@ -561,6 +524,7 @@ export class Connext extends EcoBridgeChildBase {
       this.ecoBridgeUtils.logger.log('Cannot fetch history')
     }
   }
+
   private _updateTransaction = (transactionOnChain: ConnextTransactionsSubgraph, fulfillPending?: boolean) => {
     if (transactionOnChain && !!transactionOnChain.transactions.length) {
       const [txn] = transactionOnChain.transactions
@@ -571,6 +535,7 @@ export class Connext extends EcoBridgeChildBase {
       this.store.dispatch(this.actions.addTransaction(txn))
     }
   }
+
   public pendingTransactionsListener = async () => {
     const pendingTransactions = this.selectors.selectPendingTransactions(this.store.getState(), this._account)
 
@@ -580,15 +545,17 @@ export class Connext extends EcoBridgeChildBase {
       const promises = pendingTransactions.map(async tx => {
         const transaction = this.selectors.selectTransaction(this.store.getState(), tx.txHash)
 
-        if (!transaction || !this._connextSdk) return
+        if (!transaction || !this.sdk) return
 
         const { sendingChainId, receivingChainId, transactionId, fulfillPending } = transaction
 
         const query = getReceivingTransaction(transactionId)
 
         const [transactionOnFirstChain, transactionOnSecondChain] = await Promise.all<ConnextTransactionsSubgraph>([
-          this._connextSdk.querySubgraph(Number(sendingChainId), query),
-          this._connextSdk.querySubgraph(Number(receivingChainId), query),
+          //@ts-expect-error
+          this.sdk.querySubgraph(Number(sendingChainId), query),
+          //@ts-expect-error
+          this.sdk.querySubgraph(Number(receivingChainId), query),
         ])
 
         this._updateTransaction(transactionOnFirstChain, fulfillPending)

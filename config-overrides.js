@@ -34,6 +34,7 @@ module.exports = (config, env) => {
   const fallback = config.resolve.fallback || {}
   Object.assign(fallback, {
     fs: false,
+    zlib: require.resolve('browserify-zlib'),
     tls: require.resolve('tls'),
     net: require.resolve('net'),
     crypto: require.resolve('crypto-browserify'),
