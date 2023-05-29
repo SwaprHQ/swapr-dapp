@@ -12,6 +12,7 @@ import {
   SerializedPair,
   SerializedToken,
   toggleURLWarning,
+  updateClosedStacklyPopup,
   updateMatchesDarkMode,
   updateSelectedChartOption,
   updateSelectedSwapTab,
@@ -78,6 +79,8 @@ export interface UserState {
   timestamp: number
   URLWarningVisible: boolean
   userAdvancedSwapDetails: boolean
+
+  closedStacklyPopup: boolean
 }
 
 function pairKey(token0Address: string, token1Address: string) {
@@ -99,6 +102,7 @@ export const initialState: UserState = {
   timestamp: currentTimestamp(),
   URLWarningVisible: true,
   userAdvancedSwapDetails: true,
+  closedStacklyPopup: false,
 }
 
 export default createReducer(initialState, builder =>
@@ -197,5 +201,8 @@ export default createReducer(initialState, builder =>
     })
     .addCase(updateSelectedChartOption, (state, action) => {
       state.selectedChartOption = action.payload.selectedChartOption
+    })
+    .addCase(updateClosedStacklyPopup, (state, action) => {
+      state.closedStacklyPopup = action.payload.closedStacklyPopup
     })
 )

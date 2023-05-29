@@ -414,7 +414,7 @@ body {
 }
 
 .Toastify__toast--info {
-    background: ${props => props.theme.bg1} !important;
+    background: ${props => props.theme.bg1};
 }
 
 .walletconnect-connect__button__text {
@@ -427,10 +427,6 @@ body {
 	    bottom: 70px !important;
 	    left: 12px !important;
 	    right: 12px !important;
-	}
-
-  .Toastify__toast-container {
-	    width: auto !important;
 	}
 
   .walletconnect-connect__button__text {

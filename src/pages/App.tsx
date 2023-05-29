@@ -3,7 +3,7 @@ import AOS from 'aos'
 import { Suspense, useEffect, useState } from 'react'
 import { SkeletonTheme } from 'react-loading-skeleton'
 import { useLocation } from 'react-router-dom'
-import { Slide, ToastContainer } from 'react-toastify'
+import { Slide, ToastContainer, toast } from 'react-toastify'
 import styled, { useTheme } from 'styled-components'
 
 import { defaultSubgraphClient, subgraphClients } from '../apollo/client'
@@ -14,6 +14,8 @@ import { PageMetaData } from '../components/PageMetaData'
 import { SpaceBg } from '../components/SpaceBg/SpaceBg'
 import Web3ReactManager from '../components/Web3ReactManager'
 import { useActiveWeb3React } from '../hooks'
+import { useStacklyPopup } from '../state/application/hooks'
+import { useUpdateClosedStacklyPopup } from '../state/user/hooks'
 import { SWPRSupportedChains } from '../utils/chainSupportsSWPR'
 
 import { Routes } from './Routes'
@@ -88,6 +90,16 @@ export default function App() {
       })
     }, 1000)
   }, [])
+
+  const stacklyPopup = useStacklyPopup()
+  const [closedStacklyPopup] = useUpdateClosedStacklyPopup()
+  const showStacklyPopup = process.env.REACT_APP_SHOW_STACKLY_POPUP === 'true'
+
+  useEffect(() => {
+    if (closedStacklyPopup || !showStacklyPopup) return
+    const id = stacklyPopup()
+    return () => toast.done(id)
+  }, [closedStacklyPopup, showStacklyPopup, stacklyPopup])
 
   return (
     <>

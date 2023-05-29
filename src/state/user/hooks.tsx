@@ -19,6 +19,7 @@ import {
   SerializedPair,
   SerializedToken,
   toggleURLWarning,
+  updateClosedStacklyPopup,
   updateSelectedChartOption,
   updateSelectedSwapTab,
   updateUserAdvancedSwapDetails,
@@ -414,4 +415,29 @@ export function useTrackedTokenPairs(): [Token, Token][] {
 
     return Object.keys(keyed).map(key => keyed[key])
   }, [combinedList])
+}
+
+const closedStacklyPopup = createSelector(
+  (state: AppState) => state.user.closedStacklyPopup,
+  closedStacklyPopup => closedStacklyPopup
+)
+
+export function useClosedStacklyPopup() {
+  return useSelector<AppState, AppState['user']['closedStacklyPopup']>(closedStacklyPopup)
+}
+
+export function useUpdateClosedStacklyPopup(): [boolean, (closedStacklyPopup: boolean) => void] {
+  const dispatch = useDispatch<AppDispatch>()
+  const currentClosedStacklyPopup = useClosedStacklyPopup()
+
+  const setClosedStacklyPopup = useCallback(
+    (closedStacklyPopup: boolean) => {
+      if (currentClosedStacklyPopup !== closedStacklyPopup) {
+        dispatch(updateClosedStacklyPopup({ closedStacklyPopup: closedStacklyPopup }))
+      }
+    },
+    [currentClosedStacklyPopup, dispatch]
+  )
+
+  return [currentClosedStacklyPopup, setClosedStacklyPopup]
 }
