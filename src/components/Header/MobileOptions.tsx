@@ -80,6 +80,13 @@ export default function MobileOptions() {
         content={
           <List>
             <ListItem>
+              <StyledExternalLink id="stackly-nav-link" href="https://stackly.eth.limo/">
+                {t('DCA')}
+                <span>↗</span>
+              </StyledExternalLink>
+            </ListItem>
+
+            <ListItem>
               <StyledExternalLink id="charts-nav-link" href="https://dxstats.eth.limo/">
                 {t('charts')}
                 <span>↗</span>
