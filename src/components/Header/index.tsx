@@ -263,6 +263,9 @@ function Header() {
           <HeaderLink data-testid="swap-nav-link" id="swap-nav-link" to={swapRoute}>
             {t('swap')}
           </HeaderLink>
+          <HeaderLink data-testid="bridge-nav-link" id="bridge-nav-link" to="/bridge">
+            {t('bridge')}
+          </HeaderLink>
           <HeaderLink
             data-testid="pool-nav-link"
             id="pool-nav-link"
@@ -278,9 +281,11 @@ function Header() {
             {t('rewards')}
             {networkWithoutSWPR && <HeaderLinkBadge label="NOT&nbsp;AVAILABLE" />}
           </HeaderLink>
-          <HeaderLink data-testid="bridge-nav-link" id="bridge-nav-link" to="/bridge">
-            {t('bridge')}
-            <HeaderLinkBadge label="BETA" />
+          <HeaderLink id="stackly-nav-link" href="https://stackly.eth.limo/">
+            {t('DCA')}
+            <Text ml="4px" fontSize="13px">
+              ↗
+            </Text>
           </HeaderLink>
           <HeaderLink id="vote-nav-link" href="https://snapshot.org/#/swpr.eth">
             {t('vote')}
@@ -347,6 +352,9 @@ function Header() {
           <HeaderMobileLink id="swap-nav-link" to="/swap">
             {t('swap')}
           </HeaderMobileLink>
+          <HeaderMobileLink id="bridge-nav-link" to="/bridge">
+            {t('bridge')}
+          </HeaderMobileLink>
           {!networkWithoutSWPR && (
             <HeaderMobileLink id="pool-nav-link" to="/pools">
               {t('liquidity')}
@@ -357,9 +365,6 @@ function Header() {
               {t('rewards')}
             </HeaderMobileLink>
           )}
-          <HeaderMobileLink id="bridge-nav-link" to="/bridge">
-            {t('bridge')}
-          </HeaderMobileLink>
           <HeaderMobileLink id="vote-nav-link" href={`https://snapshot.org/#/swpr.eth`}>
             {t('vote')}
             <Text ml="4px" fontSize="11px">
