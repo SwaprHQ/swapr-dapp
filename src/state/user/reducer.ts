@@ -15,6 +15,7 @@ import {
   updateMatchesDarkMode,
   updateSelectedChartOption,
   updateSelectedSwapTab,
+  updateStacklyPopupOpen,
   updateUserAdvancedSwapDetails,
   updateUserDarkMode,
   updateUserDeadline,
@@ -78,6 +79,8 @@ export interface UserState {
   timestamp: number
   URLWarningVisible: boolean
   userAdvancedSwapDetails: boolean
+
+  stacklyPopupOpen: number | null
 }
 
 function pairKey(token0Address: string, token1Address: string) {
@@ -99,6 +102,7 @@ export const initialState: UserState = {
   timestamp: currentTimestamp(),
   URLWarningVisible: true,
   userAdvancedSwapDetails: true,
+  stacklyPopupOpen: null,
 }
 
 export default createReducer(initialState, builder =>
@@ -197,5 +201,8 @@ export default createReducer(initialState, builder =>
     })
     .addCase(updateSelectedChartOption, (state, action) => {
       state.selectedChartOption = action.payload.selectedChartOption
+    })
+    .addCase(updateStacklyPopupOpen, (state, action) => {
+      state.stacklyPopupOpen = action.payload.stacklyPopupOpen
     })
 )
