@@ -98,4 +98,11 @@ export const networkOptionsPreset: NetworkOptionsPreset[] = [
     color: '#F3BA2F',
     tag: NetworkSwitcherTags.TESTNETS,
   },
+  {
+    chainId: ChainId.ZK_SYNC_ERA_TESTNET,
+    name: 'zkSync Era Testnet',
+    logoSrc: ZkSyncEraLogo,
+    color: '#1E69FF',
+    tag: NetworkSwitcherTags.TESTNETS,
+  },
 ]
