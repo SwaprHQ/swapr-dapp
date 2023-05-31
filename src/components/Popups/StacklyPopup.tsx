@@ -7,22 +7,25 @@ import { AutoColumn } from '../Column'
 import { AutoRow } from '../Row'
 
 interface IStacklyPopup {
-  isYellow: boolean
+  isStacklyOldDesign: boolean
 }
 
-export function StacklyPopup({ isYellow }: IStacklyPopup) {
+export function StacklyPopup({ isStacklyOldDesign }: IStacklyPopup) {
   return (
-    <RowNoFlex isYellow={isYellow}>
+    <RowNoFlex isStacklyOldDesign={isStacklyOldDesign}>
       <AutoColumn gap="16px">
         <StacklyFont>
           Automate your DCA swaps
           <br />
           through Stackly
         </StacklyFont>
-        <StacklyButton as="a" href="https://stackly.eth.limo" target="_blank" isYellow={isYellow}>
+        <StacklyButton as="a" href="https://stackly.eth.limo" target="_blank" isStacklyOldDesign={isStacklyOldDesign}>
           Learn more
         </StacklyButton>
-        <StacklyImage src={isYellow ? StacklyYellowLogo : StacklyGreenLogo} isYellow={isYellow} />
+        <StacklyImage
+          src={isStacklyOldDesign ? StacklyYellowLogo : StacklyGreenLogo}
+          isStacklyOldDesign={isStacklyOldDesign}
+        />
       </AutoColumn>
     </RowNoFlex>
   )
@@ -31,13 +34,13 @@ export function StacklyPopup({ isYellow }: IStacklyPopup) {
 const RowNoFlex = styled(AutoRow)<IStacklyPopup>`
   flex-wrap: nowrap;
   margin-right: 16px;
-  background: ${({ isYellow }) => (isYellow ? '#fac336' : '#a2e771')};
+  background: ${({ isStacklyOldDesign }) => (isStacklyOldDesign ? '#fac336' : '#a2e771')};
 `
 
 const StacklyImage = styled.img<IStacklyPopup>`
   position: absolute;
-  bottom: ${({ isYellow }) => (isYellow ? '12px' : '0')};
-  right: ${({ isYellow }) => (isYellow ? '22px' : '5px')};
+  bottom: ${({ isStacklyOldDesign }) => (isStacklyOldDesign ? '12px' : '0')};
+  right: ${({ isStacklyOldDesign }) => (isStacklyOldDesign ? '22px' : '5px')};
 `
 
 const StacklyFont = styled.p`
@@ -46,7 +49,7 @@ const StacklyFont = styled.p`
   color: #060d00;
 `
 const StacklyButton = styled(Button)<IStacklyPopup>`
-  background: ${({ isYellow }) => (isYellow ? '#0C0C0C' : '#fff')};
+  background: ${({ isStacklyOldDesign }) => (isStacklyOldDesign ? '#0C0C0C' : '#fff')};
   border-radius: 8px;
   box-shadow: 0px 2px 4px -2px rgba(17, 12, 34, 0.12);
   padding: 8px 10px;
@@ -56,10 +59,10 @@ const StacklyButton = styled(Button)<IStacklyPopup>`
   :active,
   :focus,
   :hover {
-    background: ${({ isYellow }) => (isYellow ? '#0C0C0C' : '#fff')};
+    background: ${({ isStacklyOldDesign }) => (isStacklyOldDesign ? '#0C0C0C' : '#fff')};
   }
 
   font-size: 12px;
   font-weight: 600;
-  color: ${({ isYellow }) => (isYellow ? '#fff' : '#4d4f4c')};
+  color: ${({ isStacklyOldDesign }) => (isStacklyOldDesign ? '#fff' : '#4d4f4c')};
 `

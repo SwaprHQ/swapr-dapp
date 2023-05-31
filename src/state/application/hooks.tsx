@@ -8,7 +8,7 @@ import { TransactionPopup } from '../../components/Popups/TransactionPopup'
 import { useActiveWeb3React } from '../../hooks'
 import { useIsMobileByMedia } from '../../hooks/useIsMobileByMedia'
 import { AppDispatch, AppState } from '../index'
-import { useUpdateClosedStacklyPopup } from '../user/hooks'
+import { useUpdateStacklyPopupOpen } from '../user/hooks'
 
 import { ApplicationModal, MainnetGasPrice, PopupContent, setOpenModal } from './actions'
 
@@ -111,13 +111,14 @@ export function useNotificationPopup() {
   }, [])
 }
 
+const isStacklyOldDesign = process.env.REACT_APP_STACKLY_DESIGN_VERSION === 'old'
+
 export function useStacklyPopup(): () => Id {
   const isMobileMedia = useIsMobileByMedia()
-  const [, setClosedStacklyPopup] = useUpdateClosedStacklyPopup()
-  const isYellow = process.env.REACT_APP_STACKLY_POPUP_COLOR === 'yellow'
+  const [, setStacklyPopupOpen] = useUpdateStacklyPopupOpen()
 
   return useCallback((): Id => {
-    return toast.info(<StacklyPopup isYellow={isYellow} />, {
+    return toast.info(<StacklyPopup isStacklyOldDesign={isStacklyOldDesign} />, {
       closeOnClick: false,
       autoClose: false,
       icon: false,
@@ -125,10 +126,13 @@ export function useStacklyPopup(): () => Id {
       style: {
         width: isMobileMedia ? '' : '290px',
         marginLeft: isMobileMedia ? '' : '50px',
-        background: isYellow ? '#fac336' : '#a2e771',
+        background: isStacklyOldDesign ? '#fac336' : '#a2e771',
       },
       onClose: () => {
-        setClosedStacklyPopup(true)
+        const newDate = new Date()
+        newDate.setDate(newDate.getDate() + 3)
+
+        setStacklyPopupOpen(newDate.getTime())
       },
     })
     // eslint-disable-next-line react-hooks/exhaustive-deps

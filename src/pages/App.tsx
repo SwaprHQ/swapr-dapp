@@ -15,7 +15,7 @@ import { SpaceBg } from '../components/SpaceBg/SpaceBg'
 import Web3ReactManager from '../components/Web3ReactManager'
 import { useActiveWeb3React } from '../hooks'
 import { useStacklyPopup } from '../state/application/hooks'
-import { useUpdateClosedStacklyPopup } from '../state/user/hooks'
+import { useUpdateStacklyPopupOpen } from '../state/user/hooks'
 import { SWPRSupportedChains } from '../utils/chainSupportsSWPR'
 
 import { Routes } from './Routes'
@@ -68,6 +68,7 @@ const BodyWrapper = styled.div<{
 const Marginer = styled.div`
   margin-top: 5rem;
 `
+const showStacklyPopup = process.env.REACT_APP_SHOW_STACKLY_POPUP === 'true'
 
 export default function App() {
   const { chainId } = useActiveWeb3React()
@@ -92,14 +93,14 @@ export default function App() {
   }, [])
 
   const stacklyPopup = useStacklyPopup()
-  const [closedStacklyPopup] = useUpdateClosedStacklyPopup()
-  const showStacklyPopup = process.env.REACT_APP_SHOW_STACKLY_POPUP === 'true'
+  const [stacklyPopupOpen] = useUpdateStacklyPopupOpen()
 
   useEffect(() => {
-    if (closedStacklyPopup || !showStacklyPopup) return
+    const currentTimestamp = new Date().getTime()
+    if ((!!stacklyPopupOpen && stacklyPopupOpen >= currentTimestamp) || !showStacklyPopup) return
     const id = stacklyPopup()
     return () => toast.done(id)
-  }, [closedStacklyPopup, showStacklyPopup, stacklyPopup])
+  }, [stacklyPopupOpen, stacklyPopup])
 
   return (
     <>

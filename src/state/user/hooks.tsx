@@ -19,7 +19,7 @@ import {
   SerializedPair,
   SerializedToken,
   toggleURLWarning,
-  updateClosedStacklyPopup,
+  updateStacklyPopupOpen,
   updateSelectedChartOption,
   updateSelectedSwapTab,
   updateUserAdvancedSwapDetails,
@@ -417,27 +417,27 @@ export function useTrackedTokenPairs(): [Token, Token][] {
   }, [combinedList])
 }
 
-const closedStacklyPopup = createSelector(
-  (state: AppState) => state.user.closedStacklyPopup,
-  closedStacklyPopup => closedStacklyPopup
+const stacklyPopupOpen = createSelector(
+  (state: AppState) => state.user.stacklyPopupOpen,
+  stacklyPopupOpen => stacklyPopupOpen
 )
 
-export function useClosedStacklyPopup() {
-  return useSelector<AppState, AppState['user']['closedStacklyPopup']>(closedStacklyPopup)
+export function useStacklyPopupOpen() {
+  return useSelector<AppState, AppState['user']['stacklyPopupOpen']>(stacklyPopupOpen)
 }
 
-export function useUpdateClosedStacklyPopup(): [boolean, (closedStacklyPopup: boolean) => void] {
+export function useUpdateStacklyPopupOpen(): [number | null, (stacklyPopupOpen: number) => void] {
   const dispatch = useDispatch<AppDispatch>()
-  const currentClosedStacklyPopup = useClosedStacklyPopup()
+  const isStacklyPopupOpen = useStacklyPopupOpen()
 
-  const setClosedStacklyPopup = useCallback(
-    (closedStacklyPopup: boolean) => {
-      if (currentClosedStacklyPopup !== closedStacklyPopup) {
-        dispatch(updateClosedStacklyPopup({ closedStacklyPopup: closedStacklyPopup }))
+  const setStacklyPopupOpen = useCallback(
+    (stacklyPopupOpen: number) => {
+      if (isStacklyPopupOpen !== stacklyPopupOpen) {
+        dispatch(updateStacklyPopupOpen({ stacklyPopupOpen: stacklyPopupOpen }))
       }
     },
-    [currentClosedStacklyPopup, dispatch]
+    [isStacklyPopupOpen, dispatch]
   )
 
-  return [currentClosedStacklyPopup, setClosedStacklyPopup]
+  return [isStacklyPopupOpen, setStacklyPopupOpen]
 }

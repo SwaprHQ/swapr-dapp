@@ -41,4 +41,4 @@ export const updateSelectedChartOption = createAction<{ selectedChartOption: Cha
   'user/updateSelectedChartOption'
 )
 
-export const updateClosedStacklyPopup = createAction<{ closedStacklyPopup: boolean }>('user/updateClosedStacklyPopup')
+export const updateStacklyPopupOpen = createAction<{ stacklyPopupOpen: number }>('user/updateStacklyPopupOpen')
