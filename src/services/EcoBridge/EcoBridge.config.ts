@@ -68,6 +68,7 @@ export const ecoBridgeConfig: EcoBridgeChildBase[] = [
       ChainId.GNOSIS,
       ChainId.OPTIMISM_MAINNET,
       ChainId.BSC_MAINNET,
+      ChainId.ZK_SYNC_ERA_MAINNET,
     ]),
   }),
   new XdaiBridge({
