@@ -36,9 +36,9 @@ export function LimitTransactionRow({ transaction }: LimitTransactionRowProps) {
   const notify = useNotificationPopup()
   const formattedSellToken = useToken(sellToken.tokenAddress)
   const formattedBuyToken = useToken(buyToken.tokenAddress)
-  const transactionNetwork = network ? getNetworkInfo(Number(network)) : undefined
-  const link = getExplorerLink(network, uid, 'transaction', 'COW')
-
+  const [link, transactionNetwork] = network
+    ? [getExplorerLink(network, uid, 'transaction', 'COW'), getNetworkInfo(Number(network))]
+    : []
   const sellTokenValue = Number(formatUnits(sellToken.value, formattedSellToken?.decimals))
   const buyTokenValue = Number(formatUnits(buyToken.value, formattedBuyToken?.decimals))
 
@@ -80,12 +80,14 @@ export function LimitTransactionRow({ transaction }: LimitTransactionRowProps) {
               </Box>
             </Flex>
           </Flex>
-          <Box sx={{ mt: 1 }}>
-            <NetworkLink href={link} rel="noopener noreferrer" target="_blank">
-              <CustomLinkIcon size={12} />
-              {transactionNetwork?.name}
-            </NetworkLink>
-          </Box>
+          {link && (
+            <Box sx={{ mt: 1 }}>
+              <NetworkLink href={link} rel="noopener noreferrer" target="_blank">
+                <CustomLinkIcon size={12} />
+                {transactionNetwork?.name}
+              </NetworkLink>
+            </Box>
+          )}
         </Flex>
       </TokenDetails>
 
