@@ -58,7 +58,7 @@ export function TradeDetails({
     )
   }
 
-  if (show && trade !== undefined) {
+  if (show && trade) {
     return (
       <>
         <AutoColumn gap="8px">
