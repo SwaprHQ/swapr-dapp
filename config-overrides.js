@@ -31,9 +31,12 @@ module.exports = (config, env) => {
   const base64Hash = Buffer.from(shortCommitHash).toString('base64')
   const CSP_NONCE = JSON.stringify(base64Hash)
 
+  config.target = 'web'
+
   const fallback = config.resolve.fallback || {}
   Object.assign(fallback, {
     fs: false,
+    zlib: false,
     tls: require.resolve('tls'),
     net: require.resolve('net'),
     crypto: require.resolve('crypto-browserify'),

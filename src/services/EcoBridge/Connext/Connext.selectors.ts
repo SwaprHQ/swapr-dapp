@@ -21,7 +21,7 @@ const createSelectOwnedTransactions = (bridgeId: ConnextIdList) => {
       if (account) {
         const normalizedAccount = account.toLowerCase()
 
-        return txs.filter(tx => tx.initiator.toLowerCase() === normalizedAccount)
+        return txs.filter(tx => tx?.initiator?.toLowerCase() === normalizedAccount)
       }
       return []
     }

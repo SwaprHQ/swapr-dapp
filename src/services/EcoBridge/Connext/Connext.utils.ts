@@ -1,10 +1,13 @@
 import { Logger } from '@connext/nxtp-utils'
 
+import { Assets } from './Connext.lists'
+
 /**
  * Used to suppress logs from connext sdk
  */
 export class SilentLogger extends Logger {
   constructor(...args: any[]) {
+    //@ts-expect-error
     super(args)
     this['print'] = () => {
       return
@@ -16,106 +19,14 @@ export class SilentLogger extends Logger {
   }
 }
 
-export const getTransactionsQuery = (account: string) => {
-  return `{
-    transactions(where: {initiator: "${account}"}) {
-      id
-      status
-      chainId
-      preparedTimestamp
-      receivingChainTxManagerAddress
-      user {
-        id
+export const getConnextContract = (chainId: number, symbol?: string) => {
+  if (symbol) {
+    const asset = Assets.find(a => a.symbol.toLowerCase() === symbol.toLowerCase())
+    if (asset) {
+      const contract = asset.contracts.find(c => c.chain_id.toString() === chainId.toString())
+      if (contract) {
+        return contract.contract_address
       }
-      router {
-        id
-      }
-      initiator
-      sendingAssetId
-      receivingAssetId
-      sendingChainFallback
-      callTo
-      receivingAddress
-      callDataHash
-      transactionId
-      sendingChainId
-      receivingChainId
-      amount
-      expiry
-      preparedBlockNumber
-      encryptedCallData
-      prepareCaller
-      bidSignature
-      encodedBid
-      prepareTransactionHash
-      prepareMeta
-      relayerFee
-      signature
-      callData
-      externalCallSuccess
-      externalCallIsContract
-      externalCallReturnData
-      fulfillCaller
-      fulfillTransactionHash
-      fulfillMeta
-      fulfillTimestamp
-      cancelCaller
-      cancelTransactionHash
-      cancelMeta
-      cancelTimestamp
     }
   }
-`
-}
-
-export const getReceivingTransaction = (transactionId: string) => {
-  return `{
-    transactions(where: {transactionId: "${transactionId}"}) {
-      id
-      status
-      chainId
-      preparedTimestamp
-      receivingChainTxManagerAddress
-      user {
-        id
-      }
-      router {
-        id
-      }
-      initiator
-      sendingAssetId
-      receivingAssetId
-      sendingChainFallback
-      callTo
-      receivingAddress
-      callDataHash
-      transactionId
-      sendingChainId
-      receivingChainId
-      amount
-      expiry
-      preparedBlockNumber
-      encryptedCallData
-      prepareCaller
-      bidSignature
-      encodedBid
-      prepareTransactionHash
-      prepareMeta
-      relayerFee
-      signature
-      callData
-      externalCallSuccess
-      externalCallIsContract
-      externalCallReturnData
-      fulfillCaller
-      fulfillTransactionHash
-      fulfillMeta
-      fulfillTimestamp
-      cancelCaller
-      cancelTransactionHash
-      cancelMeta
-      cancelTimestamp
-    }
-  }
-`
 }

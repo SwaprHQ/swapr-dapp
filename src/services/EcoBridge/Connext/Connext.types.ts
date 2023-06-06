@@ -1,47 +1,22 @@
+import { SdkBase, SdkUtils, SdkRouter, SdkPool } from '@connext/sdk'
 import { EntityState } from '@reduxjs/toolkit'
+import { BigNumberish } from 'ethers'
 
 import { BridgeTransactionSummary } from '../../../state/bridgeTransactions/types'
 
-export type ConnextToken = {
-  id: string
-  symbol: string
-  name: string
-  logoURI?: string
-  is_staging?: boolean
-  contracts: {
-    [chainId: string]: {
-      contract_address: string
-      contract_decimals: number
-    }
-  }
+export type ConnextSDK = {
+  sdkBase: SdkBase
+  sdkUtils: SdkUtils
+  sdkRouter: SdkRouter
+  sdkPool: SdkPool
 }
 
 export type ConnextQuote = {
-  bid: {
-    amount: string
-    amountReceived: string
-    bidExpiry: number
-    callDataHash: string
-    callTo: string
-    encryptedCallData: string
-    expiry: number
-    initiator: string
-    receivingAddress: string
-    receivingAssetId: string
-    receivingChainId: number
-    receivingChainTxManagerAddress: string
-    router: string
-    sendingAssetId: string
-    sendingChainId: number
-    sendingChainTxManagerAddress: string
-    transactionId: string
-    user: string
-  }
-  bidSignature?: string
-  gasFeeInReceivingToken: string
-  metaTxRelayerFee: string
-  routerFee: string
-  totalFee: string
+  amountReceived: BigNumberish
+  originSlippage: BigNumberish
+  routerFee: BigNumberish
+  destinationSlippage: BigNumberish
+  isFastPath: boolean
 }
 
 export interface ConnextBridgeState {
@@ -103,4 +78,46 @@ export enum ConnextTransactionStatus {
   CANCELLED = 'Cancelled',
   FULFILLED = 'Fulfilled',
   PENDING = 'Pending',
+}
+
+export type ConnextToken = {
+  id: string
+  symbol: string
+  name: string
+  logoURI?: string
+  is_staging?: boolean
+  contracts: {
+    [chainId: string]: {
+      contract_address: string
+      contract_decimals: number
+    }
+  }
+}
+
+type NextAsset = {
+  contract_address: string
+  decimals: number
+  symbol: string
+  image: string
+}
+
+type Contract = {
+  contract_address: string
+  chain_id: number
+  decimals: number
+  symbol?: string
+  image?: string
+  next_asset?: NextAsset
+  wrapable?: boolean
+  is_pool?: boolean
+}
+
+export type Asset = {
+  id: string
+  symbol: string
+  name: string
+  image: string
+  is_stablecoin?: boolean
+  contracts: Contract[]
+  exclude_source_chains?: string[]
 }
