@@ -1,51 +1,59 @@
-import { ChainId } from '@swapr/sdk'
+import { Web3Provider } from '@ethersproject/providers'
+import { ChainId, TokenAmount } from '@swapr/sdk'
 
-import { ERC20Token, LimitOrderBaseConstructor, NativeToken, TokenAmount } from './LimitOrder.types'
+import { Token, LimitOrderBaseConstructor, LimitOrderChangeHandler } from './LimitOrder.types'
 
 export abstract class LimitOrderBase {
-  userAddress: string
-  receiverAddress: string
-  sellToken: ERC20Token | NativeToken
-  buyToken?: ERC20Token | NativeToken
-  sellAmount?: TokenAmount
-  buyAmount?: TokenAmount
-  limitPrice?: string
-  orderType: 'partial' | 'full'
-  quoteId?: string
-  kind: 'buy' | 'sell'
-  expiresAt?: number
-  createdAt?: number
-  limitOrderProvider?: 'CoW' | '1inch'
+  limitOrder: any
+  quote: any
+  userAddress: string | undefined
+  receiverAddres: string | undefined
+  sellToken: Token | undefined
+  buyToken: Token | undefined
+  sellAmount: TokenAmount | undefined
+  buyAmount: TokenAmount | undefined
+  limitPrice: string | undefined
+  orderType?: 'partial' | 'full'
+  quoteId: string | undefined
+  kind?: 'buy' | 'sell'
+  provider: Web3Provider | undefined
+  expiresAt: number
+  createdAt: number | undefined
+  limitOrderProtocol: 'CoW' | '1inch'
   supportedChanins: ChainId[]
+  activeChainId: ChainId | undefined
 
-  constructor({
-    userAddress,
-    receiverAddress,
-    sellToken,
-    orderType = 'partial',
-    kind = 'buy',
-    provider,
-    supportedChains,
-  }: LimitOrderBaseConstructor) {
-    this.userAddress = userAddress
-    this.receiverAddress = receiverAddress
-    this.sellToken = sellToken
-    this.orderType = orderType
-    this.kind = kind
-    this.limitOrderProvider = provider
+  constructor({ protocol, supportedChains, kind, expiresAt }: LimitOrderBaseConstructor) {
+    this.limitOrderProtocol = protocol
     this.supportedChanins = supportedChains
+    this.kind = kind
+    this.expiresAt = expiresAt
   }
 
-  #log = (message: string) => `LimitOrder:: ${this.limitOrderProvider} : ${message}`
+  #log = (message: string) => `LimitOrder:: ${this.limitOrderProtocol} : ${message}`
 
   #logger = {
     log: (message: string) => console.log(this.#log(message)),
     error: (message: string) => console.error(this.#log(message)),
   }
 
+  setSignerData = async ({ account, activeChainId, activeProvider }: LimitOrderChangeHandler) => {
+    this.userAddress = account
+    this.activeChainId = activeChainId
+    this.provider = activeProvider
+    this.#logger.log(`Signer data set for ${this.limitOrderProtocol}`)
+  }
+
+  abstract onSellTokenChange(sellToken: Token): void
+  abstract onBuyTokenChange(buyToken: Token): void
+  abstract onSellAmountChange(sellAmount: TokenAmount): void
+  abstract onBuyAmountChange(buyAmount: TokenAmount): void
+  abstract onLimitOrderChange(limitOrder: any): void
+  abstract onExpireChange(expiresAt: number): void
+
   abstract getQuote(): Promise<void>
-  abstract init(): Promise<void>
-  abstract onSignerChange(): Promise<void>
+  abstract setToMarket(sellPricePercentage: number, buyPricePercentage: number): Promise<void>
+  abstract onSignerChange({ account, activeChainId, activeProvider }: LimitOrderChangeHandler): Promise<void>
   abstract approve(): Promise<void>
   abstract createOrder(): Promise<void>
 }
