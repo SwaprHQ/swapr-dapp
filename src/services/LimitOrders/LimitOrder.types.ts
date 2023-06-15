@@ -1,3 +1,4 @@
+import { Web3Provider } from '@ethersproject/providers'
 import { ChainId } from '@swapr/sdk'
 
 import { LimitOrderBase } from './LimitOrder.utils'
@@ -20,23 +21,16 @@ export type ERC20Token = TokenBase & {
   isToken: true
 }
 
-export interface TokenAmount<Token = ERC20Token> {
-  token: Token
-  /**
-   * Amount in wei
-   */
-  amount: string
-}
+export type Token = NativeToken | ERC20Token
 
 export interface LimitOrderBaseConstructor {
-  userAddress: string
-  receiverAddress: string
-  sellToken: ERC20Token | NativeToken
-  orderType?: 'partial' | 'full'
-  kind?: 'buy' | 'sell'
-  provider?: 'CoW' | '1inch'
+  protocol: 'CoW' | '1inch'
   supportedChains: ChainId[]
+  kind: 'buy' | 'sell'
+  expiresAt: number
 }
+
+export type ProtocolContructor = Omit<LimitOrderBaseConstructor, 'kind' | 'expiresAt'>
 
 export enum LimitOrderIds {
   COW = 'CoW',
@@ -44,3 +38,9 @@ export enum LimitOrderIds {
 }
 
 export type LimitOrderProviders = { [key in LimitOrderIds]: LimitOrderBase }
+
+export interface LimitOrderChangeHandler {
+  account: string
+  activeProvider: Web3Provider
+  activeChainId: ChainId
+}
