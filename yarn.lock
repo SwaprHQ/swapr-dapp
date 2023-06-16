@@ -7859,7 +7859,7 @@ __metadata:
 
 "@swapr/sdk@SwaprHQ/swapr-sdk#feat/add-zksync-era-support":
   version: 1.8.2
-  resolution: "@swapr/sdk@https://github.com/SwaprHQ/swapr-sdk.git#commit=3280920d24e9adce1974c8cc8a300de3c8007ef3"
+  resolution: "@swapr/sdk@https://github.com/SwaprHQ/swapr-sdk.git#commit=f95aa2b75409331fb16ab6865eaa7b3a5dc634c3"
   dependencies:
     "@cowprotocol/cow-sdk": ^1.0.2-RC.0
     "@ethersproject/abi": ^5.6.4
@@ -7890,7 +7890,7 @@ __metadata:
     tslib: ^2.3.1
   peerDependencies:
     ethers: ^5.4.0
-  checksum: 8f7f6a6ff23f4e1b9bf03bf379a8edb715bc21aac079b27784bf3f06ab8238eeb6049dabe2b00f3ba656652f23de9acb248b4244201cd144dc8560f4310708e9
+  checksum: 8d42bffa5a181b620bfca43ffa4eaa7d00bfe587c27243c38099de8009e40043ccedbbd416e4d1101b4fae23e4dee82f85a53aa0e5575475b936eddbd0428051
   languageName: node
   linkType: hard
 
