@@ -29,9 +29,26 @@ export class OneInch extends LimitOrderBase {
     this.buyAmount = buyAmount
   }
 
+  onLimitOrderChange(limitOrder: any): void {
+    this.limitOrder = limitOrder
+  }
+
+  onExpireChange(expiresAt: number): void {
+    this.expiresAt = expiresAt
+  }
+
+  onKindChange(kind: 'buy' | 'sell'): void {
+    this.kind = kind
+  }
+
+  setToMarket(): Promise<void> {
+    throw new Error('Method not implemented.')
+  }
+
   getQuote(): Promise<void> {
     throw new Error('Method not implemented.')
   }
+
   init(): Promise<void> {
     throw new Error('Method not implemented.')
   }

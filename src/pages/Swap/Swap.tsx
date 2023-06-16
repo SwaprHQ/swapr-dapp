@@ -12,6 +12,7 @@ import { ChartOption, SwapTab } from '../../state/user/reducer'
 import { AdvancedTradingViewBox } from './AdvancedTradingViewBox'
 import { Tabs } from './Components/Tabs'
 import { LandingSections } from './LandingSections'
+import LimitOrder from './LimitOrder'
 import { LimitOrderBox } from './LimitOrderBox'
 import { supportedChainIdList } from './LimitOrderBox/constants'
 import { SwapBox } from './SwapBox/SwapBox.component'
@@ -28,7 +29,7 @@ const AppBodyContainer = styled.section`
  * Swap page component
  */
 export function Swap() {
-  const { SWAP, LIMIT_ORDER } = SwapTab
+  const { SWAP, LIMIT_ORDER, LIMIT_ORDER_NEW } = SwapTab
   const { account, chainId } = useActiveWeb3React()
 
   // Control the active tab
@@ -71,6 +72,7 @@ export function Swap() {
             <Tabs />
             {activeTab === SWAP && <SwapBox />}
             {activeTab === LIMIT_ORDER && <LimitOrderBox />}
+            {activeTab === LIMIT_ORDER_NEW && <LimitOrder />}
           </AdvancedViewWrapper>
         </AppBodyContainer>
       </Hero>

@@ -30,6 +30,7 @@ const currentTimestamp = () => new Date().getTime()
 export enum SwapTab {
   SWAP = 'SWAP',
   LIMIT_ORDER = 'LIMIT_ORDER',
+  LIMIT_ORDER_NEW = 'LIMIT_ORDER_NEW',
   BRIDGE_SWAP = 'BRIDGE_SWAP',
 }
 

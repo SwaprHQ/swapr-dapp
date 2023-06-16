@@ -95,6 +95,12 @@ export function Tabs() {
           Swap
         </Button>
         <LimitOrderTab className={activeTab === SwapTab.LIMIT_ORDER ? 'active' : ''} setActiveTab={setActiveTab} />
+
+        <Button onClick={() => setActiveTab(SwapTab.LIMIT_ORDER_NEW)} title="Limit Order">
+          <StyledSliders height={11} />
+          {t('tabs.limit')}
+        </Button>
+
         <Button
           title="Bridge Swap"
           onClick={() => {
