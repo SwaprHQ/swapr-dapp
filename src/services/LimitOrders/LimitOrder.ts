@@ -21,7 +21,7 @@ export default class LimitOrder {
     )
   }
 
-  getactiveProtocol = () => {
+  getActiveProtocol = () => {
     console.log('LimitOrder getactiveProtocols')
     this.activeProtocol = this.#protocols.find(
       protocol => protocol.activeChainId && protocol.supportedChanins.includes(protocol.activeChainId)

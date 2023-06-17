@@ -49,7 +49,7 @@ export class CoW extends LimitOrderBase {
     this.kind = kind
   }
 
-  async setToMarket(sellPricePercentage: number, buyPricePercentage: number): Promise<void> {
+  async setToMarket(_sellPricePercentage: number, _buyPricePercentage: number): Promise<void> {
     const sellToken = this.sellToken
     const buyToken = this.buyToken
     if (!sellToken || !buyToken) {

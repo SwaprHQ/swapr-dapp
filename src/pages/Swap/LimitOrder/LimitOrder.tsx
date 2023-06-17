@@ -1,6 +1,4 @@
-import dayjs from 'dayjs'
-import { parseUnits } from 'ethers/lib/utils'
-import { useCallback, useEffect, useRef, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { Flex } from 'rebass'
 
 import { AutoColumn } from '../../../components/Column'
@@ -21,13 +19,13 @@ export default function LimitOrderUI() {
 
   const { chainId, account, library } = useActiveWeb3React()
 
-  const [protocol, setProtocol] = useState(limitSdk.getactiveProtocol())
+  const [protocol, setProtocol] = useState(limitSdk.getActiveProtocol())
   const [fetchMarketPrice, setFetchMarketPrice] = useState<boolean>(true)
 
   useEffect(() => {
     async function updateSigner(signerData: LimitOrderChangeHandler) {
       await limitSdk.updateSigner(signerData)
-      setProtocol(limitSdk.getactiveProtocol())
+      setProtocol(limitSdk.getActiveProtocol())
     }
     if (chainId && account && library) {
       updateSigner({ activeChainId: chainId, account, activeProvider: library })
@@ -62,7 +60,7 @@ export default function LimitOrderUI() {
                 <CurrencyInputPanel
                   id="limit-order-sell-currency"
                   value="0"
-                  onUserInput={function (value: string): void {
+                  onUserInput={function (_value: string): void {
                     throw new Error('Function not implemented.')
                   }}
                   showNativeCurrency={false}
@@ -71,7 +69,7 @@ export default function LimitOrderUI() {
                 <CurrencyInputPanel
                   id="limit-order-buy-currency"
                   value="0"
-                  onUserInput={function (value: string): void {
+                  onUserInput={function (_value: string): void {
                     throw new Error('Function not implemented.')
                   }}
                   showNativeCurrency={false}
