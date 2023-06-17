@@ -12,7 +12,7 @@ import { ChartOption, SwapTab } from '../../state/user/reducer'
 import { AdvancedTradingViewBox } from './AdvancedTradingViewBox'
 import { Tabs } from './Components/Tabs'
 import { LandingSections } from './LandingSections'
-import LimitOrder from './LimitOrder'
+import LimitOrderUI from './LimitOrder'
 import { LimitOrderBox } from './LimitOrderBox'
 import { supportedChainIdList } from './LimitOrderBox/constants'
 import { SwapBox } from './SwapBox/SwapBox.component'
@@ -72,7 +72,7 @@ export function Swap() {
             <Tabs />
             {activeTab === SWAP && <SwapBox />}
             {activeTab === LIMIT_ORDER && <LimitOrderBox />}
-            {activeTab === LIMIT_ORDER_NEW && <LimitOrder />}
+            {activeTab === LIMIT_ORDER_NEW && <LimitOrderUI />}
           </AdvancedViewWrapper>
         </AppBodyContainer>
       </Hero>

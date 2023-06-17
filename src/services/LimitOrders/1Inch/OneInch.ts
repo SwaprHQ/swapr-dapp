@@ -1,6 +1,6 @@
 import { TokenAmount } from '@swapr/sdk'
 
-import { ProtocolContructor, Token } from '../LimitOrder.types'
+import { Kind, LimitOrderChangeHandler, OrderExpiresInUnit, ProtocolContructor, Token } from '../LimitOrder.types'
 import { LimitOrderBase } from '../LimitOrder.utils'
 
 export class OneInch extends LimitOrderBase {
@@ -8,7 +8,7 @@ export class OneInch extends LimitOrderBase {
     super({
       supportedChains,
       protocol,
-      kind: 'sell',
+      kind: Kind.Sell,
       expiresAt: 20,
     })
   }
@@ -37,7 +37,11 @@ export class OneInch extends LimitOrderBase {
     this.expiresAt = expiresAt
   }
 
-  onKindChange(kind: 'buy' | 'sell'): void {
+  onExpireUnitChange(unit: OrderExpiresInUnit): void {
+    this.expiresAtUnit = unit
+  }
+
+  onKindChange(kind: Kind): void {
     this.kind = kind
   }
 
@@ -52,8 +56,11 @@ export class OneInch extends LimitOrderBase {
   init(): Promise<void> {
     throw new Error('Method not implemented.')
   }
-  onSignerChange(): Promise<void> {
-    throw new Error('Method not implemented.')
+  async onSignerChange(_signer: LimitOrderChangeHandler) {
+    // this.userAddress = account
+    // this.activeChainId = activeChainId
+    // this.provider = activeProvider
+    // TODO: update protocol if needed
   }
   approve(): Promise<void> {
     throw new Error('Method not implemented.')

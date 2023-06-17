@@ -1,7 +1,7 @@
 import { Web3Provider } from '@ethersproject/providers'
 import { ChainId, TokenAmount } from '@swapr/sdk'
 
-import { Token, LimitOrderBaseConstructor, LimitOrderChangeHandler } from './LimitOrder.types'
+import { Token, LimitOrderBaseConstructor, LimitOrderChangeHandler, OrderExpiresInUnit, Kind } from './LimitOrder.types'
 
 export abstract class LimitOrderBase {
   limitOrder: any
@@ -15,9 +15,10 @@ export abstract class LimitOrderBase {
   limitPrice: string | undefined
   orderType?: 'partial' | 'full'
   quoteId: string | undefined
-  kind?: 'buy' | 'sell'
+  kind?: Kind = Kind.Sell
   provider: Web3Provider | undefined
   expiresAt: number
+  expiresAtUnit: OrderExpiresInUnit = OrderExpiresInUnit.Minutes
   createdAt: number | undefined
   limitOrderProtocol: 'CoW' | '1inch'
   supportedChanins: ChainId[]
@@ -50,6 +51,7 @@ export abstract class LimitOrderBase {
   abstract onBuyAmountChange(buyAmount: TokenAmount): void
   abstract onLimitOrderChange(limitOrder: any): void
   abstract onExpireChange(expiresAt: number): void
+  abstract onExpireUnitChange(unit: OrderExpiresInUnit): void
 
   abstract getQuote(): Promise<void>
   abstract setToMarket(sellPricePercentage: number, buyPricePercentage: number): Promise<void>

@@ -2,7 +2,7 @@ import { limitOrderConfig } from './LimitOrder.config'
 import { LimitOrderChangeHandler } from './LimitOrder.types'
 import { LimitOrderBase } from './LimitOrder.utils'
 
-export class LimitOrder {
+export default class LimitOrder {
   #protocols: LimitOrderBase[]
   activeProtocol?: LimitOrderBase
 
@@ -21,7 +21,7 @@ export class LimitOrder {
     )
   }
 
-  getactiveProtocol = async () => {
+  getactiveProtocol = () => {
     console.log('LimitOrder getactiveProtocols')
     this.activeProtocol = this.#protocols.find(
       protocol => protocol.activeChainId && protocol.supportedChanins.includes(protocol.activeChainId)

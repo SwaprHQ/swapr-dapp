@@ -3,6 +3,20 @@ import { ChainId } from '@swapr/sdk'
 
 import { LimitOrderBase } from './LimitOrder.utils'
 
+export interface MarketPrices {
+  buy: number
+  sell: number
+}
+
+export enum OrderExpiresInUnit {
+  Minutes = 'minutes',
+  Days = 'days',
+}
+export enum Kind {
+  Buy = 'buy',
+  Sell = 'sell',
+}
+
 export interface TokenBase {
   address: string
   decimals: number
@@ -26,7 +40,7 @@ export type Token = NativeToken | ERC20Token
 export interface LimitOrderBaseConstructor {
   protocol: 'CoW' | '1inch'
   supportedChains: ChainId[]
-  kind: 'buy' | 'sell'
+  kind: Kind
   expiresAt: number
 }
 
