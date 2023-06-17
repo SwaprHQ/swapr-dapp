@@ -1,9 +1,9 @@
 import { TokenAmount } from '@swapr/sdk'
 
 import dayjs from 'dayjs'
-import { parseUnits } from 'ethers/lib/utils'
+import { formatUnits, parseUnits } from 'ethers/lib/utils'
 
-import { getQuote } from '../../../pages/Swap/LimitOrderBox/api/cow'
+import { getQuote } from '../../../pages/Swap/LimitOrder/api/cow'
 import { Kind, LimitOrderChangeHandler, OrderExpiresInUnit, ProtocolContructor, Token } from '../LimitOrder.types'
 import { LimitOrderBase } from '../LimitOrder.utils'
 
@@ -107,5 +107,34 @@ export class CoW extends LimitOrderBase {
   }
   createOrder(): Promise<void> {
     throw new Error('Method not implemented.')
+  }
+
+  async getMarketPrice() {
+    const { buyToken, sellToken, provider, limitOrder, kind, activeChainId } = this
+
+    if (buyToken && sellToken && provider && limitOrder && activeChainId) {
+      const order = structuredClone(limitOrder)
+      const tokenAmountSelected = kind === Kind.Sell ? this.sellAmount : this.buyAmount
+      const tokenSelected = kind === Kind.Sell ? sellToken : buyToken
+
+      const tokenAmount =
+        tokenAmountSelected && Number(tokenAmountSelected.toExact()) > 1 ? tokenAmountSelected.toExact() : '1'
+
+      order.sellAmount = parseUnits(tokenAmount, tokenSelected.decimals).toString()
+
+      await this.getQuote({ ...order, expiresAt: dayjs().add(20, OrderExpiresInUnit.Minutes).unix() })
+
+      const { buyAmount, sellAmount } = this.quote
+      if (kind === Kind.Sell) {
+        return this.#formatMarketPrice(buyAmount, buyToken.decimals, tokenAmount)
+      } else {
+        return this.#formatMarketPrice(sellAmount, sellToken.decimals, tokenAmount)
+      }
+    }
+    return 0
+  }
+
+  #formatMarketPrice(amount: string, decimals: number, tokenAmount: string) {
+    return parseFloat(formatUnits(amount, decimals) ?? 0) / Number(tokenAmount)
   }
 }

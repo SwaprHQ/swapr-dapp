@@ -102,7 +102,7 @@ export function OrderLimitPriceField({
     })
     // update the formatted limit price
     // setFormattedLimitPrice(nextLimitPriceFormatted)
-  }, [limitOrder, sellAmount, buyAmount, protocol])
+  }, [kind, sellAmount, buyAmount, protocol, limitOrder])
 
   /**
    * Handle the limit price input change. Compute the buy amount and update the state.

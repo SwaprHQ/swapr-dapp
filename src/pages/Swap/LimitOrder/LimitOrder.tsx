@@ -7,21 +7,14 @@ import { AutoColumn } from '../../../components/Column'
 import { CurrencyInputPanel } from '../../../components/CurrencyInputPanel'
 import { PageMetaData } from '../../../components/PageMetaData'
 import { useActiveWeb3React } from '../../../hooks'
-import LimitOrder, {
-  Kind,
-  LimitOrderChangeHandler,
-  MarketPrices,
-  OrderExpiresInUnit,
-} from '../../../services/LimitOrders'
+import LimitOrder, { Kind, LimitOrderChangeHandler, MarketPrices } from '../../../services/LimitOrders'
 import { LimitOrderProvider } from '../../../services/LimitOrders/LimitOrder.provider'
 import AppBody from '../../AppBody'
 
-import { getQuote } from './api/cow'
 import { AutoRow } from './Components/AutoRow'
 import { OrderExpiryField } from './Components/OrderExpiryField'
 import { OrderLimitPriceField } from './Components/OrderLimitPriceField'
 import SwapTokens from './Components/SwapTokens'
-import { formatMarketPrice } from './Components/utils'
 
 export default function LimitOrderUI() {
   const limitSdk = useRef(new LimitOrder()).current
@@ -43,47 +36,20 @@ export default function LimitOrderUI() {
 
   const [marketPrices, setMarketPrices] = useState<MarketPrices>({ buy: 0, sell: 0 })
 
-  const getMarketPrices = useCallback(async () => {
-    if (!protocol) return
-    const { buyToken, sellToken, provider, limitOrder, kind, sellAmount, buyAmount, activeChainId } = protocol
+  useEffect(() => {
+    async function getMarketPrices() {
+      if (!protocol) return
+      const { kind } = protocol
+      const amount = await protocol.getMarketPrice()
 
-    if (buyToken && sellToken && provider && limitOrder && activeChainId) {
-      const signer = provider.getSigner()
-      const order = JSON.parse(JSON.stringify(limitOrder))
-
-      const tokenAmountSelected = kind === Kind.Sell ? sellAmount : buyAmount
-      const tokenSelected = kind === Kind.Sell ? sellToken : buyToken
-
-      const tokenAmount =
-        tokenAmountSelected && Number(tokenAmountSelected.toExact()) > 1 ? tokenAmountSelected.toExact() : '1'
-
-      order.sellAmount = parseUnits(tokenAmount, tokenSelected.decimals).toString()
-
-      const cowQuote = await getQuote({
-        chainId: activeChainId,
-        signer,
-        order: { ...order, expiresAt: dayjs().add(20, OrderExpiresInUnit.Minutes).unix() },
-      })
-
-      if (cowQuote) {
-        const {
-          quote: { buyAmount, sellAmount },
-        } = cowQuote
-
-        if (limitOrder.kind === Kind.Sell) {
-          setMarketPrices(marketPrice => ({
-            ...marketPrice,
-            buy: formatMarketPrice(buyAmount, buyToken.decimals, tokenAmount),
-          }))
-        } else {
-          setMarketPrices(marketPrice => ({
-            ...marketPrice,
-            sell: formatMarketPrice(sellAmount, sellToken.decimals, tokenAmount),
-          }))
-        }
+      if (kind === Kind.Sell) {
+        setMarketPrices(marketPrice => ({ ...marketPrice, buy: amount }))
+      } else {
+        setMarketPrices(marketPrice => ({ ...marketPrice, sell: amount }))
       }
     }
-  }, [protocol])
+    getMarketPrices()
+  }, [protocol, protocol?.kind])
 
   return (
     <>

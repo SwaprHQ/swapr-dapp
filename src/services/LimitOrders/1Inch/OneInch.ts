@@ -68,4 +68,8 @@ export class OneInch extends LimitOrderBase {
   createOrder(): Promise<void> {
     throw new Error('Method not implemented.')
   }
+
+  async getMarketPrice() {
+    return 0
+  }
 }

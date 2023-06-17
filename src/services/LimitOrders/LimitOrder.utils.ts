@@ -54,6 +54,7 @@ export abstract class LimitOrderBase {
   abstract onExpireUnitChange(unit: OrderExpiresInUnit): void
 
   abstract getQuote(): Promise<void>
+  abstract getMarketPrice(): Promise<number>
   abstract setToMarket(sellPricePercentage: number, buyPricePercentage: number): Promise<void>
   abstract onSignerChange({ account, activeChainId, activeProvider }: LimitOrderChangeHandler): Promise<void>
   abstract approve(): Promise<void>
