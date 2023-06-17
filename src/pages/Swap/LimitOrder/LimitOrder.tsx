@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { Flex } from 'rebass'
 
 import { AutoColumn } from '../../../components/Column'
@@ -14,13 +14,36 @@ import { OrderExpiryField } from './Components/OrderExpiryField'
 import { OrderLimitPriceField } from './Components/OrderLimitPriceField'
 import SwapTokens from './Components/SwapTokens'
 
-export default function LimitOrderUI() {
-  const limitSdk = useRef(new LimitOrder()).current
+const limitSdk = new LimitOrder()
 
+export default function LimitOrderUI() {
   const { chainId, account, library } = useActiveWeb3React()
 
   const [protocol, setProtocol] = useState(limitSdk.getActiveProtocol())
   const [fetchMarketPrice, setFetchMarketPrice] = useState<boolean>(true)
+
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const [sellAmount, setSellAmount] = useState(protocol?.sellAmount)
+
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const [buyAmount, setBuyAmount] = useState(protocol?.buyAmount)
+
+  const [sellToken, setSellToken] = useState(protocol?.sellToken)
+  const [buyToken, setBuyToken] = useState(protocol?.buyToken)
+
+  useEffect(() => {
+    if (sellToken) {
+      protocol?.onSellTokenChange(sellToken)
+    }
+    console.log('sellToken', protocol, sellToken)
+  }, [protocol, sellToken])
+
+  useEffect(() => {
+    if (buyToken) {
+      protocol?.onBuyTokenChange(buyToken)
+    }
+    console.log('buyToken', protocol, buyToken)
+  }, [protocol, buyToken])
 
   useEffect(() => {
     async function updateSigner(signerData: LimitOrderChangeHandler) {
@@ -30,7 +53,7 @@ export default function LimitOrderUI() {
     if (chainId && account && library) {
       updateSigner({ activeChainId: chainId, account, activeProvider: library })
     }
-  }, [account, chainId, library, limitSdk])
+  }, [account, chainId, library])
 
   const [marketPrices, setMarketPrices] = useState<MarketPrices>({ buy: 0, sell: 0 })
 
@@ -61,18 +84,28 @@ export default function LimitOrderUI() {
                   id="limit-order-sell-currency"
                   value="0"
                   onUserInput={function (_value: string): void {
-                    throw new Error('Function not implemented.')
+                    // throw new Error('Function not implemented.')
                   }}
                   showNativeCurrency={false}
+                  currency={sellToken}
+                  onCurrencySelect={setSellToken}
                 />
-                <SwapTokens swapTokens={() => {}} loading={false} />
+                <SwapTokens
+                  swapTokens={() => {
+                    setSellToken(buyToken)
+                    setBuyToken(sellToken)
+                  }}
+                  loading={false}
+                />
                 <CurrencyInputPanel
                   id="limit-order-buy-currency"
                   value="0"
+                  currency={buyToken}
                   onUserInput={function (_value: string): void {
-                    throw new Error('Function not implemented.')
+                    // throw new Error('Function not implemented.')
                   }}
                   showNativeCurrency={false}
+                  onCurrencySelect={setBuyToken}
                 />
               </AutoColumn>
               <AutoRow justify="space-between" flexWrap="nowrap" gap="12">

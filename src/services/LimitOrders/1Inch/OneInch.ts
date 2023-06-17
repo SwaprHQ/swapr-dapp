@@ -57,9 +57,6 @@ export class OneInch extends LimitOrderBase {
     throw new Error('Method not implemented.')
   }
   async onSignerChange(_signer: LimitOrderChangeHandler) {
-    // this.userAddress = account
-    // this.activeChainId = activeChainId
-    // this.provider = activeProvider
     // TODO: update protocol if needed
   }
   approve(): Promise<void> {

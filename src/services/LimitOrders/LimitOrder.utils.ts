@@ -1,15 +1,15 @@
 import { Web3Provider } from '@ethersproject/providers'
-import { ChainId, TokenAmount } from '@swapr/sdk'
+import { ChainId, Currency, TokenAmount } from '@swapr/sdk'
 
-import { Token, LimitOrderBaseConstructor, LimitOrderChangeHandler, OrderExpiresInUnit, Kind } from './LimitOrder.types'
+import { LimitOrderBaseConstructor, LimitOrderChangeHandler, OrderExpiresInUnit, Kind } from './LimitOrder.types'
 
 export abstract class LimitOrderBase {
   limitOrder: any
   quote: any
   userAddress: string | undefined
   receiverAddres: string | undefined
-  sellToken: Token | undefined
-  buyToken: Token | undefined
+  sellToken: Currency | undefined
+  buyToken: Currency | undefined
   sellAmount: TokenAmount | undefined
   buyAmount: TokenAmount | undefined
   limitPrice: string | undefined
@@ -29,6 +29,10 @@ export abstract class LimitOrderBase {
     this.supportedChanins = supportedChains
     this.kind = kind
     this.expiresAt = expiresAt
+    this.limitOrder = {
+      kind: kind,
+      expiresAt: expiresAt,
+    }
   }
 
   #log = (message: string) => `LimitOrder:: ${this.limitOrderProtocol} : ${message}`
@@ -45,8 +49,8 @@ export abstract class LimitOrderBase {
     this.#logger.log(`Signer data set for ${this.limitOrderProtocol}`)
   }
 
-  abstract onSellTokenChange(sellToken: Token): void
-  abstract onBuyTokenChange(buyToken: Token): void
+  abstract onSellTokenChange(sellToken: Currency): void
+  abstract onBuyTokenChange(buyToken: Currency): void
   abstract onSellAmountChange(sellAmount: TokenAmount): void
   abstract onBuyAmountChange(buyAmount: TokenAmount): void
   abstract onLimitOrderChange(limitOrder: any): void

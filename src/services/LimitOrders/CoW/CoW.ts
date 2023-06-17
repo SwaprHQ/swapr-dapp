@@ -1,10 +1,10 @@
-import { TokenAmount } from '@swapr/sdk'
+import { Currency, TokenAmount } from '@swapr/sdk'
 
 import dayjs from 'dayjs'
 import { formatUnits, parseUnits } from 'ethers/lib/utils'
 
 import { getQuote } from '../../../pages/Swap/LimitOrder/api/cow'
-import { Kind, LimitOrderChangeHandler, OrderExpiresInUnit, ProtocolContructor, Token } from '../LimitOrder.types'
+import { Kind, LimitOrderChangeHandler, OrderExpiresInUnit, ProtocolContructor } from '../LimitOrder.types'
 import { LimitOrderBase } from '../LimitOrder.utils'
 
 export class CoW extends LimitOrderBase {
@@ -17,20 +17,36 @@ export class CoW extends LimitOrderBase {
     })
   }
 
-  onSellTokenChange(sellToken: Token) {
+  onSellTokenChange(sellToken: Currency) {
     this.sellToken = sellToken
+    this.limitOrder = {
+      ...this.limitOrder,
+      sellToken,
+    }
   }
 
-  onBuyTokenChange(buyToken: Token) {
+  onBuyTokenChange(buyToken: Currency) {
     this.buyToken = buyToken
+    this.limitOrder = {
+      ...this.limitOrder,
+      buyToken,
+    }
   }
 
   onSellAmountChange(sellAmount: TokenAmount) {
     this.sellAmount = sellAmount
+    this.limitOrder = {
+      ...this.limitOrder,
+      sellAmount,
+    }
   }
 
   onBuyAmountChange(buyAmount: TokenAmount) {
     this.buyAmount = buyAmount
+    this.limitOrder = {
+      ...this.limitOrder,
+      buyAmount,
+    }
   }
 
   onLimitOrderChange(limitOrder: any): void {
@@ -39,6 +55,10 @@ export class CoW extends LimitOrderBase {
 
   onExpireChange(expiresAt: number): void {
     this.expiresAt = expiresAt
+    this.limitOrder = {
+      ...this.limitOrder,
+      expiresAt,
+    }
   }
 
   onExpireUnitChange(unit: OrderExpiresInUnit): void {
@@ -47,6 +67,10 @@ export class CoW extends LimitOrderBase {
 
   onKindChange(kind: Kind): void {
     this.kind = kind
+    this.limitOrder = {
+      ...this.limitOrder,
+      kind,
+    }
   }
 
   async setToMarket(_sellPricePercentage: number, _buyPricePercentage: number): Promise<void> {
@@ -96,9 +120,6 @@ export class CoW extends LimitOrderBase {
   }
 
   async onSignerChange(_signer: LimitOrderChangeHandler) {
-    // this.userAddress = account
-    // this.activeChainId = activeChainId
-    // this.provider = activeProvider
     // TODO: update protocol if needed
   }
 
