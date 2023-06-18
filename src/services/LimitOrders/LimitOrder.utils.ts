@@ -47,7 +47,7 @@ export abstract class LimitOrderBase {
 
   #log = (message: string) => `LimitOrder:: ${this.limitOrderProtocol} : ${message}`
 
-  #logger = {
+  logger = {
     log: (message: string) => console.log(this.#log(message)),
     error: (message: string) => console.error(this.#log(message)),
   }
@@ -64,7 +64,7 @@ export abstract class LimitOrderBase {
     this.userAddress = account
     this.activeChainId = activeChainId
     this.provider = activeProvider
-    this.#logger.log(`Signer data set for ${this.limitOrderProtocol}`)
+    this.logger.log(`Signer data set for ${this.limitOrderProtocol}`)
   }
 
   abstract onSellTokenChange(sellToken: Currency): void

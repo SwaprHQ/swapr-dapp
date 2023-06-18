@@ -26,6 +26,7 @@ export class CoW extends LimitOrderBase {
       ...this.limitOrder,
       sellToken: this.sellToken,
     }
+    this.logger.log(`Sell Token Change ${this.sellToken.symbol}`)
   }
 
   onBuyTokenChange(buyToken: Currency) {
@@ -34,6 +35,7 @@ export class CoW extends LimitOrderBase {
       ...this.limitOrder,
       buyToken: this.buyToken,
     }
+    this.logger.log(`Buy Token Change ${this.buyToken.symbol}`)
   }
 
   onSellAmountChange(sellAmount: TokenAmount) {
@@ -42,6 +44,7 @@ export class CoW extends LimitOrderBase {
       ...this.limitOrder,
       sellAmount,
     }
+    this.logger.log(`Sell Amount Change ${this.sellAmount.raw.toString()}`)
   }
 
   onBuyAmountChange(buyAmount: TokenAmount) {
@@ -50,6 +53,7 @@ export class CoW extends LimitOrderBase {
       ...this.limitOrder,
       buyAmount,
     }
+    this.logger.log(`Buy Amount Change ${this.sellAmount.raw.toString()}`)
   }
 
   onLimitOrderChange(limitOrder: any): void {

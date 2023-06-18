@@ -46,28 +46,24 @@ export default function LimitOrderForm() {
     if (sellToken) {
       protocol?.onSellTokenChange(sellToken)
     }
-    console.log('sellToken', protocol, sellToken)
   }, [protocol, sellToken])
 
   useEffect(() => {
     if (buyToken) {
       protocol?.onBuyTokenChange(buyToken)
     }
-    console.log('buyToken', protocol, buyToken)
   }, [protocol, buyToken])
 
   useEffect(() => {
     if (sellAmount) {
       protocol?.onSellAmountChange(sellAmount)
     }
-    console.log('sellAmount', protocol, sellAmount)
   }, [protocol, sellAmount])
 
   useEffect(() => {
     if (buyAmount) {
-      protocol?.onSellAmountChange(buyAmount)
+      protocol?.onBuyAmountChange(buyAmount)
     }
-    console.log('buyAmount', protocol, buyAmount)
   }, [protocol, buyAmount])
 
   const [marketPrices, setMarketPrices] = useState<MarketPrices>({ buy: 0, sell: 0 })
