@@ -1,5 +1,7 @@
 import { Web3Provider } from '@ethersproject/providers'
-import { ChainId, Currency, TokenAmount } from '@swapr/sdk'
+import { ChainId, Currency, Token, TokenAmount } from '@swapr/sdk'
+
+import { parseUnits } from 'ethers/lib/utils'
 
 import { LimitOrderBaseConstructor, LimitOrderChangeHandler, OrderExpiresInUnit, Kind } from './LimitOrder.types'
 
@@ -8,10 +10,10 @@ export abstract class LimitOrderBase {
   quote: any
   userAddress: string | undefined
   receiverAddres: string | undefined
-  sellToken: Currency | undefined
-  buyToken: Currency | undefined
-  sellAmount: TokenAmount | undefined
-  buyAmount: TokenAmount | undefined
+  sellToken: Token
+  buyToken: Token
+  sellAmount: TokenAmount
+  buyAmount: TokenAmount
   limitPrice: string | undefined
   orderType?: 'partial' | 'full'
   quoteId: string | undefined
@@ -24,14 +26,22 @@ export abstract class LimitOrderBase {
   supportedChanins: ChainId[]
   activeChainId: ChainId | undefined
 
-  constructor({ protocol, supportedChains, kind, expiresAt }: LimitOrderBaseConstructor) {
+  constructor({ protocol, supportedChains, kind, expiresAt, sellToken, buyToken }: LimitOrderBaseConstructor) {
     this.limitOrderProtocol = protocol
     this.supportedChanins = supportedChains
     this.kind = kind
     this.expiresAt = expiresAt
+    this.sellToken = sellToken
+    this.buyToken = buyToken
+    this.sellAmount = new TokenAmount(sellToken, parseUnits('1', sellToken.decimals).toString())
+    this.buyAmount = new TokenAmount(buyToken, parseUnits('1', buyToken.decimals).toString())
     this.limitOrder = {
       kind: kind,
       expiresAt: expiresAt,
+      sellToken: sellToken,
+      buyToken: buyToken,
+      sellAmount: this.sellAmount,
+      buyAmount: this.buyAmount,
     }
   }
 
@@ -40,6 +50,14 @@ export abstract class LimitOrderBase {
   #logger = {
     log: (message: string) => console.log(this.#log(message)),
     error: (message: string) => console.error(this.#log(message)),
+  }
+
+  getTokenFromCurrency(currency: Currency): Token {
+    let token = currency as Token
+    if (this.activeChainId) {
+      token = new Token(this.activeChainId, currency.address!, currency.decimals, currency.symbol)
+    }
+    return token
   }
 
   setSignerData = async ({ account, activeChainId, activeProvider }: LimitOrderChangeHandler) => {
@@ -56,6 +74,7 @@ export abstract class LimitOrderBase {
   abstract onLimitOrderChange(limitOrder: any): void
   abstract onExpireChange(expiresAt: number): void
   abstract onExpireUnitChange(unit: OrderExpiresInUnit): void
+  abstract onKindChange(kind: Kind): void
 
   abstract getQuote(): Promise<void>
   abstract getMarketPrice(): Promise<number>

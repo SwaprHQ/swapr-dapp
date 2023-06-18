@@ -4,32 +4,35 @@ import dayjs from 'dayjs'
 import { formatUnits, parseUnits } from 'ethers/lib/utils'
 
 import { getQuote } from '../../../pages/Swap/LimitOrder/api/cow'
+import { getDefaultTokens } from '../LimitOrder.config'
 import { Kind, LimitOrderChangeHandler, OrderExpiresInUnit, ProtocolContructor } from '../LimitOrder.types'
 import { LimitOrderBase } from '../LimitOrder.utils'
 
 export class CoW extends LimitOrderBase {
-  constructor({ supportedChains, protocol }: ProtocolContructor) {
+  constructor({ supportedChains, protocol, sellToken, buyToken }: ProtocolContructor) {
     super({
       supportedChains,
       protocol,
       kind: Kind.Sell,
       expiresAt: 20,
+      sellToken,
+      buyToken,
     })
   }
 
   onSellTokenChange(sellToken: Currency) {
-    this.sellToken = sellToken
+    this.sellToken = this.getTokenFromCurrency(sellToken)
     this.limitOrder = {
       ...this.limitOrder,
-      sellToken,
+      sellToken: this.sellToken,
     }
   }
 
   onBuyTokenChange(buyToken: Currency) {
-    this.buyToken = buyToken
+    this.buyToken = this.getTokenFromCurrency(buyToken)
     this.limitOrder = {
       ...this.limitOrder,
-      buyToken,
+      buyToken: this.buyToken,
     }
   }
 
@@ -54,6 +57,7 @@ export class CoW extends LimitOrderBase {
   }
 
   onExpireChange(expiresAt: number): void {
+    // TODO: Convert expiresAt based on expiresAtUnit
     this.expiresAt = expiresAt
     this.limitOrder = {
       ...this.limitOrder,
@@ -119,8 +123,12 @@ export class CoW extends LimitOrderBase {
     this.quote = cowQuote
   }
 
-  async onSignerChange(_signer: LimitOrderChangeHandler) {
-    // TODO: update protocol if needed
+  async onSignerChange({ activeChainId }: LimitOrderChangeHandler) {
+    const { sellToken, buyToken } = getDefaultTokens(activeChainId)
+    this.onSellTokenChange(sellToken)
+    this.onBuyTokenChange(buyToken)
+    this.onSellAmountChange(new TokenAmount(sellToken, parseUnits('1', sellToken.decimals).toString()))
+    this.onBuyAmountChange(new TokenAmount(buyToken, parseUnits('1', buyToken.decimals).toString()))
   }
 
   approve(): Promise<void> {
