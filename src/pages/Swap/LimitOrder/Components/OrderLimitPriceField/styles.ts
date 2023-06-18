@@ -1,9 +1,14 @@
 import { Flex } from 'rebass'
 import styled from 'styled-components'
 
-import { InputGroup } from '../InputGroup'
-
-export const LimitLabel = styled(InputGroup.Label)`
+export const LimitLabel = styled.label`
+  font-weight: 600;
+  font-size: 10px;
+  line-height: 12px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #8c83c0;
+  margin-bottom: 12px;
   display: flex;
   justify-content: space-between;
   align-items: center;

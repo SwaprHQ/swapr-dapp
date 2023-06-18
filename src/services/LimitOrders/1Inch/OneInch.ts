@@ -3,7 +3,7 @@ import { Currency, TokenAmount } from '@swapr/sdk'
 import { parseUnits } from 'ethers/lib/utils'
 
 import { getDefaultTokens } from '../LimitOrder.config'
-import { Kind, LimitOrderChangeHandler, OrderExpiresInUnit, ProtocolContructor } from '../LimitOrder.types'
+import { Kind, WalletData, OrderExpiresInUnit, ProtocolContructor } from '../LimitOrder.types'
 import { LimitOrderBase } from '../LimitOrder.utils'
 
 export class OneInch extends LimitOrderBase {
@@ -78,7 +78,7 @@ export class OneInch extends LimitOrderBase {
   init(): Promise<void> {
     throw new Error('Method not implemented.')
   }
-  async onSignerChange({ activeChainId }: LimitOrderChangeHandler) {
+  async onSignerChange({ activeChainId }: WalletData) {
     const { sellToken, buyToken } = getDefaultTokens(activeChainId)
     this.onSellTokenChange(sellToken)
     this.onBuyTokenChange(buyToken)

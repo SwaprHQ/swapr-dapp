@@ -1,5 +1,5 @@
 import { Web3Provider } from '@ethersproject/providers'
-import { ChainId, Currency, Token } from '@swapr/sdk'
+import { ChainId, Token } from '@swapr/sdk'
 
 import { LimitOrderBase } from './LimitOrder.utils'
 
@@ -35,8 +35,8 @@ export enum LimitOrderIds {
 
 export type LimitOrderProviders = { [key in LimitOrderIds]: LimitOrderBase }
 
-export interface LimitOrderChangeHandler {
+export interface WalletData {
   account: string
-  activeProvider: Web3Provider
+  provider: Web3Provider
   activeChainId: ChainId
 }

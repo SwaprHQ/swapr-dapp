@@ -3,7 +3,7 @@ import { ChainId, Currency, Token, TokenAmount } from '@swapr/sdk'
 
 import { parseUnits } from 'ethers/lib/utils'
 
-import { LimitOrderBaseConstructor, LimitOrderChangeHandler, OrderExpiresInUnit, Kind } from './LimitOrder.types'
+import { LimitOrderBaseConstructor, WalletData, OrderExpiresInUnit, Kind } from './LimitOrder.types'
 
 export abstract class LimitOrderBase {
   limitOrder: any
@@ -48,8 +48,8 @@ export abstract class LimitOrderBase {
   #log = (message: string) => `LimitOrder:: ${this.limitOrderProtocol} : ${message}`
 
   logger = {
-    log: (message: string) => console.log(this.#log(message)),
-    error: (message: string) => console.error(this.#log(message)),
+    log: (message: string, ...props: any[]) => console.log(this.#log(message), ...props),
+    error: (message: string, ...props: any[]) => console.error(this.#log(message), ...props),
   }
 
   getTokenFromCurrency(currency: Currency): Token {
@@ -60,10 +60,10 @@ export abstract class LimitOrderBase {
     return token
   }
 
-  setSignerData = async ({ account, activeChainId, activeProvider }: LimitOrderChangeHandler) => {
+  setSignerData = async ({ account, activeChainId, provider }: WalletData) => {
     this.userAddress = account
     this.activeChainId = activeChainId
-    this.provider = activeProvider
+    this.provider = provider
     this.logger.log(`Signer data set for ${this.limitOrderProtocol}`)
   }
 
@@ -79,7 +79,7 @@ export abstract class LimitOrderBase {
   abstract getQuote(): Promise<void>
   abstract getMarketPrice(): Promise<number>
   abstract setToMarket(sellPricePercentage: number, buyPricePercentage: number): Promise<void>
-  abstract onSignerChange({ account, activeChainId, activeProvider }: LimitOrderChangeHandler): Promise<void>
+  abstract onSignerChange({ account, activeChainId, provider }: WalletData): Promise<void>
   abstract approve(): Promise<void>
   abstract createOrder(): Promise<void>
 }

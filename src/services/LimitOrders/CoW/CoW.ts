@@ -5,7 +5,7 @@ import { formatUnits, parseUnits } from 'ethers/lib/utils'
 
 import { getQuote } from '../../../pages/Swap/LimitOrder/api/cow'
 import { getDefaultTokens } from '../LimitOrder.config'
-import { Kind, LimitOrderChangeHandler, OrderExpiresInUnit, ProtocolContructor } from '../LimitOrder.types'
+import { Kind, WalletData, OrderExpiresInUnit, ProtocolContructor } from '../LimitOrder.types'
 import { LimitOrderBase } from '../LimitOrder.utils'
 
 export class CoW extends LimitOrderBase {
@@ -105,8 +105,8 @@ export class CoW extends LimitOrderBase {
     }
     const { buyAmount: buyAmountQuote, sellAmount: sellAmountQuote } = this.quote
 
-    console.log('buyAmountQuote', buyAmountQuote)
-    console.log('sellAmountQuote', sellAmountQuote)
+    this.logger.log('buyAmountQuote', buyAmountQuote)
+    this.logger.log('sellAmountQuote', sellAmountQuote)
   }
 
   async getQuote(limitOrder?: any): Promise<void> {
@@ -127,10 +127,12 @@ export class CoW extends LimitOrderBase {
     this.quote = cowQuote
   }
 
-  async onSignerChange({ activeChainId }: LimitOrderChangeHandler) {
+  async onSignerChange({ activeChainId }: WalletData) {
     const { sellToken, buyToken } = getDefaultTokens(activeChainId)
+    // Setting default tokens for ChainId's
     this.onSellTokenChange(sellToken)
     this.onBuyTokenChange(buyToken)
+    // Setting default amounts for Tokens
     this.onSellAmountChange(new TokenAmount(sellToken, parseUnits('1', sellToken.decimals).toString()))
     this.onBuyAmountChange(new TokenAmount(buyToken, parseUnits('1', buyToken.decimals).toString()))
   }
