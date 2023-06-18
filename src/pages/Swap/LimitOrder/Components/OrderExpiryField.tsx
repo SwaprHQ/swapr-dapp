@@ -3,7 +3,6 @@ import { useTranslation } from 'react-i18next'
 import styled from 'styled-components'
 
 import { OrderExpiresInUnit, LimitOrderContext } from '../../../../services/LimitOrders'
-// import { LimitOrderContext } from '../../../../services/LimitOrders/LimitOrder.provider'
 
 import { ButtonAddonsWrapper, InnerWrapper, Input, InputGroup, Label } from './InputGroup'
 

@@ -66,10 +66,6 @@ export function OrderLimitPriceField({
 }: OrderLimitPriceFieldProps) {
   const { t } = useTranslation('swap')
 
-  // const formattedLimitPrice = 0
-  // // const inputFocus = 'sell'
-  // const setFormattedLimitPrice = (_t: any) => {}
-
   const [formattedLimitPrice, setFormattedLimitPrice] = useState<string | number>(0)
 
   const [{ baseToken, baseTokenAmount: _b, quoteToken, quoteTokenAmount: _q }, setBaseQuoteTokens] = useState(
