@@ -196,10 +196,7 @@ export function OrderLimitPriceField({
           )}
         </span>
         {fetchMarketPrice && buyAmount?.currency && sellAmount?.currency ? (
-          <MarketPriceButton
-            buyTokenAmountCurrency={buyAmount.currency}
-            sellTokenAmountCurrency={sellAmount.currency}
-          />
+          <MarketPriceButton key={`${buyToken.symbol}-${sellToken.symbol}`} />
         ) : (
           <SetToMarket onClick={onClickGetMarketPrice}>{t('limitOrder.getMarketPrice')}</SetToMarket>
         )}
