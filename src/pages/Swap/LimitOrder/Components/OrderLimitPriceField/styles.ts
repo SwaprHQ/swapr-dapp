@@ -1,6 +1,8 @@
 import { Flex } from 'rebass'
 import styled from 'styled-components'
 
+import { ReactComponent as ProgressCircle } from '../../../../../assets/images/progress-circle.svg'
+
 export const LimitLabel = styled.label`
   font-weight: 600;
   font-size: 10px;
@@ -76,4 +78,23 @@ export const ToggleCurrencyButton = styled.span`
 
 export const MarketPriceDiff = styled.span<{ isPositive: boolean }>`
   color: ${({ isPositive, theme }) => (isPositive ? theme.green2 : theme.red1)};
+`
+
+export const StyledProgressCircle = styled(ProgressCircle)`
+  width: 12px;
+  height: 12px;
+  margin-left: 4px;
+  transform: rotate(-90deg);
+
+  .move {
+    stroke-dasharray: 100;
+    stroke-dashoffset: 100;
+    animation: dash 15s 0s infinite linear forwards;
+
+    @keyframes dash {
+      to {
+        stroke-dashoffset: 0;
+      }
+    }
+  }
 `
