@@ -53,6 +53,7 @@ export class CoW extends LimitOrderBase {
       ...this.limitOrder,
       buyAmount,
     }
+
     this.logger.log(`Buy Amount Change ${this.sellAmount.raw.toString()}`)
   }
 
@@ -87,7 +88,7 @@ export class CoW extends LimitOrderBase {
     if (!sellToken || !buyToken) {
       return
     }
-    let tokenAmount = this.kind === 'sell' ? this.sellAmount : this.buyAmount
+    let tokenAmount = this.kind === Kind.Sell ? this.sellAmount : this.buyAmount
     if (!tokenAmount) {
       return
     }
@@ -113,7 +114,7 @@ export class CoW extends LimitOrderBase {
     const signer = this.provider?.getSigner()
     const chainId = this.activeChainId
     const order = limitOrder ?? this.limitOrder
-    const expiresAt = dayjs().add(this.expiresAt, 'minutes').unix()
+    const expiresAt = dayjs().add(this.expiresAt, this.expiresAtUnit).unix()
     const kind = this.kind
     if (!signer || !chainId || !limitOrder || !expiresAt || !kind) {
       throw new Error('Missing required params')
