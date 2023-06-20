@@ -10,9 +10,11 @@ import { ChartLoader } from './ChartLoader.component'
 const dexScreenChains: Record<number, string> = {
   [ChainId.MAINNET]: 'ethereum',
   [ChainId.BSC_MAINNET]: 'bsc',
+  [ChainId.POLYGON]: 'polygon',
   [ChainId.ARBITRUM_ONE]: 'arbitrum',
   [ChainId.OPTIMISM_MAINNET]: 'optimism',
   [ChainId.GNOSIS]: 'gnosischain',
+  [ChainId.ZK_SYNC_ERA_MAINNET]: 'zksync',
 }
 
 export const Chart = memo(({ pairAddress }: { pairAddress?: string }) => {

@@ -158,6 +158,8 @@ export const PRE_SELECT_OUTPUT_CURRENCY_ID: { [chainId in ChainId]: string } = {
   [ChainId.OPTIMISM_MAINNET]: OP[ChainId.OPTIMISM_MAINNET].address,
   [ChainId.POLYGON]: WETH[ChainId.POLYGON].address,
   [ChainId.RINKEBY]: '',
+  [ChainId.ZK_SYNC_ERA_MAINNET]: '',
+  [ChainId.ZK_SYNC_ERA_TESTNET]: '',
 }
 
 // used to construct intermediary pairs for trading
@@ -209,6 +211,8 @@ export const BASES_TO_CHECK_TRADES_AGAINST: ChainTokenList = {
     USDT[ChainId.BSC_MAINNET],
   ],
   [ChainId.BSC_TESTNET]: [],
+  [ChainId.ZK_SYNC_ERA_MAINNET]: [USDC[ChainId.ZK_SYNC_ERA_MAINNET]],
+  [ChainId.ZK_SYNC_ERA_TESTNET]: [],
 }
 
 // used for display in the default list when adding liquidity (native currency is already shown
@@ -259,6 +263,8 @@ export const SUGGESTED_BASES: ChainTokenList = {
     USDT[ChainId.BSC_MAINNET],
   ],
   [ChainId.BSC_TESTNET]: [],
+  [ChainId.ZK_SYNC_ERA_MAINNET]: [USDC[ChainId.ZK_SYNC_ERA_MAINNET]],
+  [ChainId.ZK_SYNC_ERA_TESTNET]: [],
 }
 
 // used to construct the list of all pairs we consider by default in the frontend
@@ -281,6 +287,8 @@ export const BASES_TO_TRACK_LIQUIDITY_FOR: ChainTokenList = {
   [ChainId.GOERLI]: [WETH[ChainId.OPTIMISM_MAINNET]],
   [ChainId.BSC_MAINNET]: [WBNB[ChainId.BSC_MAINNET]],
   [ChainId.BSC_TESTNET]: [WBNB[ChainId.BSC_TESTNET]],
+  [ChainId.ZK_SYNC_ERA_MAINNET]: [Token.WETH[ChainId.ZK_SYNC_ERA_MAINNET], USDC[ChainId.ZK_SYNC_ERA_MAINNET]],
+  [ChainId.ZK_SYNC_ERA_TESTNET]: [Token.WETH[ChainId.ZK_SYNC_ERA_TESTNET], USDC[ChainId.ZK_SYNC_ERA_TESTNET]],
 }
 
 export const PINNED_PAIRS: {
@@ -401,6 +409,11 @@ export interface NetworkOptionalDetails {
   isArbitrum: boolean
 }
 
+/**
+ * @TODO in https://linear.app/swaprdev/issue/SWA-65/provide-a-single-source-of-truth-for-chain-rpcs-from-the-sdk
+ * [] Consume `RPC_PROVIDER_LIST` from the SDK and use it as single source of truth for RPCs
+ * [] Abstract chains explorers into a single source of truth and consume it where neded
+ */
 export const NETWORK_DETAIL: { [chainId: number]: NetworkDetails } = {
   [ChainId.MAINNET]: {
     chainId: `0x${ChainId.MAINNET.toString(16)}`,
@@ -534,6 +547,28 @@ export const NETWORK_DETAIL: { [chainId: number]: NetworkDetails } = {
     rpcUrls: ['https://data-seed-prebsc-1-s1.binance.org:8545/'],
     blockExplorerUrls: ['https://testnet.bscscan.com/'],
   },
+  [ChainId.ZK_SYNC_ERA_MAINNET]: {
+    chainId: `0x${ChainId.ZK_SYNC_ERA_MAINNET.toString(16)}`,
+    chainName: 'zkSync Era',
+    nativeCurrency: {
+      name: Currency.ETHER.name || 'Ether',
+      symbol: Currency.ETHER.symbol || 'ETH',
+      decimals: Currency.ETHER.decimals || 18,
+    },
+    rpcUrls: ['https://mainnet.era.zksync.io'],
+    blockExplorerUrls: ['https://explorer.zksync.io/'],
+  },
+  [ChainId.ZK_SYNC_ERA_TESTNET]: {
+    chainId: `0x${ChainId.ZK_SYNC_ERA_TESTNET.toString(16)}`,
+    chainName: 'zkSync Era Testnet',
+    nativeCurrency: {
+      name: Currency.ETHER.name || 'Ether',
+      symbol: Currency.ETHER.symbol || 'ETH',
+      decimals: Currency.ETHER.decimals || 18,
+    },
+    rpcUrls: ['https://testnet.era.zksync.dev'],
+    blockExplorerUrls: ['https://goerli.explorer.zksync.io/'],
+  },
 }
 
 export const NETWORK_OPTIONAL_DETAIL: {
@@ -577,6 +612,14 @@ export const NETWORK_OPTIONAL_DETAIL: {
   [ChainId.ARBITRUM_GOERLI]: {
     partnerChainId: ChainId.GOERLI,
     isArbitrum: true,
+  },
+  [ChainId.ZK_SYNC_ERA_MAINNET]: {
+    partnerChainId: ChainId.ZK_SYNC_ERA_MAINNET,
+    isArbitrum: false,
+  },
+  [ChainId.ZK_SYNC_ERA_TESTNET]: {
+    partnerChainId: ChainId.ZK_SYNC_ERA_TESTNET,
+    isArbitrum: false,
   },
 }
 
@@ -626,6 +669,7 @@ export const RoutablePlatformKeysByNetwork = {
     UniswapV2RoutablePlatform.PANCAKESWAP.name,
     RoutablePlatform.ONE_INCH.name,
   ],
+  [ChainId.ZK_SYNC_ERA_MAINNET]: [RoutablePlatform.ONE_INCH.name],
   // TEST NETS WITH ALL DEXES
   [ChainId.RINKEBY]: [
     UniswapV2RoutablePlatform.SWAPR.name,
@@ -656,6 +700,7 @@ export const RoutablePlatformKeysByNetwork = {
     RoutablePlatform.ONE_INCH.name,
   ],
   [ChainId.BSC_TESTNET]: [],
+  [ChainId.ZK_SYNC_ERA_TESTNET]: [],
 }
 
 /**
@@ -797,6 +842,8 @@ export const ChainLabel: any = {
   [ChainId.POLYGON]: 'Polygon',
   [ChainId.OPTIMISM_MAINNET]: 'Optimism',
   [ChainId.BSC_MAINNET]: 'Binance Chain',
+  [ChainId.ZK_SYNC_ERA_MAINNET]: 'zkSync Era',
+  [ChainId.ZK_SYNC_ERA_TESTNET]: 'zkSync Era Testnet',
 }
 
 export const OLD_SWPR: { [key: number]: Token } = {
