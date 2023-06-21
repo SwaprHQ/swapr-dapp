@@ -1372,6 +1372,90 @@
       "name": "bsc-56/ecoRouter/1inch/volumeUSD/pro",
       "currency": null,
       "created_at": "2023-02-10 10:49:55"
+    },
+    {
+      "id": "NBFCPZTJ",
+      "object": "event",
+      "name": "zksync-324/ecoRouter/1inch/volumeUSD",
+      "currency": null,
+      "created_at": "2023-06-06 01:40:21"
+    },
+    {
+      "id": "WBFPSB9A",
+      "object": "event",
+      "name": "zksync-324/ecoRouter/dfyn/volumeUSD",
+      "currency": null,
+      "created_at": "2023-06-06 01:40:21"
+    },
+    {
+      "id": "F5OZOVND",
+      "object": "event",
+      "name": "zksync-324/ecoRouter/dfyn/volumeUSD/pro",
+      "currency": null,
+      "created_at": "2023-06-06 01:40:22"
+    },
+    {
+      "id": "WVUHFGAM",
+      "object": "event",
+      "name": "zksync-324/ecoRouter/1inch/volumeUSD/pro",
+      "currency": null,
+      "created_at": "2023-06-06 01:40:22"
+    },
+    {
+      "id": "MCPIKQFK",
+      "object": "event",
+      "name": "proMode/zksync/15seconds",
+      "currency": null,
+      "created_at": "2023-06-06 01:40:23"
+    },
+    {
+      "id": "TTYCO1UP",
+      "object": "event",
+      "name": "proMode/zksync-testnet/15seconds",
+      "currency": null,
+      "created_at": "2023-06-06 01:40:23"
+    },
+    {
+      "id": "HL760OAZ",
+      "object": "event",
+      "name": "zksync-324/ecoRouter/syncswap/volumeUSD/pro",
+      "currency": null,
+      "created_at": "2023-06-07 14:35:43"
+    },
+    {
+      "id": "SDTW49CC",
+      "object": "event",
+      "name": "zksync-324/ecoRouter/syncswap/volumeUSD",
+      "currency": null,
+      "created_at": "2023-06-07 14:35:43"
+    },
+    {
+      "id": "IH7DKC4B",
+      "object": "event",
+      "name": "bsc-56/ecoRouter/biswap/volumeUSD",
+      "currency": null,
+      "created_at": "2023-06-20 14:52:01"
+    },
+    {
+      "id": "SM201VOB",
+      "object": "event",
+      "name": "undefined-324/ecoRouter/1inch/volumeUSD",
+      "currency": null,
+      "created_at": "2023-06-20 14:52:01"
+    },
+    {
+      "id": "IGW1T4KN",
+      "object": "event",
+      "name": "undefined-324/ecoRouter/1inch/volumeUSD/pro",
+      "currency": null,
+      "created_at": "2023-06-20 14:52:02"
+    },
+    {
+      "id": "XEBFING1",
+      "object": "event",
+      "name": "bsc-56/ecoRouter/biswap/volumeUSD/pro",
+      "currency": null,
+      "created_at": "2023-06-20 14:52:02"
     }
   ]
 }

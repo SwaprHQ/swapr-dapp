@@ -158,7 +158,7 @@ export const PRE_SELECT_OUTPUT_CURRENCY_ID: { [chainId in ChainId]: string } = {
   [ChainId.OPTIMISM_MAINNET]: OP[ChainId.OPTIMISM_MAINNET].address,
   [ChainId.POLYGON]: WETH[ChainId.POLYGON].address,
   [ChainId.RINKEBY]: '',
-  [ChainId.ZK_SYNC_ERA_MAINNET]: '',
+  [ChainId.ZK_SYNC_ERA_MAINNET]: USDC[ChainId.ZK_SYNC_ERA_MAINNET].address,
   [ChainId.ZK_SYNC_ERA_TESTNET]: '',
 }
 
@@ -655,12 +655,6 @@ export const RoutablePlatformKeysByNetwork = {
     UniswapV2RoutablePlatform.QUICKSWAP.name,
     UniswapV2RoutablePlatform.DFYN.name,
     RoutablePlatform.ZEROX.name,
-    RoutablePlatform.ONE_INCH.name,
-  ],
-  [ChainId.OPTIMISM_MAINNET]: [
-    RoutablePlatform.UNISWAP.name,
-    UniswapV2RoutablePlatform.SUSHISWAP.name,
-    RoutablePlatform.CURVE.name,
     RoutablePlatform.ONE_INCH.name,
   ],
   [ChainId.BSC_MAINNET]: [
