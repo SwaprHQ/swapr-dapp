@@ -74,6 +74,14 @@ export const MATIC: { [key: number]: Token } = {
   ),
 }
 
+export const ARBITRUM_NATIVE_USDC = new Token(
+  ChainId.ARBITRUM_ONE,
+  '0xaf88d065e77c8cC2239327C5EDb3A432268e5831',
+  6,
+  'USDC',
+  'USD Coin'
+)
+
 export const HONEY = new Token(ChainId.XDAI, '0x71850b7E9Ee3f13Ab46d67167341E4bDc905Eef9', 18, 'HNY', 'Honey')
 
 export const STAKE = new Token(
@@ -177,6 +185,7 @@ export const BASES_TO_CHECK_TRADES_AGAINST: ChainTokenList = {
     WETH[ChainId.ARBITRUM_ONE],
     DXD[ChainId.ARBITRUM_ONE],
     USDC[ChainId.ARBITRUM_ONE],
+    ARBITRUM_NATIVE_USDC,
     WBTC[ChainId.ARBITRUM_ONE],
     USDT[ChainId.ARBITRUM_ONE],
   ],
@@ -233,6 +242,7 @@ export const SUGGESTED_BASES: ChainTokenList = {
     SWPR[ChainId.ARBITRUM_ONE],
     WBTC[ChainId.ARBITRUM_ONE],
     USDC[ChainId.ARBITRUM_ONE],
+    ARBITRUM_NATIVE_USDC,
     USDT[ChainId.ARBITRUM_ONE],
   ],
   [ChainId.ARBITRUM_RINKEBY]: [WETH[ChainId.ARBITRUM_RINKEBY], DXD[ChainId.ARBITRUM_RINKEBY]],
@@ -277,7 +287,12 @@ export const BASES_TO_TRACK_LIQUIDITY_FOR: ChainTokenList = {
     USDT[ChainId.MAINNET],
   ],
   [ChainId.RINKEBY]: [WETH[ChainId.RINKEBY]],
-  [ChainId.ARBITRUM_ONE]: [WETH[ChainId.ARBITRUM_ONE], DXD[ChainId.ARBITRUM_ONE], USDC[ChainId.ARBITRUM_ONE]],
+  [ChainId.ARBITRUM_ONE]: [
+    WETH[ChainId.ARBITRUM_ONE],
+    DXD[ChainId.ARBITRUM_ONE],
+    USDC[ChainId.ARBITRUM_ONE],
+    ARBITRUM_NATIVE_USDC,
+  ],
   [ChainId.ARBITRUM_RINKEBY]: [WETH[ChainId.ARBITRUM_RINKEBY], DXD[ChainId.ARBITRUM_RINKEBY]],
   [ChainId.ARBITRUM_GOERLI]: [WETH[ChainId.ARBITRUM_GOERLI]],
   [ChainId.XDAI]: [WXDAI[ChainId.XDAI], DXD[ChainId.XDAI], WETH[ChainId.XDAI], USDC[ChainId.XDAI], STAKE],
