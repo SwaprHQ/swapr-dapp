@@ -5,8 +5,10 @@ import { formatUnits, parseUnits } from 'ethers/lib/utils'
 
 import { getQuote } from '../../../pages/Swap/LimitOrder/api/cow'
 import { getDefaultTokens } from '../LimitOrder.config'
-import { Kind, WalletData, OrderExpiresInUnit, ProtocolContructor } from '../LimitOrder.types'
+import { Kind, WalletData, OrderExpiresInUnit, ProtocolContructor, LimitOrder } from '../LimitOrder.types'
 import { LimitOrderBase } from '../LimitOrder.utils'
+
+import { type CoWQuote } from './CoW.types'
 
 export class CoW extends LimitOrderBase {
   constructor({ supportedChains, protocol, sellToken, buyToken }: ProtocolContructor) {
@@ -22,52 +24,48 @@ export class CoW extends LimitOrderBase {
 
   onSellTokenChange(sellToken: Currency) {
     this.sellToken = this.getTokenFromCurrency(sellToken)
-    this.limitOrder = {
-      ...this.limitOrder,
-      sellToken: this.sellToken,
-    }
+    this.onLimitOrderChange({
+      sellToken: this.sellToken.address,
+    })
     this.logger.log(`Sell Token Change ${this.sellToken.symbol}`)
   }
 
   onBuyTokenChange(buyToken: Currency) {
     this.buyToken = this.getTokenFromCurrency(buyToken)
-    this.limitOrder = {
-      ...this.limitOrder,
-      buyToken: this.buyToken,
-    }
+
+    this.onLimitOrderChange({
+      buyToken: this.buyToken.address,
+    })
     this.logger.log(`Buy Token Change ${this.buyToken.symbol}`)
   }
 
   onSellAmountChange(sellAmount: TokenAmount) {
     this.sellAmount = sellAmount
-    this.limitOrder = {
-      ...this.limitOrder,
-      sellAmount,
-    }
+    this.onLimitOrderChange({
+      sellAmount: sellAmount.raw.toString(),
+    })
     this.logger.log(`Sell Amount Change ${this.sellAmount.raw.toString()}`)
   }
 
   onBuyAmountChange(buyAmount: TokenAmount) {
     this.buyAmount = buyAmount
-    this.limitOrder = {
-      ...this.limitOrder,
-      buyAmount,
-    }
+    this.onLimitOrderChange({
+      buyAmount: buyAmount.raw.toString(),
+    })
 
     this.logger.log(`Buy Amount Change ${this.sellAmount.raw.toString()}`)
   }
 
-  onLimitOrderChange(limitOrder: any): void {
-    this.limitOrder = limitOrder
+  onLimitOrderChange(limitOrder: Partial<LimitOrder>): void {
+    const fullLimitOrder = this.#getLimitOrder(limitOrder)
+    this.limitOrder = fullLimitOrder
   }
 
   onExpireChange(expiresAt: number): void {
-    // TODO: Convert expiresAt based on expiresAtUnit
     this.expiresAt = expiresAt
-    this.limitOrder = {
-      ...this.limitOrder,
-      expiresAt,
-    }
+    this.onLimitOrderChange({
+      expiresAt: dayjs().add(expiresAt, this.expiresAtUnit).unix(),
+    })
   }
 
   onExpireUnitChange(unit: OrderExpiresInUnit): void {
@@ -76,10 +74,9 @@ export class CoW extends LimitOrderBase {
 
   onKindChange(kind: Kind): void {
     this.kind = kind
-    this.limitOrder = {
-      ...this.limitOrder,
+    this.onLimitOrderChange({
       kind,
-    }
+    })
   }
 
   async setToMarket(_sellPricePercentage: number, _buyPricePercentage: number): Promise<void> {
@@ -95,40 +92,48 @@ export class CoW extends LimitOrderBase {
     const validatedTokenAmount = Number(tokenAmount.toExact()) > 1 ? tokenAmount.toExact() : '1'
     const sellAmount = parseUnits(validatedTokenAmount, tokenAmount.currency.decimals).toString()
 
-    const limitOrder = {
-      ...this.limitOrder,
-      sellAmount,
-    }
+    if (this.limitOrder !== undefined) {
+      const limitOrder = {
+        ...this.limitOrder,
+        sellAmount,
+      }
 
-    await this.getQuote(limitOrder)
-    if (!this.quote) {
-      throw new Error('No quote')
-    }
-    const { buyAmount: buyAmountQuote, sellAmount: sellAmountQuote } = this.quote
+      await this.getQuote(limitOrder)
+      if (!this.quote) {
+        throw new Error('No quote')
+      }
+      const {
+        quote: { buyAmount: buyAmountQuote, sellAmount: sellAmountQuote },
+      } = this.quote as CoWQuote
 
-    this.logger.log('buyAmountQuote', buyAmountQuote)
-    this.logger.log('sellAmountQuote', sellAmountQuote)
+      this.logger.log('buyAmountQuote', buyAmountQuote)
+      this.logger.log('sellAmountQuote', sellAmountQuote)
+    }
   }
 
-  async getQuote(limitOrder?: any): Promise<void> {
+  async getQuote(limitOrder?: LimitOrder): Promise<void> {
     const signer = this.provider?.getSigner()
     const chainId = this.activeChainId
     const order = limitOrder ?? this.limitOrder
-    const expiresAt = dayjs().add(this.expiresAt, this.expiresAtUnit).unix()
     const kind = this.kind
-    if (!signer || !chainId || !limitOrder || !expiresAt || !kind) {
+    if (!signer || !chainId || !order || !kind) {
       throw new Error('Missing required params')
     }
-    const cowQuote = await getQuote({
-      chainId,
-      signer,
-      order: { ...order, expiresAt },
-    })
-
-    this.quote = cowQuote
+    try {
+      const cowQuote = await getQuote({
+        chainId,
+        signer,
+        order: { ...order },
+      })
+      this.quote = cowQuote as CoWQuote
+    } catch (error: any) {
+      this.logger.error(error.message)
+    } finally {
+      this.loading = false
+    }
   }
 
-  async onSignerChange({ activeChainId }: WalletData) {
+  async onSignerChange({ activeChainId, account }: WalletData) {
     const { sellToken, buyToken } = getDefaultTokens(activeChainId)
     // Setting default tokens for ChainId's
     this.onSellTokenChange(sellToken)
@@ -136,6 +141,16 @@ export class CoW extends LimitOrderBase {
     // Setting default amounts for Tokens
     this.onSellAmountChange(new TokenAmount(sellToken, parseUnits('1', sellToken.decimals).toString()))
     this.onBuyAmountChange(new TokenAmount(buyToken, parseUnits('1', buyToken.decimals).toString()))
+    this.onLimitOrderChange({
+      kind: this.kind,
+      expiresAt: this.expiresAt,
+      sellToken: this.sellToken.address,
+      buyToken: this.buyToken.address,
+      sellAmount: this.sellAmount.raw.toString(),
+      buyAmount: this.buyAmount.raw.toString(),
+      userAddress: account,
+      receiverAddress: account,
+    })
   }
 
   approve(): Promise<void> {
@@ -149,6 +164,7 @@ export class CoW extends LimitOrderBase {
     const { buyToken, sellToken, provider, limitOrder, kind, activeChainId } = this
 
     if (buyToken && sellToken && provider && limitOrder && activeChainId) {
+      this.loading = true
       const order = structuredClone(limitOrder)
       const tokenAmountSelected = kind === Kind.Sell ? this.sellAmount : this.buyAmount
       const tokenSelected = kind === Kind.Sell ? sellToken : buyToken
@@ -158,16 +174,105 @@ export class CoW extends LimitOrderBase {
 
       order.sellAmount = parseUnits(tokenAmount, tokenSelected.decimals).toString()
 
-      await this.getQuote({ ...order, expiresAt: dayjs().add(20, OrderExpiresInUnit.Minutes).unix() })
+      await this.getQuote({ ...order, expiresAt: dayjs().add(this.expiresAt, OrderExpiresInUnit.Minutes).unix() })
 
-      const { buyAmount, sellAmount } = this.quote
+      const {
+        quote: { buyAmount, sellAmount },
+      } = this.quote as CoWQuote
       if (kind === Kind.Sell) {
+        this.onBuyAmountChange(new TokenAmount(buyToken, buyAmount))
         return this.#formatMarketPrice(buyAmount, buyToken.decimals, tokenAmount)
       } else {
+        this.onSellAmountChange(new TokenAmount(sellToken, sellAmount))
         return this.#formatMarketPrice(sellAmount, sellToken.decimals, tokenAmount)
       }
     }
     return 0
+  }
+
+  #getLimitOrder(props: Partial<LimitOrder>): LimitOrder {
+    const order = {
+      ...this.limitOrder,
+    }
+    if (props.sellToken !== undefined) {
+      order.sellToken = props.sellToken
+    }
+    if (props.buyToken !== undefined) {
+      order.buyToken = props.buyToken
+    }
+    if (props.sellAmount !== undefined) {
+      order.sellAmount = props.sellAmount
+    }
+    if (props.buyAmount !== undefined) {
+      order.buyAmount = props.buyAmount
+    }
+
+    if (props.userAddress !== undefined) {
+      order.userAddress = props.userAddress
+    }
+    if (props.receiverAddress !== undefined) {
+      order.receiverAddress = props.receiverAddress
+    }
+    if (props.kind !== undefined) {
+      order.kind = props.kind
+    }
+    if (props.expiresAt !== undefined) {
+      order.expiresAt = props.expiresAt
+    }
+    if (props.limitPrice !== undefined) {
+      order.limitPrice = props.limitPrice
+    }
+
+    if (props.feeAmount !== undefined) {
+      order.feeAmount = props.feeAmount
+    }
+    if (props.createdAt !== undefined) {
+      order.createdAt = props.createdAt
+    }
+
+    const {
+      sellToken = this.sellToken.address,
+      buyToken = this.buyToken.address,
+      sellAmount = this.sellAmount.raw.toString() ?? '1000000000000000000',
+      buyAmount = this.buyAmount.raw.toString() ?? '1000000000000000000',
+      userAddress = this.userAddress,
+      receiverAddress = this.userAddress,
+      kind = this.kind,
+      expiresAt = dayjs().add(this.expiresAt, OrderExpiresInUnit.Minutes).unix(),
+      limitPrice = '1',
+      feeAmount = '0',
+      createdAt = dayjs().unix(),
+    } = order
+
+    if (
+      !sellToken ||
+      !buyToken ||
+      !sellAmount ||
+      !buyAmount ||
+      !userAddress ||
+      !receiverAddress ||
+      !kind ||
+      !expiresAt ||
+      !limitPrice ||
+      !feeAmount ||
+      !createdAt
+    ) {
+      throw new Error('Missing properties in Limit Order params')
+    }
+
+    return {
+      sellToken,
+      buyToken,
+      sellAmount,
+      buyAmount,
+      userAddress,
+      receiverAddress,
+      kind,
+      expiresAt,
+      limitPrice,
+      feeAmount,
+      createdAt,
+    } as LimitOrder
   }
 
   #formatMarketPrice(amount: string, decimals: number, tokenAmount: string) {

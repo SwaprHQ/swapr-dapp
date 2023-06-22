@@ -1,13 +1,18 @@
 import { Web3Provider } from '@ethersproject/providers'
 import { ChainId, Currency, Token, TokenAmount } from '@swapr/sdk'
 
-import { parseUnits } from 'ethers/lib/utils'
+import { formatUnits, parseUnits } from 'ethers/lib/utils'
 
-import { LimitOrderBaseConstructor, WalletData, OrderExpiresInUnit, Kind } from './LimitOrder.types'
+import { CoWQuote } from './CoW/CoW.types'
+import { LimitOrderBaseConstructor, WalletData, OrderExpiresInUnit, Kind, LimitOrder } from './LimitOrder.types'
+
+export const logger = (message?: any, ...optionalParams: any[]) => {
+  process.env.NODE_ENV === 'development' && console.log(message, ...optionalParams)
+}
 
 export abstract class LimitOrderBase {
-  limitOrder: any
-  quote: any
+  limitOrder: LimitOrder | undefined
+  quote: CoWQuote | unknown
   userAddress: string | undefined
   receiverAddres: string | undefined
   sellToken: Token
@@ -25,6 +30,7 @@ export abstract class LimitOrderBase {
   limitOrderProtocol: 'CoW' | '1inch'
   supportedChanins: ChainId[]
   activeChainId: ChainId | undefined
+  loading: boolean = false
 
   constructor({ protocol, supportedChains, kind, expiresAt, sellToken, buyToken }: LimitOrderBaseConstructor) {
     this.limitOrderProtocol = protocol
@@ -35,21 +41,13 @@ export abstract class LimitOrderBase {
     this.buyToken = buyToken
     this.sellAmount = new TokenAmount(sellToken, parseUnits('1', sellToken.decimals).toString())
     this.buyAmount = new TokenAmount(buyToken, parseUnits('1', buyToken.decimals).toString())
-    this.limitOrder = {
-      kind: kind,
-      expiresAt: expiresAt,
-      sellToken: sellToken,
-      buyToken: buyToken,
-      sellAmount: this.sellAmount,
-      buyAmount: this.buyAmount,
-    }
   }
 
-  #log = (message: string) => `LimitOrder:: ${this.limitOrderProtocol} : ${message}`
+  #logFormat = (message: string) => `LimitOrder:: ${this.limitOrderProtocol} : ${message}`
 
   logger = {
-    log: (message: string, ...props: any[]) => console.log(this.#log(message), ...props),
-    error: (message: string, ...props: any[]) => console.error(this.#log(message), ...props),
+    log: (message: string, ...props: any[]) => logger(this.#logFormat(message), ...props),
+    error: (message: string, ...props: any[]) => logger(this.#logFormat(message), ...props),
   }
 
   getTokenFromCurrency(currency: Currency): Token {
@@ -58,6 +56,13 @@ export abstract class LimitOrderBase {
       token = new Token(this.activeChainId, currency.address!, currency.decimals, currency.symbol)
     }
     return token
+  }
+
+  getFormattedAmount = (amount: TokenAmount) => {
+    const rawAmount = formatUnits(amount.raw.toString(), amount.currency.decimals) || '0'
+    const formattedAmount = parseFloat(rawAmount).toFixed(6)
+    if (Number(formattedAmount) === 0) return Number(formattedAmount).toString()
+    return formattedAmount.replace(/\.?0+$/, '')
   }
 
   setSignerData = async ({ account, activeChainId, provider }: WalletData) => {

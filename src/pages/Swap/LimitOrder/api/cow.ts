@@ -5,7 +5,8 @@ import contractNetworks from '@cowprotocol/contracts/networks.json'
 import { OrderKind as CoWOrderKind } from '@cowprotocol/cow-sdk'
 import type { UnsignedOrder } from '@cowprotocol/cow-sdk/dist/utils/sign'
 
-import { LimitOrderKind, SerializableLimitOrder, SerializableSignedLimitOrder } from '../../LimitOrderBox/interfaces'
+import { Kind, LimitOrder } from '../../../../services/LimitOrders'
+import { SignedLimitOrder } from '../../../../services/LimitOrders/CoW/CoW.types'
 import cowAppData from '../generated/cow-app-data/app-data.json'
 // import { LimitOrderKind, SerializableLimitOrder, SerializableSignedLimitOrder } from '../interfaces'
 
@@ -22,7 +23,7 @@ export function getAppDataIPFSHash(chainId: number): string {
 }
 
 export interface SignLimitOrderParams {
-  order: SerializableLimitOrder
+  order: LimitOrder
   signer: Signer
   chainId: number
 }
@@ -44,7 +45,7 @@ export async function getQuote({ order, signer, chainId }: GetLimitOrderQuotePar
 
   let cowQuote: Awaited<ReturnType<typeof cowSdk.cowApi.getQuote>>
 
-  if (kind === LimitOrderKind.BUY) {
+  if (kind === Kind.Buy) {
     cowQuote = await cowSdk.cowApi.getQuote({
       appData: getAppDataIPFSHash(chainId),
       buyAmountAfterFee: buyAmount,
@@ -76,11 +77,7 @@ export async function getQuote({ order, signer, chainId }: GetLimitOrderQuotePar
 /**
  * Signs a limit order to produce a EIP712-compliant signature
  */
-export async function signLimitOrder({
-  order,
-  signer,
-  chainId,
-}: SignLimitOrderParams): Promise<SerializableSignedLimitOrder> {
+export async function signLimitOrder({ order, signer, chainId }: SignLimitOrderParams): Promise<SignedLimitOrder> {
   const cowSdk = CoWTrade.getCowSdk(chainId, {
     signer,
     appDataHash: getAppDataIPFSHash(chainId),
@@ -97,7 +94,7 @@ export async function signLimitOrder({
     feeAmount, // from CoW APIs
     receiver: receiverAddress, // the account that will receive the order
     validTo: expiresAt,
-    kind: kind === LimitOrderKind.BUY ? CoWOrderKind.BUY : CoWOrderKind.SELL,
+    kind: kind === Kind.Buy ? CoWOrderKind.BUY : CoWOrderKind.SELL,
     partiallyFillable: false,
   })
 
@@ -127,7 +124,7 @@ export async function createCoWLimitOrder({ order, signer, chainId }: GetLimitOr
     feeAmount: '0', // from CoW APIs
     receiver: order.receiverAddress, // the account that will receive the order
     validTo: order.expiresAt,
-    kind: order.kind === LimitOrderKind.BUY ? CoWOrderKind.BUY : CoWOrderKind.SELL,
+    kind: order.kind === Kind.Buy ? CoWOrderKind.BUY : CoWOrderKind.SELL,
     partiallyFillable: false,
   }
 

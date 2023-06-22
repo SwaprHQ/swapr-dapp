@@ -1,6 +1,6 @@
 import { Currency, Token, TokenAmount } from '@swapr/sdk'
 
-import { formatUnits, parseUnits } from 'ethers/lib/utils'
+import { parseUnits } from 'ethers/lib/utils'
 import { useContext, useEffect, useState } from 'react'
 import { Flex } from 'rebass'
 
@@ -16,7 +16,7 @@ import SwapTokens from './Components/SwapTokens'
 
 export default function LimitOrderForm() {
   const protocol = useContext(LimitOrderContext)
-
+  console.log('protocol', protocol)
   const [fetchMarketPrice, setFetchMarketPrice] = useState<boolean>(true)
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -27,6 +27,7 @@ export default function LimitOrderForm() {
 
   const [sellToken, setSellToken] = useState<Token>(protocol.sellToken)
   const [buyToken, setBuyToken] = useState<Token>(protocol.buyToken)
+  const [loading, setLoading] = useState<boolean>(protocol.loading)
 
   const [kind, setKind] = useState<Kind>(protocol?.kind || Kind.Sell)
 
@@ -35,8 +36,13 @@ export default function LimitOrderForm() {
     setBuyToken(protocol.buyToken)
     setSellAmount(protocol.sellAmount)
     setBuyAmount(protocol.buyAmount)
+    protocol.getMarketPrice()
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [protocol.activeChainId])
+
+  useEffect(() => {
+    setLoading(protocol.loading)
+  }, [protocol.loading])
 
   useEffect(() => {
     protocol?.onKindChange(kind)
@@ -55,32 +61,57 @@ export default function LimitOrderForm() {
   }, [protocol, buyToken])
 
   useEffect(() => {
+    async function getMarketPrices() {
+      if (!protocol || !sellAmount) return
+      if (kind === Kind.Sell) {
+        setLoading(true)
+        await protocol.getMarketPrice()
+        setBuyAmount(protocol.buyAmount)
+      }
+    }
+
     if (sellAmount) {
       protocol?.onSellAmountChange(sellAmount)
+      getMarketPrices()
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [protocol, sellAmount])
 
   useEffect(() => {
+    async function getMarketPrices() {
+      if (!protocol || !buyAmount) return
+      if (kind === Kind.Buy) {
+        setLoading(true)
+        await protocol.getMarketPrice()
+        setSellAmount(protocol.sellAmount)
+      }
+    }
+
     if (buyAmount) {
       protocol?.onBuyAmountChange(buyAmount)
+      getMarketPrices()
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [protocol, buyAmount])
 
   const [marketPrices, setMarketPrices] = useState<MarketPrices>({ buy: 0, sell: 0 })
 
+  // TODO: REMOVE THIS USEEFFECT
   useEffect(() => {
-    async function getMarketPrices() {
+    async function _getMarketPrices() {
       if (!protocol) return
       const { kind } = protocol
+      setLoading(true)
       const amount = await protocol.getMarketPrice()
 
       if (kind === Kind.Sell) {
+        // TODO: MOVE THIS LOGIC
         setMarketPrices(marketPrice => ({ ...marketPrice, buy: amount }))
       } else {
         setMarketPrices(marketPrice => ({ ...marketPrice, sell: amount }))
       }
     }
-    getMarketPrices()
+    // getMarketPrices()
   }, [protocol, protocol?.kind])
 
   return (
@@ -88,9 +119,8 @@ export default function LimitOrderForm() {
       <AutoColumn gap="3px">
         <CurrencyInputPanel
           id="limit-order-sell-currency"
-          value={formatUnits(sellAmount.raw.toString(), sellToken.decimals) || '0'}
-          onUserInput={function (_value: string): void {
-            // throw new Error('Function not implemented.')
+          value={protocol.getFormattedAmount(sellAmount)}
+          onUserInput={function (_value: string) {
             setKind(Kind.Sell)
             const amountWei = parseUnits(_value, sellToken.decimals).toString()
             setSellAmount(new TokenAmount(sellToken, amountWei))
@@ -100,24 +130,25 @@ export default function LimitOrderForm() {
           onCurrencySelect={(currency: Currency, _isMaxAmount?: boolean) => {
             setSellToken(protocol.getTokenFromCurrency(currency))
           }}
+          currencyOmitList={[buyToken.address]}
         />
         <SwapTokens
           swapTokens={() => {
             setSellToken(buyToken)
             setBuyToken(sellToken)
           }}
-          loading={false}
+          loading={loading}
         />
         <CurrencyInputPanel
           id="limit-order-buy-currency"
-          value={formatUnits(buyAmount.raw.toString(), sellToken.decimals) || '0'}
+          value={protocol.getFormattedAmount(buyAmount)}
           currency={buyToken}
-          onUserInput={function (_value: string): void {
+          onUserInput={function (_value: string) {
             setKind(Kind.Buy)
             const amountWei = parseUnits(_value, buyToken.decimals).toString()
             setBuyAmount(new TokenAmount(buyToken, amountWei))
-            // throw new Error('Function not implemented.')
           }}
+          currencyOmitList={[sellToken.address]}
           showNativeCurrency={false}
           onCurrencySelect={(currency: Currency, _isMaxAmount?: boolean) => {
             setBuyToken(protocol.getTokenFromCurrency(currency))

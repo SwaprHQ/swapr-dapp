@@ -20,34 +20,18 @@ export class OneInch extends LimitOrderBase {
 
   onSellTokenChange(sellToken: Currency) {
     this.sellToken = this.getTokenFromCurrency(sellToken)
-    this.limitOrder = {
-      ...this.limitOrder,
-      sellToken: this.sellToken,
-    }
   }
 
   onBuyTokenChange(buyToken: Currency) {
     this.buyToken = this.getTokenFromCurrency(buyToken)
-    this.limitOrder = {
-      ...this.limitOrder,
-      buyToken: this.buyToken,
-    }
   }
 
   onSellAmountChange(sellAmount: TokenAmount) {
     this.sellAmount = sellAmount
-    this.limitOrder = {
-      ...this.limitOrder,
-      sellAmount: this.sellAmount,
-    }
   }
 
   onBuyAmountChange(buyAmount: TokenAmount) {
     this.buyAmount = buyAmount
-    this.limitOrder = {
-      ...this.limitOrder,
-      buyAmount: this.buyAmount,
-    }
   }
 
   onLimitOrderChange(limitOrder: any): void {
@@ -55,7 +39,6 @@ export class OneInch extends LimitOrderBase {
   }
 
   onExpireChange(expiresAt: number): void {
-    // TODO: Convert expiresAt based on expiresAtUnit
     this.expiresAt = expiresAt
   }
 

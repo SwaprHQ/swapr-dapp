@@ -1,18 +1,18 @@
 import { limitOrderConfig } from './LimitOrder.config'
 import { WalletData } from './LimitOrder.types'
-import { LimitOrderBase } from './LimitOrder.utils'
+import { LimitOrderBase, logger } from './LimitOrder.utils'
 
 export default class LimitOrder {
   #protocols: LimitOrderBase[]
   activeProtocol?: LimitOrderBase
 
   constructor() {
-    console.log('LimitOrder constructor')
+    logger('LimitOrder constructor')
     this.#protocols = limitOrderConfig
   }
 
   updateSigner = async (signerData: WalletData) => {
-    console.log('LimitOrder updateSigner')
+    logger('LimitOrder updateSigner')
     await Promise.all(
       Object.values(this.#protocols).map(async protocol => {
         await protocol.setSignerData(signerData)
@@ -23,14 +23,14 @@ export default class LimitOrder {
   }
 
   #setActiveProtocol() {
-    console.log('LimitOrder set Active Protocol')
+    logger('LimitOrder set Active Protocol')
     this.activeProtocol = this.#protocols.find(
       protocol => protocol.activeChainId && protocol.supportedChanins.includes(protocol.activeChainId)
     )
   }
 
   getActiveProtocol = () => {
-    console.log('LimitOrder get Active Protocol')
+    logger('LimitOrder get Active Protocol')
     return this.activeProtocol
   }
 }

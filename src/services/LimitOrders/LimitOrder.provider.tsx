@@ -1,16 +1,17 @@
 import { ReactNode, createContext, useEffect, useState } from 'react'
 
-import { LimitOrderBase } from './LimitOrder.utils'
+import { LimitOrderBase, logger } from './LimitOrder.utils'
 
 export const LimitOrderContext = createContext<LimitOrderBase>({} as LimitOrderBase)
 
+// TODO: May be don't need a provider. Need to verify at end and remove if not needed
 export function LimitOrderProvider({ children, protocol }: { children: ReactNode; protocol: LimitOrderBase }) {
   const [value, setProtocol] = useState<LimitOrderBase>(protocol)
 
   useEffect(() => {
-    // console.log('protocol change', protocol)
+    logger('Limit Order Protocol Changed')
     setProtocol(protocol)
-  }, [protocol, setProtocol])
+  }, [protocol])
 
   return <LimitOrderContext.Provider value={value}>{children}</LimitOrderContext.Provider>
 }
