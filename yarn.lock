@@ -7482,7 +7482,7 @@ __metadata:
     "@storybook/testing-library": 0.1.0
     "@swapr/core": ^0.3.19
     "@swapr/periphery": ^0.3.22
-    "@swapr/sdk": 1.9.0
+    "@swapr/sdk": "SwaprHQ/swapr-sdk#feat/update-usdc-in-arbitrum"
     "@synthetixio/synpress": ^2.3.3
     "@tanstack/react-query": 4.24.6
     "@testing-library/cypress": ^9.0.0
@@ -7623,9 +7623,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@swapr/sdk@npm:1.9.0":
+"@swapr/sdk@SwaprHQ/swapr-sdk#feat/update-usdc-in-arbitrum":
   version: 1.9.0
-  resolution: "@swapr/sdk@npm:1.9.0"
+  resolution: "@swapr/sdk@https://github.com/SwaprHQ/swapr-sdk.git#commit=69f50fe116a26da3b0881637842ebeac12f1e1f3"
   dependencies:
     "@cowprotocol/cow-sdk": ^1.0.2-RC.0
     "@ethersproject/abi": ^5.6.4
@@ -7656,7 +7656,7 @@ __metadata:
     tslib: ^2.3.1
   peerDependencies:
     ethers: ^5.4.0
-  checksum: a8060510897e4125950842b6df9b05b227f6cbebe6740f6b9b1a2a1a6126e6241da050e5c6c0de314024f8c2e6c3736e913066e9b5849c48f98511408be9af1c
+  checksum: 0f083f9ca8b8edb38a0a659bb3dcc68605a612be55e9cd9f8de32ff8c4e26ec71e51eb815f9fd07eae337b0d4991b96841b2a20c08b7baa6d9458cf245f20ebe
   languageName: node
   linkType: hard
 
