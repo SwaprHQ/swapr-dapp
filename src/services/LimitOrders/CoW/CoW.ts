@@ -3,11 +3,11 @@ import { Currency, TokenAmount } from '@swapr/sdk'
 import dayjs from 'dayjs'
 import { formatUnits, parseUnits } from 'ethers/lib/utils'
 
-import { getQuote } from '../../../pages/Swap/LimitOrder/api/cow'
 import { getDefaultTokens } from '../LimitOrder.config'
 import { Kind, WalletData, OrderExpiresInUnit, ProtocolContructor, LimitOrder } from '../LimitOrder.types'
 import { LimitOrderBase } from '../LimitOrder.utils'
 
+import { getQuote } from './api/cow'
 import { type CoWQuote } from './CoW.types'
 
 export class CoW extends LimitOrderBase {

@@ -11,7 +11,7 @@ import { ChainId, CoWTrade } from '@swapr/sdk'
 import { SigningScheme } from '@cowprotocol/contracts'
 import { OrderKind as CoWOrderKind } from '@cowprotocol/cow-sdk'
 
-import { LimitOrderKind, SerializableSignedLimitOrder } from '../../LimitOrderBox/interfaces'
+import { LimitOrderKind, SerializableSignedLimitOrder } from '../../../../pages/Swap/LimitOrderBox/interfaces'
 
 // import { LimitOrderKind, SerializableSignedLimitOrder } from '../interfaces'
 

@@ -5,9 +5,9 @@ import contractNetworks from '@cowprotocol/contracts/networks.json'
 import { OrderKind as CoWOrderKind } from '@cowprotocol/cow-sdk'
 import type { UnsignedOrder } from '@cowprotocol/cow-sdk/dist/utils/sign'
 
-import { Kind, LimitOrder } from '../../../../services/LimitOrders'
-import { SignedLimitOrder } from '../../../../services/LimitOrders/CoW/CoW.types'
-import cowAppData from '../generated/cow-app-data/app-data.json'
+import { Kind, LimitOrder } from '../..'
+import cowAppData from '../../../../pages/Swap/LimitOrder/generated/cow-app-data/app-data.json'
+import { SignedLimitOrder } from '../CoW.types'
 // import { LimitOrderKind, SerializableLimitOrder, SerializableSignedLimitOrder } from '../interfaces'
 
 export const COW_APP_DATA = cowAppData
