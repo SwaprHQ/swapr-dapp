@@ -18,6 +18,7 @@ import {
   SwapTokenWrapper,
   ToggleCurrencyButton,
 } from './styles'
+import { computeNewAmount } from './utils'
 
 const invalidChars = ['-', '+', 'e']
 
@@ -50,6 +51,9 @@ export interface OrderLimitPriceFieldProps {
   limitOrder?: any
   sellToken: Currency
   buyToken: Currency
+  setSellAmount(t: TokenAmount): void
+  setBuyAmount(t: TokenAmount): void
+  setKind(t: Kind): void
 }
 
 export function OrderLimitPriceField({
@@ -63,10 +67,13 @@ export function OrderLimitPriceField({
   limitOrder = {},
   sellToken,
   buyToken,
+  setSellAmount,
+  setBuyAmount,
+  setKind,
 }: OrderLimitPriceFieldProps) {
   const { t } = useTranslation('swap')
 
-  const [formattedLimitPrice, setFormattedLimitPrice] = useState<string | number>(0)
+  const [formattedLimitPrice, setFormattedLimitPrice] = useState<string | number>(marketPrices.buy.toFixed(6))
 
   const [{ baseToken, baseTokenAmount: _b, quoteToken, quoteTokenAmount: _q }, setBaseQuoteTokens] = useState(
     getBaseQuoteTokens({ sellAmount, buyAmount, kind, sellToken, buyToken })
@@ -115,21 +122,25 @@ export function OrderLimitPriceField({
 
     const nextLimitPriceFloat = quoteTokenAmountAsFloat / baseTokenAmountAsFloat
     const nextLimitPriceFormatted = nextLimitPriceFloat.toFixed(6) // 6 is the lowest precision we support due to tokens like USDC
-    const nextLimitPriceWei = parseUnits(nextLimitPriceFormatted, quoteTokenAmount?.currency?.decimals).toString()
+    //const nextLimitPriceWei = parseUnits(nextLimitPriceFormatted, quoteTokenAmount?.currency?.decimals).toString()
 
-    protocol.onLimitOrderChange({
-      ...limitOrder,
-      kind,
-      limitPrice: nextLimitPriceWei,
-    })
+    setKind(kindSelected)
+    protocol.onLimitPriceChange(nextLimitPriceFormatted)
+    // protocol.onLimitOrderChange({
+    //   ...limitOrder,
+    //   kind,
+    //   limitPrice: nextLimitPriceFormatted,
+    // })
     // update the formatted limit price
     setFormattedLimitPrice(nextLimitPriceFormatted)
-  }, [kind, sellAmount, buyAmount, protocol, limitOrder])
+    setInputLimitPrice(nextLimitPriceFormatted)
+  }, [kind, sellAmount, buyAmount, setKind, protocol])
 
   /**
    * Handle the limit price input change. Compute the buy amount and update the state.
    */
   const onChangeHandler: React.ChangeEventHandler<HTMLInputElement> = event => {
+    const [_baseTokenAmount, quoteTokenAmount] = kind === Kind.Sell ? [sellAmount, buyAmount] : [buyAmount, sellAmount]
     // Parse the limit price
     const nextLimitPriceFormatted = event.target.value // When the limit price is empty, set the limit price to 0
     if (nextLimitPriceFormatted.split('.').length > 2) {
@@ -150,32 +161,32 @@ export function OrderLimitPriceField({
       setInputLimitPrice(nextLimitPriceFormatted)
       // When price is below or equal to 0, set the limit price to 0, but don't update the state
 
-      // const { amount, buyAmountWei, sellAmountWei, newBuyTokenAmount, newSellTokenAmount } = computeNewAmount(
-      //   buyAmount,
-      //   sellAmount,
-      //   nextLimitPriceFloat,
-      //   limitOrder.kind,
-      //   inputFocus
-      // )
+      const { buyAmountWei, sellAmountWei, newBuyTokenAmount, newSellTokenAmount } = computeNewAmount(
+        buyAmount,
+        sellAmount,
+        nextLimitPriceFloat,
+        limitOrder.kind
+        // inputFocus
+      )
 
       setFormattedLimitPrice(nextLimitPriceFormatted)
 
       if (kind === Kind.Sell) {
-        // setBuyTokenAmount(newBuyTokenAmount)
+        setBuyAmount(newBuyTokenAmount)
         // setFormattedBuyAmount(amount.toString())
-        // setLimitOrder({
-        //   ...limitOrder,
-        //   limitPrice: parseUnits(nextLimitPriceFormatted, quoteTokenAmount?.currency?.decimals).toString(),
-        //   buyAmount: buyAmountWei,
-        // })
+        protocol.onLimitOrderChange({
+          ...limitOrder,
+          limitPrice: parseUnits(nextLimitPriceFormatted, quoteTokenAmount?.currency?.decimals).toString(),
+          buyAmount: buyAmountWei,
+        })
       } else {
-        // setSellTokenAmount(newSellTokenAmount)
+        setSellAmount(newSellTokenAmount)
         // setFormattedSellAmount(amount.toString())
-        // setLimitOrder({
-        //   ...limitOrder,
-        //   limitPrice: parseUnits(nextLimitPriceFormatted, quoteTokenAmount?.currency?.decimals).toString(),
-        //   sellAmount: sellAmountWei,
-        // })
+        protocol.onLimitOrderChange({
+          ...limitOrder,
+          limitPrice: parseUnits(nextLimitPriceFormatted, quoteTokenAmount?.currency?.decimals).toString(),
+          sellAmount: sellAmountWei,
+        })
       }
 
       setFetchMarketPrice(false)

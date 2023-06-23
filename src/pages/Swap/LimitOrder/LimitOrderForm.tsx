@@ -1,7 +1,7 @@
 import { Currency, Token, TokenAmount } from '@swapr/sdk'
 
 import { parseUnits } from 'ethers/lib/utils'
-import { useContext, useEffect, useState } from 'react'
+import { useCallback, useContext, useEffect, useState } from 'react'
 import { Flex } from 'rebass'
 
 import { AutoColumn } from '../../../components/Column'
@@ -16,27 +16,30 @@ import SwapTokens from './Components/SwapTokens'
 
 export default function LimitOrderForm() {
   const protocol = useContext(LimitOrderContext)
-  console.log('protocol', protocol)
   const [fetchMarketPrice, setFetchMarketPrice] = useState<boolean>(true)
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const [sellAmount, setSellAmount] = useState(protocol.sellAmount)
-
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [buyAmount, setBuyAmount] = useState(protocol.buyAmount)
+  const [sellAmount, setSellAmount] = useState(protocol.sellAmount)
 
   const [sellToken, setSellToken] = useState<Token>(protocol.sellToken)
   const [buyToken, setBuyToken] = useState<Token>(protocol.buyToken)
   const [loading, setLoading] = useState<boolean>(protocol.loading)
 
   const [kind, setKind] = useState<Kind>(protocol?.kind || Kind.Sell)
+  const [marketPrices, setMarketPrices] = useState<MarketPrices>({ buy: 0, sell: 0 })
 
   useEffect(() => {
+    async function getMarketPrice() {
+      const amount = await protocol.getMarketPrice()
+      setBuyAmount(protocol.buyAmount)
+      setMarketPrices(marketPrice => ({ ...marketPrice, buy: amount }))
+      setLoading(false)
+    }
     setSellToken(protocol.sellToken)
     setBuyToken(protocol.buyToken)
     setSellAmount(protocol.sellAmount)
     setBuyAmount(protocol.buyAmount)
-    protocol.getMarketPrice()
+    getMarketPrice()
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [protocol.activeChainId])
 
@@ -48,71 +51,96 @@ export default function LimitOrderForm() {
     protocol?.onKindChange(kind)
   }, [protocol, kind])
 
-  useEffect(() => {
-    if (sellToken) {
-      protocol?.onSellTokenChange(sellToken)
-    }
-  }, [protocol, sellToken])
+  const handleSellTokenChange = useCallback(async (currency: Currency, _isMaxAmount?: boolean) => {
+    setLoading(true)
+    const newSellToken = protocol.getTokenFromCurrency(currency)
+    setSellToken(newSellToken)
+    protocol?.onSellTokenChange(newSellToken)
+    protocol?.onKindChange(Kind.Sell)
+    setKind(Kind.Sell)
 
-  useEffect(() => {
-    if (buyToken) {
-      protocol?.onBuyTokenChange(buyToken)
-    }
-  }, [protocol, buyToken])
+    await protocol.getQuote()
 
-  useEffect(() => {
-    async function getMarketPrices() {
-      if (!protocol || !sellAmount) return
-      if (kind === Kind.Sell) {
-        setLoading(true)
-        await protocol.getMarketPrice()
-        setBuyAmount(protocol.buyAmount)
-      }
-    }
-
-    if (sellAmount) {
-      protocol?.onSellAmountChange(sellAmount)
-      getMarketPrices()
-    }
+    setBuyAmount(protocol.buyAmount)
+    setLoading(false)
+    // setMarketPrices(marketPrice => ({ ...marketPrice, buy: amount }))
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [protocol, sellAmount])
+  }, [])
 
-  useEffect(() => {
-    async function getMarketPrices() {
-      if (!protocol || !buyAmount) return
-      if (kind === Kind.Buy) {
-        setLoading(true)
-        await protocol.getMarketPrice()
-        setSellAmount(protocol.sellAmount)
-      }
-    }
+  const handleBuyTokenChange = useCallback(async (currency: Currency, _isMaxAmount?: boolean) => {
+    setLoading(true)
+    const newBuyToken = protocol.getTokenFromCurrency(currency)
+    setBuyToken(newBuyToken)
+    protocol?.onBuyTokenChange(newBuyToken)
+    protocol?.onKindChange(Kind.Buy)
+    setKind(Kind.Buy)
 
-    if (buyAmount) {
-      protocol?.onBuyAmountChange(buyAmount)
-      getMarketPrices()
-    }
+    await protocol.getQuote()
+
+    setSellAmount(protocol.sellAmount)
+    setLoading(false)
+    // setMarketPrices(marketPrice => ({ ...marketPrice, sell: amount }))
+
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [protocol, buyAmount])
+  }, [])
 
-  const [marketPrices, setMarketPrices] = useState<MarketPrices>({ buy: 0, sell: 0 })
+  const handleSellAmountChange = useCallback(async (value: string) => {
+    if (value.trim() !== '' && value !== '0') {
+      const amountWei = parseUnits(value, sellToken.decimals).toString()
+      const newSellAmount = new TokenAmount(sellToken, amountWei)
 
-  // TODO: REMOVE THIS USEEFFECT
-  useEffect(() => {
-    async function _getMarketPrices() {
-      if (!protocol) return
-      const { kind } = protocol
       setLoading(true)
-      const amount = await protocol.getMarketPrice()
 
-      if (kind === Kind.Sell) {
-        // TODO: MOVE THIS LOGIC
-        setMarketPrices(marketPrice => ({ ...marketPrice, buy: amount }))
-      } else {
-        setMarketPrices(marketPrice => ({ ...marketPrice, sell: amount }))
-      }
+      protocol?.onSellAmountChange(newSellAmount)
+      setSellAmount(newSellAmount)
+
+      protocol?.onKindChange(Kind.Sell)
+      setKind(Kind.Sell)
+
+      await protocol.getQuote()
+
+      setBuyAmount(protocol.buyAmount)
+      setLoading(false)
+      // setMarketPrices(marketPrice => ({ ...marketPrice, buy: amount }))
     }
-    // getMarketPrices()
-  }, [protocol, protocol?.kind])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
+
+  const handleBuyAmountChange = useCallback(async (value: string) => {
+    if (value.trim() !== '' && value !== '0') {
+      const amountWei = parseUnits(value, buyToken.decimals).toString()
+      const newBuyAmount = new TokenAmount(buyToken, amountWei)
+
+      setLoading(true)
+
+      protocol?.onBuyAmountChange(newBuyAmount)
+      setBuyAmount(newBuyAmount)
+
+      protocol?.onKindChange(Kind.Buy)
+      setKind(Kind.Buy)
+
+      await protocol.getQuote()
+
+      setSellAmount(protocol.sellAmount)
+      setLoading(false)
+      // setMarketPrices(marketPrice => ({ ...marketPrice, sell: amount }))
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
+
+  const handleSwap = useCallback(async () => {
+    setLoading(true)
+    protocol.onSellTokenChange(buyToken)
+    protocol.onBuyTokenChange(sellToken)
+    setSellToken(buyToken)
+    setBuyToken(sellToken)
+    setKind(Kind.Sell)
+
+    await protocol.getQuote()
+
+    setBuyAmount(protocol.buyAmount)
+    setLoading(false)
+  }, [sellToken, buyToken, protocol])
 
   return (
     <AutoColumn gap="12px">
@@ -120,39 +148,24 @@ export default function LimitOrderForm() {
         <CurrencyInputPanel
           id="limit-order-sell-currency"
           value={protocol.getFormattedAmount(sellAmount)}
-          onUserInput={function (_value: string) {
-            setKind(Kind.Sell)
-            const amountWei = parseUnits(_value, sellToken.decimals).toString()
-            setSellAmount(new TokenAmount(sellToken, amountWei))
-          }}
+          onUserInput={handleSellAmountChange}
           showNativeCurrency={false}
           currency={sellToken}
-          onCurrencySelect={(currency: Currency, _isMaxAmount?: boolean) => {
-            setSellToken(protocol.getTokenFromCurrency(currency))
-          }}
+          onCurrencySelect={handleSellTokenChange}
           currencyOmitList={[buyToken.address]}
         />
-        <SwapTokens
-          swapTokens={() => {
-            setSellToken(buyToken)
-            setBuyToken(sellToken)
-          }}
-          loading={loading}
-        />
+        <SwapTokens swapTokens={handleSwap} loading={loading} />
         <CurrencyInputPanel
           id="limit-order-buy-currency"
           value={protocol.getFormattedAmount(buyAmount)}
           currency={buyToken}
-          onUserInput={function (_value: string) {
-            setKind(Kind.Buy)
-            const amountWei = parseUnits(_value, buyToken.decimals).toString()
-            setBuyAmount(new TokenAmount(buyToken, amountWei))
+          onUserInput={handleBuyAmountChange}
+          onMax={() => {
+            console.log('onMax')
           }}
-          currencyOmitList={[sellToken.address]}
           showNativeCurrency={false}
-          onCurrencySelect={(currency: Currency, _isMaxAmount?: boolean) => {
-            setBuyToken(protocol.getTokenFromCurrency(currency))
-          }}
+          onCurrencySelect={handleBuyTokenChange}
+          currencyOmitList={[sellToken.address]}
         />
       </AutoColumn>
       <AutoRow justify="space-between" flexWrap="nowrap" gap="12">
@@ -168,6 +181,9 @@ export default function LimitOrderForm() {
             buyAmount={buyAmount}
             kind={kind}
             limitOrder={protocol.limitOrder}
+            setSellAmount={setSellAmount}
+            setBuyAmount={setBuyAmount}
+            setKind={setKind}
           />
         </Flex>
         <Flex flex={40}>

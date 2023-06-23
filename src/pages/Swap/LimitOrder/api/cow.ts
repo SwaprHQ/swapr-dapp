@@ -26,6 +26,7 @@ export interface SignLimitOrderParams {
   order: LimitOrder
   signer: Signer
   chainId: number
+  signal: AbortSignal
 }
 
 type GetLimitOrderQuoteParams = SignLimitOrderParams
@@ -34,7 +35,7 @@ type GetLimitOrderQuoteParams = SignLimitOrderParams
  * Fetches a quote from the CoW API
  * @returns
  */
-export async function getQuote({ order, signer, chainId }: GetLimitOrderQuoteParams) {
+export async function getQuote({ order, signer, chainId, signal }: GetLimitOrderQuoteParams) {
   const { buyToken, receiverAddress, userAddress, expiresAt, sellAmount, sellToken, kind, buyAmount } = order
 
   // const cowSdk = getCoWSdk(chainId, signer)
@@ -46,29 +47,35 @@ export async function getQuote({ order, signer, chainId }: GetLimitOrderQuotePar
   let cowQuote: Awaited<ReturnType<typeof cowSdk.cowApi.getQuote>>
 
   if (kind === Kind.Buy) {
-    cowQuote = await cowSdk.cowApi.getQuote({
-      appData: getAppDataIPFSHash(chainId),
-      buyAmountAfterFee: buyAmount,
-      buyToken,
-      from: userAddress,
-      kind: CoWOrderKind.BUY,
-      partiallyFillable: false,
-      receiver: receiverAddress,
-      sellToken,
-      validTo: expiresAt,
-    })
+    cowQuote = await cowSdk.cowApi.getQuote(
+      {
+        appData: getAppDataIPFSHash(chainId),
+        buyAmountAfterFee: buyAmount,
+        buyToken,
+        from: userAddress,
+        kind: CoWOrderKind.BUY,
+        partiallyFillable: false,
+        receiver: receiverAddress,
+        sellToken,
+        validTo: expiresAt,
+      },
+      { requestOptions: { signal } }
+    )
   } else {
-    cowQuote = await cowSdk.cowApi.getQuote({
-      appData: getAppDataIPFSHash(chainId),
-      buyToken,
-      sellAmountBeforeFee: sellAmount,
-      from: userAddress,
-      kind: CoWOrderKind.SELL,
-      partiallyFillable: false,
-      receiver: receiverAddress,
-      sellToken,
-      validTo: expiresAt,
-    })
+    cowQuote = await cowSdk.cowApi.getQuote(
+      {
+        appData: getAppDataIPFSHash(chainId),
+        buyToken,
+        sellAmountBeforeFee: sellAmount,
+        from: userAddress,
+        kind: CoWOrderKind.SELL,
+        partiallyFillable: false,
+        receiver: receiverAddress,
+        sellToken,
+        validTo: expiresAt,
+      },
+      { requestOptions: { signal } }
+    )
   }
 
   return cowQuote

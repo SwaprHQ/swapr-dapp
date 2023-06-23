@@ -80,10 +80,11 @@ export abstract class LimitOrderBase {
   abstract onExpireChange(expiresAt: number): void
   abstract onExpireUnitChange(unit: OrderExpiresInUnit): void
   abstract onKindChange(kind: Kind): void
+  abstract onLimitPriceChange(limitPrice: string): void
 
   abstract getQuote(): Promise<void>
   abstract getMarketPrice(): Promise<number>
-  abstract setToMarket(sellPricePercentage: number, buyPricePercentage: number): Promise<void>
+  // abstract setToMarket(sellPricePercentage: number, buyPricePercentage: number): Promise<void>
   abstract onSignerChange({ account, activeChainId, provider }: WalletData): Promise<void>
   abstract approve(): Promise<void>
   abstract createOrder(): Promise<void>
