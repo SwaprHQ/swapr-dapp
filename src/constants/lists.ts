@@ -26,7 +26,7 @@ const PANCAKESWAP_LIST =
   'https://raw.githubusercontent.com/pancakeswap/pancake-toolkit/master/packages/token-lists/lists/pancakeswap-default.json'
 // const UNISWAP_LIST = 'https://tokens.coingecko.com/uniswap/all.json'
 const ARBITRUM_LIST = 'https://tokens.coingecko.com/arbitrum-one/all.json'
-const ZK_SYNC_ERA_LIST = 'https://tokens.coingecko.com/zksync/all.json'
+export const ZK_SYNC_ERA_LIST = 'https://tokens.coingecko.com/zksync/all.json'
 
 export const UNSUPPORTED_LIST_URLS: string[] = [BA_LIST]
 
