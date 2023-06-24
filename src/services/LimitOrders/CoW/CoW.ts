@@ -317,6 +317,25 @@ export class CoW extends LimitOrderBase {
     } as LimitOrder
   }
 
+  getTokenLimitPrices() {
+    const { buyAmount, sellAmount, kind } = this
+    if (buyAmount && sellAmount && kind) {
+      const [baseAmount, quoteAmount] = kind === Kind.Sell ? [sellAmount, buyAmount] : [buyAmount, sellAmount]
+      const quoteAmountInUnits = parseFloat(quoteAmount.toExact())
+      const baseAmountInUnits = parseFloat(baseAmount.toExact())
+      if (
+        !Number.isNaN(quoteAmountInUnits) &&
+        quoteAmountInUnits > 0 &&
+        !Number.isNaN(baseAmountInUnits) &&
+        baseAmountInUnits > 0
+      ) {
+        const limitPrice = parseFloat(quoteAmount.toExact()) / parseFloat(baseAmount.toExact())
+        return limitPrice.toFixed(6)
+      }
+    }
+    return '1'
+  }
+
   #formatMarketPrice(amount: string, decimals: number, tokenAmount: string) {
     return parseFloat(formatUnits(amount, decimals) ?? 0) / Number(tokenAmount)
   }

@@ -82,4 +82,7 @@ export class OneInch extends LimitOrderBase {
   async getMarketPrice() {
     return 0
   }
+  getTokenLimitPrices() {
+    return '0'
+  }
 }

@@ -84,7 +84,7 @@ export abstract class LimitOrderBase {
 
   abstract getQuote(): Promise<void>
   abstract getMarketPrice(): Promise<number>
-  // abstract setToMarket(sellPricePercentage: number, buyPricePercentage: number): Promise<void>
+  abstract getTokenLimitPrices(): string
   abstract onSignerChange({ account, activeChainId, provider }: WalletData): Promise<void>
   abstract approve(): Promise<void>
   abstract createOrder(): Promise<void>

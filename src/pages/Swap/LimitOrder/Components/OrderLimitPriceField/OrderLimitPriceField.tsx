@@ -1,13 +1,13 @@
-import { formatUnits, parseUnits } from '@ethersproject/units'
+import { parseUnits } from '@ethersproject/units'
 import { Currency, TokenAmount } from '@swapr/sdk'
 
-import { Dispatch, SetStateAction, useCallback, useEffect, useState } from 'react'
+import { Dispatch, SetStateAction, useEffect, useState } from 'react'
 import { RefreshCw } from 'react-feather'
 import { useTranslation } from 'react-i18next'
 
 import { Kind, LimitOrderBase, MarketPrices } from '../../../../../services/LimitOrders'
 import { InputGroup } from '../InputGroup'
-import { calculateMarketPriceDiffPercentage } from '../utils'
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 
 import { MarketPriceButton } from './MarketPriceButton'
 import {
@@ -57,6 +57,7 @@ export interface OrderLimitPriceFieldProps {
 }
 
 export function OrderLimitPriceField({
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   marketPrices,
   fetchMarketPrice,
   setFetchMarketPrice,
@@ -64,18 +65,19 @@ export function OrderLimitPriceField({
   sellAmount,
   buyAmount,
   kind,
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   limitOrder = {},
   sellToken,
   buyToken,
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   setSellAmount,
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   setBuyAmount,
   setKind,
 }: OrderLimitPriceFieldProps) {
   const { t } = useTranslation('swap')
 
-  const [formattedLimitPrice, setFormattedLimitPrice] = useState<string | number>(marketPrices.buy.toFixed(6))
-
-  const [{ baseToken, baseTokenAmount: _b, quoteToken, quoteTokenAmount: _q }, setBaseQuoteTokens] = useState(
+  const [{ baseToken, quoteToken }, setBaseQuoteTokens] = useState(
     getBaseQuoteTokens({ sellAmount, buyAmount, kind, sellToken, buyToken })
   )
 
@@ -83,64 +85,40 @@ export function OrderLimitPriceField({
     setBaseQuoteTokens(getBaseQuoteTokens({ sellAmount, buyAmount, kind, sellToken, buyToken }))
   }, [sellToken, buyToken, sellAmount, buyAmount, kind])
 
-  const inputGroupLabel = `${kind} ${baseToken?.symbol} at`
+  const inputGroupLabel = `${kind} 1 ${baseToken?.symbol} at`
   const toggleCurrencyButtonLabel = `${quoteToken?.symbol}`
 
+  const [formattedLimitPrice, setFormattedLimitPrice] = useState<string | number>(protocol.getTokenLimitPrices())
   const [inputLimitPrice, setInputLimitPrice] = useState<string | number>(formattedLimitPrice)
+  const [inputFocus, setInputFocus] = useState(false)
 
-  const { marketPriceDiffPercentage, isDiffPositive } = calculateMarketPriceDiffPercentage(
-    kind ?? Kind.Sell,
-    marketPrices,
-    formattedLimitPrice.toString()
-  )
+  // const { marketPriceDiffPercentage, isDiffPositive } = calculateMarketPriceDiffPercentage(
+  //   kind ?? Kind.Sell,
+  //   marketPrices,
+  //   formattedLimitPrice.toString()
+  // )
 
-  const showPercentage =
-    Number(marketPriceDiffPercentage.toFixed(1)) !== 0 && Number(marketPriceDiffPercentage) !== -100
+  // const showPercentage =
+  //   Number(marketPriceDiffPercentage.toFixed(1)) !== 0 && Number(marketPriceDiffPercentage) !== -100
 
+  // useEffect(() => {
+  //   setInputLimitPrice(formattedLimitPrice)
+  // }, [formattedLimitPrice])
+  const limitPrice = protocol.getTokenLimitPrices()
   useEffect(() => {
-    setInputLimitPrice(formattedLimitPrice)
-  }, [formattedLimitPrice])
-
-  /**
-   * Handle the base currency change.
-   */
-  const toggleBaseCurrency = useCallback(() => {
-    // Toggle between buy and sell currency
-    const kindSelected = kind === Kind.Sell ? Kind.Buy : Kind.Sell
-
-    if (!sellAmount || !buyAmount) return
-
-    const [baseTokenAmount, quoteTokenAmount] =
-      kindSelected === Kind.Sell ? [sellAmount, buyAmount] : [buyAmount, sellAmount]
-
-    const baseTokenAmountAsFloat = parseFloat(
-      formatUnits(baseTokenAmount.raw.toString(), baseTokenAmount.currency.decimals)
-    )
-    const quoteTokenAmountAsFloat = parseFloat(
-      formatUnits(quoteTokenAmount.raw.toString(), quoteTokenAmount.currency.decimals)
-    )
-
-    const nextLimitPriceFloat = quoteTokenAmountAsFloat / baseTokenAmountAsFloat
-    const nextLimitPriceFormatted = nextLimitPriceFloat.toFixed(6) // 6 is the lowest precision we support due to tokens like USDC
-    //const nextLimitPriceWei = parseUnits(nextLimitPriceFormatted, quoteTokenAmount?.currency?.decimals).toString()
-
-    setKind(kindSelected)
-    protocol.onLimitPriceChange(nextLimitPriceFormatted)
-    // protocol.onLimitOrderChange({
-    //   ...limitOrder,
-    //   kind,
-    //   limitPrice: nextLimitPriceFormatted,
-    // })
-    // update the formatted limit price
-    setFormattedLimitPrice(nextLimitPriceFormatted)
-    setInputLimitPrice(nextLimitPriceFormatted)
-  }, [kind, sellAmount, buyAmount, setKind, protocol])
+    setFormattedLimitPrice(limitPrice)
+    if (!inputFocus) {
+      setInputLimitPrice(limitPrice)
+    }
+  }, [inputFocus, limitPrice])
 
   /**
    * Handle the limit price input change. Compute the buy amount and update the state.
    */
   const onChangeHandler: React.ChangeEventHandler<HTMLInputElement> = event => {
-    const [_baseTokenAmount, quoteTokenAmount] = kind === Kind.Sell ? [sellAmount, buyAmount] : [buyAmount, sellAmount]
+    setInputFocus(true)
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const [baseTokenAmount, quoteTokenAmount] = kind === Kind.Sell ? [sellAmount, buyAmount] : [buyAmount, sellAmount]
     // Parse the limit price
     const nextLimitPriceFormatted = event.target.value // When the limit price is empty, set the limit price to 0
     if (nextLimitPriceFormatted.split('.').length > 2) {
@@ -159,7 +137,9 @@ export function OrderLimitPriceField({
         return setFormattedLimitPrice('0')
       }
       setInputLimitPrice(nextLimitPriceFormatted)
-      // When price is below or equal to 0, set the limit price to 0, but don't update the state
+
+      // const
+      //     // When price is below or equal to 0, set the limit price to 0, but don't update the state
 
       const { buyAmountWei, sellAmountWei, newBuyTokenAmount, newSellTokenAmount } = computeNewAmount(
         buyAmount,
@@ -169,7 +149,7 @@ export function OrderLimitPriceField({
         // inputFocus
       )
 
-      setFormattedLimitPrice(nextLimitPriceFormatted)
+      //     setFormattedLimitPrice(nextLimitPriceFormatted)
 
       if (kind === Kind.Sell) {
         setBuyAmount(newBuyTokenAmount)
@@ -184,18 +164,24 @@ export function OrderLimitPriceField({
         // setFormattedSellAmount(amount.toString())
         protocol.onLimitOrderChange({
           ...limitOrder,
-          limitPrice: parseUnits(nextLimitPriceFormatted, quoteTokenAmount?.currency?.decimals).toString(),
+          limitPrice: parseUnits(nextLimitPriceFormatted, baseTokenAmount?.currency?.decimals).toString(),
           sellAmount: sellAmountWei,
         })
       }
-
-      setFetchMarketPrice(false)
     }
   }
 
   const onClickGetMarketPrice = () => {
+    setInputFocus(false)
     setFetchMarketPrice(true)
   }
+
+  // const onChangeHandler = () => {}
+
+  // TODO: fix it
+  const showPercentage = false
+  const marketPriceDiffPercentage = 0
+  const isDiffPositive = false
 
   return (
     <InputGroup>
@@ -231,7 +217,7 @@ export function OrderLimitPriceField({
           onChange={onChangeHandler}
         />
         <InputGroup.ButtonAddonsWrapper>
-          <ToggleCurrencyButton onClick={toggleBaseCurrency}>
+          <ToggleCurrencyButton onClick={() => setKind(kind === Kind.Sell ? Kind.Buy : Kind.Sell)}>
             <SwapTokenWrapper>
               {toggleCurrencyButtonLabel}
               <SwapTokenIconWrapper>

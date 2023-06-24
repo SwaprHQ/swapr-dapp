@@ -33,8 +33,7 @@ export default function ConfirmLimitOrderModal({
   fiatValueInput,
   fiatValueOutput,
 }: ConfirmLimitOrderModalProps) {
-  const { limitOrder, buyAmount, sellAmount, limitPrice, expiresAt, expiresAtUnit, kind } =
-    useContext(LimitOrderContext)
+  const { buyAmount, sellAmount, limitPrice, expiresAt, expiresAtUnit, kind } = useContext(LimitOrderContext)
 
   //hardcoded for now
   const market = 'CoW Protocol'
@@ -54,7 +53,7 @@ export default function ConfirmLimitOrderModal({
   const askPrice = `${kind} ${baseTokenAmount?.currency?.symbol} at ${limitPrice} ${quoteTokenAmount?.currency?.symbol}`
 
   let { marketPriceDiffPercentage, isDiffPositive } = calculateMarketPriceDiffPercentage(
-    limitOrder!.kind,
+    kind ?? Kind.Sell,
     marketPrices,
     limitPrice!
   )
