@@ -115,7 +115,7 @@
     "@graphql-codegen/typescript": "3.0.3",
     "@graphql-codegen/typescript-operations": "^3.0.3",
     "@graphql-codegen/typescript-react-apollo": "^3.3.7",
-    "@openapitools/openapi-generator-cli": "^2.5.1",
+    "@openapitools/openapi-generator-cli": "^2.6.0",
     "@react-theming/storybook-addon": "1.1.10",
     "@simbathesailor/use-what-changed": "^2.0.0",
     "@storybook/addon-actions": "7.0.22",
