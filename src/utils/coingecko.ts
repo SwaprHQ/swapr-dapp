@@ -33,6 +33,8 @@ const COINGECKO_ASSET_PLATFORM: { [chainId in ChainId]: string | null } = {
   [ChainId.OPTIMISM_GOERLI]: null,
   [ChainId.BSC_MAINNET]: 'binance-smart-chain',
   [ChainId.BSC_TESTNET]: null,
+  [ChainId.ZK_SYNC_ERA_MAINNET]: 'zksync',
+  [ChainId.ZK_SYNC_ERA_TESTNET]: null,
 }
 
 export const COINGECKO_NATIVE_CURRENCY: Record<number, string> = {
@@ -42,6 +44,7 @@ export const COINGECKO_NATIVE_CURRENCY: Record<number, string> = {
   [ChainId.POLYGON]: 'matic-network',
   [ChainId.OPTIMISM_MAINNET]: 'ethereum',
   [ChainId.BSC_MAINNET]: 'binancecoin',
+  [ChainId.ZK_SYNC_ERA_MAINNET]: 'ethereum',
 }
 
 type GetDataProps = {

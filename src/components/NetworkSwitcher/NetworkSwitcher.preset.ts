@@ -6,6 +6,7 @@ import EthereumLogo from '../../assets/images/ethereum-logo.svg'
 import GnosisLogo from '../../assets/images/gnosis-chain-logo.svg'
 import OptimismLogo from '../../assets/images/optimism-logo.svg'
 import PolygonMaticLogo from '../../assets/images/polygon-matic-logo.svg'
+import ZkSyncEraLogo from '../../assets/images/zk-sync-era-logo.svg'
 
 import { NetworkOptionsPreset, NetworkSwitcherTags } from './NetworkSwitcher.types'
 
@@ -46,6 +47,12 @@ export const networkOptionsPreset: NetworkOptionsPreset[] = [
     name: 'Gnosis Chain',
     logoSrc: GnosisLogo,
     color: '#49A9A7',
+  },
+  {
+    chainId: ChainId.ZK_SYNC_ERA_MAINNET,
+    name: 'zkSync Era',
+    logoSrc: ZkSyncEraLogo,
+    color: '#1E69FF',
   },
 
   // TESTNETS

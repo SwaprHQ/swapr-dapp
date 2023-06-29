@@ -16,7 +16,7 @@ const config = new Configuration({
       pre: async ctx => {
         ctx.init.headers = {
           ...ctx.init.headers,
-          'API-KEY': 'f0211573-6dad-4a36-9a3a-f47012921a37',
+          'API-KEY': process.env.REACT_APP_SOCKET_API_KEY as string,
         }
         return ctx
       },

@@ -5,13 +5,14 @@ import { ChainId, RoutablePlatform, UniswapV2RoutablePlatform } from '@swapr/sdk
  */
 export function getUniswapV2PlatformList(chainId: ChainId): UniswapV2RoutablePlatform[] {
   return [
-    UniswapV2RoutablePlatform.SWAPR,
-    UniswapV2RoutablePlatform.SUSHISWAP,
+    UniswapV2RoutablePlatform.BISWAP,
+    UniswapV2RoutablePlatform.DFYN,
     UniswapV2RoutablePlatform.HONEYSWAP,
     UniswapV2RoutablePlatform.LEVINSWAP,
-    UniswapV2RoutablePlatform.DFYN,
-    UniswapV2RoutablePlatform.QUICKSWAP,
     UniswapV2RoutablePlatform.PANCAKESWAP,
+    UniswapV2RoutablePlatform.QUICKSWAP,
+    UniswapV2RoutablePlatform.SUSHISWAP,
+    UniswapV2RoutablePlatform.SWAPR,
   ].filter(platform => platform.supportsChain(chainId))
 }
 
@@ -22,18 +23,19 @@ export function getUniswapV2PlatformList(chainId: ChainId): UniswapV2RoutablePla
  */
 export function getSupportedPlatformsByChainId(chainId: ChainId) {
   return [
-    RoutablePlatform.CURVE,
     RoutablePlatform.ZEROX,
-    RoutablePlatform.UNISWAP,
-    RoutablePlatform.COW,
     RoutablePlatform.ONE_INCH,
-    RoutablePlatform.VELODROME,
-    UniswapV2RoutablePlatform.SWAPR,
-    UniswapV2RoutablePlatform.SUSHISWAP,
+    UniswapV2RoutablePlatform.BISWAP,
+    RoutablePlatform.COW,
+    RoutablePlatform.CURVE,
+    UniswapV2RoutablePlatform.DFYN,
     UniswapV2RoutablePlatform.HONEYSWAP,
     UniswapV2RoutablePlatform.LEVINSWAP,
-    UniswapV2RoutablePlatform.DFYN,
-    UniswapV2RoutablePlatform.QUICKSWAP,
     UniswapV2RoutablePlatform.PANCAKESWAP,
+    UniswapV2RoutablePlatform.QUICKSWAP,
+    UniswapV2RoutablePlatform.SUSHISWAP,
+    UniswapV2RoutablePlatform.SWAPR,
+    RoutablePlatform.UNISWAP,
+    RoutablePlatform.VELODROME,
   ].filter(platform => platform.supportsChain(chainId))
 }

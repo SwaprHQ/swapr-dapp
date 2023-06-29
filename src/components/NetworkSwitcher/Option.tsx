@@ -58,6 +58,7 @@ export default function Option({
   connected = false,
 }: NetworkOptions) {
   const { logoSrc, name } = preset
+
   return (
     <OptionCardClickable onClick={onClick} disabled={disabled} active={active} connected={connected}>
       <OptionCardLeft>

@@ -1,22 +1,26 @@
 import {
-  ChainId,
-  Currency,
-  CurrencyAmount,
+  ARB,
+  BUSD,
+  CAKE,
   DAI,
   DXD,
   GNO,
-  JSBI,
-  Percent,
-  RoutablePlatform,
   SWPR,
-  Token,
-  UniswapV2RoutablePlatform,
   USDC,
   USDT,
+  WBNB,
   WBTC,
   WETH,
   WMATIC,
   WXDAI,
+  ChainId,
+  Currency,
+  CurrencyAmount,
+  JSBI,
+  Percent,
+  RoutablePlatform,
+  Token,
+  UniswapV2RoutablePlatform,
 } from '@swapr/sdk'
 
 import { AbstractConnector } from '@web3-react/abstract-connector'
@@ -26,6 +30,7 @@ import { ReactNode } from 'react'
 import OneInchLogo from '../assets/images/1inch-logo.svg'
 import RightArrow from '../assets/images/arrow-right.svg'
 import BaoswapLogo from '../assets/images/baoswap-logo.png'
+import BiSwapLogo from '../assets/images/biswap-logo.svg'
 import PancakeSwapLogo from '../assets/images/bunny-mono.png'
 import Coinbase from '../assets/images/coinbase.svg'
 import CoWLogo from '../assets/images/cow-protocol.svg'
@@ -141,18 +146,20 @@ export const BRIDGES: Record<string, EcoBridgeConfig> = {
 }
 
 export const PRE_SELECT_OUTPUT_CURRENCY_ID: { [chainId in ChainId]: string } = {
-  [ChainId.MAINNET]: DAI[ChainId.MAINNET].address,
-  [ChainId.GNOSIS]: GNO.address,
-  [ChainId.ARBITRUM_ONE]: USDC[ChainId.ARBITRUM_ONE].address,
-  [ChainId.POLYGON]: WETH[ChainId.POLYGON].address,
-  [ChainId.OPTIMISM_MAINNET]: OP[ChainId.OPTIMISM_MAINNET].address,
-  [ChainId.BSC_MAINNET]: Token.BUSD[ChainId.BSC_MAINNET].address,
-  [ChainId.RINKEBY]: '',
-  [ChainId.ARBITRUM_RINKEBY]: '',
-  [ChainId.GOERLI]: '',
   [ChainId.ARBITRUM_GOERLI]: '',
-  [ChainId.OPTIMISM_GOERLI]: '',
+  [ChainId.ARBITRUM_ONE]: ARB[ChainId.ARBITRUM_ONE].address,
+  [ChainId.ARBITRUM_RINKEBY]: '',
+  [ChainId.BSC_MAINNET]: BUSD[ChainId.BSC_MAINNET].address,
   [ChainId.BSC_TESTNET]: '',
+  [ChainId.GNOSIS]: GNO.address,
+  [ChainId.GOERLI]: '',
+  [ChainId.MAINNET]: DAI[ChainId.MAINNET].address,
+  [ChainId.OPTIMISM_GOERLI]: '',
+  [ChainId.OPTIMISM_MAINNET]: OP[ChainId.OPTIMISM_MAINNET].address,
+  [ChainId.POLYGON]: WETH[ChainId.POLYGON].address,
+  [ChainId.RINKEBY]: '',
+  [ChainId.ZK_SYNC_ERA_MAINNET]: USDC[ChainId.ZK_SYNC_ERA_MAINNET].address,
+  [ChainId.ZK_SYNC_ERA_TESTNET]: '',
 }
 
 // used to construct intermediary pairs for trading
@@ -196,20 +203,23 @@ export const BASES_TO_CHECK_TRADES_AGAINST: ChainTokenList = {
   ],
   [ChainId.GOERLI]: [],
   [ChainId.BSC_MAINNET]: [
-    Token.BUSD[ChainId.BSC_MAINNET],
-    Token.CAKE[ChainId.BSC_MAINNET],
+    BUSD[ChainId.BSC_MAINNET],
+    CAKE[ChainId.BSC_MAINNET],
     DAI[ChainId.BSC_MAINNET],
-    Token.WBNB[ChainId.BSC_MAINNET],
+    WBNB[ChainId.BSC_MAINNET],
     USDC[ChainId.BSC_MAINNET],
     USDT[ChainId.BSC_MAINNET],
   ],
   [ChainId.BSC_TESTNET]: [],
+  [ChainId.ZK_SYNC_ERA_MAINNET]: [USDC[ChainId.ZK_SYNC_ERA_MAINNET]],
+  [ChainId.ZK_SYNC_ERA_TESTNET]: [],
 }
 
 // used for display in the default list when adding liquidity (native currency is already shown
 // by default, so no need to add the wrapper to the list)
 export const SUGGESTED_BASES: ChainTokenList = {
   [ChainId.MAINNET]: [
+    ARB[ChainId.MAINNET],
     DAI[ChainId.MAINNET],
     USDC[ChainId.MAINNET],
     USDT[ChainId.MAINNET],
@@ -218,6 +228,7 @@ export const SUGGESTED_BASES: ChainTokenList = {
   ],
   [ChainId.RINKEBY]: [],
   [ChainId.ARBITRUM_ONE]: [
+    ARB[ChainId.ARBITRUM_ONE],
     WETH[ChainId.ARBITRUM_ONE],
     SWPR[ChainId.ARBITRUM_ONE],
     WBTC[ChainId.ARBITRUM_ONE],
@@ -225,7 +236,7 @@ export const SUGGESTED_BASES: ChainTokenList = {
     USDT[ChainId.ARBITRUM_ONE],
   ],
   [ChainId.ARBITRUM_RINKEBY]: [WETH[ChainId.ARBITRUM_RINKEBY], DXD[ChainId.ARBITRUM_RINKEBY]],
-  [ChainId.ARBITRUM_GOERLI]: [WETH[ChainId.ARBITRUM_GOERLI]],
+  [ChainId.ARBITRUM_GOERLI]: [WETH[ChainId.ARBITRUM_GOERLI], ARB[ChainId.ARBITRUM_GOERLI]],
   [ChainId.XDAI]: [WXDAI[ChainId.XDAI], WETH[ChainId.XDAI], USDC[ChainId.XDAI], SWPR[ChainId.XDAI]],
   [ChainId.POLYGON]: [
     WMATIC[ChainId.POLYGON],
@@ -244,14 +255,16 @@ export const SUGGESTED_BASES: ChainTokenList = {
   ],
   [ChainId.GOERLI]: [],
   [ChainId.BSC_MAINNET]: [
-    Token.WBNB[ChainId.BSC_MAINNET],
-    Token.BUSD[ChainId.BSC_MAINNET],
-    Token.CAKE[ChainId.BSC_MAINNET],
+    WBNB[ChainId.BSC_MAINNET],
+    BUSD[ChainId.BSC_MAINNET],
+    CAKE[ChainId.BSC_MAINNET],
     DAI[ChainId.BSC_MAINNET],
     USDC[ChainId.BSC_MAINNET],
     USDT[ChainId.BSC_MAINNET],
   ],
   [ChainId.BSC_TESTNET]: [],
+  [ChainId.ZK_SYNC_ERA_MAINNET]: [USDC[ChainId.ZK_SYNC_ERA_MAINNET]],
+  [ChainId.ZK_SYNC_ERA_TESTNET]: [],
 }
 
 // used to construct the list of all pairs we consider by default in the frontend
@@ -272,8 +285,10 @@ export const BASES_TO_TRACK_LIQUIDITY_FOR: ChainTokenList = {
   [ChainId.OPTIMISM_GOERLI]: [WETH[ChainId.OPTIMISM_GOERLI]],
   [ChainId.OPTIMISM_MAINNET]: [WETH[ChainId.OPTIMISM_MAINNET]],
   [ChainId.GOERLI]: [WETH[ChainId.OPTIMISM_MAINNET]],
-  [ChainId.BSC_MAINNET]: [Token.WBNB[ChainId.BSC_MAINNET]],
-  [ChainId.BSC_TESTNET]: [Token.WBNB[ChainId.BSC_TESTNET]],
+  [ChainId.BSC_MAINNET]: [WBNB[ChainId.BSC_MAINNET]],
+  [ChainId.BSC_TESTNET]: [WBNB[ChainId.BSC_TESTNET]],
+  [ChainId.ZK_SYNC_ERA_MAINNET]: [Token.WETH[ChainId.ZK_SYNC_ERA_MAINNET], USDC[ChainId.ZK_SYNC_ERA_MAINNET]],
+  [ChainId.ZK_SYNC_ERA_TESTNET]: [Token.WETH[ChainId.ZK_SYNC_ERA_TESTNET], USDC[ChainId.ZK_SYNC_ERA_TESTNET]],
 }
 
 export const PINNED_PAIRS: {
@@ -394,6 +409,11 @@ export interface NetworkOptionalDetails {
   isArbitrum: boolean
 }
 
+/**
+ * @TODO in https://linear.app/swaprdev/issue/SWA-65/provide-a-single-source-of-truth-for-chain-rpcs-from-the-sdk
+ * [] Consume `RPC_PROVIDER_LIST` from the SDK and use it as single source of truth for RPCs
+ * [] Abstract chains explorers into a single source of truth and consume it where neded
+ */
 export const NETWORK_DETAIL: { [chainId: number]: NetworkDetails } = {
   [ChainId.MAINNET]: {
     chainId: `0x${ChainId.MAINNET.toString(16)}`,
@@ -527,6 +547,28 @@ export const NETWORK_DETAIL: { [chainId: number]: NetworkDetails } = {
     rpcUrls: ['https://data-seed-prebsc-1-s1.binance.org:8545/'],
     blockExplorerUrls: ['https://testnet.bscscan.com/'],
   },
+  [ChainId.ZK_SYNC_ERA_MAINNET]: {
+    chainId: `0x${ChainId.ZK_SYNC_ERA_MAINNET.toString(16)}`,
+    chainName: 'zkSync Era',
+    nativeCurrency: {
+      name: Currency.ETHER.name || 'Ether',
+      symbol: Currency.ETHER.symbol || 'ETH',
+      decimals: Currency.ETHER.decimals || 18,
+    },
+    rpcUrls: ['https://mainnet.era.zksync.io'],
+    blockExplorerUrls: ['https://explorer.zksync.io/'],
+  },
+  [ChainId.ZK_SYNC_ERA_TESTNET]: {
+    chainId: `0x${ChainId.ZK_SYNC_ERA_TESTNET.toString(16)}`,
+    chainName: 'zkSync Era Testnet',
+    nativeCurrency: {
+      name: Currency.ETHER.name || 'Ether',
+      symbol: Currency.ETHER.symbol || 'ETH',
+      decimals: Currency.ETHER.decimals || 18,
+    },
+    rpcUrls: ['https://testnet.era.zksync.dev'],
+    blockExplorerUrls: ['https://goerli.explorer.zksync.io/'],
+  },
 }
 
 export const NETWORK_OPTIONAL_DETAIL: {
@@ -571,6 +613,14 @@ export const NETWORK_OPTIONAL_DETAIL: {
     partnerChainId: ChainId.GOERLI,
     isArbitrum: true,
   },
+  [ChainId.ZK_SYNC_ERA_MAINNET]: {
+    partnerChainId: ChainId.ZK_SYNC_ERA_MAINNET,
+    isArbitrum: false,
+  },
+  [ChainId.ZK_SYNC_ERA_TESTNET]: {
+    partnerChainId: ChainId.ZK_SYNC_ERA_TESTNET,
+    isArbitrum: false,
+  },
 }
 
 export const RoutablePlatformKeysByNetwork = {
@@ -607,17 +657,13 @@ export const RoutablePlatformKeysByNetwork = {
     RoutablePlatform.ZEROX.name,
     RoutablePlatform.ONE_INCH.name,
   ],
-  [ChainId.OPTIMISM_MAINNET]: [
-    RoutablePlatform.UNISWAP.name,
-    UniswapV2RoutablePlatform.SUSHISWAP.name,
-    RoutablePlatform.CURVE.name,
-    RoutablePlatform.ONE_INCH.name,
-  ],
   [ChainId.BSC_MAINNET]: [
+    UniswapV2RoutablePlatform.BISWAP.name,
     UniswapV2RoutablePlatform.SUSHISWAP.name,
     UniswapV2RoutablePlatform.PANCAKESWAP.name,
     RoutablePlatform.ONE_INCH.name,
   ],
+  [ChainId.ZK_SYNC_ERA_MAINNET]: [RoutablePlatform.ONE_INCH.name],
   // TEST NETS WITH ALL DEXES
   [ChainId.RINKEBY]: [
     UniswapV2RoutablePlatform.SWAPR.name,
@@ -648,8 +694,12 @@ export const RoutablePlatformKeysByNetwork = {
     RoutablePlatform.ONE_INCH.name,
   ],
   [ChainId.BSC_TESTNET]: [],
+  [ChainId.ZK_SYNC_ERA_TESTNET]: [],
 }
 
+/**
+ * @TODO check why we have 2 different UNISWAP routable platforms
+ */
 export const ROUTABLE_PLATFORM_STYLE: {
   [routablePaltformName: string]: {
     logo: string
@@ -658,11 +708,71 @@ export const ROUTABLE_PLATFORM_STYLE: {
     name: string
   }
 } = {
-  [UniswapV2RoutablePlatform.UNISWAP.name]: {
-    logo: UniswapLogo,
-    alt: UniswapV2RoutablePlatform.UNISWAP.name,
+  [RoutablePlatform.ZEROX.name]: {
+    logo: ZeroXLogo,
+    alt: RoutablePlatform.ZEROX.name,
     gradientColor: '#FB52A1',
-    name: UniswapV2RoutablePlatform.UNISWAP.name,
+    name: RoutablePlatform.ZEROX.name,
+  },
+  [RoutablePlatform.ONE_INCH.name]: {
+    logo: OneInchLogo,
+    alt: RoutablePlatform.ONE_INCH.name,
+    gradientColor: '#FB52A1',
+    name: RoutablePlatform.ONE_INCH.name,
+  },
+  [UniswapV2RoutablePlatform.BAOSWAP.name]: {
+    logo: BaoswapLogo,
+    alt: UniswapV2RoutablePlatform.BAOSWAP.name,
+    gradientColor: '#FB52A1',
+    name: UniswapV2RoutablePlatform.BAOSWAP.name,
+  },
+  [UniswapV2RoutablePlatform.BISWAP.name]: {
+    logo: BiSwapLogo,
+    alt: UniswapV2RoutablePlatform.BISWAP.name,
+    gradientColor: '#FB52A1',
+    name: UniswapV2RoutablePlatform.BISWAP.name,
+  },
+  [RoutablePlatform.GNOSIS_PROTOCOL.name]: {
+    logo: CoWLogo,
+    alt: RoutablePlatform.GNOSIS_PROTOCOL.name,
+    gradientColor: '#FB52A1',
+    name: RoutablePlatform.GNOSIS_PROTOCOL.name,
+  },
+  [RoutablePlatform.CURVE.name]: {
+    logo: CurveLogo,
+    alt: RoutablePlatform.CURVE.name,
+    gradientColor: '#FB52A1',
+    name: RoutablePlatform.CURVE.name,
+  },
+  [UniswapV2RoutablePlatform.DFYN.name]: {
+    logo: DFYNLogo,
+    alt: UniswapV2RoutablePlatform.DFYN.name,
+    gradientColor: '#FB52A1',
+    name: UniswapV2RoutablePlatform.DFYN.name,
+  },
+  [UniswapV2RoutablePlatform.HONEYSWAP.name]: {
+    logo: HoneyswapLogo,
+    alt: UniswapV2RoutablePlatform.HONEYSWAP.name,
+    gradientColor: '#FB52A1',
+    name: UniswapV2RoutablePlatform.HONEYSWAP.name,
+  },
+  [UniswapV2RoutablePlatform.LEVINSWAP.name]: {
+    logo: LevinswapLogo,
+    alt: UniswapV2RoutablePlatform.LEVINSWAP.name,
+    gradientColor: '#FB52A1',
+    name: UniswapV2RoutablePlatform.LEVINSWAP.name,
+  },
+  [UniswapV2RoutablePlatform.PANCAKESWAP.name]: {
+    logo: PancakeSwapLogo,
+    alt: UniswapV2RoutablePlatform.PANCAKESWAP.name,
+    gradientColor: '#FB52A1',
+    name: UniswapV2RoutablePlatform.PANCAKESWAP.name,
+  },
+  [UniswapV2RoutablePlatform.QUICKSWAP.name]: {
+    logo: QuickswapLogo,
+    alt: UniswapV2RoutablePlatform.QUICKSWAP.name,
+    gradientColor: '#FB52A1',
+    name: UniswapV2RoutablePlatform.QUICKSWAP.name,
   },
   [UniswapV2RoutablePlatform.SUSHISWAP.name]: {
     logo: SushiswapNewLogo,
@@ -676,65 +786,17 @@ export const ROUTABLE_PLATFORM_STYLE: {
     gradientColor: '#FB52A1',
     name: UniswapV2RoutablePlatform.SWAPR.name,
   },
-  [UniswapV2RoutablePlatform.HONEYSWAP.name]: {
-    logo: HoneyswapLogo,
-    alt: UniswapV2RoutablePlatform.HONEYSWAP.name,
-    gradientColor: '#FB52A1',
-    name: UniswapV2RoutablePlatform.HONEYSWAP.name,
-  },
-  [UniswapV2RoutablePlatform.BAOSWAP.name]: {
-    logo: BaoswapLogo,
-    alt: UniswapV2RoutablePlatform.BAOSWAP.name,
-    gradientColor: '#FB52A1',
-    name: UniswapV2RoutablePlatform.BAOSWAP.name,
-  },
-  [UniswapV2RoutablePlatform.LEVINSWAP.name]: {
-    logo: LevinswapLogo,
-    alt: UniswapV2RoutablePlatform.LEVINSWAP.name,
-    gradientColor: '#FB52A1',
-    name: UniswapV2RoutablePlatform.LEVINSWAP.name,
-  },
-  [UniswapV2RoutablePlatform.QUICKSWAP.name]: {
-    logo: QuickswapLogo,
-    alt: UniswapV2RoutablePlatform.QUICKSWAP.name,
-    gradientColor: '#FB52A1',
-    name: UniswapV2RoutablePlatform.QUICKSWAP.name,
-  },
-  [UniswapV2RoutablePlatform.DFYN.name]: {
-    logo: DFYNLogo,
-    alt: UniswapV2RoutablePlatform.DFYN.name,
-    gradientColor: '#FB52A1',
-    name: UniswapV2RoutablePlatform.DFYN.name,
-  },
-  [UniswapV2RoutablePlatform.PANCAKESWAP.name]: {
-    logo: PancakeSwapLogo,
-    alt: UniswapV2RoutablePlatform.PANCAKESWAP.name,
-    gradientColor: '#FB52A1',
-    name: UniswapV2RoutablePlatform.PANCAKESWAP.name,
-  },
-  [RoutablePlatform.CURVE.name]: {
-    logo: CurveLogo,
-    alt: RoutablePlatform.CURVE.name,
-    gradientColor: '#FB52A1',
-    name: RoutablePlatform.CURVE.name,
-  },
-  [RoutablePlatform.ZEROX.name]: {
-    logo: ZeroXLogo,
-    alt: RoutablePlatform.ZEROX.name,
-    gradientColor: '#FB52A1',
-    name: RoutablePlatform.ZEROX.name,
-  },
-  [RoutablePlatform.GNOSIS_PROTOCOL.name]: {
-    logo: CoWLogo,
-    alt: RoutablePlatform.GNOSIS_PROTOCOL.name,
-    gradientColor: '#FB52A1',
-    name: RoutablePlatform.GNOSIS_PROTOCOL.name,
-  },
   [RoutablePlatform.UNISWAP.name]: {
     logo: UniswapLogo,
     alt: RoutablePlatform.UNISWAP.name,
     gradientColor: '#FB52A1',
     name: RoutablePlatform.UNISWAP.name,
+  },
+  [UniswapV2RoutablePlatform.UNISWAP.name]: {
+    logo: UniswapLogo,
+    alt: UniswapV2RoutablePlatform.UNISWAP.name,
+    gradientColor: '#FB52A1',
+    name: UniswapV2RoutablePlatform.UNISWAP.name,
   },
   [RoutablePlatform.VELODROME.name]: {
     logo: VelodromeLogo,
@@ -742,32 +804,27 @@ export const ROUTABLE_PLATFORM_STYLE: {
     gradientColor: '#FB52A1',
     name: RoutablePlatform.VELODROME.name,
   },
-  [RoutablePlatform.ONE_INCH.name]: {
-    logo: OneInchLogo,
-    alt: RoutablePlatform.ONE_INCH.name,
-    gradientColor: '#FB52A1',
-    name: RoutablePlatform.ONE_INCH.name,
-  },
 }
 
 export const ROUTABLE_PLATFORM_LOGO: {
   [routablePaltformName: string]: ReactNode
 } = {
-  [UniswapV2RoutablePlatform.UNISWAP.name]: <img width={16} height={16} src={UniswapLogo} alt="uniswap" />,
+  [RoutablePlatform.ZEROX.name]: <img width={16} height={16} src={ZeroXLogo} alt="ZeroX" />,
+  [RoutablePlatform.ONE_INCH.name]: <img width={16} height={16} src={OneInchLogo} alt="One Inch" />,
+  [UniswapV2RoutablePlatform.BAOSWAP.name]: <img width={16} height={16} src={BaoswapLogo} alt="baoswap" />,
+  [UniswapV2RoutablePlatform.BISWAP.name]: <img width={16} height={16} src={BiSwapLogo} alt="biswap" />,
+  [RoutablePlatform.GNOSIS_PROTOCOL.name]: <img width={16} height={16} src={CoWLogo} alt="CoW" />,
+  [RoutablePlatform.CURVE.name]: <img width={16} height={16} src={CurveLogo} alt="Curve" />,
+  [UniswapV2RoutablePlatform.DFYN.name]: <img width={16} height={16} src={DFYNLogo} alt="dfyn" />,
+  [UniswapV2RoutablePlatform.HONEYSWAP.name]: <img width={16} height={16} src={HoneyswapLogo} alt="honeyswap" />,
+  [UniswapV2RoutablePlatform.LEVINSWAP.name]: <img width={16} height={16} src={LevinswapLogo} alt="levinswap" />,
+  [UniswapV2RoutablePlatform.PANCAKESWAP.name]: <img width={16} height={16} src={PancakeSwapLogo} alt="pancakeswap" />,
+  [UniswapV2RoutablePlatform.QUICKSWAP.name]: <img width={16} height={16} src={QuickswapLogo} alt="quickswap" />,
   [UniswapV2RoutablePlatform.SUSHISWAP.name]: <img width={16} height={16} src={SushiswapNewLogo} alt="sushiswap" />,
   [UniswapV2RoutablePlatform.SWAPR.name]: <img width={16} height={16} src={SwaprLogo} alt="swapr" />,
-  [UniswapV2RoutablePlatform.HONEYSWAP.name]: <img width={16} height={16} src={HoneyswapLogo} alt="honeyswap" />,
-  [UniswapV2RoutablePlatform.BAOSWAP.name]: <img width={16} height={16} src={BaoswapLogo} alt="baoswap" />,
-  [UniswapV2RoutablePlatform.LEVINSWAP.name]: <img width={16} height={16} src={LevinswapLogo} alt="levinswap" />,
-  [UniswapV2RoutablePlatform.QUICKSWAP.name]: <img width={16} height={16} src={QuickswapLogo} alt="quickswap" />,
-  [UniswapV2RoutablePlatform.DFYN.name]: <img width={16} height={16} src={DFYNLogo} alt="dfyn" />,
-  [UniswapV2RoutablePlatform.PANCAKESWAP.name]: <img width={16} height={16} src={PancakeSwapLogo} alt="pancakeswap" />,
-  [RoutablePlatform.CURVE.name]: <img width={16} height={16} src={CurveLogo} alt="Curve" />,
-  [RoutablePlatform.ZEROX.name]: <img width={16} height={16} src={ZeroXLogo} alt="ZeroX" />,
-  [RoutablePlatform.GNOSIS_PROTOCOL.name]: <img width={16} height={16} src={CoWLogo} alt="CoW" />,
-  [RoutablePlatform.VELODROME.name]: <img width={16} height={16} src={VelodromeLogo} alt="Velodrome" />,
   [RoutablePlatform.UNISWAP.name]: <img width={16} height={16} src={UniswapLogo} alt="Uniswap Unicorn" />,
-  [RoutablePlatform.ONE_INCH.name]: <img width={16} height={16} src={OneInchLogo} alt="One Inch" />,
+  [UniswapV2RoutablePlatform.UNISWAP.name]: <img width={16} height={16} src={UniswapLogo} alt="uniswap" />,
+  [RoutablePlatform.VELODROME.name]: <img width={16} height={16} src={VelodromeLogo} alt="Velodrome" />,
 }
 
 export const ChainLabel: any = {
@@ -779,6 +836,8 @@ export const ChainLabel: any = {
   [ChainId.POLYGON]: 'Polygon',
   [ChainId.OPTIMISM_MAINNET]: 'Optimism',
   [ChainId.BSC_MAINNET]: 'Binance Chain',
+  [ChainId.ZK_SYNC_ERA_MAINNET]: 'zkSync Era',
+  [ChainId.ZK_SYNC_ERA_TESTNET]: 'zkSync Era Testnet',
 }
 
 export const OLD_SWPR: { [key: number]: Token } = {

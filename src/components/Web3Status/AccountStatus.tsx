@@ -12,6 +12,7 @@ import EthereumLogo from '../../assets/images/ethereum-logo.svg'
 import GnosisLogo from '../../assets/images/gnosis-chain-logo.svg'
 import OptimismLogo from '../../assets/images/optimism-logo.svg'
 import PolygonMaticLogo from '../../assets/images/polygon-matic-logo.svg'
+import ZkSyncEraLogo from '../../assets/images/zk-sync-era-logo.svg'
 import { CustomNetworkConnector } from '../../connectors/CustomNetworkConnector'
 import { CustomWalletLinkConnector } from '../../connectors/CustomWalletLinkConnector'
 import { ENSAvatarData } from '../../hooks/useENSAvatar'
@@ -35,6 +36,8 @@ const ChainLogo: any = {
   [ChainId.OPTIMISM_GOERLI]: OptimismLogo,
   [ChainId.ARBITRUM_GOERLI]: ArbitrumLogo,
   [ChainId.BSC_MAINNET]: BSCLogo,
+  [ChainId.ZK_SYNC_ERA_MAINNET]: ZkSyncEraLogo,
+  [ChainId.ZK_SYNC_ERA_TESTNET]: ZkSyncEraLogo,
 }
 
 const View = styled.div`
