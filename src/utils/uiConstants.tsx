@@ -1,8 +1,8 @@
 import TextyAnim from 'rc-texty'
 
 import Entry2 from './../assets/images/blog/blog-entry-2.jpg'
-import EcoRouterArticle from './../assets/images/blog/ecorouter-article.png'
-import MevArticle from './../assets/images/blog/mev-article.png'
+import EcoRouterArticle from './../assets/images/blog/ecorouter-article.webp'
+import MevArticle from './../assets/images/blog/mev-article.webp'
 import BNBLogo from './../assets/images/BNBLogo.svg'
 import Bridge from './../assets/images/features/bridge.png'
 import EcoRouting from './../assets/images/features/eco-routing.png'
@@ -289,14 +289,14 @@ export const BlogContent = {
       image: EcoRouterArticle,
       title: 'The Eco Router — Effortlessly Combining Safety and Best Value Trading!',
       content: 'Introducing external liquidity into swapr with no extra cost to the user',
-      postLink: 'https://medium.com/swapr/announcing-swpr-token-e8ab12dbad45',
+      postLink:
+        'https://medium.com/swapr/the-eco-router-effortlessly-combining-safety-and-best-value-trading-1a3fe23c5255',
     },
     {
       image: MevArticle,
       title: 'Full MEV Protection from CoW Protocol within Swapr’s Eco Router.',
       content: 'MEV Protection in Swapr',
-      postLink:
-        'https://medium.com/swapr/dxdao-and-badgerdao-leverage-swapr-to-bring-smarter-btc-focused-strategies-to-arbitrum-23689e0c9f2b',
+      postLink: 'https://medium.com/swapr/full-mev-protection-from-cow-protocol-within-swaprs-eco-router-8a0d67d7f394',
     },
     {
       image: Entry2,
