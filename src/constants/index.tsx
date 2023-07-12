@@ -228,7 +228,6 @@ export const BASES_TO_CHECK_TRADES_AGAINST: ChainTokenList = {
 // by default, so no need to add the wrapper to the list)
 export const SUGGESTED_BASES: ChainTokenList = {
   [ChainId.MAINNET]: [
-    ARB[ChainId.MAINNET],
     DAI[ChainId.MAINNET],
     USDC[ChainId.MAINNET],
     USDT[ChainId.MAINNET],
