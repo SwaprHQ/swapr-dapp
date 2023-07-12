@@ -54,6 +54,43 @@ export function sortTradesByExecutionPrice(trades: Trade[]) {
 }
 
 /**
+ * Sort trades by price in descending order. Best trades are first.
+ * @param trades list of trades
+ * @returns sorted list of trades in descending order
+ */
+export function sortTradesByAmount(trades: Trade[]) {
+  return trades.sort((a, b) => {
+    if (a === undefined || a === null) {
+      return 1
+    }
+    if (b === undefined || b === null) {
+      return -1
+    }
+
+    const aAmount = a.tradeType === TradeType.EXACT_INPUT ? a.minimumAmountOut() : a.maximumAmountIn()
+    const bAmount = b.tradeType === TradeType.EXACT_INPUT ? b.minimumAmountOut() : b.maximumAmountIn()
+
+    if (a.tradeType === TradeType.EXACT_INPUT) {
+      if (aAmount.lessThan(bAmount)) {
+        return 1
+      } else if (aAmount.equalTo(bAmount)) {
+        return 0
+      } else {
+        return -1
+      }
+    } else {
+      if (aAmount.greaterThan(bAmount)) {
+        return 1
+      } else if (aAmount.equalTo(bAmount)) {
+        return 0
+      } else {
+        return -1
+      }
+    }
+  })
+}
+
+/**
  * Low-level function to fetch from Eco Router sources
  * @returns {Promise<EcoRouterResults>} List of unsorted trade sources
  */
@@ -166,7 +203,7 @@ export async function getExactIn(
   // Return the list of sorted trades
   return {
     errors,
-    trades: sortTradesByExecutionPrice(unsortedTrades),
+    trades: sortTradesByAmount(unsortedTrades),
   }
 }
 
@@ -281,6 +318,6 @@ export async function getExactOut(
   // Return the list of sorted trades
   return {
     errors,
-    trades: sortTradesByExecutionPrice(unsortedTrades),
+    trades: sortTradesByAmount(unsortedTrades),
   }
 }
