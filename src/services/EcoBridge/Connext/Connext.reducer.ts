@@ -1,6 +1,6 @@
 import { PayloadAction } from '@reduxjs/toolkit'
 
-import { ConnextList } from '../EcoBridge.types'
+import { BridgeIds, ConnextIdList } from '../EcoBridge.types'
 import { createEcoBridgeChildBaseSlice } from '../EcoBridge.utils'
 
 import { connextTransactionsAdapter } from './Connext.adapter'
@@ -9,7 +9,7 @@ import { ConnextBridgeState, ConnextTransaction, ConnextTransactionStatus } from
 const initialState: ConnextBridgeState = {
   transactions: connextTransactionsAdapter.getInitialState({}),
 }
-const createConnextSlice = (bridgeId: ConnextList) =>
+const createConnextSlice = (bridgeId: ConnextIdList) =>
   createEcoBridgeChildBaseSlice({
     name: bridgeId,
     initialState,
@@ -32,8 +32,8 @@ const createConnextSlice = (bridgeId: ConnextList) =>
     },
   })
 
-const connextSlices: { [k in ConnextList]: ReturnType<typeof createConnextSlice> } = {
-  connext: createConnextSlice('connext'),
+const connextSlices: { [k in ConnextIdList]: ReturnType<typeof createConnextSlice> } = {
+  connext: createConnextSlice(BridgeIds.CONNEXT),
 }
 
 type ConnextReducers = { [k in keyof typeof connextSlices]: ReturnType<typeof createConnextSlice>['reducer'] }
@@ -45,7 +45,7 @@ type ConnextSliceExtract = {
   connextActions: ConnextActions
 }
 
-export const { connextReducers, connextActions } = (Object.keys(connextSlices) as ConnextList[]).reduce(
+export const { connextReducers, connextActions } = (Object.keys(connextSlices) as ConnextIdList[]).reduce(
   (total, key) => {
     total.connextReducers[key] = connextSlices[key].reducer
     total.connextActions[key] = connextSlices[key].actions

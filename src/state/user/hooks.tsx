@@ -19,6 +19,7 @@ import {
   SerializedPair,
   SerializedToken,
   toggleURLWarning,
+  updateStacklyPopupOpen,
   updateSelectedChartOption,
   updateSelectedSwapTab,
   updateUserAdvancedSwapDetails,
@@ -414,4 +415,29 @@ export function useTrackedTokenPairs(): [Token, Token][] {
 
     return Object.keys(keyed).map(key => keyed[key])
   }, [combinedList])
+}
+
+const stacklyPopupOpen = createSelector(
+  (state: AppState) => state.user.stacklyPopupOpen,
+  stacklyPopupOpen => stacklyPopupOpen
+)
+
+export function useStacklyPopupOpen() {
+  return useSelector<AppState, AppState['user']['stacklyPopupOpen']>(stacklyPopupOpen)
+}
+
+export function useUpdateStacklyPopupOpen(): [number | null, (stacklyPopupOpen: number) => void] {
+  const dispatch = useDispatch<AppDispatch>()
+  const isStacklyPopupOpen = useStacklyPopupOpen()
+
+  const setStacklyPopupOpen = useCallback(
+    (stacklyPopupOpen: number) => {
+      if (isStacklyPopupOpen !== stacklyPopupOpen) {
+        dispatch(updateStacklyPopupOpen({ stacklyPopupOpen: stacklyPopupOpen }))
+      }
+    },
+    [isStacklyPopupOpen, dispatch]
+  )
+
+  return [isStacklyPopupOpen, setStacklyPopupOpen]
 }

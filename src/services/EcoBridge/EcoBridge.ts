@@ -6,7 +6,7 @@ import { AppState } from '../../state'
 
 import { initiateEcoBridgeProviders } from './EcoBridge.providers'
 import {
-  BridgeList,
+  BridgeIdList,
   BridgeModalStatus,
   Bridges,
   EcoBridgeChangeHandler,
@@ -28,9 +28,9 @@ export class EcoBridge {
     return this.store.getState().ecoBridge.common.activeBridge
   }
 
-  private _callForEachBridge = async (method: (bridgeKey: BridgeList) => Promise<any>, errorText: string) => {
-    const promises = (Object.keys(this.bridges) as BridgeList[]).map(bridgeKey => {
-      return new Promise<BridgeList>(async (res, rej) => {
+  private _callForEachBridge = async (method: (bridgeKey: BridgeIdList) => Promise<any>, errorText: string) => {
+    const promises = (Object.keys(this.bridges) as BridgeIdList[]).map(bridgeKey => {
+      return new Promise<BridgeIdList>(async (res, rej) => {
         try {
           await method(bridgeKey)
           res(bridgeKey)
@@ -57,7 +57,7 @@ export class EcoBridge {
     const bridges = config.reduce((total, bridge) => {
       total[bridge.bridgeId] = bridge
       return total
-    }, {} as { [k in BridgeList]: EcoBridgeChildBase })
+    }, {} as { [k in BridgeIdList]: EcoBridgeChildBase })
 
     this.store = store
     this.bridges = bridges
@@ -81,7 +81,7 @@ export class EcoBridge {
     this._activeChainId = signerData.activeChainId
     this._account = signerData.account
 
-    const signerChangeCall = (bridgeKey: BridgeList) =>
+    const signerChangeCall = (bridgeKey: BridgeIdList) =>
       this.bridges[bridgeKey].onSignerChange({ previousChainId, ...signerData })
 
     await this._callForEachBridge(signerChangeCall, 'onSignerChange() failed for')
@@ -90,7 +90,7 @@ export class EcoBridge {
   public fetchDynamicLists = async () => {
     await this._asyncInit.promise
 
-    const fetchDynamicListsCall = (bridgeKey: BridgeList) => this.bridges[bridgeKey].fetchDynamicLists()
+    const fetchDynamicListsCall = (bridgeKey: BridgeIdList) => this.bridges[bridgeKey].fetchDynamicLists()
 
     await this._callForEachBridge(fetchDynamicListsCall, 'fetchDynamicList() failed for')
   }
@@ -101,7 +101,7 @@ export class EcoBridge {
     this._activeChainId = activeChainId
     this._account = account
 
-    const initCall = (bridgeKey: BridgeList) =>
+    const initCall = (bridgeKey: BridgeIdList) =>
       this.bridges[bridgeKey].init({
         account,
         activeChainId,
@@ -111,7 +111,7 @@ export class EcoBridge {
       })
     await this._callForEachBridge(initCall, 'init() failed for')
 
-    const staticListsCall = (bridgeKey: BridgeList) => this.bridges[bridgeKey].fetchStaticLists()
+    const staticListsCall = (bridgeKey: BridgeIdList) => this.bridges[bridgeKey].fetchStaticLists()
     await this._callForEachBridge(staticListsCall, 'fetchStaticLists() failed for')
 
     this._initialized = true

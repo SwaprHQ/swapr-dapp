@@ -18,6 +18,8 @@ export const NATIVE_CURRENCY_LOGO: { [chainId in ChainId]: string } = {
   [ChainId.GOERLI]: EtherLogo,
   [ChainId.BSC_MAINNET]: BNBLogo,
   [ChainId.BSC_TESTNET]: BNBLogo,
+  [ChainId.ZK_SYNC_ERA_MAINNET]: EtherLogo,
+  [ChainId.ZK_SYNC_ERA_TESTNET]: EtherLogo,
 }
 
 // From repo https://github.com/trustwallet/assets/tree/master/blockchains
@@ -28,6 +30,7 @@ const trustWalletChainMapping: { [chainId in ChainId]?: string } = {
   [ChainId.ARBITRUM_ONE]: 'arbitrum',
   [ChainId.OPTIMISM_MAINNET]: 'optimism',
   [ChainId.BSC_MAINNET]: 'binance',
+  [ChainId.ZK_SYNC_ERA_MAINNET]: 'zksync',
 }
 
 export const getTokenLogoURL = (address: string, chainId = ChainId.MAINNET) => {

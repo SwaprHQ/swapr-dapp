@@ -3,6 +3,7 @@ import { ChainId, Currency, Token } from '@swapr/sdk'
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 
+import { BRIDGES } from '../../constants'
 import { useActiveWeb3React } from '../../hooks'
 import { parseStringOrBytes32 } from '../../hooks/Tokens'
 import { useBytes32TokenContract, useTokenContract, useWrappingToken } from '../../hooks/useContract'
@@ -169,7 +170,7 @@ export const useBridgeFetchDynamicLists = () => {
   useEffect(() => {
     if (from.chainId && to.chainId) {
       if (isBridgeSwapActive) {
-        ecoBridge.bridges['socket'].fetchDynamicLists()
+        ecoBridge.bridges[BRIDGES.SOCKET.id].fetchDynamicLists()
       } else {
         ecoBridge.fetchDynamicLists()
       }

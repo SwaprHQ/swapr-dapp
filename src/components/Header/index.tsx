@@ -13,13 +13,12 @@ import { useSwaprSinglelSidedStakeCampaigns } from '../../hooks/singleSidedStake
 import { useGasInfo } from '../../hooks/useGasInfo'
 import { useLiquidityMiningCampaignPosition } from '../../hooks/useLiquidityMiningCampaignPosition'
 import { ApplicationModal } from '../../state/application/actions'
-import { useModalOpen, useToggleShowClaimPopup, useToggleShowExpeditionsPopup } from '../../state/application/hooks'
+import { useModalOpen, useToggleShowClaimPopup } from '../../state/application/hooks'
 import { useDarkModeManager, useUpdateSelectedChartOption } from '../../state/user/hooks'
 import { ChartOption } from '../../state/user/reducer'
 import { useTokenBalance } from '../../state/wallet/hooks'
 import { breakpoints } from '../../utils/theme'
 import ClaimModal from '../Claim/ClaimModal'
-import ExpeditionsModal from '../expeditions/ExpeditionsModal'
 import { UnsupportedNetworkPopover } from '../NetworkUnsupportedPopover'
 import Row, { RowFixed, RowFlat } from '../Row'
 import { Settings } from '../Settings'
@@ -27,7 +26,6 @@ import { SwaprVersionLogo } from '../SwaprVersionLogo'
 import Web3Status from '../Web3Status'
 
 import { Balances } from './Balances'
-import { HeaderButton } from './HeaderButton'
 import { HeaderLink, HeaderMobileLink } from './HeaderLink'
 import { HeaderLinkBadge } from './HeaderLinkBadge'
 import MobileOptions from './MobileOptions'
@@ -209,8 +207,10 @@ function Header() {
   const { loading, data } = useSwaprSinglelSidedStakeCampaigns()
   const { stakedTokenAmount } = useLiquidityMiningCampaignPosition(data, account ? account : undefined)
 
+  /*  Expeditions hidden by SWA-27 request
+   * const toggleExpeditionsPopup = useToggleShowExpeditionsPopup()
+   */
   const toggleClaimPopup = useToggleShowClaimPopup()
-  const toggleExpeditionsPopup = useToggleShowExpeditionsPopup()
   const accountOrUndefined = useMemo(() => account || undefined, [account])
   const newSwpr = useMemo(() => (chainId ? SWPR[chainId] : undefined), [chainId])
   const newSwprBalance = useTokenBalance(accountOrUndefined, newSwpr)
@@ -252,7 +252,8 @@ function Header() {
           data && !loading ? `/rewards/single-sided-campaign/${data.stakeToken.address}/${data.address}` : undefined
         }
       />
-      <ExpeditionsModal onDismiss={toggleExpeditionsPopup} />
+      {/* Expeditions hidden by SWA-27 request */}
+      {/* <ExpeditionsModal onDismiss={toggleExpeditionsPopup} /> */}
       <HeaderRow isDark={isDark}>
         <Title to={swapRoute}>
           <SwaprVersionLogo />
@@ -261,6 +262,9 @@ function Header() {
           <Divider />
           <HeaderLink data-testid="swap-nav-link" id="swap-nav-link" to={swapRoute}>
             {t('swap')}
+          </HeaderLink>
+          <HeaderLink data-testid="bridge-nav-link" id="bridge-nav-link" to="/bridge">
+            {t('bridge')}
           </HeaderLink>
           <HeaderLink
             data-testid="pool-nav-link"
@@ -277,9 +281,11 @@ function Header() {
             {t('rewards')}
             {networkWithoutSWPR && <HeaderLinkBadge label="NOT&nbsp;AVAILABLE" />}
           </HeaderLink>
-          <HeaderLink data-testid="bridge-nav-link" id="bridge-nav-link" to="/bridge">
-            {t('bridge')}
-            <HeaderLinkBadge label="BETA" />
+          <HeaderLink id="stackly-nav-link" href="https://stackly.eth.limo/">
+            {t('DCA')}
+            <Text ml="4px" fontSize="13px">
+              ↗
+            </Text>
           </HeaderLink>
           <HeaderLink id="vote-nav-link" href="https://snapshot.org/#/swpr.eth">
             {t('vote')}
@@ -304,9 +310,10 @@ function Header() {
         <Flex maxHeight={'22px'} justifyContent={'end'}>
           {account && (
             <>
-              <HeaderButton onClick={toggleExpeditionsPopup} style={{ marginRight: '7px' }}>
+              {/* Expeditions hidden by SWA-27 request */}
+              {/* <HeaderButton onClick={toggleExpeditionsPopup} style={{ marginRight: '7px' }}>
                 &#10024;&nbsp;Expeditions
-              </HeaderButton>
+              </HeaderButton> */}
               <Balances />
             </>
           )}
@@ -345,6 +352,9 @@ function Header() {
           <HeaderMobileLink id="swap-nav-link" to="/swap">
             {t('swap')}
           </HeaderMobileLink>
+          <HeaderMobileLink id="bridge-nav-link" to="/bridge">
+            {t('bridge')}
+          </HeaderMobileLink>
           {!networkWithoutSWPR && (
             <HeaderMobileLink id="pool-nav-link" to="/pools">
               {t('liquidity')}
@@ -355,9 +365,6 @@ function Header() {
               {t('rewards')}
             </HeaderMobileLink>
           )}
-          <HeaderMobileLink id="bridge-nav-link" to="/bridge">
-            {t('bridge')}
-          </HeaderMobileLink>
           <HeaderMobileLink id="vote-nav-link" href={`https://snapshot.org/#/swpr.eth`}>
             {t('vote')}
             <Text ml="4px" fontSize="11px">

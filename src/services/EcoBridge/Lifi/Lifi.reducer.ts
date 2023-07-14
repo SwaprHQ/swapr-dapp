@@ -5,7 +5,7 @@ import { PayloadAction } from '@reduxjs/toolkit'
 
 import { createEcoBridgeChildBaseSlice } from '../EcoBridge.utils'
 
-import { LifiList } from './../EcoBridge.types'
+import { BridgeIds, LifiIdList } from './../EcoBridge.types'
 import { LifiStatusResponse, LifiTransactionStatus } from './Lifi.types'
 
 type LifiBridgeState = {
@@ -31,7 +31,7 @@ const initialState: LifiBridgeState = {
   txBridgingData: {},
 }
 
-const createLifiSlice = (bridgeId: LifiList) =>
+const createLifiSlice = (bridgeId: LifiIdList) =>
   createEcoBridgeChildBaseSlice({
     name: bridgeId,
     initialState,
@@ -77,8 +77,8 @@ const createLifiSlice = (bridgeId: LifiList) =>
     },
   })
 
-const lifiSlices: { [k in LifiList]: ReturnType<typeof createLifiSlice> } = {
-  lifi: createLifiSlice('lifi'),
+const lifiSlices: { [k in LifiIdList]: ReturnType<typeof createLifiSlice> } = {
+  lifi: createLifiSlice(BridgeIds.LIFI),
 }
 
 type LifiReducers = { [k in keyof typeof lifiSlices]: ReturnType<typeof createLifiSlice>['reducer'] }
@@ -90,7 +90,7 @@ type LifiSliceExtract = {
   lifiActions: LifiActions
 }
 
-export const { lifiReducers, lifiActions } = (Object.keys(lifiSlices) as LifiList[]).reduce(
+export const { lifiReducers, lifiActions } = (Object.keys(lifiSlices) as LifiIdList[]).reduce(
   (total, key) => {
     total.lifiReducers[key] = lifiSlices[key].reducer
     total.lifiActions[key] = lifiSlices[key].actions

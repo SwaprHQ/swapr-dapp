@@ -3,6 +3,9 @@ import schema from '@uniswap/token-lists/src/tokenlist.schema.json'
 import Ajv from 'ajv'
 import addFormats from 'ajv-formats'
 
+import formattedZkSyncListFromOneInch from '../constants/formattedZkSyncListFromOneInch.json'
+import { ZK_SYNC_ERA_LIST } from '../constants/lists'
+
 import contenthashToUri from './contenthashToUri'
 import { parseENSAddress } from './parseENSAddress'
 import uriToHttp from './uriToHttp'
@@ -58,13 +61,19 @@ export default async function getTokenList(
       continue
     }
 
-    const json: TokenList = await response.json()
+    /**
+     * For now we hardcode token list for zkSync to the one supported by
+     * 1inch as we only use them to route swaps for now.
+     */
+    const json: TokenList = url === ZK_SYNC_ERA_LIST ? formattedZkSyncListFromOneInch : await response.json()
+
     if (!tokenListValidator(json)) {
       const validationErrors: string =
         tokenListValidator.errors?.reduce<string>((memo, error) => {
           const add = `${error.schemaPath} ${error.message ?? ''}`
           return memo.length > 0 ? `${memo}; ${add}` : `${add}`
         }, '') ?? 'unknown error'
+
       throw new Error(`Token list failed validation: ${validationErrors}`)
     }
     return json

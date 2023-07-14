@@ -23,13 +23,10 @@ describe('Transactions Settings Smoke Test', () => {
     TransactionSettings.getSlippageToleranceField().should('be.visible')
     TransactionSettings.getTransactionDeadlineField().should('be.visible')
   })
-  it('Check About hyperlink [TC-49]', () => {
-    TransactionSettings.getAboutHyperlink().should('have.attr', 'href').and('include', 'https://dxdao.eth.limo/')
-  })
   it('Check Code hyperlink [TC-49]', () => {
     TransactionSettings.getCodeHyperlink()
       .should('have.attr', 'href')
-      .and('include', 'https://github.com/levelkdev/dxswap-dapp')
+      .and('include', 'https://github.com/SwaprHQ/swapr-dapp')
   })
   it('Check Discord hyperlink [TC-49]', () => {
     TransactionSettings.getDiscordHyperlink()

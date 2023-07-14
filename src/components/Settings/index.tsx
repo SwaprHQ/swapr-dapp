@@ -1,6 +1,6 @@
 import { transparentize } from 'polished'
 import { useState } from 'react'
-import { Code, Info, MessageCircle, Settings as SettingsIcon, X } from 'react-feather'
+import { Code, MessageCircle, Settings as SettingsIcon, X } from 'react-feather'
 import { Text } from 'rebass'
 import styled from 'styled-components'
 
@@ -176,7 +176,7 @@ const Divider = styled.div<{ horizontal?: boolean }>`
   height: ${props => (props.horizontal ? '100%' : 'auto')};
 `
 
-const CODE_LINK = 'https://github.com/levelkdev/dxswap-dapp'
+const CODE_LINK = 'https://github.com/SwaprHQ/swapr-dapp'
 
 export function Settings({ simple }: { simple?: boolean }) {
   const open = useModalOpen(simple ? ApplicationModal.SIMPLE_SETTINGS : ApplicationModal.SETTINGS)
@@ -305,15 +305,6 @@ export function Settings({ simple }: { simple?: boolean }) {
                     </RowBetween>
                     <Divider />
                     <RowBetween width="100%" marginTop="12px" marginBottom="12px">
-                      <MenuItem
-                        href="https://dxdao.eth.limo/"
-                        rel="noopener noreferrer"
-                        target="_blank"
-                        data-testid="about-hyperlink"
-                      >
-                        <Info size={14} />
-                        About
-                      </MenuItem>
                       <MenuItem href={CODE_LINK} data-testid="code-hyperlink">
                         <Code size={14} />
                         Code
@@ -323,12 +314,8 @@ export function Settings({ simple }: { simple?: boolean }) {
                         Discord
                       </MenuItem>
                     </RowBetween>
-                    <RowBetween alignItems="center" marginBottom="8px">
+                    <RowBetween alignItems="center" justify="center" marginBottom="8px">
                       <SwaprVersionLogo />
-                      <Divider horizontal style={{ height: 48 }} />
-                      <TYPE.Body fontWeight={700} fontSize="8px" letterSpacing="3px" color="white">
-                        A DXDAO PRODUCT
-                      </TYPE.Body>
                     </RowBetween>
                   </>
                 )}

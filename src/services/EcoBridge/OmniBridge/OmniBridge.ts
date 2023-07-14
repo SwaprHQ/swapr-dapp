@@ -17,7 +17,7 @@ import {
   EcoBridgeChangeHandler,
   EcoBridgeChildBaseConstructor,
   EcoBridgeChildBaseInit,
-  OmniBridgeList,
+  OmniBridgeIdList,
   SyncState,
 } from '../EcoBridge.types'
 import { ButtonStatus, EcoBridgeChildBase, getNativeCurrencyPrice } from '../EcoBridge.utils'
@@ -65,14 +65,19 @@ export class OmniBridge extends EcoBridgeChildBase {
   private _homeAmbContract: Contract | undefined
 
   private get actions() {
-    return omniBridgeActions[this.bridgeId as OmniBridgeList]
+    return omniBridgeActions[this.bridgeId as OmniBridgeIdList]
   }
   private get selectors() {
-    return omniBridgeSelectors[this.bridgeId as OmniBridgeList]
+    return omniBridgeSelectors[this.bridgeId as OmniBridgeIdList]
   }
 
-  constructor({ supportedChains: supportedChainsArr, bridgeId, displayName }: EcoBridgeChildBaseConstructor) {
-    super({ supportedChains: supportedChainsArr, bridgeId, displayName })
+  constructor({
+    supportedChains: supportedChainsArr,
+    bridgeId,
+    displayName,
+    displayUrl,
+  }: EcoBridgeChildBaseConstructor) {
+    super({ supportedChains: supportedChainsArr, bridgeId, displayName, displayUrl })
     this.setBaseActions(this.actions)
 
     if (supportedChainsArr.length !== 1) throw this.ecoBridgeUtils.logger.error('Invalid config')

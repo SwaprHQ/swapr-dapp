@@ -10,6 +10,16 @@ import { WrappedTokenInfo } from '../../state/lists/wrapped-token-info'
 
 import { EcoBridgeChildBase } from './EcoBridge.utils'
 
+export enum BridgeIds {
+  ARBITRUM_MAINNET = 'arbitrum:mainnet',
+  ARBITRUM_TESTNET = 'arbitrum:testnet',
+  CONNEXT = 'connext',
+  LIFI = 'lifi',
+  OMNIBRIDGE = 'omnibridge:eth-xdai',
+  SOCKET = 'socket',
+  XDAI = 'xdai',
+}
+
 export interface EcoBridgeChildBaseState {
   lists: { [id: string]: TokenList }
   listsStatus: SyncState
@@ -23,7 +33,7 @@ export type EcoBridgeProviders = {
   [key in ChainId]?: JsonRpcProvider | Web3Provider
 }
 
-export type Bridges = { [k in BridgeList]: EcoBridgeChildBase }
+export type Bridges = { [k in BridgeIdList]: EcoBridgeChildBase }
 
 export interface EcoBridgeConstructorParams {
   store: Store<AppState>
@@ -52,20 +62,32 @@ export interface EcoBridgeChildBaseProps
 
 export interface EcoBridgeChildBaseInit extends EcoBridgeChangeHandler, EcoBridgeInitialEnv {}
 
-export type ConnextList = 'connext'
-export type SocketList = 'socket'
-export type XdaiBridgeList = 'xdai'
-export type OmniBridgeList = 'omnibridge:eth-xdai'
-export type ArbitrumList = 'arbitrum:mainnet' | 'arbitrum:testnet'
-export type LifiList = 'lifi'
+export type BridgeIdList =
+  | ArbitrumIdList
+  | ConnextIdList
+  | LifiIdList
+  | OmniBridgeIdList
+  | SocketIdList
+  | XdaiBridgeIdList
+export type ArbitrumIdList = BridgeIds.ARBITRUM_MAINNET | BridgeIds.ARBITRUM_TESTNET
+export type ConnextIdList = BridgeIds.CONNEXT
+export type LifiIdList = BridgeIds.LIFI
+export type OmniBridgeIdList = BridgeIds.OMNIBRIDGE
+export type SocketIdList = BridgeIds.SOCKET
+export type XdaiBridgeIdList = BridgeIds.XDAI
+export type OptionalBridgeIdList = BridgeIdList | undefined
 
-export type BridgeList = ArbitrumList | SocketList | OmniBridgeList | ConnextList | XdaiBridgeList | LifiList
-export type OptionalBridgeList = BridgeList | undefined
+export interface EcoBridgeConfig {
+  id: BridgeIdList
+  name: string
+  url: string
+}
 
 export interface EcoBridgeChildBaseConstructor {
   supportedChains: SupportedChainsConfig[]
   displayName: string
-  bridgeId: BridgeList
+  displayUrl: string
+  bridgeId: BridgeIdList
 }
 
 export interface TokenMap {
@@ -96,7 +118,8 @@ export interface BridgeDetails {
 
 export type SupportedBridges = {
   name: string
-  bridgeId: BridgeList
+  url: string
+  bridgeId: BridgeIdList
   status: SyncState
   details: BridgeDetails
   errorMessage?: BridgingDetailsErrorMessage

@@ -1,24 +1,18 @@
 import TextyAnim from 'rc-texty'
 
 import Entry2 from './../assets/images/blog/blog-entry-2.jpg'
-import EcoRouterArticle from './../assets/images/blog/ecorouter-article.png'
-import MevArticle from './../assets/images/blog/mev-article.png'
+import EcoRouterArticle from './../assets/images/blog/ecorouter-article.webp'
+import MevArticle from './../assets/images/blog/mev-article.webp'
 import BNBLogo from './../assets/images/BNBLogo.svg'
 import Bridge from './../assets/images/features/bridge.png'
-import DiyFarm from './../assets/images/features/diy-farm.png'
 import EcoRouting from './../assets/images/features/eco-routing.png'
 import Farming from './../assets/images/features/farm.png'
 import Swap from './../assets/images/features/swap.png'
-import Vote from './../assets/images/features/vote.png'
 import gnosisChainLogo from './../assets/images/gnosis-chain.svg'
 import BaoSwapStats from './../assets/images/isologo-baoswap.svg'
-import Discord from './../assets/images/isologo-discord.svg'
-import Github from './../assets/images/isologo-github.svg'
 import HoneySwapStats from './../assets/images/isologo-honeyswap.svg'
 import SushiSwapStats from './../assets/images/isologo-sushiswap.svg'
-import Twitter from './../assets/images/isologo-twitter.svg'
 import UniSwapStats from './../assets/images/isologo-uniswap.svg'
-import RoutingLevinSwap from './../assets/images/levinswap.svg'
 import ArbitrumLogo from './../assets/images/logo-Arbitrum.svg'
 import EthereumLogo from './../assets/images/logo-Ethereum.svg'
 import PolygonLogo from './../assets/images/logo-Polygon.svg'
@@ -26,14 +20,19 @@ import xDaiLogo from './../assets/images/logo-xDai.svg'
 import OptimismLogo from './../assets/images/optimism.svg'
 import RoutingOneInch from './../assets/images/routing-1inch.svg'
 import RoutingBaoSwap from './../assets/images/routing-BaoSwap.svg'
-import RoutingCoW from './../assets/images/routing-cow.svg'
-import RoutingCurve from './../assets/images/routing-curve.svg'
+import RoutingBiSwap from './../assets/images/routing-Biswap.svg'
+import RoutingCoW from './../assets/images/routing-CoW.svg'
+import RoutingCurve from './../assets/images/routing-Curve.svg'
 import RoutingDFYN from './../assets/images/routing-DFYN.svg'
 import RoutingHoneySwap from './../assets/images/routing-HoneySwap.svg'
-import RoutingPancakeSwap from './../assets/images/routing-pancakeswap.svg'
+import RoutingLevinSwap from './../assets/images/routing-Levinswap.svg'
+import RoutingLifi from './../assets/images/routing-Lifi.svg'
+import RoutingPancakeSwap from './../assets/images/routing-Pancakeswap.svg'
 import RoutingQuickSwap from './../assets/images/routing-Quickswap.svg'
 import RoutingSushiSwap from './../assets/images/routing-SushiSwap.svg'
 import RoutingUniswap from './../assets/images/routing-Uniswap.svg'
+import RoutingVelodrome from './../assets/images/routing-Velodrome.svg'
+import RoutingZerox from './../assets/images/routing-Zerox.svg'
 import { scrollTo } from './helperFunctions'
 
 export const mainNavigation = [
@@ -53,12 +52,7 @@ export const mainNavigation = [
 ]
 
 export const HeroContent = {
-  mainText: (
-    <span>
-      Swap, Farm, Bridge and
-      <br /> Vote on Defi unchained.
-    </span>
-  ),
+  mainText: <span>Swap, Bridge, Farm across chains.</span>,
   heroLogos: [
     {
       img: EthereumLogo,
@@ -103,27 +97,21 @@ export const RoutingThroughContent = {
   title: 'ROUTING THROUGH',
   companies: [
     {
-      title: 'Uniswap',
-      img: RoutingUniswap,
+      title: '0x',
+      img: RoutingZerox,
     },
     {
-      title: 'SushiSwap',
-      img: RoutingSushiSwap,
+      title: '1inch',
+      img: RoutingOneInch,
     },
     {
       title: 'BaoSwap',
       img: RoutingBaoSwap,
     },
     {
-      title: 'HoneySwap',
-      img: RoutingHoneySwap,
+      title: 'BiSwap',
+      img: RoutingBiSwap,
     },
-    {
-      title: 'Levinswap',
-      img: RoutingLevinSwap,
-    },
-    { title: 'QuickSwap', img: RoutingQuickSwap },
-    { title: 'DFYN', img: RoutingDFYN },
     {
       title: 'CoW',
       img: RoutingCoW,
@@ -132,13 +120,35 @@ export const RoutingThroughContent = {
       title: 'Curve',
       img: RoutingCurve,
     },
+    { title: 'DFYN', img: RoutingDFYN },
+    {
+      title: 'HoneySwap',
+      img: RoutingHoneySwap,
+    },
+    {
+      title: 'Levinswap',
+      img: RoutingLevinSwap,
+    },
     {
       title: 'PancakeSwap',
       img: RoutingPancakeSwap,
     },
+    { title: 'QuickSwap', img: RoutingQuickSwap },
     {
-      title: '1inch',
-      img: RoutingOneInch,
+      title: 'SushiSwap',
+      img: RoutingSushiSwap,
+    },
+    {
+      title: 'Uniswap',
+      img: RoutingUniswap,
+    },
+    {
+      title: 'Velodrome',
+      img: RoutingVelodrome,
+    },
+    {
+      title: 'Lifi',
+      img: RoutingLifi,
     },
   ],
 }
@@ -184,7 +194,7 @@ export type FeatureContent = {
 
 export const FeaturesContent: Readonly<FeatureContent> = {
   topBanner: {
-    title: 'Swap, Farm, Bridge & Vote. DeFi unchained.',
+    title: 'Swap, Bridge and Farm across chains.',
     logos: [EthereumLogo, ArbitrumLogo, gnosisChainLogo, PolygonLogo, OptimismLogo, BNBLogo],
   },
   preHeader: 'Swapr Features',
@@ -201,6 +211,26 @@ export const FeaturesContent: Readonly<FeatureContent> = {
           onClick: () => {
             scrollTo('app-wrapper')
           },
+          type: 'primary',
+          external: false,
+        },
+        {
+          label: 'READ MORE',
+          href: 'https://dxdocs.eth.limo/docs/Products/swapr/',
+          type: 'dark',
+          external: true,
+        },
+      ],
+    },
+    {
+      title: 'BRIDGE',
+      content: 'Bridge directly to or from multiple chains: Ethereum, Gnosis, Arbitrum, Polygon, Optimism.',
+      image: Bridge,
+      animation: animations['06_Bridge'],
+      buttons: [
+        {
+          label: 'BRIDGE',
+          href: '/#/bridge',
           type: 'primary',
           external: false,
         },
@@ -235,26 +265,6 @@ export const FeaturesContent: Readonly<FeatureContent> = {
       ],
     },
     {
-      title: 'VOTE',
-      content: 'LPs on the Swapr protocol can vote to adjust the fees on their pools.',
-      image: Vote,
-      animation: animations['03_Vote'],
-      buttons: [
-        {
-          label: 'VOTE',
-          href: 'https://snapshot.org/#/swpr.eth',
-          type: 'primary',
-          external: true,
-        },
-        {
-          label: 'READ MORE',
-          href: 'https://dxdocs.eth.limo/docs/Products/swapr/',
-          type: 'dark',
-          external: true,
-        },
-      ],
-    },
-    {
       title: 'FARMING',
       content: 'Users can participate in permissionless farming campaigns directly in the Swapr interface.',
       image: Farming,
@@ -274,110 +284,6 @@ export const FeaturesContent: Readonly<FeatureContent> = {
         },
       ],
     },
-    {
-      title: 'DIY FARM',
-      content: 'The Swapr protocol allows anyone to create farming campaigns. Any pair, any reward.',
-      image: DiyFarm,
-      animation: animations['05_DIY_Farm'],
-      buttons: [
-        {
-          label: 'CREATE CAMPAIGN',
-          href: '/#/liquidity-mining/create',
-          type: 'primary',
-          external: false,
-        },
-        {
-          label: 'READ MORE',
-          href: 'https://dxdocs.eth.limo/docs/Products/swapr/',
-          type: 'dark',
-          external: true,
-        },
-      ],
-    },
-    {
-      title: 'BRIDGE',
-      content: 'Bridge directly to or from multiple chains: Ethereum, Gnosis, Arbitrum, Polygon, Optimism.',
-      image: Bridge,
-      animation: animations['06_Bridge'],
-      buttons: [
-        {
-          label: 'BRIDGE',
-          href: '/#/bridge',
-          type: 'primary',
-          external: false,
-        },
-        {
-          label: 'READ MORE',
-          href: 'https://dxdocs.eth.limo/docs/Products/swapr/',
-          type: 'dark',
-          external: true,
-        },
-      ],
-    },
-  ],
-} as const
-
-export const CommunityBannerContent = {
-  preHeader: 'A DXdao Product',
-  content: 'Owned and funded by the Community',
-  buttons: [
-    {
-      label: 'GET INVOLVED',
-      href: 'https://dxdao.eth.limo/',
-      type: 'primary',
-    },
-    {
-      label: 'FORUM',
-      href: 'https://daotalk.org/c/dx-dao/15',
-      type: 'dark',
-    },
-  ],
-} as const
-
-export const CommunityLinksContent = {
-  preHeader: 'Swapr Protocol',
-  title: (
-    <span>
-      Join an unstoppable <br />
-      community
-    </span>
-  ),
-  links: [
-    {
-      image: Discord,
-      alt: 'Discord Logo',
-      title: 'Discord',
-      content: 'Join in on community discussion on the Swapr Discord.',
-      button: {
-        label: 'JOIN DISCORD',
-        href: 'https://discord.gg/QFkNsjTkzD',
-      },
-    },
-    {
-      image: Github,
-      alt: 'GitHub Logo',
-      title: 'GitHub',
-      content: (
-        <>
-          Contribute to the <br />
-          Swapr repositories on GitHub.
-        </>
-      ),
-      button: {
-        label: 'VISIT GITHUB',
-        href: 'https://github.com/levelkdev/dxswap-dapp',
-      },
-    },
-    {
-      image: Twitter,
-      alt: 'Twitter Logo',
-      title: 'Twitter',
-      content: 'Get the latest Swapr announcements on the Swapr Twitter.',
-      button: {
-        label: 'Follow on Twitter',
-        href: 'https://twitter.com/SwaprEth',
-      },
-    },
   ],
 } as const
 
@@ -388,14 +294,14 @@ export const BlogContent = {
       image: EcoRouterArticle,
       title: 'The Eco Router — Effortlessly Combining Safety and Best Value Trading!',
       content: 'Introducing external liquidity into swapr with no extra cost to the user',
-      postLink: 'https://medium.com/swapr/announcing-swpr-token-e8ab12dbad45',
+      postLink:
+        'https://medium.com/swapr/the-eco-router-effortlessly-combining-safety-and-best-value-trading-1a3fe23c5255',
     },
     {
       image: MevArticle,
       title: 'Full MEV Protection from CoW Protocol within Swapr’s Eco Router.',
       content: 'MEV Protection in Swapr',
-      postLink:
-        'https://medium.com/swapr/dxdao-and-badgerdao-leverage-swapr-to-bring-smarter-btc-focused-strategies-to-arbitrum-23689e0c9f2b',
+      postLink: 'https://medium.com/swapr/full-mev-protection-from-cow-protocol-within-swaprs-eco-router-8a0d67d7f394',
     },
     {
       image: Entry2,
@@ -442,33 +348,8 @@ export const FooterContent = {
           href: 'https://twitter.com/SwaprEth',
         },
         {
-          label: 'Keybase',
-          href: 'https://keybase.io/team/dx_dao',
-        },
-        {
           label: 'Forum',
           href: 'https://daotalk.org/c/dx-dao/15',
-        },
-      ],
-    },
-    {
-      title: 'Documentation',
-      footerLinks: [
-        {
-          label: 'DIY Campaigns',
-          href: 'https://dxdocs.eth.limo/docs/Products/swapr/DIY%20Liquidity%20Mining/',
-        },
-        {
-          label: 'Roadmap',
-          href: 'https://dxdocs.eth.limo/docs/Products/swapr/roadmap/',
-        },
-        {
-          label: "We're hiring",
-          href: 'https://dxdocs.eth.limo/docs/ContributorHub/open-positions-and-bounties/',
-        },
-        {
-          label: 'SWPR Token',
-          href: 'https://dxdocs.eth.limo/docs/Products/swapr/tokenomics/',
         },
       ],
     },

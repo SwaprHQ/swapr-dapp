@@ -40,3 +40,5 @@ export const updateUserAdvancedSwapDetails = createAction<{ userAdvancedSwapDeta
 export const updateSelectedChartOption = createAction<{ selectedChartOption: ChartOption }>(
   'user/updateSelectedChartOption'
 )
+
+export const updateStacklyPopupOpen = createAction<{ stacklyPopupOpen: number }>('user/updateStacklyPopupOpen')

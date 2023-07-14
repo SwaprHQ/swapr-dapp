@@ -9,7 +9,7 @@ import { ChainId, Currency, CurrencyAmount, JSBI, Pair, Percent, Token, UniswapV
 import Decimal from 'decimal.js-light'
 import { commify } from 'ethers/lib/utils'
 
-import { NetworkDetails } from '../constants'
+import { BRIDGES, NetworkDetails } from '../constants'
 import { TokenAddressMap } from '../state/lists/hooks'
 import { SwapProtocol } from '../state/transactions/reducer'
 
@@ -30,6 +30,10 @@ const ETHERSCAN_PREFIXES: { [chainId in ChainId | number]: string } = {
   [ChainId.XDAI]: '',
 }
 
+/**
+ * @TODO in https://linear.app/swaprdev/issue/SWA-65/provide-a-single-source-of-truth-for-chain-rpcs-from-the-sdk
+ * [] Abstract chains explorers into a single source of truth and consume it where neded
+ */
 const getExplorerPrefix = (chainId: ChainId) => {
   switch (chainId) {
     case ChainId.ARBITRUM_ONE:
@@ -44,6 +48,12 @@ const getExplorerPrefix = (chainId: ChainId) => {
       return new URL('https://optimistic.etherscan.io')
     case ChainId.BSC_MAINNET:
       return new URL('https://bscscan.com')
+    case ChainId.BSC_TESTNET:
+      return new URL('https://testnet.bscscan.com/')
+    case ChainId.ZK_SYNC_ERA_MAINNET:
+      return new URL('https://explorer.zksync.io/')
+    case ChainId.ZK_SYNC_ERA_TESTNET:
+      return new URL('https://goerli.explorer.zksync.io/')
     default:
       return new URL(`https://${ETHERSCAN_PREFIXES[chainId] || ETHERSCAN_PREFIXES[1]}etherscan.io`)
   }
@@ -67,7 +77,7 @@ export function getExplorerLink(
     return getGnosisProtocolExplorerOrderLink(chainId, hash)
   }
 
-  if (protocol === 'socket') return getSocketExplorerLink(hash)
+  if (protocol === BRIDGES.SOCKET.id) return getSocketExplorerLink(hash)
 
   const prefix = getExplorerPrefix(chainId)
   // exception. blockscout doesn't have a token-specific address

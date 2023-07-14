@@ -12,7 +12,10 @@ import { CustomWalletConnectConnector } from './CustomWalletConnectConnector'
 import { CustomWalletLinkConnector } from './CustomWalletLinkConnector'
 
 export const INFURA_PROJECT_ID = 'e1a3bfc40093494ca4f36b286ab36f2d'
-
+/**
+ * @TODO in https://linear.app/swaprdev/issue/SWA-65/provide-a-single-source-of-truth-for-chain-rpcs-from-the-sdk
+ * Consume `RPC_PROVIDER_LIST` from the SDK and use it as single source of truth
+ */
 export const network = new CustomNetworkConnector({
   urls: {
     [ChainId.MAINNET]: `https://mainnet.infura.io/v3/${INFURA_PROJECT_ID}`,
@@ -23,6 +26,8 @@ export const network = new CustomNetworkConnector({
     [ChainId.OPTIMISM_MAINNET]: 'https://mainnet.optimism.io',
     [ChainId.OPTIMISM_GOERLI]: 'https://goerli.optimism.io',
     [ChainId.BSC_MAINNET]: 'https://bsc-dataseed.binance.org/',
+    [ChainId.ZK_SYNC_ERA_MAINNET]: `https://mainnet.era.zksync.io`,
+    [ChainId.ZK_SYNC_ERA_TESTNET]: `https://testnet.era.zksync.dev`,
   },
   defaultChainId: ChainId.MAINNET,
 })
@@ -40,6 +45,8 @@ export const injected = new InjectedConnector({
     ChainId.OPTIMISM_MAINNET,
     ChainId.OPTIMISM_GOERLI,
     ChainId.BSC_MAINNET,
+    ChainId.ZK_SYNC_ERA_MAINNET,
+    ChainId.ZK_SYNC_ERA_TESTNET,
   ],
 })
 
@@ -52,6 +59,7 @@ export const walletConnect = new CustomWalletConnectConnector({
     [ChainId.ARBITRUM_ONE]: 'https://arb1.arbitrum.io/rpc',
     [ChainId.XDAI]: 'https://rpc.gnosischain.com/',
     [ChainId.MAINNET]: `https://mainnet.infura.io/v3/${INFURA_PROJECT_ID}`,
+    [ChainId.ZK_SYNC_ERA_MAINNET]: `https://mainnet.era.zksync.io`,
   },
   bridge: 'https://bridge.walletconnect.org',
   qrcode: true,
@@ -80,5 +88,7 @@ export const walletLink = new CustomWalletLinkConnector({
     ChainId.OPTIMISM_MAINNET,
     ChainId.OPTIMISM_GOERLI,
     ChainId.BSC_MAINNET,
+    ChainId.ZK_SYNC_ERA_MAINNET,
+    ChainId.ZK_SYNC_ERA_TESTNET,
   ],
 })

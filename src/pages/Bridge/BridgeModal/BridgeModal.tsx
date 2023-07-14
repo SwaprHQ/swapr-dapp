@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 
 import Modal from '../../../components/Modal'
+import { BRIDGES } from '../../../constants'
 import { BridgeModalState, BridgeModalStatus } from '../../../services/EcoBridge/EcoBridge.types'
 import { AppState } from '../../../state'
 import { getNetworkInfo } from '../../../utils/networksList'
@@ -28,7 +29,6 @@ export const BridgeModal = ({
   const [heading, setHeading] = useState('')
   const [disableConfirm, setDisableConfirm] = useState(false)
   const [modalType, setModalType] = useState<BridgeModalType | null>(null)
-  const [isWarning, setIsWarning] = useState(false)
   const [bridgeName, setBridgeName] = useState('')
 
   const { t } = useTranslation('bridge')
@@ -71,32 +71,10 @@ export const BridgeModal = ({
         setModalType(null)
     }
 
-    if (activeBridge === 'socket') {
-      setIsWarning(true)
-      setBridgeName('Socket Network')
-    }
+    if (activeBridge) {
+      const selectedBridge = Object.values(BRIDGES).find(bridge => bridge.id === activeBridge)
 
-    if (activeBridge?.includes('arbitrum')) {
-      setIsWarning(false)
-      setBridgeName('Arbitrum One Bridge')
-    }
-
-    if (activeBridge === 'xdai') {
-      setIsWarning(false)
-      setBridgeName('xDai Bridge')
-    }
-
-    if (activeBridge === 'connext') {
-      setIsWarning(false)
-      setBridgeName('Connext Network')
-    }
-    if (activeBridge?.includes('omnibridge')) {
-      setIsWarning(false)
-      setBridgeName('OmniBridge')
-    }
-    if (activeBridge === 'lifi') {
-      setIsWarning(false)
-      setBridgeName('Lifi Bridge')
+      setBridgeName(selectedBridge?.name ?? '')
     }
   }, [activeBridge, status, symbol, t, typedValue])
 
@@ -128,7 +106,6 @@ export const BridgeModal = ({
         disableConfirm={disableConfirm}
         setDisableConfirm={setDisableConfirm}
         bridgeName={bridgeName}
-        isWarning={isWarning}
       />
     </Modal>
   )

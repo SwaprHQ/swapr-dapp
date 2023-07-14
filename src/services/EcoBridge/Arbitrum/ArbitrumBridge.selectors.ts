@@ -13,7 +13,7 @@ import {
 import { normalizeInputValue } from '../../../utils'
 import { getBridgeTxStatus, txnTypeToOrigin } from '../../../utils/arbitrum'
 import { ecoBridgeConfig } from '../EcoBridge.config'
-import { ArbitrumList } from '../EcoBridge.types'
+import { ArbitrumIdList, BridgeIds } from '../EcoBridge.types'
 
 import { arbitrumTransactionsAdapter } from './ArbitrumBridge.adapter'
 import { ArbitrumPendingReasons } from './ArbitrumBridge.types'
@@ -24,7 +24,7 @@ const getSupportedChains = (bridgeId: string) => {
   return Object.values(bridge.supportedChains[0]).map(Number) as ChainId[]
 }
 
-const createSelectOwnedTransactions = (bridgeId: ArbitrumList) => {
+const createSelectOwnedTransactions = (bridgeId: ArbitrumIdList) => {
   const transactionsSelector = createSelector([(state: AppState) => state], state =>
     arbitrumTransactionsAdapter.getSelectors().selectAll(state.ecoBridge[bridgeId].transactions)
   )
@@ -47,7 +47,7 @@ const createSelectPendingTransactions = (selectOwnedTxs: ReturnType<typeof creat
 
 const createSelectL1Deposits = (
   selectOwnedTxs: ReturnType<typeof createSelectOwnedTransactions>,
-  bridgeId: ArbitrumList
+  bridgeId: ArbitrumIdList
 ) =>
   createSelector([selectOwnedTxs], txs => {
     const chains = getSupportedChains(bridgeId)
@@ -63,7 +63,7 @@ const createSelectL1Deposits = (
 
 const createSelectPendingWithdrawals = (
   selectOwnedTxs: ReturnType<typeof createSelectOwnedTransactions>,
-  bridgeId: ArbitrumList
+  bridgeId: ArbitrumIdList
 ) =>
   createSelector([selectOwnedTxs], txs => {
     const chains = getSupportedChains(bridgeId)
@@ -83,7 +83,7 @@ const createBridgeLog = (transactions: ArbitrumBridgeTxn[]): BridgeTransactionLo
 }
 
 const createSelectBridgeTransactionsSummary = (
-  bridgeId: ArbitrumList,
+  bridgeId: ArbitrumIdList,
   selectOwnedTxs: ReturnType<typeof createSelectOwnedTransactions>
 ) =>
   createSelector([selectOwnedTxs, (state: AppState) => state.ecoBridge.ui.isCheckingWithdrawals], (txs, isLoading) => {
@@ -242,7 +242,7 @@ export interface ArbitrumBridgeSelectors {
   selectBridgeTransactionsSummary: ReturnType<typeof createSelectBridgeTransactionsSummary>
 }
 
-export const arbitrumSelectorsFactory = (arbBridges: ArbitrumList[]) => {
+export const arbitrumSelectorsFactory = (arbBridges: ArbitrumIdList[]) => {
   return arbBridges.reduce(
     (total, bridgeId) => {
       const selectOwnedTransactions = createSelectOwnedTransactions(bridgeId)
@@ -264,9 +264,9 @@ export const arbitrumSelectorsFactory = (arbBridges: ArbitrumList[]) => {
       return total
     },
     {} as {
-      [k in ArbitrumList]: ArbitrumBridgeSelectors
+      [k in ArbitrumIdList]: ArbitrumBridgeSelectors
     }
   )
 }
 
-export const arbitrumSelectors = arbitrumSelectorsFactory(['arbitrum:mainnet', 'arbitrum:testnet'])
+export const arbitrumSelectors = arbitrumSelectorsFactory([BridgeIds.ARBITRUM_MAINNET, BridgeIds.ARBITRUM_TESTNET])

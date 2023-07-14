@@ -1,9 +1,9 @@
 # Swapr dapp
 
-[![CI](https://github.com/ImpeccableHQ/swapr-dapp/workflows/CI/badge.svg)](https://github.com/ImpeccableHQ/swapr-dapp/actions?query=branch%3Adevelop+workflow%3ACI)
+[![CI](https://github.com/SwaprHQ/swapr-dapp/workflows/CI/badge.svg)](https://github.com/SwaprHQ/swapr-dapp/actions?query=branch%3Adevelop+workflow%3ACI)
 [![GitPOAP Badge](https://public-api.gitpoap.io/v1/repo/levelkdev/swapr-dapp/badge)](https://www.gitpoap.io/gh/levelkdev/swapr-dapp)
 
-An open source decentralized application for Swapr -- a protocol for decentralized exchange of Ethereum tokens governed by the DXdao.
+An open source decentralized application for Swapr -- a protocol for decentralized exchange of Ethereum tokens governed by the Swapr.
 
 ### Run
 
@@ -18,13 +18,13 @@ Swapr releases are published to the IPFS at [swapr.eth](https://swapr.eth.limo).
 Clone the repo
 
 ```bash
-git clone https://github.com/ImpeccableHQ/swapr-dapp.git
+git clone https://github.com/SwaprHQ/swapr-dapp.git
 ```
 
 Install dependencies using Yarn
 
 ```bash
-yarn install --frozen-lockfile
+yarn install --immutable
 ```
 
 Build the app

@@ -1,0 +1,125 @@
+{
+  "name": "1inch",
+  "logoURI": "https://1inch.io/img/pressRoom/1inch_without_text.png",
+  "keywords": ["defi"],
+  "timestamp": "2023-06-26T05:06:45.008+00:00",
+  "tokens": [
+    {
+      "chainId": 324,
+      "address": "0x0e97c7a0f8b2c9885c8ac9fc6136e829cbc21d42",
+      "name": "Mute.io",
+      "symbol": "MUTE",
+      "decimals": 18,
+      "logoURI": "https://tokens.1inch.io/324/0x0e97c7a0f8b2c9885c8ac9fc6136e829cbc21d42.png"
+    },
+    {
+      "chainId": 324,
+      "address": "0xc2b13bb90e33f1e191b8aa8f44ce11534d5698e3",
+      "name": "Furucombo",
+      "symbol": "COMBO",
+      "decimals": 18,
+      "logoURI": "https://tokens.1inch.io/324/0xc2b13bb90e33f1e191b8aa8f44ce11534d5698e3.png"
+    },
+    {
+      "chainId": 324,
+      "address": "0x42c1c56be243c250ab24d2ecdcc77f9ccaa59601",
+      "name": "Perpetual",
+      "symbol": "PERP",
+      "decimals": 18,
+      "logoURI": "https://tokens.1inch.io/0x42c1c56be243c250ab24d2ecdcc77f9ccaa59601.png"
+    },
+    {
+      "chainId": 324,
+      "address": "0xbfb4b5616044eded03e5b1ad75141f0d9cb1499b",
+      "name": "zkDoge",
+      "symbol": "ZKDOGE",
+      "decimals": 18,
+      "logoURI": "https://tokens.1inch.io/324/0xbfb4b5616044eded03e5b1ad75141f0d9cb1499b.png"
+    },
+    {
+      "chainId": 324,
+      "address": "0x5e38cb3e6c0faafaa5c32c482864fcef5a0660ad",
+      "name": "Zksync Shib",
+      "symbol": "ZKSHIB",
+      "decimals": 18,
+      "logoURI": "https://tokens.1inch.io/324/0x5e38cb3e6c0faafaa5c32c482864fcef5a0660ad.png"
+    },
+    {
+      "chainId": 324,
+      "address": "0x85d84c774cf8e9ff85342684b0e795df72a24908",
+      "name": "Velocore",
+      "symbol": "VC",
+      "decimals": 18,
+      "logoURI": "https://tokens.1inch.io/324/0x85d84c774cf8e9ff85342684b0e795df72a24908.png"
+    },
+    {
+      "chainId": 324,
+      "address": "0x2b64237277c605d07f17b96f9627712340c32981",
+      "name": "GemSwap",
+      "symbol": "ZGEM",
+      "decimals": 18,
+      "logoURI": "https://tokens.1inch.io/324/0x2b64237277c605d07f17b96f9627712340c32981.png"
+    },
+    {
+      "chainId": 324,
+      "address": "0xc8ec5b0627c794de0e4ea5d97ad9a556b361d243",
+      "name": "Whisper",
+      "symbol": "WISP",
+      "decimals": 18,
+      "logoURI": "https://assets.coingecko.com/coins/images/29650/thumb/wisp_200.png?1681725709"
+    },
+    {
+      "chainId": 324,
+      "address": "0x0231b3de40b6b3bdd28dcef037f1b7a3fcf5a95a",
+      "name": "Zynergy",
+      "symbol": "ZYN",
+      "decimals": 18,
+      "logoURI": "https://assets.coingecko.com/coins/images/29674/thumb/logo_200px.png?1680576373"
+    },
+    {
+      "chainId": 324,
+      "address": "0x6d27b6252b980ba4350a1e349a3b684237d5e986",
+      "name": "Hush cash",
+      "symbol": "HUSH",
+      "decimals": 18,
+      "logoURI": "https://assets.coingecko.com/coins/images/29932/thumb/coingecko.png?1682141994"
+    },
+    {
+      "chainId": 324,
+      "address": "0x503234f203fc7eb888eec8513210612a43cf6115",
+      "name": "LUSD Stablecoin",
+      "symbol": "LUSD",
+      "decimals": 18,
+      "logoURI": "https://tokens.1inch.io/0x503234f203fc7eb888eec8513210612a43cf6115.png"
+    },
+    {
+      "chainId": 324,
+      "address": "0xc8ac6191cdc9c7bf846ad6b52aaaa7a0757ee305",
+      "name": "Metavault Trade",
+      "symbol": "MVX",
+      "decimals": 18,
+      "logoURI": "https://tokens.1inch.io/0xc8ac6191cdc9c7bf846ad6b52aaaa7a0757ee305.png"
+    },
+    {
+      "chainId": 324,
+      "address": "0xdd9f72afed3631a6c85b5369d84875e6c42f1827",
+      "name": "Symbiosis",
+      "symbol": "SIS",
+      "decimals": 18,
+      "logoURI": "https://tokens.1inch.io/0xdd9f72afed3631a6c85b5369d84875e6c42f1827.png"
+    },
+    {
+      "chainId": 324,
+      "address": "0x8e86e46278518efc1c5ced245cba2c7e3ef11557",
+      "name": "Overnight fi USD ",
+      "symbol": "USD+",
+      "decimals": 6,
+      "logoURI": "https://tokens.1inch.io/0x8e86e46278518efc1c5ced245cba2c7e3ef11557.png"
+    }
+  ],
+  "version": {
+    "major": 1,
+    "minor": 0,
+    "patch": 0
+  }
+}

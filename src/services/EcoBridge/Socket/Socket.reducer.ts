@@ -2,7 +2,7 @@ import { ChainId } from '@swapr/sdk'
 
 import { PayloadAction } from '@reduxjs/toolkit'
 
-import { SocketList } from '../EcoBridge.types'
+import { BridgeIds, SocketIdList } from '../EcoBridge.types'
 import { createEcoBridgeChildBaseSlice } from '../EcoBridge.utils'
 
 import { Route } from './api/generated'
@@ -16,7 +16,7 @@ const initialState: SocketBridgeState = {
   assetDecimals: 18,
 }
 
-const createSocketSlice = (bridgeId: SocketList) =>
+const createSocketSlice = (bridgeId: SocketIdList) =>
   createEcoBridgeChildBaseSlice({
     name: bridgeId,
     initialState,
@@ -70,8 +70,8 @@ const createSocketSlice = (bridgeId: SocketList) =>
     },
   })
 
-const socketSlices: { [k in SocketList]: ReturnType<typeof createSocketSlice> } = {
-  socket: createSocketSlice('socket'),
+const socketSlices: { [k in SocketIdList]: ReturnType<typeof createSocketSlice> } = {
+  socket: createSocketSlice(BridgeIds.SOCKET),
 }
 
 type SocketReducers = { [k in keyof typeof socketSlices]: ReturnType<typeof createSocketSlice>['reducer'] }
@@ -83,7 +83,7 @@ type SocketSliceExtract = {
   socketActions: SocketActions
 }
 
-export const { socketReducers, socketActions } = (Object.keys(socketSlices) as SocketList[]).reduce(
+export const { socketReducers, socketActions } = (Object.keys(socketSlices) as SocketIdList[]).reduce(
   (total, key) => {
     total.socketReducers[key] = socketSlices[key].reducer
     total.socketActions[key] = socketSlices[key].actions
