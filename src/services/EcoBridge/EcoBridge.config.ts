@@ -41,7 +41,7 @@ export const ecoBridgeConfig: EcoBridgeChildBase[] = [
   new LifiBridge({
     bridgeId: BRIDGES.LIFI.id,
     displayName: BRIDGES.LIFI.name,
-    displayUrl: BRIDGES.ARBITRUM_MAINNET.url,
+    displayUrl: BRIDGES.LIFI.url,
     supportedChains: bridgeSupportedChains([
       ChainId.ARBITRUM_ONE,
       ChainId.MAINNET,

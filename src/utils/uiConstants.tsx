@@ -14,6 +14,7 @@ import HoneySwapStats from './../assets/images/isologo-honeyswap.svg'
 import SushiSwapStats from './../assets/images/isologo-sushiswap.svg'
 import UniSwapStats from './../assets/images/isologo-uniswap.svg'
 import RoutingLevinSwap from './../assets/images/levinswap.svg'
+import RoutingLifi from './../assets/images/lifi-horizontal.svg'
 import ArbitrumLogo from './../assets/images/logo-Arbitrum.svg'
 import EthereumLogo from './../assets/images/logo-Ethereum.svg'
 import PolygonLogo from './../assets/images/logo-Polygon.svg'
@@ -144,6 +145,10 @@ export const RoutingThroughContent = {
     {
       title: 'Velodrome',
       img: RoutingVelodrome,
+    },
+    {
+      title: 'Lifi',
+      img: RoutingLifi,
     },
   ],
 }
