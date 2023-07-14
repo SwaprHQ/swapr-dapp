@@ -13,7 +13,6 @@ import BaoSwapStats from './../assets/images/isologo-baoswap.svg'
 import HoneySwapStats from './../assets/images/isologo-honeyswap.svg'
 import SushiSwapStats from './../assets/images/isologo-sushiswap.svg'
 import UniSwapStats from './../assets/images/isologo-uniswap.svg'
-import RoutingLevinSwap from './../assets/images/levinswap.svg'
 import ArbitrumLogo from './../assets/images/logo-Arbitrum.svg'
 import EthereumLogo from './../assets/images/logo-Ethereum.svg'
 import PolygonLogo from './../assets/images/logo-Polygon.svg'
@@ -21,17 +20,19 @@ import xDaiLogo from './../assets/images/logo-xDai.svg'
 import OptimismLogo from './../assets/images/optimism.svg'
 import RoutingOneInch from './../assets/images/routing-1inch.svg'
 import RoutingBaoSwap from './../assets/images/routing-BaoSwap.svg'
-import RoutingBiSwap from './../assets/images/routing-biswap.svg'
-import RoutingCoW from './../assets/images/routing-cow.svg'
-import RoutingCurve from './../assets/images/routing-curve.svg'
+import RoutingBiSwap from './../assets/images/routing-Biswap.svg'
+import RoutingCoW from './../assets/images/routing-CoW.svg'
+import RoutingCurve from './../assets/images/routing-Curve.svg'
 import RoutingDFYN from './../assets/images/routing-DFYN.svg'
 import RoutingHoneySwap from './../assets/images/routing-HoneySwap.svg'
-import RoutingPancakeSwap from './../assets/images/routing-pancakeswap.svg'
+import RoutingLevinSwap from './../assets/images/routing-Levinswap.svg'
+import RoutingLifi from './../assets/images/routing-Lifi.svg'
+import RoutingPancakeSwap from './../assets/images/routing-Pancakeswap.svg'
 import RoutingQuickSwap from './../assets/images/routing-Quickswap.svg'
 import RoutingSushiSwap from './../assets/images/routing-SushiSwap.svg'
 import RoutingUniswap from './../assets/images/routing-Uniswap.svg'
-import RoutingVelodrome from './../assets/images/routing-velodrome.svg'
-import RoutingZerox from './../assets/images/routing-zerox.svg'
+import RoutingVelodrome from './../assets/images/routing-Velodrome.svg'
+import RoutingZerox from './../assets/images/routing-Zerox.svg'
 import { scrollTo } from './helperFunctions'
 
 export const mainNavigation = [
@@ -144,6 +145,10 @@ export const RoutingThroughContent = {
     {
       title: 'Velodrome',
       img: RoutingVelodrome,
+    },
+    {
+      title: 'Lifi',
+      img: RoutingLifi,
     },
   ],
 }
