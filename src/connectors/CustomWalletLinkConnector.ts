@@ -38,7 +38,10 @@ export class CustomWalletLinkConnector extends AbstractConnector {
   }
 
   public async activate(): Promise<ConnectorUpdate> {
-    if (window.ethereum && window.ethereum.isCoinbaseWallet === true) {
+    // temporary fix to set provider
+    // todo: upgrade web3-react & set provider only if it is CoinbaseWallet
+    // if (window.ethereum && window.ethereum.isCoinbaseWallet === true) {
+    if (window.ethereum) {
       // user is in the dapp browser on Coinbase Wallet
       this.provider = window.ethereum
     } else if (!this.walletLink) {
