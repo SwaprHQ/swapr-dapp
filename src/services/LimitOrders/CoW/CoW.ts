@@ -1,7 +1,7 @@
 import { Currency, TokenAmount } from '@swapr/sdk'
 
 import dayjs from 'dayjs'
-import { formatUnits, parseUnits } from 'ethers/lib/utils'
+import { parseUnits } from 'ethers/lib/utils'
 
 import { getDefaultTokens } from '../LimitOrder.config'
 import { Kind, WalletData, OrderExpiresInUnit, ProtocolContructor, LimitOrder } from '../LimitOrder.types'
@@ -35,45 +35,98 @@ export class CoW extends LimitOrderBase {
     return this.#abortControllers[key].signal
   }
 
-  onSellTokenChange(sellToken: Currency) {
+  #validateAmount(num: string | number): string {
+    const numberValue = parseFloat(num.toString())
+    return !isNaN(numberValue) && numberValue > 0 ? `${numberValue}` : '1'
+  }
+
+  async onSellTokenChange(sellToken: Currency) {
     this.sellToken = this.getTokenFromCurrency(sellToken)
-    let exactAmount = this.sellAmount.toExact()
+    const exactAmount = this.#validateAmount(this.sellAmount.toExact())
     const sellAmountinWei = parseUnits(Number(exactAmount).toFixed(6), this.sellToken.decimals).toString()
     const sellAmount = new TokenAmount(this.sellToken, sellAmountinWei)
-    this.onSellAmountChange(sellAmount)
+    this.#setSellAmount(sellAmount)
 
     this.onLimitOrderChange({
       sellToken: this.sellToken.address,
     })
+    this.onKindChange(Kind.Sell)
+
+    await this.getQuote()
+
     this.logger.log(`Sell Token Change ${this.sellToken.symbol}`)
   }
 
-  onBuyTokenChange(buyToken: Currency) {
+  async onBuyTokenChange(buyToken: Currency) {
     this.buyToken = this.getTokenFromCurrency(buyToken)
-    let exactAmount = this.buyAmount.toExact()
+    const exactAmount = this.#validateAmount(this.buyAmount.toExact())
     const buyAmountinWei = parseUnits(Number(exactAmount).toFixed(6), this.buyToken.decimals).toString()
     const buyAmount = new TokenAmount(this.buyToken, buyAmountinWei)
-    this.onBuyAmountChange(buyAmount)
+    this.#setBuyAmount(buyAmount)
 
     this.onLimitOrderChange({
       buyToken: this.buyToken.address,
     })
+
+    await this.getQuote()
+
     this.logger.log(`Buy Token Change ${this.buyToken.symbol}`)
   }
 
-  onSellAmountChange(sellAmount: TokenAmount) {
+  async #onAmountChange() {
+    if (this.buyToken === undefined || this.sellToken === undefined) return
+
+    if (Number(this.limitPrice?.toString().trim()) > 0) {
+      return
+    }
+    if (
+      (this.kind === Kind.Sell && Number(this.sellAmount.toExact()) > 0) ||
+      (this.kind === Kind.Buy && Number(this.buyAmount.toExact()) > 0)
+    ) {
+      await this.getQuote()
+    }
+  }
+
+  #setSellAmount(sellAmount: TokenAmount) {
     this.sellAmount = sellAmount
+
     this.onLimitOrderChange({
       sellAmount: sellAmount.raw.toString(),
     })
+  }
+
+  async onSellAmountChange(sellAmount: TokenAmount) {
+    this.#setSellAmount(sellAmount)
+
+    await this.#onAmountChange()
+
+    if (this.limitPrice && Number(this.limitPrice) > 0) {
+      const buyAmount = parseFloat(this.sellAmount.toExact()) * parseFloat(this.limitPrice)
+      this.#setBuyAmount(
+        new TokenAmount(this.buyToken, parseUnits(buyAmount.toFixed(6), this.buyToken.decimals).toString())
+      )
+    }
+
     this.logger.log(`Sell Amount Change ${this.sellAmount.raw.toString()}`)
   }
 
-  onBuyAmountChange(buyAmount: TokenAmount) {
+  #setBuyAmount(buyAmount: TokenAmount) {
     this.buyAmount = buyAmount
     this.onLimitOrderChange({
       buyAmount: buyAmount.raw.toString(),
     })
+  }
+  async onBuyAmountChange(buyAmount: TokenAmount) {
+    this.#setBuyAmount(buyAmount)
+
+    await this.#onAmountChange()
+
+    if (this.limitPrice && Number(this.limitPrice) > 0) {
+      const sellAmount = parseFloat(this.buyAmount.toExact()) * parseFloat(this.limitPrice)
+      this.#setSellAmount(
+        new TokenAmount(this.sellToken, parseUnits(sellAmount.toFixed(6), this.sellToken.decimals).toString())
+      )
+    }
 
     this.logger.log(`Buy Amount Change ${this.sellAmount.raw.toString()}`)
   }
@@ -106,6 +159,10 @@ export class CoW extends LimitOrderBase {
     this.onLimitOrderChange({
       limitPrice,
     })
+  }
+
+  onUserUpadtedLimitPrice(status: boolean) {
+    this.userUpdatedLimitPrice = status
   }
 
   // async setToMarket(_sellPricePercentage: number, _buyPricePercentage: number): Promise<void> {
@@ -151,10 +208,10 @@ export class CoW extends LimitOrderBase {
     if (order.buyAmount !== this.buyAmount.raw.toString()) {
       order.buyAmount = this.buyAmount.raw.toString()
     }
-    if (order.kind !== this.kind && this.kind) {
+    if (this.kind && order.kind !== this.kind) {
       order.kind = this.kind
     }
-
+    console.log('limit price', order.limitPrice)
     try {
       const cowQuote = await getQuote({
         chainId,
@@ -162,14 +219,26 @@ export class CoW extends LimitOrderBase {
         order: { ...order, expiresAt: dayjs().add(this.expiresAt, OrderExpiresInUnit.Minutes).unix() },
         signal: this.#renewAbortController('getQuote'),
       })
+
       this.quote = cowQuote as CoWQuote
+
       const {
         quote: { buyAmount, sellAmount },
       } = cowQuote
+
+      const buyTokenAmount = new TokenAmount(this.buyToken, buyAmount)
+      const sellTokenAmount = new TokenAmount(this.sellToken, sellAmount)
+      this.limitPrice = this.#calculateLimitPrice(buyTokenAmount, sellTokenAmount)
       if (kind === Kind.Sell) {
-        this.onBuyAmountChange(new TokenAmount(this.buyToken, buyAmount))
+        this.buyAmount = buyTokenAmount
+        this.onLimitOrderChange({
+          buyAmount: buyTokenAmount.raw.toString(),
+        })
       } else {
-        this.onSellAmountChange(new TokenAmount(this.sellToken, sellAmount))
+        this.sellAmount = sellTokenAmount
+        this.onLimitOrderChange({
+          sellAmount: sellTokenAmount.raw.toString(),
+        })
       }
     } catch (error: any) {
       // TODO: SHOW ERROR in UI
@@ -183,8 +252,8 @@ export class CoW extends LimitOrderBase {
     this.onSellTokenChange(sellToken)
     this.onBuyTokenChange(buyToken)
     // Setting default amounts for Tokens
-    this.onSellAmountChange(new TokenAmount(sellToken, parseUnits('1', sellToken.decimals).toString()))
-    this.onBuyAmountChange(new TokenAmount(buyToken, parseUnits('1', buyToken.decimals).toString()))
+    this.#setSellAmount(new TokenAmount(sellToken, parseUnits('1', sellToken.decimals).toString()))
+    this.#setBuyAmount(new TokenAmount(buyToken, parseUnits('1', buyToken.decimals).toString()))
     this.onLimitOrderChange({
       kind: this.kind,
       expiresAt: this.expiresAt,
@@ -204,32 +273,32 @@ export class CoW extends LimitOrderBase {
     throw new Error('Method not implemented.')
   }
 
+  // TODO: Remove this
   async getMarketPrice() {
     const { buyToken, sellToken, provider, limitOrder, kind, activeChainId } = this
 
     if (buyToken && sellToken && provider && limitOrder && activeChainId) {
       this.loading = true
-      const order = structuredClone(limitOrder)
+
       const tokenAmountSelected = kind === Kind.Sell ? this.sellAmount : this.buyAmount
-      const tokenSelected = kind === Kind.Sell ? sellToken : buyToken
 
-      const tokenAmount =
-        tokenAmountSelected && Number(tokenAmountSelected.toExact()) > 1 ? tokenAmountSelected.toExact() : '1'
-
-      order.sellAmount = parseUnits(tokenAmount, tokenSelected.decimals).toString()
-
-      await this.getQuote(order)
-
-      const {
-        quote: { buyAmount, sellAmount },
-      } = this.quote as CoWQuote
-      if (kind === Kind.Sell) {
-        return this.#formatMarketPrice(buyAmount, buyToken.decimals, tokenAmount)
+      if (!(Number(tokenAmountSelected.toExact()) > 0)) {
+        if (kind === Kind.Sell) {
+          this.onSellAmountChange(new TokenAmount(sellToken, parseUnits('1', sellToken.decimals).toString()))
+        } else {
+          this.onBuyAmountChange(new TokenAmount(buyToken, parseUnits('1', buyToken.decimals).toString()))
+        }
       } else {
-        return this.#formatMarketPrice(sellAmount, sellToken.decimals, tokenAmount)
+        const order = structuredClone(limitOrder)
+        const tokenSelected = kind === Kind.Sell ? sellToken : buyToken
+
+        const tokenAmount =
+          tokenAmountSelected && Number(tokenAmountSelected.toExact()) > 0 ? tokenAmountSelected.toExact() : '1'
+        order.sellAmount = parseUnits(tokenAmount, tokenSelected.decimals).toString()
+
+        await this.getQuote(order)
       }
     }
-    return 0
   }
 
   #getLimitOrder(props: Partial<LimitOrder>): LimitOrder {
@@ -317,8 +386,14 @@ export class CoW extends LimitOrderBase {
     } as LimitOrder
   }
 
+  //TODO: Remove it later
   getTokenLimitPrices() {
-    const { buyAmount, sellAmount, kind } = this
+    const { buyAmount, sellAmount } = this
+    return this.#calculateLimitPrice(buyAmount, sellAmount)
+  }
+
+  #calculateLimitPrice(buyAmount: TokenAmount, sellAmount: TokenAmount) {
+    const { kind } = this
     if (buyAmount && sellAmount && kind) {
       const [baseAmount, quoteAmount] = kind === Kind.Sell ? [sellAmount, buyAmount] : [buyAmount, sellAmount]
       const quoteAmountInUnits = parseFloat(quoteAmount.toExact())
@@ -336,7 +411,7 @@ export class CoW extends LimitOrderBase {
     return '1'
   }
 
-  #formatMarketPrice(amount: string, decimals: number, tokenAmount: string) {
-    return parseFloat(formatUnits(amount, decimals) ?? 0) / Number(tokenAmount)
-  }
+  //   #formatMarketPrice(amount: string, decimals: number, tokenAmount: string) {
+  //     return parseFloat(formatUnits(amount, decimals) ?? 0) / Number(tokenAmount)
+  //   }
 }

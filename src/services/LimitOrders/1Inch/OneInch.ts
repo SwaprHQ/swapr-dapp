@@ -65,6 +65,11 @@ export class OneInch extends LimitOrderBase {
   init(): Promise<void> {
     throw new Error('Method not implemented.')
   }
+
+  onUserUpadtedLimitPrice(status: boolean) {
+    this.userUpdatedLimitPrice = status
+  }
+
   async onSignerChange({ activeChainId }: WalletData) {
     const { sellToken, buyToken } = getDefaultTokens(activeChainId)
     this.onSellTokenChange(sellToken)
@@ -79,9 +84,7 @@ export class OneInch extends LimitOrderBase {
     throw new Error('Method not implemented.')
   }
 
-  async getMarketPrice() {
-    return 0
-  }
+  async getMarketPrice() {}
   getTokenLimitPrices() {
     return '0'
   }

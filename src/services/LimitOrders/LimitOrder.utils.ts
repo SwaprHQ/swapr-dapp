@@ -31,6 +31,7 @@ export abstract class LimitOrderBase {
   supportedChanins: ChainId[]
   activeChainId: ChainId | undefined
   loading: boolean = false
+  userUpdatedLimitPrice: boolean
 
   constructor({ protocol, supportedChains, kind, expiresAt, sellToken, buyToken }: LimitOrderBaseConstructor) {
     this.limitOrderProtocol = protocol
@@ -41,6 +42,7 @@ export abstract class LimitOrderBase {
     this.buyToken = buyToken
     this.sellAmount = new TokenAmount(sellToken, parseUnits('1', sellToken.decimals).toString())
     this.buyAmount = new TokenAmount(buyToken, parseUnits('1', buyToken.decimals).toString())
+    this.userUpdatedLimitPrice = false
   }
 
   #logFormat = (message: string) => `LimitOrder:: ${this.limitOrderProtocol} : ${message}`
@@ -81,9 +83,10 @@ export abstract class LimitOrderBase {
   abstract onExpireUnitChange(unit: OrderExpiresInUnit): void
   abstract onKindChange(kind: Kind): void
   abstract onLimitPriceChange(limitPrice: string): void
+  abstract onUserUpadtedLimitPrice(status: boolean): void
 
   abstract getQuote(): Promise<void>
-  abstract getMarketPrice(): Promise<number>
+  abstract getMarketPrice(): Promise<void>
   abstract getTokenLimitPrices(): string
   abstract onSignerChange({ account, activeChainId, provider }: WalletData): Promise<void>
   abstract approve(): Promise<void>

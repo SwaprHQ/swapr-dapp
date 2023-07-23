@@ -18,7 +18,7 @@ import SwapTokens from './Components/SwapTokens'
 
 export default function LimitOrderForm() {
   const protocol = useContext(LimitOrderContext)
-  const [fetchMarketPrice, setFetchMarketPrice] = useState<boolean>(true)
+  // const [fetchMarketPrice, setFetchMarketPrice] = useState<boolean>(true)
 
   const [buyAmount, setBuyAmount] = useState(protocol.buyAmount)
   const [sellAmount, setSellAmount] = useState(protocol.sellAmount)
@@ -28,7 +28,8 @@ export default function LimitOrderForm() {
   const [loading, setLoading] = useState<boolean>(protocol.loading)
 
   const [kind, setKind] = useState<Kind>(protocol?.kind || Kind.Sell)
-  const [marketPrices, setMarketPrices] = useState<MarketPrices>({ buy: 0, sell: 0 })
+  // TODO: Check the usage of marketPrices
+  const [marketPrices] = useState<MarketPrices>({ buy: 0, sell: 0 })
 
   const [isModalOpen, setIsModalOpen] = useState(false)
 
@@ -39,15 +40,16 @@ export default function LimitOrderForm() {
 
   useEffect(() => {
     async function getMarketPrice() {
-      const amount = await protocol.getMarketPrice()
+      await protocol.getMarketPrice()
       setBuyAmount(protocol.buyAmount)
-      setMarketPrices(marketPrice => ({ ...marketPrice, buy: amount }))
+
       setLoading(false)
     }
+    setLoading(true)
     setSellToken(protocol.sellToken)
     setBuyToken(protocol.buyToken)
     setSellAmount(protocol.sellAmount)
-    setBuyAmount(protocol.buyAmount)
+
     getMarketPrice()
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [protocol.activeChainId])
@@ -64,53 +66,43 @@ export default function LimitOrderForm() {
     setLoading(true)
     const newSellToken = protocol.getTokenFromCurrency(currency)
     setSellToken(newSellToken)
-    protocol?.onSellTokenChange(newSellToken)
-    protocol?.onKindChange(Kind.Sell)
-    setKind(Kind.Sell)
 
-    await protocol.getQuote()
+    await protocol?.onSellTokenChange(newSellToken)
 
     setBuyAmount(protocol.buyAmount)
     setLoading(false)
-    // setMarketPrices(marketPrice => ({ ...marketPrice, buy: amount }))
+
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   const handleBuyTokenChange = useCallback(async (currency: Currency, _isMaxAmount?: boolean) => {
     setLoading(true)
     const newBuyToken = protocol.getTokenFromCurrency(currency)
-    setBuyToken(newBuyToken)
-    protocol?.onBuyTokenChange(newBuyToken)
-    protocol?.onKindChange(Kind.Buy)
-    setKind(Kind.Buy)
 
-    await protocol.getQuote()
+    setBuyToken(newBuyToken)
+
+    await protocol?.onBuyTokenChange(newBuyToken)
 
     setSellAmount(protocol.sellAmount)
     setLoading(false)
-    // setMarketPrices(marketPrice => ({ ...marketPrice, sell: amount }))
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   const handleSellAmountChange = useCallback(async (value: string) => {
-    if (value.trim() !== '' && value !== '0') {
+    if (value.trim() !== '' && value.trim() !== '0') {
       const amountWei = parseUnits(value, sellToken.decimals).toString()
       const newSellAmount = new TokenAmount(sellToken, amountWei)
 
       setLoading(true)
-
-      protocol?.onSellAmountChange(newSellAmount)
       setSellAmount(newSellAmount)
-
-      protocol?.onKindChange(Kind.Sell)
       setKind(Kind.Sell)
 
-      await protocol.getQuote()
+      protocol.onKindChange(Kind.Sell)
+      await protocol?.onSellAmountChange(newSellAmount)
 
       setBuyAmount(protocol.buyAmount)
       setLoading(false)
-      // setMarketPrices(marketPrice => ({ ...marketPrice, buy: amount }))
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
@@ -121,18 +113,14 @@ export default function LimitOrderForm() {
       const newBuyAmount = new TokenAmount(buyToken, amountWei)
 
       setLoading(true)
-
-      protocol?.onBuyAmountChange(newBuyAmount)
       setBuyAmount(newBuyAmount)
-
-      protocol?.onKindChange(Kind.Buy)
       setKind(Kind.Buy)
 
-      await protocol.getQuote()
+      protocol.onKindChange(Kind.Buy)
+      await protocol?.onBuyAmountChange(newBuyAmount)
 
       setSellAmount(protocol.sellAmount)
       setLoading(false)
-      // setMarketPrices(marketPrice => ({ ...marketPrice, sell: amount }))
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
@@ -192,9 +180,9 @@ export default function LimitOrderForm() {
           <Flex flex={60}>
             <OrderLimitPriceField
               protocol={protocol}
-              marketPrices={marketPrices}
-              fetchMarketPrice={fetchMarketPrice}
-              setFetchMarketPrice={setFetchMarketPrice}
+              // marketPrices={marketPrices}
+              // fetchMarketPrice={fetchMarketPrice}
+              // setFetchMarketPrice={setFetchMarketPrice}
               sellToken={sellToken}
               buyToken={buyToken}
               sellAmount={sellAmount}
