@@ -41,6 +41,7 @@ export class CoW extends LimitOrderBase {
   }
 
   async onSellTokenChange(sellToken: Currency) {
+    this.loading = true
     this.sellToken = this.getTokenFromCurrency(sellToken)
     const exactAmount = this.#validateAmount(this.sellAmount.toExact())
     const sellAmountinWei = parseUnits(Number(exactAmount).toFixed(6), this.sellToken.decimals).toString()
@@ -50,14 +51,16 @@ export class CoW extends LimitOrderBase {
     this.onLimitOrderChange({
       sellToken: this.sellToken.address,
     })
-    this.onKindChange(Kind.Sell)
+
+    // this.onKindChange(Kind.Sell)
 
     await this.getQuote()
-
+    this.loading = false
     this.logger.log(`Sell Token Change ${this.sellToken.symbol}`)
   }
 
   async onBuyTokenChange(buyToken: Currency) {
+    this.loading = true
     this.buyToken = this.getTokenFromCurrency(buyToken)
     const exactAmount = this.#validateAmount(this.buyAmount.toExact())
     const buyAmountinWei = parseUnits(Number(exactAmount).toFixed(6), this.buyToken.decimals).toString()
@@ -68,8 +71,10 @@ export class CoW extends LimitOrderBase {
       buyToken: this.buyToken.address,
     })
 
-    await this.getQuote()
+    // this.onKindChange(Kind.Buy)
 
+    await this.getQuote()
+    this.loading = false
     this.logger.log(`Buy Token Change ${this.buyToken.symbol}`)
   }
 
@@ -229,6 +234,7 @@ export class CoW extends LimitOrderBase {
       const buyTokenAmount = new TokenAmount(this.buyToken, buyAmount)
       const sellTokenAmount = new TokenAmount(this.sellToken, sellAmount)
       this.limitPrice = this.#calculateLimitPrice(buyTokenAmount, sellTokenAmount)
+
       if (kind === Kind.Sell) {
         this.buyAmount = buyTokenAmount
         this.onLimitOrderChange({
@@ -282,22 +288,14 @@ export class CoW extends LimitOrderBase {
 
       const tokenAmountSelected = kind === Kind.Sell ? this.sellAmount : this.buyAmount
 
-      if (!(Number(tokenAmountSelected.toExact()) > 0)) {
-        if (kind === Kind.Sell) {
-          this.onSellAmountChange(new TokenAmount(sellToken, parseUnits('1', sellToken.decimals).toString()))
-        } else {
-          this.onBuyAmountChange(new TokenAmount(buyToken, parseUnits('1', buyToken.decimals).toString()))
-        }
-      } else {
-        const order = structuredClone(limitOrder)
-        const tokenSelected = kind === Kind.Sell ? sellToken : buyToken
+      const order = structuredClone(limitOrder)
+      const tokenSelected = kind === Kind.Sell ? sellToken : buyToken
 
-        const tokenAmount =
-          tokenAmountSelected && Number(tokenAmountSelected.toExact()) > 0 ? tokenAmountSelected.toExact() : '1'
-        order.sellAmount = parseUnits(tokenAmount, tokenSelected.decimals).toString()
+      const tokenAmount =
+        tokenAmountSelected && Number(tokenAmountSelected.toExact()) > 0 ? tokenAmountSelected.toExact() : '1'
+      order.sellAmount = parseUnits(tokenAmount, tokenSelected.decimals).toString()
 
-        await this.getQuote(order)
-      }
+      await this.getQuote(order)
     }
   }
 

@@ -7,8 +7,11 @@ import { Flex } from 'rebass'
 import { ButtonPrimary } from '../../../components/Button'
 import { AutoColumn } from '../../../components/Column'
 import { CurrencyInputPanel } from '../../../components/CurrencyInputPanel'
+import { useHigherUSDValue } from '../../../hooks/useUSDValue'
 import { Kind, MarketPrices } from '../../../services/LimitOrders'
 import { LimitOrderContext } from '../../../services/LimitOrders/LimitOrder.provider'
+import { useCurrencyBalances } from '../../../state/wallet/hooks'
+import { maxAmountSpend } from '../../../utils/maxAmountSpend'
 
 import { AutoRow } from './Components/AutoRow'
 import ConfirmLimitOrderModal from './Components/ConfirmLimitOrderModal'
@@ -26,6 +29,23 @@ export default function LimitOrderForm() {
   const [sellToken, setSellToken] = useState<Token>(protocol.sellToken)
   const [buyToken, setBuyToken] = useState<Token>(protocol.buyToken)
   const [loading, setLoading] = useState<boolean>(protocol.loading)
+
+  const [sellCurrencyBalance, buyCurrencyBalance] = useCurrencyBalances(protocol.userAddress, [
+    sellAmount.currency,
+    buyAmount?.currency,
+  ])
+
+  const sellCurrencyMaxAmount = maxAmountSpend(sellCurrencyBalance, protocol.activeChainId)
+  const buyCurrencyMaxAmount = maxAmountSpend(buyCurrencyBalance, protocol.activeChainId, false)
+
+  const { fiatValueInput, fiatValueOutput, isFallbackFiatValueInput, isFallbackFiatValueOutput } = useHigherUSDValue({
+    inputCurrencyAmount: sellAmount,
+    outputCurrencyAmount: buyAmount,
+  })
+
+  console.log([sellAmount, buyAmount])
+  console.log([protocol.sellAmount, protocol.buyAmount])
+  console.log([sellCurrencyMaxAmount?.toExact(), buyCurrencyMaxAmount?.toExact()])
 
   const [kind, setKind] = useState<Kind>(protocol?.kind || Kind.Sell)
   // TODO: Check the usage of marketPrices
@@ -45,6 +65,7 @@ export default function LimitOrderForm() {
 
       setLoading(false)
     }
+
     setLoading(true)
     setSellToken(protocol.sellToken)
     setBuyToken(protocol.buyToken)
@@ -65,25 +86,36 @@ export default function LimitOrderForm() {
   const handleSellTokenChange = useCallback(async (currency: Currency, _isMaxAmount?: boolean) => {
     setLoading(true)
     const newSellToken = protocol.getTokenFromCurrency(currency)
+
     setSellToken(newSellToken)
+
+    setKind(Kind.Sell)
+
+    protocol.onKindChange(Kind.Sell)
 
     await protocol?.onSellTokenChange(newSellToken)
 
+    setSellAmount(protocol.sellAmount)
     setBuyAmount(protocol.buyAmount)
     setLoading(false)
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
-  const handleBuyTokenChange = useCallback(async (currency: Currency, _isMaxAmount?: boolean) => {
+  const handleBuyTokenChange = useCallback(async (currency: Currency) => {
     setLoading(true)
     const newBuyToken = protocol.getTokenFromCurrency(currency)
 
     setBuyToken(newBuyToken)
 
+    setKind(Kind.Buy)
+
+    protocol.onKindChange(Kind.Buy)
+
     await protocol?.onBuyTokenChange(newBuyToken)
 
     setSellAmount(protocol.sellAmount)
+    setBuyAmount(protocol.buyAmount)
     setLoading(false)
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -91,8 +123,8 @@ export default function LimitOrderForm() {
 
   const handleSellAmountChange = useCallback(async (value: string) => {
     if (value.trim() !== '' && value.trim() !== '0') {
-      const amountWei = parseUnits(value, sellToken.decimals).toString()
-      const newSellAmount = new TokenAmount(sellToken, amountWei)
+      const amountWei = parseUnits(value, protocol.sellToken.decimals).toString()
+      const newSellAmount = new TokenAmount(protocol.sellToken, amountWei)
 
       setLoading(true)
       setSellAmount(newSellAmount)
@@ -109,8 +141,8 @@ export default function LimitOrderForm() {
 
   const handleBuyAmountChange = useCallback(async (value: string) => {
     if (value.trim() !== '' && value !== '0') {
-      const amountWei = parseUnits(value, buyToken.decimals).toString()
-      const newBuyAmount = new TokenAmount(buyToken, amountWei)
+      const amountWei = parseUnits(value, protocol.buyToken.decimals).toString()
+      const newBuyAmount = new TokenAmount(protocol.buyToken, amountWei)
 
       setLoading(true)
       setBuyAmount(newBuyAmount)
@@ -125,10 +157,14 @@ export default function LimitOrderForm() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
-  const handleSwap = useCallback(async () => {
+  const handleSwap = async () => {
     setLoading(true)
+    const buyToken = protocol.buyToken
+    const sellToken = protocol.sellToken
+
     protocol.onSellTokenChange(buyToken)
     protocol.onBuyTokenChange(sellToken)
+
     setSellToken(buyToken)
     setBuyToken(sellToken)
     setKind(Kind.Sell)
@@ -136,8 +172,9 @@ export default function LimitOrderForm() {
     await protocol.getQuote()
 
     setBuyAmount(protocol.buyAmount)
+    setSellAmount(protocol.sellAmount)
     setLoading(false)
-  }, [sellToken, buyToken, protocol])
+  }
 
   return (
     <>
@@ -161,6 +198,14 @@ export default function LimitOrderForm() {
             currency={sellToken}
             onCurrencySelect={handleSellTokenChange}
             currencyOmitList={[buyToken.address]}
+            disabled={loading}
+            onMax={() => {
+              if (sellCurrencyMaxAmount !== undefined && parseFloat(sellCurrencyMaxAmount.toExact() ?? '0') > 0) {
+                handleSellAmountChange(parseFloat(sellCurrencyMaxAmount?.toExact()).toFixed(6))
+              }
+            }}
+            fiatValue={fiatValueInput}
+            isFallbackFiatValue={isFallbackFiatValueInput}
           />
           <SwapTokens swapTokens={handleSwap} loading={loading} />
           <CurrencyInputPanel
@@ -169,11 +214,16 @@ export default function LimitOrderForm() {
             currency={buyToken}
             onUserInput={handleBuyAmountChange}
             onMax={() => {
-              console.log('onMax')
+              if (buyCurrencyMaxAmount !== undefined && parseFloat(buyCurrencyMaxAmount.toExact() ?? '0') > 0) {
+                handleBuyAmountChange(parseFloat(buyCurrencyMaxAmount.toExact()).toFixed(6))
+              }
             }}
             showNativeCurrency={false}
             onCurrencySelect={handleBuyTokenChange}
             currencyOmitList={[sellToken.address]}
+            disabled={loading}
+            fiatValue={fiatValueOutput}
+            isFallbackFiatValue={isFallbackFiatValueOutput}
           />
         </AutoColumn>
         <AutoRow justify="space-between" flexWrap="nowrap" gap="12">

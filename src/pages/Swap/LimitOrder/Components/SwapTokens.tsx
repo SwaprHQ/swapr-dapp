@@ -5,7 +5,9 @@ export default function SwapTokens({ swapTokens, loading }: { swapTokens: any; l
   return (
     <SwitchIconContainer
       onClick={() => {
-        swapTokens()
+        if (!loading) {
+          swapTokens()
+        }
       }}
     >
       <SwitchTokensAmountsContainer>
