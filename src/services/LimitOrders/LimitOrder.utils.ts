@@ -23,6 +23,9 @@ export abstract class LimitOrderBase {
   orderType?: 'partial' | 'full'
   quoteId: string | undefined
   kind?: Kind = Kind.Sell
+  quoteSellAmount: TokenAmount
+  quoteBuyAmount: TokenAmount
+
   provider: Web3Provider | undefined
   expiresAt: number
   expiresAtUnit: OrderExpiresInUnit = OrderExpiresInUnit.Minutes
@@ -42,8 +45,12 @@ export abstract class LimitOrderBase {
     this.buyToken = buyToken
     this.sellAmount = new TokenAmount(sellToken, parseUnits('1', sellToken.decimals).toString())
     this.buyAmount = new TokenAmount(buyToken, parseUnits('1', buyToken.decimals).toString())
+    this.quoteSellAmount = new TokenAmount(sellToken, parseUnits('1', sellToken.decimals).toString())
+    this.quoteBuyAmount = new TokenAmount(buyToken, parseUnits('1', buyToken.decimals).toString())
     this.userUpdatedLimitPrice = false
   }
+
+  // Shared methods
 
   #logFormat = (message: string) => `LimitOrder:: ${this.limitOrderProtocol} : ${message}`
 
@@ -60,14 +67,14 @@ export abstract class LimitOrderBase {
     return token
   }
 
-  getFormattedAmount = (amount: TokenAmount) => {
+  getFormattedAmount(amount: TokenAmount) {
     const rawAmount = formatUnits(amount.raw.toString(), amount.currency.decimals) || '0'
     const formattedAmount = parseFloat(rawAmount).toFixed(6)
     if (Number(formattedAmount) === 0) return Number(formattedAmount).toString()
     return formattedAmount.replace(/\.?0+$/, '')
   }
 
-  setSignerData = async ({ account, activeChainId, provider }: WalletData) => {
+  async setSignerData({ account, activeChainId, provider }: WalletData) {
     this.userAddress = account
     this.activeChainId = activeChainId
     this.provider = provider
@@ -87,7 +94,7 @@ export abstract class LimitOrderBase {
 
   abstract getQuote(): Promise<void>
   abstract getMarketPrice(): Promise<void>
-  abstract getTokenLimitPrices(): string
+  abstract getLimitPrice(): string
   abstract onSignerChange({ account, activeChainId, provider }: WalletData): Promise<void>
   abstract approve(): Promise<void>
   abstract createOrder(): Promise<void>

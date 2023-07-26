@@ -91,8 +91,11 @@ export default function LimitOrderForm() {
 
     await protocol?.onSellTokenChange(newSellToken)
 
+    protocol.onLimitPriceChange(protocol.getLimitPrice())
+
     setSellAmount(protocol.sellAmount)
     setBuyAmount(protocol.buyAmount)
+
     setLoading(false)
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -110,12 +113,31 @@ export default function LimitOrderForm() {
 
     await protocol?.onBuyTokenChange(newBuyToken)
 
+    protocol.onLimitPriceChange(protocol.getLimitPrice())
+
     setSellAmount(protocol.sellAmount)
     setBuyAmount(protocol.buyAmount)
     setLoading(false)
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
+
+  // const updateLimitPrice = (kind: Kind) => {
+  //   const [baseAmount, quoteAmount] = kind === Kind.Sell ? [sellAmount, buyAmount] : [buyAmount, sellAmount]
+  //   const quoteAmountInUnits = parseFloat(quoteAmount.toExact())
+  //   const baseAmountInUnits = parseFloat(baseAmount.toExact())
+  //   if (
+  //     !Number.isNaN(quoteAmountInUnits) &&
+  //     quoteAmountInUnits > 0 &&
+  //     !Number.isNaN(baseAmountInUnits) &&
+  //     baseAmountInUnits > 0
+  //   ) {
+  //     const limitPrice = parseFloat(quoteAmount.toExact()) / parseFloat(baseAmount.toExact())
+  //     protocol.onLimitPriceChange(limitPrice.toString())
+  //     // setInputLimitPrice(limitPrice.toFixed(6))
+  //     // setFormattedLimitPrice(limitPrice.toFixed(6))
+  //   }
+  // }
 
   const handleSellAmountChange = useCallback(async (value: string) => {
     if (value.trim() !== '' && value.trim() !== '0') {
@@ -124,9 +146,13 @@ export default function LimitOrderForm() {
 
       setLoading(true)
       setSellAmount(newSellAmount)
+      // if (kind !== Kind.Sell) {
+      protocol.onKindChange(Kind.Sell)
+      const limitPrice = protocol.getLimitPrice()
+      protocol.onLimitPriceChange(limitPrice)
+      // }
       setKind(Kind.Sell)
 
-      protocol.onKindChange(Kind.Sell)
       await protocol?.onSellAmountChange(newSellAmount)
 
       setBuyAmount(protocol.buyAmount)
@@ -142,9 +168,13 @@ export default function LimitOrderForm() {
 
       setLoading(true)
       setBuyAmount(newBuyAmount)
+      // if (kind !== Kind.Buy) {
+      protocol.onKindChange(Kind.Buy)
+      const limitPrice = protocol.getLimitPrice()
+      protocol.onLimitPriceChange(limitPrice)
+      // }
       setKind(Kind.Buy)
 
-      protocol.onKindChange(Kind.Buy)
       await protocol?.onBuyAmountChange(newBuyAmount)
 
       setSellAmount(protocol.sellAmount)
@@ -234,7 +264,6 @@ export default function LimitOrderForm() {
               sellAmount={sellAmount}
               buyAmount={buyAmount}
               kind={kind}
-              limitOrder={protocol.limitOrder}
               setSellAmount={setSellAmount}
               setBuyAmount={setBuyAmount}
               setKind={setKind}

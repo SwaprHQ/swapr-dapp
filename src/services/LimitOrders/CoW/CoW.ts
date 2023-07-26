@@ -170,35 +170,6 @@ export class CoW extends LimitOrderBase {
     this.userUpdatedLimitPrice = status
   }
 
-  // async setToMarket(_sellPricePercentage: number, _buyPricePercentage: number): Promise<void> {
-  // const sellToken = this.sellToken
-  // const buyToken = this.buyToken
-  // if (!sellToken || !buyToken) {
-  //   return
-  // }
-  // let tokenAmount = this.kind === Kind.Sell ? this.sellAmount : this.buyAmount
-  // if (!tokenAmount) {
-  //   return
-  // }
-  // const validatedTokenAmount = Number(tokenAmount.toExact()) > 1 ? tokenAmount.toExact() : '1'
-  // const sellAmount = parseUnits(validatedTokenAmount, tokenAmount.currency.decimals).toString()
-  // if (this.limitOrder !== undefined) {
-  //   const limitOrder = {
-  //     ...this.limitOrder,
-  //     sellAmount,
-  //   }
-  //   await this.getQuote(limitOrder)
-  //   if (!this.quote) {
-  //     throw new Error('No quote')
-  //   }
-  //   const {
-  //     quote: { buyAmount: buyAmountQuote, sellAmount: sellAmountQuote },
-  //   } = this.quote as CoWQuote
-  //   this.logger.log('buyAmountQuote', buyAmountQuote)
-  //   this.logger.log('sellAmountQuote', sellAmountQuote)
-  // }
-  // }
-
   async getQuote(limitOrder?: LimitOrder): Promise<void> {
     const signer = this.provider?.getSigner()
     const chainId = this.activeChainId
@@ -213,9 +184,9 @@ export class CoW extends LimitOrderBase {
     if (order.buyAmount !== this.buyAmount.raw.toString()) {
       order.buyAmount = this.buyAmount.raw.toString()
     }
-    if (this.kind && order.kind !== this.kind) {
-      order.kind = this.kind
-    }
+
+    order.kind = kind
+
     console.log('limit price', order.limitPrice)
     try {
       const cowQuote = await getQuote({
@@ -233,7 +204,9 @@ export class CoW extends LimitOrderBase {
 
       const buyTokenAmount = new TokenAmount(this.buyToken, buyAmount)
       const sellTokenAmount = new TokenAmount(this.sellToken, sellAmount)
-      this.limitPrice = this.#calculateLimitPrice(buyTokenAmount, sellTokenAmount)
+      this.quoteBuyAmount = buyTokenAmount
+      this.quoteSellAmount = sellTokenAmount
+      this.limitPrice = this.getLimitPrice()
 
       if (kind === Kind.Sell) {
         this.buyAmount = buyTokenAmount
@@ -383,32 +356,22 @@ export class CoW extends LimitOrderBase {
     } as LimitOrder
   }
 
-  //TODO: Remove it later
-  getTokenLimitPrices() {
-    const { buyAmount, sellAmount } = this
-    return this.#calculateLimitPrice(buyAmount, sellAmount)
-  }
-
-  #calculateLimitPrice(buyAmount: TokenAmount, sellAmount: TokenAmount) {
-    const { kind } = this
-    if (buyAmount && sellAmount && kind) {
-      const [baseAmount, quoteAmount] = kind === Kind.Sell ? [sellAmount, buyAmount] : [buyAmount, sellAmount]
-      const quoteAmountInUnits = parseFloat(quoteAmount.toExact())
-      const baseAmountInUnits = parseFloat(baseAmount.toExact())
-      if (
-        !Number.isNaN(quoteAmountInUnits) &&
-        quoteAmountInUnits > 0 &&
-        !Number.isNaN(baseAmountInUnits) &&
-        baseAmountInUnits > 0
-      ) {
-        const limitPrice = parseFloat(quoteAmount.toExact()) / parseFloat(baseAmount.toExact())
-        return limitPrice.toFixed(6)
-      }
+  getLimitPrice() {
+    const [baseAmount, quoteAmount] =
+      this.kind === Kind.Sell
+        ? [this.quoteSellAmount, this.quoteBuyAmount]
+        : [this.quoteBuyAmount, this.quoteSellAmount]
+    const quoteAmountInUnits = parseFloat(quoteAmount.toExact())
+    const baseAmountInUnits = parseFloat(baseAmount.toExact())
+    if (
+      !Number.isNaN(quoteAmountInUnits) &&
+      quoteAmountInUnits > 0 &&
+      !Number.isNaN(baseAmountInUnits) &&
+      baseAmountInUnits > 0
+    ) {
+      return (parseFloat(quoteAmount.toExact()) / parseFloat(baseAmount.toExact())).toFixed(6)
     }
+    this.getQuote()
     return '1'
   }
-
-  //   #formatMarketPrice(amount: string, decimals: number, tokenAmount: string) {
-  //     return parseFloat(formatUnits(amount, decimals) ?? 0) / Number(tokenAmount)
-  //   }
 }

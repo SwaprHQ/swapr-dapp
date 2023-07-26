@@ -1,5 +1,6 @@
 import { Currency, TokenAmount } from '@swapr/sdk'
 
+import { parseUnits } from 'ethers/lib/utils'
 import { useEffect, useState } from 'react'
 import { RefreshCw } from 'react-feather'
 import { useTranslation } from 'react-i18next'
@@ -16,7 +17,6 @@ import {
   SwapTokenWrapper,
   ToggleCurrencyButton,
 } from './styles'
-import { computeNewAmount } from './utils'
 
 const invalidChars = ['-', '+', 'e']
 
@@ -43,7 +43,6 @@ export interface OrderLimitPriceFieldProps {
   sellAmount: TokenAmount
   buyAmount: TokenAmount
   kind: Kind
-  limitOrder?: any
   sellToken: Currency
   buyToken: Currency
   setSellAmount(t: TokenAmount): void
@@ -56,7 +55,6 @@ export function OrderLimitPriceField({
   sellAmount,
   buyAmount,
   kind,
-  limitOrder = {},
   sellToken,
   buyToken,
   setSellAmount,
@@ -71,6 +69,10 @@ export function OrderLimitPriceField({
 
   useEffect(() => {
     setBaseQuoteTokens(getBaseQuoteTokens({ sellAmount, buyAmount, kind, sellToken, buyToken }))
+    const limitPrice = protocol.getLimitPrice()
+    setInputLimitPrice(limitPrice)
+    setFormattedLimitPrice(limitPrice)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [sellToken, buyToken, sellAmount, buyAmount, kind])
 
   const inputGroupLabel = `${kind} 1 ${baseToken?.symbol} at`
@@ -81,7 +83,7 @@ export function OrderLimitPriceField({
 
   useEffect(() => {
     setInputLimitPrice(protocol.limitPrice)
-  }, [protocol.limitPrice])
+  }, [protocol.limitPrice, sellToken, buyToken])
   // const { marketPriceDiffPercentage, isDiffPositive } = calculateMarketPriceDiffPercentage(
   //   kind ?? Kind.Sell,
   //   marketPrices,
@@ -132,17 +134,45 @@ export function OrderLimitPriceField({
       protocol.onLimitPriceChange(nextLimitPriceFormatted)
       protocol.onUserUpadtedLimitPrice(true)
 
-      const { newBuyTokenAmount, newSellTokenAmount } = computeNewAmount(
-        buyAmount,
-        sellAmount,
-        nextLimitPriceFloat,
-        limitOrder.kind
-      )
+      if (protocol.kind === Kind.Sell) {
+        protocol.quoteBuyAmount = new TokenAmount(
+          protocol.buyToken,
+          parseUnits(nextLimitPriceFormatted, protocol.buyToken.decimals).toString()
+        )
+        protocol.quoteSellAmount = new TokenAmount(
+          protocol.sellToken,
+          parseUnits('1', protocol.sellToken.decimals).toString()
+        )
+      } else {
+        protocol.quoteBuyAmount = new TokenAmount(
+          protocol.buyToken,
+          parseUnits('1', protocol.buyToken.decimals).toString()
+        )
+        protocol.quoteSellAmount = new TokenAmount(
+          protocol.sellToken,
+          parseUnits(nextLimitPriceFormatted, protocol.sellToken.decimals).toString()
+        )
+      }
+      const limitPrice = protocol.getLimitPrice()
+      protocol.onLimitPriceChange(limitPrice)
 
       if (kind === Kind.Sell) {
+        const buyAmount = parseFloat(protocol.sellAmount.toExact()) * parseFloat(limitPrice)
+
+        const newBuyTokenAmount = new TokenAmount(
+          protocol.buyToken,
+          parseUnits(buyAmount.toFixed(6), protocol.buyToken.decimals).toString()
+        )
         setBuyAmount(newBuyTokenAmount)
         protocol.onBuyAmountChange(newBuyTokenAmount)
       } else {
+        const sellAmount = parseFloat(protocol.buyAmount.toExact()) * parseFloat(limitPrice)
+
+        const newSellTokenAmount = new TokenAmount(
+          protocol.sellToken,
+          parseUnits(sellAmount.toFixed(6), protocol.sellToken.decimals).toString()
+        )
+
         setSellAmount(newSellTokenAmount)
         protocol.onSellAmountChange(newSellTokenAmount)
       }
@@ -158,7 +188,7 @@ export function OrderLimitPriceField({
     } else {
       setSellAmount(protocol.sellAmount)
     }
-    const limitPrice = protocol.getTokenLimitPrices()
+    const limitPrice = protocol.getLimitPrice()
     protocol.onLimitPriceChange(limitPrice)
     setInputLimitPrice(limitPrice)
   }
@@ -202,7 +232,30 @@ export function OrderLimitPriceField({
           onChange={onChangeHandler}
         />
         <InputGroup.ButtonAddonsWrapper>
-          <ToggleCurrencyButton onClick={() => setKind(kind === Kind.Sell ? Kind.Buy : Kind.Sell)}>
+          <ToggleCurrencyButton
+            onClick={() => {
+              const newKind = kind === Kind.Sell ? Kind.Buy : Kind.Sell
+              setKind(newKind)
+              protocol.onKindChange(newKind)
+
+              // const [baseAmount, quoteAmount] =
+              //   newKind === Kind.Sell
+              //     ? [protocol.quoteSellAmount, protocol.quoteBuyAmount]
+              //     : [protocol.quoteBuyAmount, protocol.quoteSellAmount]
+              // const quoteAmountInUnits = parseFloat(quoteAmount.toExact())
+              // const baseAmountInUnits = parseFloat(baseAmount.toExact())
+              // if (
+              //   !Number.isNaN(quoteAmountInUnits) &&
+              //   quoteAmountInUnits > 0 &&
+              //   !Number.isNaN(baseAmountInUnits) &&
+              //   baseAmountInUnits > 0
+              // ) {
+              const limitPrice = protocol.getLimitPrice()
+              setInputLimitPrice(limitPrice)
+              setFormattedLimitPrice(limitPrice)
+              // }
+            }}
+          >
             <SwapTokenWrapper>
               {toggleCurrencyButtonLabel}
               <SwapTokenIconWrapper>
