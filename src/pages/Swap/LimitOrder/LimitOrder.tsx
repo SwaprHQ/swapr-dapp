@@ -6,6 +6,7 @@ import LimitOrder, { WalletData } from '../../../services/LimitOrders'
 import { LimitOrderProvider } from '../../../services/LimitOrders/LimitOrder.provider'
 import AppBody from '../../AppBody'
 
+import LimitOrderFallback from './Components/LimitOrderFallback'
 import LimitOrderForm from './LimitOrderForm'
 
 const limitSdk = new LimitOrder()
@@ -34,7 +35,7 @@ export default function LimitOrderUI() {
             <LimitOrderForm />
           </LimitOrderProvider>
         )}
-        {!protocol && <>Loading....</>}
+        {!protocol && <LimitOrderFallback />}
       </AppBody>
     </>
   )
