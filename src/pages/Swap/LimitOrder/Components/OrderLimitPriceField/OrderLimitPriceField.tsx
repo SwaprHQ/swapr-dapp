@@ -1,4 +1,3 @@
-import { parseUnits } from '@ethersproject/units'
 import { Currency, TokenAmount } from '@swapr/sdk'
 
 import { useEffect, useState } from 'react'
@@ -7,7 +6,6 @@ import { useTranslation } from 'react-i18next'
 
 import { Kind, LimitOrderBase } from '../../../../../services/LimitOrders'
 import { InputGroup } from '../InputGroup'
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
 
 import { MarketPriceButton } from './MarketPriceButton'
 import {
@@ -80,7 +78,6 @@ export function OrderLimitPriceField({
 
   const [formattedLimitPrice, setFormattedLimitPrice] = useState(protocol.limitPrice)
   const [inputLimitPrice, setInputLimitPrice] = useState(formattedLimitPrice)
-  // const [inputFocus, setInputFocus] = useState(false)
 
   useEffect(() => {
     setInputLimitPrice(protocol.limitPrice)
@@ -111,7 +108,6 @@ export function OrderLimitPriceField({
   const onChangeHandler: React.ChangeEventHandler<HTMLInputElement> = event => {
     protocol.onUserUpadtedLimitPrice(true)
 
-    const [baseTokenAmount, quoteTokenAmount] = kind === Kind.Sell ? [sellAmount, buyAmount] : [buyAmount, sellAmount]
     // Parse the limit price
     const nextLimitPriceFormatted = event.target.value // When the limit price is empty, set the limit price to 0
     if (nextLimitPriceFormatted.split('.').length > 2) {
@@ -136,41 +132,24 @@ export function OrderLimitPriceField({
       protocol.onLimitPriceChange(nextLimitPriceFormatted)
       protocol.onUserUpadtedLimitPrice(true)
 
-      //     // When price is below or equal to 0, set the limit price to 0, but don't update the state
-
-      const { buyAmountWei, sellAmountWei, newBuyTokenAmount, newSellTokenAmount } = computeNewAmount(
+      const { newBuyTokenAmount, newSellTokenAmount } = computeNewAmount(
         buyAmount,
         sellAmount,
         nextLimitPriceFloat,
         limitOrder.kind
-        // inputFocus
       )
 
       if (kind === Kind.Sell) {
         setBuyAmount(newBuyTokenAmount)
         protocol.onBuyAmountChange(newBuyTokenAmount)
-        // setFormattedBuyAmount(amount.toString())
-        protocol.onLimitOrderChange({
-          ...limitOrder,
-          limitPrice: parseUnits(nextLimitPriceFormatted, quoteTokenAmount?.currency?.decimals).toString(),
-          buyAmount: buyAmountWei,
-        })
       } else {
         setSellAmount(newSellTokenAmount)
         protocol.onSellAmountChange(newSellTokenAmount)
-        // setFormattedSellAmount(amount.toString())
-        protocol.onLimitOrderChange({
-          ...limitOrder,
-          limitPrice: parseUnits(nextLimitPriceFormatted, baseTokenAmount?.currency?.decimals).toString(),
-          sellAmount: sellAmountWei,
-        })
       }
     }
   }
 
   const onClickGetMarketPrice = async () => {
-    // setInputFocus(false)
-    // setFetchMarketPrice(true)
     protocol.onUserUpadtedLimitPrice(false)
 
     await protocol.getQuote()
@@ -180,6 +159,7 @@ export function OrderLimitPriceField({
       setSellAmount(protocol.sellAmount)
     }
     const limitPrice = protocol.getTokenLimitPrices()
+    protocol.onLimitPriceChange(limitPrice)
     setInputLimitPrice(limitPrice)
   }
 

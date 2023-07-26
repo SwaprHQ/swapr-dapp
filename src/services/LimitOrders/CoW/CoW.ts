@@ -105,7 +105,7 @@ export class CoW extends LimitOrderBase {
 
     await this.#onAmountChange()
 
-    if (this.limitPrice && Number(this.limitPrice) > 0) {
+    if (this.limitPrice && Number(this.limitPrice) > 0 && this.kind === Kind.Sell) {
       const buyAmount = parseFloat(this.sellAmount.toExact()) * parseFloat(this.limitPrice)
       this.#setBuyAmount(
         new TokenAmount(this.buyToken, parseUnits(buyAmount.toFixed(6), this.buyToken.decimals).toString())
@@ -126,7 +126,7 @@ export class CoW extends LimitOrderBase {
 
     await this.#onAmountChange()
 
-    if (this.limitPrice && Number(this.limitPrice) > 0) {
+    if (this.limitPrice && Number(this.limitPrice) > 0 && this.kind === Kind.Buy) {
       const sellAmount = parseFloat(this.buyAmount.toExact()) * parseFloat(this.limitPrice)
       this.#setSellAmount(
         new TokenAmount(this.sellToken, parseUnits(sellAmount.toFixed(6), this.sellToken.decimals).toString())
@@ -279,7 +279,6 @@ export class CoW extends LimitOrderBase {
     throw new Error('Method not implemented.')
   }
 
-  // TODO: Remove this
   async getMarketPrice() {
     const { buyToken, sellToken, provider, limitOrder, kind, activeChainId } = this
 

@@ -29,7 +29,6 @@ export const computeNewAmount = (
   sellTokenAmount: TokenAmount,
   limitPrice: number,
   limitOrderKind: Kind
-  // inputFocus: InputFocus
 ): IComputeNewAmount => {
   const buyAmountFloat = parseFloat(formatUnits(buyTokenAmount.raw.toString(), buyTokenAmount.currency.decimals))
   const sellAmountFloat = parseFloat(formatUnits(sellTokenAmount.raw.toString(), sellTokenAmount.currency.decimals))

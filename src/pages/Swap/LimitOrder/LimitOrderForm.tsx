@@ -43,10 +43,6 @@ export default function LimitOrderForm() {
     outputCurrencyAmount: buyAmount,
   })
 
-  console.log([sellAmount, buyAmount])
-  console.log([protocol.sellAmount, protocol.buyAmount])
-  console.log([sellCurrencyMaxAmount?.toExact(), buyCurrencyMaxAmount?.toExact()])
-
   const [kind, setKind] = useState<Kind>(protocol?.kind || Kind.Sell)
   // TODO: Check the usage of marketPrices
   const [marketPrices] = useState<MarketPrices>({ buy: 0, sell: 0 })
