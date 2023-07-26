@@ -21,7 +21,6 @@ import SwapTokens from './Components/SwapTokens'
 
 export default function LimitOrderForm() {
   const protocol = useContext(LimitOrderContext)
-  // const [fetchMarketPrice, setFetchMarketPrice] = useState<boolean>(true)
 
   const [buyAmount, setBuyAmount] = useState(protocol.buyAmount)
   const [sellAmount, setSellAmount] = useState(protocol.sellAmount)
@@ -122,23 +121,6 @@ export default function LimitOrderForm() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
-  // const updateLimitPrice = (kind: Kind) => {
-  //   const [baseAmount, quoteAmount] = kind === Kind.Sell ? [sellAmount, buyAmount] : [buyAmount, sellAmount]
-  //   const quoteAmountInUnits = parseFloat(quoteAmount.toExact())
-  //   const baseAmountInUnits = parseFloat(baseAmount.toExact())
-  //   if (
-  //     !Number.isNaN(quoteAmountInUnits) &&
-  //     quoteAmountInUnits > 0 &&
-  //     !Number.isNaN(baseAmountInUnits) &&
-  //     baseAmountInUnits > 0
-  //   ) {
-  //     const limitPrice = parseFloat(quoteAmount.toExact()) / parseFloat(baseAmount.toExact())
-  //     protocol.onLimitPriceChange(limitPrice.toString())
-  //     // setInputLimitPrice(limitPrice.toFixed(6))
-  //     // setFormattedLimitPrice(limitPrice.toFixed(6))
-  //   }
-  // }
-
   const handleSellAmountChange = useCallback(async (value: string) => {
     if (value.trim() !== '' && value.trim() !== '0') {
       const amountWei = parseUnits(value, protocol.sellToken.decimals).toString()
@@ -146,11 +128,11 @@ export default function LimitOrderForm() {
 
       setLoading(true)
       setSellAmount(newSellAmount)
-      // if (kind !== Kind.Sell) {
+
       protocol.onKindChange(Kind.Sell)
       const limitPrice = protocol.getLimitPrice()
       protocol.onLimitPriceChange(limitPrice)
-      // }
+
       setKind(Kind.Sell)
 
       await protocol?.onSellAmountChange(newSellAmount)
@@ -168,11 +150,11 @@ export default function LimitOrderForm() {
 
       setLoading(true)
       setBuyAmount(newBuyAmount)
-      // if (kind !== Kind.Buy) {
+
       protocol.onKindChange(Kind.Buy)
       const limitPrice = protocol.getLimitPrice()
       protocol.onLimitPriceChange(limitPrice)
-      // }
+
       setKind(Kind.Buy)
 
       await protocol?.onBuyAmountChange(newBuyAmount)

@@ -50,8 +50,6 @@ export abstract class LimitOrderBase {
     this.userUpdatedLimitPrice = false
   }
 
-  // Shared methods
-
   #logFormat = (message: string) => `LimitOrder:: ${this.limitOrderProtocol} : ${message}`
 
   logger = {

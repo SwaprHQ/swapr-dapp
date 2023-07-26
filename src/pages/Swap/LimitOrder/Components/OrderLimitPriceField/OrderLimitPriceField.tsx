@@ -93,24 +93,10 @@ export function OrderLimitPriceField({
   // const showPercentage =
   //   Number(marketPriceDiffPercentage.toFixed(1)) !== 0 && Number(marketPriceDiffPercentage) !== -100
 
-  // useEffect(() => {
-  //   setInputLimitPrice(formattedLimitPrice)
-  // }, [formattedLimitPrice])
-  // const limitPrice = protocol.getTokenLimitPrices()
-  // useEffect(() => {
-  //   setFormattedLimitPrice(limitPrice)
-  //   if (!inputFocus) {
-  //     setInputLimitPrice(limitPrice)
-  //   }
-  // }, [inputFocus, limitPrice])
-
   /**
    * Handle the limit price input change. Compute the buy amount and update the state.
    */
   const onChangeHandler: React.ChangeEventHandler<HTMLInputElement> = event => {
-    protocol.onUserUpadtedLimitPrice(true)
-
-    // Parse the limit price
     const nextLimitPriceFormatted = event.target.value // When the limit price is empty, set the limit price to 0
     if (nextLimitPriceFormatted.split('.').length > 2) {
       event.preventDefault()
@@ -238,22 +224,9 @@ export function OrderLimitPriceField({
               setKind(newKind)
               protocol.onKindChange(newKind)
 
-              // const [baseAmount, quoteAmount] =
-              //   newKind === Kind.Sell
-              //     ? [protocol.quoteSellAmount, protocol.quoteBuyAmount]
-              //     : [protocol.quoteBuyAmount, protocol.quoteSellAmount]
-              // const quoteAmountInUnits = parseFloat(quoteAmount.toExact())
-              // const baseAmountInUnits = parseFloat(baseAmount.toExact())
-              // if (
-              //   !Number.isNaN(quoteAmountInUnits) &&
-              //   quoteAmountInUnits > 0 &&
-              //   !Number.isNaN(baseAmountInUnits) &&
-              //   baseAmountInUnits > 0
-              // ) {
               const limitPrice = protocol.getLimitPrice()
               setInputLimitPrice(limitPrice)
               setFormattedLimitPrice(limitPrice)
-              // }
             }}
           >
             <SwapTokenWrapper>
