@@ -20,23 +20,39 @@ import {
 
 const invalidChars = ['-', '+', 'e']
 
-const getBaseQuoteTokens = ({
-  sellAmount,
-  buyAmount,
-  kind,
-  sellToken,
-  buyToken,
-}: {
-  sellAmount: TokenAmount
-  buyAmount: TokenAmount
-  kind: Kind
-  sellToken: Currency
-  buyToken: Currency
-}) => {
+const getBaseQuoteTokens = ({ kind, sellToken, buyToken }: { kind: Kind; sellToken: Currency; buyToken: Currency }) => {
   return kind === Kind.Sell
-    ? { baseTokenAmount: sellAmount, baseToken: sellToken, quoteTokenAmount: buyAmount, quoteToken: buyToken }
-    : { baseTokenAmount: buyAmount, baseToken: buyToken, quoteTokenAmount: sellAmount, quoteToken: sellToken }
+    ? { baseToken: sellToken, quoteToken: buyToken }
+    : { baseToken: buyToken, quoteToken: sellToken }
 }
+const regex = /^(\d+\.\d{0,2})0*$/
+
+// function formatNumber(number: string | number): string {
+//   // Check if the input is a string
+//   if (typeof number === 'string') {
+//     number = parseFloat(number)
+//   }
+
+//   // Get the decimal part of the number
+//   const decimals = number.toFixed(6)
+
+//   // Check if the decimal part is all zeros
+//   if (decimals.endsWith('0')) {
+//     if (decimals.includes('.') && Number(decimals) > 0) {
+//       const match = regex.test(decimals)
+//       if (match) {
+//         // @ts-ignore
+//         return match[1]
+//       } else {
+//         return decimals
+//       }
+//       return decimals
+//     }
+//     return Math.floor(number).toString()
+//   } else {
+//     return decimals
+//   }
+// }
 
 export interface OrderLimitPriceFieldProps {
   protocol: LimitOrderBase
@@ -63,27 +79,20 @@ export function OrderLimitPriceField({
 }: OrderLimitPriceFieldProps) {
   const { t } = useTranslation('swap')
 
-  const [{ baseToken, quoteToken }, setBaseQuoteTokens] = useState(
-    getBaseQuoteTokens({ sellAmount, buyAmount, kind, sellToken, buyToken })
-  )
-
-  useEffect(() => {
-    setBaseQuoteTokens(getBaseQuoteTokens({ sellAmount, buyAmount, kind, sellToken, buyToken }))
-    const limitPrice = protocol.getLimitPrice()
-    setInputLimitPrice(limitPrice)
-    setFormattedLimitPrice(limitPrice)
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [sellToken, buyToken, sellAmount, buyAmount, kind])
+  const { baseToken, quoteToken } = getBaseQuoteTokens({ kind, sellToken, buyToken })
 
   const inputGroupLabel = `${kind} 1 ${baseToken?.symbol} at`
   const toggleCurrencyButtonLabel = `${quoteToken?.symbol}`
 
-  const [formattedLimitPrice, setFormattedLimitPrice] = useState(protocol.limitPrice)
-  const [inputLimitPrice, setInputLimitPrice] = useState(formattedLimitPrice)
-
   useEffect(() => {
-    setInputLimitPrice(protocol.limitPrice)
-  }, [protocol.limitPrice, sellToken, buyToken])
+    const limitPrice = protocol.getLimitPrice()
+    setInputLimitPrice(Number(limitPrice).toString())
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [protocol.limitPrice])
+
+  // const [formattedLimitPrice, setFormattedLimitPrice] = useState(protocol.limitPrice)
+  const [inputLimitPrice, setInputLimitPrice] = useState(protocol.limitPrice)
+
   // const { marketPriceDiffPercentage, isDiffPositive } = calculateMarketPriceDiffPercentage(
   //   kind ?? Kind.Sell,
   //   marketPrices,
@@ -106,17 +115,18 @@ export function OrderLimitPriceField({
       setInputLimitPrice(nextLimitPriceFormatted)
     } else if (nextLimitPriceFormatted === '.') {
       setInputLimitPrice('0.')
-      setFormattedLimitPrice('0')
+      protocol.onLimitPriceChange('0')
       return
     } else {
       const nextLimitPriceFloat = parseFloat(nextLimitPriceFormatted ?? 0)
       if (nextLimitPriceFloat < 0 || isNaN(nextLimitPriceFloat)) {
         setInputLimitPrice('0')
-        setFormattedLimitPrice('0')
+        protocol.onLimitPriceChange('0')
         return
       }
+
       setInputLimitPrice(nextLimitPriceFormatted)
-      setFormattedLimitPrice(nextLimitPriceFormatted)
+
       protocol.onLimitPriceChange(nextLimitPriceFormatted)
       protocol.onUserUpadtedLimitPrice(true)
 
@@ -210,8 +220,7 @@ export function OrderLimitPriceField({
           }}
           onBlur={e => {
             if (e.target.value.trim() === '' || e.target.value === '0' || e.target.value === '0.') {
-              setInputLimitPrice(formattedLimitPrice)
-              setFormattedLimitPrice(formattedLimitPrice)
+              setInputLimitPrice(protocol.limitPrice)
             }
           }}
           value={inputLimitPrice}
@@ -226,7 +235,6 @@ export function OrderLimitPriceField({
 
               const limitPrice = protocol.getLimitPrice()
               setInputLimitPrice(limitPrice)
-              setFormattedLimitPrice(limitPrice)
             }}
           >
             <SwapTokenWrapper>
