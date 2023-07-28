@@ -3,22 +3,28 @@ import { ChainId, Token } from '@swapr/sdk'
 
 import { LimitOrderBase } from './LimitOrder.utils'
 
-export interface MarketPrices {
-  buy: number
-  sell: number
-}
-
 export enum OrderExpiresInUnit {
   Minutes = 'minutes',
   Days = 'days',
 }
+
 export enum Kind {
   Buy = 'Buy',
   Sell = 'Sell',
 }
 
-export interface LimitOrderBaseConstructor {
-  protocol: 'CoW' | '1inch'
+export enum Providers {
+  COW = 'CoW',
+  ONEINCH = '1Inch',
+}
+
+export type MarketPrices = {
+  buy: number
+  sell: number
+}
+
+export type LimitOrderBaseConstructor = {
+  protocol: Providers
   supportedChains: ChainId[]
   kind: Kind
   expiresAt: number
@@ -28,14 +34,9 @@ export interface LimitOrderBaseConstructor {
 
 export type ProtocolContructor = Omit<LimitOrderBaseConstructor, 'kind' | 'expiresAt'>
 
-export enum LimitOrderIds {
-  COW = 'CoW',
-  ONEINCH = '1inch',
-}
+export type LimitOrderProviders = { [key in Providers]: LimitOrderBase }
 
-export type LimitOrderProviders = { [key in LimitOrderIds]: LimitOrderBase }
-
-export interface WalletData {
+export type WalletData = {
   account: string
   provider: Web3Provider
   activeChainId: ChainId
@@ -43,7 +44,7 @@ export interface WalletData {
 
 type EVMAddress = string
 
-export interface LimitOrder {
+export type LimitOrder = {
   /**
    * The user Address.
    */

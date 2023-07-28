@@ -16,17 +16,24 @@ export const LimitLabel = styled.label`
   align-items: center;
 `
 
+export const LimitLabelGroup = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+`
+
 export const SetToMarket = styled.button`
   font-size: 10px;
-  color: #8c83c0;
+  color: #000;
   border: none;
   cursor: pointer;
-  background-color: #2a2f41;
+  background-color: ${({ theme }) => theme.green2};
   border-radius: 5px;
   text-transform: uppercase;
-  padding: 3px 8px;
+  padding: 3px 5px;
   &:hover {
-    color: #736f96;
+    background-color: #03d48d;
   }
 `
 
@@ -37,15 +44,10 @@ export const MarketPrice = styled.button`
   font-size: 11px;
   color: ${({ theme }) => theme.green2};
   border: 1px solid ${({ theme }) => theme.green2};
-  cursor: pointer;
   background-color: transparent;
   border-radius: 5px;
   text-transform: uppercase;
-  padding: 3px 8px;
-  &:hover {
-    border: 1px solid ${({ theme }) => theme.green2};
-    color: ${({ theme }) => theme.green1};
-  }
+  padding: 3px 4px;
 `
 
 export const SwapTokenIconWrapper = styled.div`

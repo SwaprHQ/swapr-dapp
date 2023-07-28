@@ -1,12 +1,14 @@
 import { Currency, TokenAmount } from '@swapr/sdk'
 
 import { parseUnits } from 'ethers/lib/utils'
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { RefreshCw } from 'react-feather'
 import { useTranslation } from 'react-i18next'
+import { Flex } from 'rebass'
 
-import { Kind, LimitOrderBase } from '../../../../../services/LimitOrders'
+import { Kind, LimitOrderBase, MarketPrices } from '../../../../../services/LimitOrders'
 import { InputGroup } from '../InputGroup'
+import { calculateMarketPriceDiffPercentage } from '../utils'
 
 import { MarketPriceButton } from './MarketPriceButton'
 import {
@@ -16,6 +18,7 @@ import {
   SwapTokenIconWrapper,
   SwapTokenWrapper,
   ToggleCurrencyButton,
+  LimitLabelGroup,
 } from './styles'
 
 const invalidChars = ['-', '+', 'e']
@@ -25,45 +28,19 @@ const getBaseQuoteTokens = ({ kind, sellToken, buyToken }: { kind: Kind; sellTok
     ? { baseToken: sellToken, quoteToken: buyToken }
     : { baseToken: buyToken, quoteToken: sellToken }
 }
-const regex = /^(\d+\.\d{0,2})0*$/
 
-// function formatNumber(number: string | number): string {
-//   // Check if the input is a string
-//   if (typeof number === 'string') {
-//     number = parseFloat(number)
-//   }
-
-//   // Get the decimal part of the number
-//   const decimals = number.toFixed(6)
-
-//   // Check if the decimal part is all zeros
-//   if (decimals.endsWith('0')) {
-//     if (decimals.includes('.') && Number(decimals) > 0) {
-//       const match = regex.test(decimals)
-//       if (match) {
-//         // @ts-ignore
-//         return match[1]
-//       } else {
-//         return decimals
-//       }
-//       return decimals
-//     }
-//     return Math.floor(number).toString()
-//   } else {
-//     return decimals
-//   }
-// }
-
-export interface OrderLimitPriceFieldProps {
+interface OrderLimitPriceFieldProps {
   protocol: LimitOrderBase
   sellAmount: TokenAmount
   buyAmount: TokenAmount
   kind: Kind
+  marketPrices: MarketPrices
   sellToken: Currency
   buyToken: Currency
   setSellAmount(t: TokenAmount): void
   setBuyAmount(t: TokenAmount): void
   setKind(t: Kind): void
+  setLoading(t: boolean): void
 }
 
 export function OrderLimitPriceField({
@@ -71,13 +48,17 @@ export function OrderLimitPriceField({
   sellAmount,
   buyAmount,
   kind,
+  marketPrices,
   sellToken,
   buyToken,
   setSellAmount,
   setBuyAmount,
   setKind,
+  setLoading,
 }: OrderLimitPriceFieldProps) {
   const { t } = useTranslation('swap')
+
+  const quoteRef = useRef<NodeJS.Timer>()
 
   const { baseToken, quoteToken } = getBaseQuoteTokens({ kind, sellToken, buyToken })
 
@@ -90,17 +71,41 @@ export function OrderLimitPriceField({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [protocol.limitPrice])
 
-  // const [formattedLimitPrice, setFormattedLimitPrice] = useState(protocol.limitPrice)
+  useEffect(() => {
+    quoteRef.current = setInterval(async () => {
+      setLoading(true)
+      try {
+        if (!protocol.userUpdatedLimitPrice) {
+          console.log('Hello')
+          await protocol.getQuote()
+        }
+      } finally {
+        setLoading(false)
+      }
+    }, 15000)
+
+    if (protocol.userUpdatedLimitPrice) {
+      setLoading(false)
+      clearInterval(quoteRef.current)
+    }
+
+    return () => {
+      clearInterval(quoteRef.current)
+    }
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [protocol.userUpdatedLimitPrice])
+
   const [inputLimitPrice, setInputLimitPrice] = useState(protocol.limitPrice)
 
-  // const { marketPriceDiffPercentage, isDiffPositive } = calculateMarketPriceDiffPercentage(
-  //   kind ?? Kind.Sell,
-  //   marketPrices,
-  //   formattedLimitPrice.toString()
-  // )
+  const { marketPriceDiffPercentage, isDiffPositive } = calculateMarketPriceDiffPercentage(
+    kind ?? Kind.Sell,
+    marketPrices,
+    protocol.limitPrice
+  )
 
-  // const showPercentage =
-  //   Number(marketPriceDiffPercentage.toFixed(1)) !== 0 && Number(marketPriceDiffPercentage) !== -100
+  const showPercentage =
+    Number(marketPriceDiffPercentage.toFixed(1)) !== 0 && Number(marketPriceDiffPercentage) !== -100
 
   /**
    * Handle the limit price input change. Compute the buy amount and update the state.
@@ -176,9 +181,13 @@ export function OrderLimitPriceField({
   }
 
   const onClickGetMarketPrice = async () => {
-    protocol.onUserUpadtedLimitPrice(false)
+    protocol.loading = true
+    setLoading(true)
 
+    protocol.onUserUpadtedLimitPrice(false)
     await protocol.getQuote()
+    protocol.loading = false
+    setLoading(false)
     if (kind === Kind.Sell) {
       setBuyAmount(protocol.buyAmount)
     } else {
@@ -189,25 +198,29 @@ export function OrderLimitPriceField({
     setInputLimitPrice(limitPrice)
   }
 
-  // TODO: fix it
-  const showPercentage = false
-  const marketPriceDiffPercentage = 0
-  const isDiffPositive = false
-
   return (
     <InputGroup>
       <LimitLabel htmlFor="limitPrice">
-        <span>
-          {inputGroupLabel}
-          {showPercentage && (
-            <MarketPriceDiff isPositive={isDiffPositive}> ({marketPriceDiffPercentage.toFixed(2)}%)</MarketPriceDiff>
-          )}
-        </span>
-        {!protocol.userUpdatedLimitPrice && buyAmount?.currency && sellAmount?.currency ? (
-          <MarketPriceButton key={`${buyToken.symbol}-${sellToken.symbol}`} />
-        ) : (
-          <SetToMarket onClick={onClickGetMarketPrice}>{t('limitOrder.getMarketPrice')}</SetToMarket>
-        )}
+        <LimitLabelGroup>
+          <Flex flex={60}>
+            <p>
+              {inputGroupLabel}
+              {showPercentage && (
+                <MarketPriceDiff isPositive={isDiffPositive}>
+                  {' '}
+                  ({marketPriceDiffPercentage.toFixed(2)}%)
+                </MarketPriceDiff>
+              )}
+            </p>
+          </Flex>
+          <Flex flex={40} flexDirection="row-reverse">
+            {!protocol.userUpdatedLimitPrice && buyAmount?.currency && sellAmount?.currency ? (
+              <MarketPriceButton key={`${buyToken.symbol}-${sellToken.symbol}-${protocol.limitPrice}`} />
+            ) : (
+              <SetToMarket onClick={onClickGetMarketPrice}>{t('limitOrder.getMarketPrice')}</SetToMarket>
+            )}
+          </Flex>
+        </LimitLabelGroup>
       </LimitLabel>
       <InputGroup.InnerWrapper>
         <InputGroup.Input

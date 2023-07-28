@@ -78,13 +78,13 @@ export const toFixedSix = (price: number): string => {
 export function calculateMarketPriceDiffPercentage(
   limitOrderKind: Kind,
   marketPrices: MarketPrices,
-  formattedLimitPrice: string
+  formattedLimitPrice?: string
 ) {
   const nextLimitPriceFloat = limitOrderKind === Kind.Sell ? marketPrices.buy : marketPrices.sell
   let marketPriceDiffPercentage = 0
   let isDiffPositive = false
 
-  if (Boolean(Number(nextLimitPriceFloat))) {
+  if (Boolean(Number(nextLimitPriceFloat)) && formattedLimitPrice) {
     if (limitOrderKind === Kind.Sell) {
       marketPriceDiffPercentage = (Number(formattedLimitPrice) / Number(nextLimitPriceFloat.toFixed(6)) - 1) * 100
       isDiffPositive = Math.sign(Number(marketPriceDiffPercentage)) > 0

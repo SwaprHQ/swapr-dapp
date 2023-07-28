@@ -18,6 +18,7 @@ import ConfirmLimitOrderModal from './Components/ConfirmLimitOrderModal'
 import { OrderExpiryField } from './Components/OrderExpiryField'
 import { OrderLimitPriceField } from './Components/OrderLimitPriceField'
 import SwapTokens from './Components/SwapTokens'
+import { formatMarketPrice } from './Components/utils'
 
 export default function LimitOrderForm() {
   const protocol = useContext(LimitOrderContext)
@@ -44,7 +45,7 @@ export default function LimitOrderForm() {
 
   const [kind, setKind] = useState<Kind>(protocol?.kind || Kind.Sell)
   // TODO: Check the usage of marketPrices
-  const [marketPrices] = useState<MarketPrices>({ buy: 0, sell: 0 })
+  // const [marketPrices] = useState<MarketPrices>({ buy: 0, sell: 0 })
 
   const [isModalOpen, setIsModalOpen] = useState(false)
 
@@ -184,6 +185,33 @@ export default function LimitOrderForm() {
     setLoading(false)
   }
 
+  const [marketPrices, setMarketPrices] = useState<MarketPrices>({ buy: 0, sell: 0 })
+
+  const getMarketPrices = useCallback(async () => {
+    const token = kind === Kind.Sell ? sellAmount : buyAmount
+    const tokenAmount = Number(token.toExact()) > 1 ? token.toExact() : '1'
+    debugger
+    if (protocol.kind === Kind.Sell) {
+      setMarketPrices(marketPrice => ({
+        ...marketPrice,
+        buy: formatMarketPrice(protocol.quoteBuyAmount.raw.toString(), buyAmount.currency.decimals, tokenAmount),
+      }))
+    } else {
+      setMarketPrices(marketPrice => ({
+        ...marketPrice,
+        sell: formatMarketPrice(protocol.quoteSellAmount.raw.toString(), sellAmount.currency.decimals, tokenAmount),
+      }))
+    }
+  }, [buyAmount, kind, protocol, sellAmount])
+
+  useEffect(() => {
+    getMarketPrices()
+  }, [getMarketPrices, kind])
+
+  useEffect(() => {
+    setMarketPrices({ buy: 0, sell: 0 })
+  }, [sellToken, buyToken])
+
   return (
     <>
       <ConfirmLimitOrderModal
@@ -193,8 +221,8 @@ export default function LimitOrderForm() {
         errorMessage={''}
         attemptingTxn={loading}
         marketPrices={marketPrices}
-        fiatValueInput={sellAmount}
-        fiatValueOutput={buyAmount}
+        fiatValueInput={fiatValueInput}
+        fiatValueOutput={fiatValueOutput}
       />
       <AutoColumn gap="12px">
         <AutoColumn gap="3px">
@@ -235,12 +263,10 @@ export default function LimitOrderForm() {
           />
         </AutoColumn>
         <AutoRow justify="space-between" flexWrap="nowrap" gap="12">
-          <Flex flex={60}>
+          <Flex flex={65}>
             <OrderLimitPriceField
               protocol={protocol}
-              // marketPrices={marketPrices}
-              // fetchMarketPrice={fetchMarketPrice}
-              // setFetchMarketPrice={setFetchMarketPrice}
+              marketPrices={marketPrices}
               sellToken={sellToken}
               buyToken={buyToken}
               sellAmount={sellAmount}
@@ -249,9 +275,10 @@ export default function LimitOrderForm() {
               setSellAmount={setSellAmount}
               setBuyAmount={setBuyAmount}
               setKind={setKind}
+              setLoading={setLoading}
             />
           </Flex>
-          <Flex flex={40}>
+          <Flex flex={35}>
             <OrderExpiryField />
           </Flex>
         </AutoRow>

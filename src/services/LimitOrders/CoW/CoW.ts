@@ -170,7 +170,7 @@ export class CoW extends LimitOrderBase {
     this.userUpdatedLimitPrice = status
   }
 
-  async getQuote(limitOrder?: LimitOrder): Promise<void> {
+  async getQuote(limitOrder?: LimitOrder) {
     const signer = this.provider?.getSigner()
     const chainId = this.activeChainId
     const order = limitOrder ?? this.limitOrder
@@ -201,6 +201,10 @@ export class CoW extends LimitOrderBase {
       const {
         quote: { buyAmount, sellAmount },
       } = cowQuote
+
+      if (this.userUpdatedLimitPrice) {
+        return
+      }
 
       const buyTokenAmount = new TokenAmount(this.buyToken, buyAmount)
       const sellTokenAmount = new TokenAmount(this.sellToken, sellAmount)

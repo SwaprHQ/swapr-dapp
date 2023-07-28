@@ -6,7 +6,7 @@ import LimitOrder, { WalletData } from '../../../services/LimitOrders'
 import { LimitOrderProvider } from '../../../services/LimitOrders/LimitOrder.provider'
 import AppBody from '../../AppBody'
 
-import LimitOrderFallback from './Components/LimitOrderFallback'
+import LimitOrderFallback from './Components/LimitFallback'
 import LimitOrderForm from './LimitOrderForm'
 
 const limitSdk = new LimitOrder()

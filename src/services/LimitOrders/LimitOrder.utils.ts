@@ -4,7 +4,14 @@ import { ChainId, Currency, Token, TokenAmount } from '@swapr/sdk'
 import { formatUnits, parseUnits } from 'ethers/lib/utils'
 
 import { CoWQuote } from './CoW/CoW.types'
-import { LimitOrderBaseConstructor, WalletData, OrderExpiresInUnit, Kind, LimitOrder } from './LimitOrder.types'
+import {
+  LimitOrderBaseConstructor,
+  WalletData,
+  OrderExpiresInUnit,
+  Kind,
+  LimitOrder,
+  Providers,
+} from './LimitOrder.types'
 
 export const logger = (message?: any, ...optionalParams: any[]) => {
   process.env.NODE_ENV === 'development' && console.log(message, ...optionalParams)
@@ -30,7 +37,7 @@ export abstract class LimitOrderBase {
   expiresAt: number
   expiresAtUnit: OrderExpiresInUnit = OrderExpiresInUnit.Minutes
   createdAt: number | undefined
-  limitOrderProtocol: 'CoW' | '1inch'
+  limitOrderProtocol: Providers
   supportedChanins: ChainId[]
   activeChainId: ChainId | undefined
   loading: boolean = false
@@ -90,7 +97,7 @@ export abstract class LimitOrderBase {
   abstract onLimitPriceChange(limitPrice: string): void
   abstract onUserUpadtedLimitPrice(status: boolean): void
 
-  abstract getQuote(): Promise<void>
+  abstract getQuote(limitOrder?: LimitOrder): Promise<void>
   abstract getMarketPrice(): Promise<void>
   abstract getLimitPrice(): string
   abstract onSignerChange({ account, activeChainId, provider }: WalletData): Promise<void>

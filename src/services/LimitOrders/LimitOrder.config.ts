@@ -2,6 +2,7 @@ import { ChainId, Currency, DAI, Token, USDT, WBNB, WETH, WMATIC, WXDAI } from '
 
 import { OneInch } from './1Inch/OneInch'
 import { CoW } from './CoW/CoW'
+import { Providers } from './LimitOrder.types'
 import { LimitOrderBase } from './LimitOrder.utils'
 
 export const DefaultTokens: Record<number, { sellToken: Currency; buyToken: Currency }> = {
@@ -42,12 +43,12 @@ export const getDefaultTokens = (chainId: ChainId) => {
 export const limitOrderConfig: LimitOrderBase[] = [
   new CoW({
     supportedChains: [ChainId.MAINNET, ChainId.GNOSIS],
-    protocol: 'CoW',
+    protocol: Providers.COW,
     ...getDefaultTokens(ChainId.MAINNET),
   }),
   new OneInch({
     supportedChains: [ChainId.POLYGON, ChainId.OPTIMISM_MAINNET, ChainId.ARBITRUM_ONE, ChainId.BSC_MAINNET],
-    protocol: '1inch',
+    protocol: Providers.ONEINCH,
     ...getDefaultTokens(ChainId.POLYGON),
   }),
 ]
