@@ -2,17 +2,22 @@ import { Currency, Token, TokenAmount } from '@swapr/sdk'
 
 import { parseUnits } from 'ethers/lib/utils'
 import { useCallback, useContext, useEffect, useState } from 'react'
+import { Link } from 'react-router-dom'
 import { Flex } from 'rebass'
 
 import { ButtonPrimary } from '../../../components/Button'
 import { AutoColumn } from '../../../components/Column'
 import { CurrencyInputPanel } from '../../../components/CurrencyInputPanel'
+import { ApprovalState, useApproveCallback } from '../../../hooks/useApproveCallback'
 import { useHigherUSDValue } from '../../../hooks/useUSDValue'
 import { Kind, MarketPrices } from '../../../services/LimitOrders'
+import { getVaultRelayerAddress } from '../../../services/LimitOrders/CoW/api/cow'
 import { LimitOrderContext } from '../../../services/LimitOrders/LimitOrder.provider'
+import { useNotificationPopup } from '../../../state/application/hooks'
 import { useCurrencyBalances } from '../../../state/wallet/hooks'
 import { maxAmountSpend } from '../../../utils/maxAmountSpend'
 
+import { ApprovalFlow } from './Components/ApprovalFlow'
 import { AutoRow } from './Components/AutoRow'
 import ConfirmLimitOrderModal from './Components/ConfirmLimitOrderModal'
 import { OrderExpiryField } from './Components/OrderExpiryField'
@@ -23,12 +28,18 @@ import { formatMarketPrice } from './Components/utils'
 export default function LimitOrderForm() {
   const protocol = useContext(LimitOrderContext)
 
+  const notify = useNotificationPopup()
+
   const [buyAmount, setBuyAmount] = useState(protocol.buyAmount)
   const [sellAmount, setSellAmount] = useState(protocol.sellAmount)
 
   const [sellToken, setSellToken] = useState<Token>(protocol.sellToken)
   const [buyToken, setBuyToken] = useState<Token>(protocol.buyToken)
   const [loading, setLoading] = useState<boolean>(protocol.loading)
+
+  // TODO: Error Message handling
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const [errorMessage, setErrorMessage] = useState('')
 
   const [sellCurrencyBalance, buyCurrencyBalance] = useCurrencyBalances(protocol.userAddress, [
     sellAmount.currency,
@@ -42,6 +53,14 @@ export default function LimitOrderForm() {
     inputCurrencyAmount: sellAmount,
     outputCurrencyAmount: buyAmount,
   })
+
+  const [tokenInApproval, tokenInApprovalCallback] = useApproveCallback(
+    sellAmount,
+    getVaultRelayerAddress(protocol.activeChainId!)
+  )
+
+  // Determine if the token has to be approved first
+  const showApproveFlow = tokenInApproval === ApprovalState.NOT_APPROVED || tokenInApproval === ApprovalState.PENDING
 
   const [kind, setKind] = useState<Kind>(protocol?.kind || Kind.Sell)
   // TODO: Check the usage of marketPrices
@@ -188,21 +207,22 @@ export default function LimitOrderForm() {
   const [marketPrices, setMarketPrices] = useState<MarketPrices>({ buy: 0, sell: 0 })
 
   const getMarketPrices = useCallback(async () => {
-    const token = kind === Kind.Sell ? sellAmount : buyAmount
-    const tokenAmount = Number(token.toExact()) > 1 ? token.toExact() : '1'
-    debugger
-    if (protocol.kind === Kind.Sell) {
-      setMarketPrices(marketPrice => ({
-        ...marketPrice,
-        buy: formatMarketPrice(protocol.quoteBuyAmount.raw.toString(), buyAmount.currency.decimals, tokenAmount),
-      }))
-    } else {
-      setMarketPrices(marketPrice => ({
-        ...marketPrice,
-        sell: formatMarketPrice(protocol.quoteSellAmount.raw.toString(), sellAmount.currency.decimals, tokenAmount),
-      }))
-    }
-  }, [buyAmount, kind, protocol, sellAmount])
+    // const token = kind === Kind.Sell ? sellAmount : buyAmount
+    const tokenSellAmount = Number(sellAmount.toExact()) > 1 ? sellAmount.toExact() : '1'
+    const tokenBuyAmount = Number(buyAmount.toExact()) > 1 ? buyAmount.toExact() : '1'
+
+    // if (protocol.kind === Kind.Sell) {
+    setMarketPrices(() => ({
+      sell: formatMarketPrice(protocol.quoteSellAmount.raw.toString(), sellAmount.currency.decimals, tokenSellAmount),
+      buy: formatMarketPrice(protocol.quoteBuyAmount.raw.toString(), buyAmount.currency.decimals, tokenBuyAmount),
+    }))
+    // } else {
+    //   setMarketPrices(marketPrice => ({
+    //     ...marketPrice,
+    //     sell: formatMarketPrice(protocol.quoteSellAmount.raw.toString(), sellAmount.currency.decimals, tokenAmount),
+    //   }))
+    // }
+  }, [buyAmount, protocol, sellAmount])
 
   useEffect(() => {
     getMarketPrices()
@@ -212,10 +232,35 @@ export default function LimitOrderForm() {
     setMarketPrices({ buy: 0, sell: 0 })
   }, [sellToken, buyToken])
 
+  // Form submission handler
+  const createLimitOrder = async () => {
+    setLoading(true)
+
+    const successCallback = () => {
+      notify(
+        <>
+          Successfully created limit order. Please check <Link to="/account">user account</Link> for details
+        </>
+      )
+      setLoading(false)
+    }
+
+    const errorCallback = (error: Error) => {
+      console.error(error)
+      setErrorMessage('Failed to place limit order. Try again.')
+      notify('Failed to place limit order. Try again.', false)
+    }
+
+    const final = () => setLoading(false)
+
+    const response = await protocol.createOrder(successCallback, errorCallback, final)
+    console.dir(response)
+  }
+
   return (
     <>
       <ConfirmLimitOrderModal
-        onConfirm={() => {}}
+        onConfirm={createLimitOrder}
         onDismiss={onModalDismiss}
         isOpen={isModalOpen}
         errorMessage={''}
@@ -282,7 +327,15 @@ export default function LimitOrderForm() {
             <OrderExpiryField />
           </Flex>
         </AutoRow>
-        <ButtonPrimary onClick={() => setIsModalOpen(true)}>Place Limit Order</ButtonPrimary>
+        {showApproveFlow ? (
+          <ApprovalFlow
+            tokenInSymbol={sellAmount.currency.symbol as string}
+            approval={tokenInApproval}
+            approveCallback={tokenInApprovalCallback}
+          />
+        ) : (
+          <ButtonPrimary onClick={() => setIsModalOpen(true)}>Place Limit Order</ButtonPrimary>
+        )}
       </AutoColumn>
     </>
   )

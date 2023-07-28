@@ -11,6 +11,7 @@ import {
   Kind,
   LimitOrder,
   Providers,
+  Callback,
 } from './LimitOrder.types'
 
 export const logger = (message?: any, ...optionalParams: any[]) => {
@@ -102,5 +103,5 @@ export abstract class LimitOrderBase {
   abstract getLimitPrice(): string
   abstract onSignerChange({ account, activeChainId, provider }: WalletData): Promise<void>
   abstract approve(): Promise<void>
-  abstract createOrder(): Promise<void>
+  abstract createOrder(successCallback?: Callback, errorCallback?: Callback, final?: Callback): Promise<unknown>
 }

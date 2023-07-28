@@ -23,6 +23,8 @@ export type MarketPrices = {
   sell: number
 }
 
+export type Callback = (val?: any) => void
+
 export type LimitOrderBaseConstructor = {
   protocol: Providers
   supportedChains: ChainId[]

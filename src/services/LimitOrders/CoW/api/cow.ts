@@ -26,7 +26,7 @@ export interface SignLimitOrderParams {
   order: LimitOrder
   signer: Signer
   chainId: number
-  signal: AbortSignal
+  signal?: AbortSignal
 }
 
 type GetLimitOrderQuoteParams = SignLimitOrderParams

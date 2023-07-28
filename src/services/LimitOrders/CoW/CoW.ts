@@ -4,10 +4,10 @@ import dayjs from 'dayjs'
 import { parseUnits } from 'ethers/lib/utils'
 
 import { getDefaultTokens } from '../LimitOrder.config'
-import { Kind, WalletData, OrderExpiresInUnit, ProtocolContructor, LimitOrder } from '../LimitOrder.types'
+import { Kind, WalletData, OrderExpiresInUnit, ProtocolContructor, LimitOrder, Callback } from '../LimitOrder.types'
 import { LimitOrderBase } from '../LimitOrder.utils'
 
-import { getQuote } from './api/cow'
+import { createCoWLimitOrder, getQuote } from './api/cow'
 import { type CoWQuote } from './CoW.types'
 
 export class CoW extends LimitOrderBase {
@@ -171,6 +171,9 @@ export class CoW extends LimitOrderBase {
   }
 
   async getQuote(limitOrder?: LimitOrder) {
+    if (this.userUpdatedLimitPrice) {
+      return
+    }
     const signer = this.provider?.getSigner()
     const chainId = this.activeChainId
     const order = limitOrder ?? this.limitOrder
@@ -187,7 +190,6 @@ export class CoW extends LimitOrderBase {
 
     order.kind = kind
 
-    console.log('limit price', order.limitPrice)
     try {
       const cowQuote = await getQuote({
         chainId,
@@ -199,13 +201,11 @@ export class CoW extends LimitOrderBase {
       this.quote = cowQuote as CoWQuote
 
       const {
+        id,
         quote: { buyAmount, sellAmount },
       } = cowQuote
 
-      if (this.userUpdatedLimitPrice) {
-        return
-      }
-
+      this.onLimitOrderChange({ quoteId: id })
       const buyTokenAmount = new TokenAmount(this.buyToken, buyAmount)
       const sellTokenAmount = new TokenAmount(this.sellToken, sellAmount)
       this.quoteBuyAmount = buyTokenAmount
@@ -252,8 +252,35 @@ export class CoW extends LimitOrderBase {
   approve(): Promise<void> {
     throw new Error('Method not implemented.')
   }
-  createOrder(): Promise<void> {
-    throw new Error('Method not implemented.')
+
+  async createOrder(successCallback: Callback, errorCallback: Callback, final: Callback) {
+    try {
+      const signer = this.provider?.getSigner()
+      const chainId = this.activeChainId
+      if (signer && chainId && this.limitOrder) {
+        const finalizedLimitOrder = {
+          ...this.limitOrder,
+          expiresAt: dayjs().add(this.expiresAt, this.expiresAtUnit).unix(),
+        }
+
+        const response = await createCoWLimitOrder({
+          chainId,
+          signer,
+          order: finalizedLimitOrder,
+        })
+
+        if (response) {
+          successCallback?.()
+          return response
+        } else {
+          throw new Error(response)
+        }
+      }
+    } catch (error) {
+      errorCallback?.(error)
+    } finally {
+      final?.()
+    }
   }
 
   async getMarketPrice() {

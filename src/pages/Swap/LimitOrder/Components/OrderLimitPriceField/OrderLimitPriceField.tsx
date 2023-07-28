@@ -206,10 +206,7 @@ export function OrderLimitPriceField({
             <p>
               {inputGroupLabel}
               {showPercentage && (
-                <MarketPriceDiff isPositive={isDiffPositive}>
-                  {' '}
-                  ({marketPriceDiffPercentage.toFixed(2)}%)
-                </MarketPriceDiff>
+                <MarketPriceDiff isPositive={isDiffPositive}>({marketPriceDiffPercentage.toFixed(2)}%)</MarketPriceDiff>
               )}
             </p>
           </Flex>
