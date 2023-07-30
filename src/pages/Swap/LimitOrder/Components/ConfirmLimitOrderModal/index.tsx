@@ -6,7 +6,7 @@ import TransactionConfirmationModal, {
   ConfirmationModalContent,
   TransactionErrorContent,
 } from '../../../../../components/TransactionConfirmationModal'
-import { Kind, LimitOrderContext, MarketPrices } from '../../../../../services/LimitOrders'
+import { Kind, LimitOrderContext, MarketPrices, Providers } from '../../../../../services/LimitOrders'
 import { calculateMarketPriceDiffPercentage } from '../utils'
 
 import { ConfirmationFooter } from './ConfirmationFooter'
@@ -21,6 +21,7 @@ interface ConfirmLimitOrderModalProps {
   marketPrices: MarketPrices
   fiatValueInput: CurrencyAmount | null
   fiatValueOutput: CurrencyAmount | null
+  market: Providers
 }
 
 export default function ConfirmLimitOrderModal({
@@ -32,11 +33,9 @@ export default function ConfirmLimitOrderModal({
   marketPrices,
   fiatValueInput,
   fiatValueOutput,
+  market = Providers.COW,
 }: ConfirmLimitOrderModalProps) {
   const { buyAmount, sellAmount, limitPrice, expiresAt, expiresAtUnit, kind } = useContext(LimitOrderContext)
-
-  //hardcoded for now
-  const market = 'CoW Protocol'
 
   const modalHeader = useCallback(() => {
     return (
@@ -66,10 +65,11 @@ export default function ConfirmLimitOrderModal({
         askPrice={askPrice}
         expiresIn={expiresInFormatted}
         marketPriceDifference={marketPriceDiffPercentage.toFixed(2)}
-        market={market}
+        market={`${market} Protocol`}
         isDiffPositive={isDiffPositive}
       />
     ) : null
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [marketPriceDiffPercentage, isDiffPositive, onConfirm, askPrice, expiresInFormatted])
 
   // text to show while loading

@@ -326,6 +326,7 @@ export default function LimitOrderForm() {
         marketPrices={marketPrices}
         fiatValueInput={fiatValueInput}
         fiatValueOutput={fiatValueOutput}
+        market={protocol.limitOrderProtocol}
       />
       <AutoColumn gap="12px">
         <AutoColumn gap="3px">
@@ -395,21 +396,27 @@ export default function LimitOrderForm() {
         ) : (
           <>
             {protocol.quoteErrorMessage && (
-              <MaxAlert>{`${protocol.quoteErrorMessage}. Please try again. ${(
-                <SetToMarket onClick={handleGetMarketPrice}></SetToMarket>
-              )}`}</MaxAlert>
+              <MaxAlert>
+                <span>
+                  {protocol.quoteErrorMessage}
+                  {'  '}
+                  <SetToMarket onClick={handleGetMarketPrice}>Please try again</SetToMarket>
+                </span>
+              </MaxAlert>
             )}
             {isPossibleToOrder.status && (
               <MaxAlert>
-                {isPossibleToOrder.value > 0
-                  ? `Max possible amount with fees for ${sellToken.symbol} is ${formatMaxValue(
-                      isPossibleToOrder.value
-                    )}.`
-                  : isPossibleToOrder.value === 0
-                  ? `You dont have a positive balance for ${sellToken.symbol}.`
-                  : `Some error occurred please try again. ${(
-                      <SetToMarket onClick={handleGetMarketPrice}></SetToMarket>
-                    )}`}
+                {isPossibleToOrder.value > 0 ? (
+                  `Max possible amount with fees for ${sellToken.symbol} is ${formatMaxValue(isPossibleToOrder.value)}.`
+                ) : isPossibleToOrder.value === 0 ? (
+                  `You dont have a positive balance for ${sellToken.symbol}.`
+                ) : (
+                  <span>
+                    Some error occurred.
+                    {'  '}
+                    <SetToMarket onClick={handleGetMarketPrice}>Please try again</SetToMarket>
+                  </span>
+                )}
               </MaxAlert>
             )}
             <ButtonPrimary onClick={() => setIsModalOpen(true)} disabled={isPossibleToOrder.status}>

@@ -178,6 +178,7 @@ export class CoW extends LimitOrderBase {
     if (this.userUpdatedLimitPrice) {
       return
     }
+
     const signer = this.provider?.getSigner()
     const chainId = this.activeChainId
     const order = limitOrder ?? this.limitOrder
@@ -190,6 +191,13 @@ export class CoW extends LimitOrderBase {
     }
     if (order.buyAmount !== this.buyAmount.raw.toString()) {
       order.buyAmount = this.buyAmount.raw.toString()
+    }
+    // If token is xDAI for CoW ignore it. It happens if we switch from Swap to Limit order and XDai was already selected
+    if (
+      order.sellToken.toLowerCase() === '0x6b175474e89094c44da98b954eedeac495271d0f' ||
+      order.buyToken.toLowerCase() === '0x6b175474e89094c44da98b954eedeac495271d0f'
+    ) {
+      return
     }
 
     order.kind = kind
