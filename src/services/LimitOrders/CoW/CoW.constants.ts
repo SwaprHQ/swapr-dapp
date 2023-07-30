@@ -10,3 +10,10 @@ export const DefaultTokens = {
     buy: USDT[ChainId.GNOSIS],
   },
 }
+
+export const ErrorCodes = [
+  'InsufficientLiquidity',
+  'UnsupportedToken',
+  'NoLiquidity',
+  'SellAmountDoesNotCoverFee',
+] as const

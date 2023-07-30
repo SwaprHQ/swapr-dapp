@@ -10,3 +10,15 @@ export interface SignedLimitOrder extends LimitOrder {
 }
 
 export type CoWQuote = Awaited<ReturnType<typeof getQuote>>
+
+enum CoWErrorCodes {
+  InsufficientLiquidity = 'InsufficientLiquidity',
+  UnsupportedToken = 'UnsupportedToken',
+  NoLiquidity = 'NoLiquidity',
+  SellAmountDoesNotCoverFee = 'SellAmountDoesNotCoverFee',
+}
+
+export type CoWError = {
+  error_code: CoWErrorCodes
+  description: string
+} & Error

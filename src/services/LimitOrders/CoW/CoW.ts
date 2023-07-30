@@ -8,7 +8,10 @@ import { Kind, WalletData, OrderExpiresInUnit, ProtocolContructor, LimitOrder, C
 import { LimitOrderBase } from '../LimitOrder.utils'
 
 import { createCoWLimitOrder, getQuote } from './api/cow'
-import { type CoWQuote } from './CoW.types'
+import { ErrorCodes } from './CoW.constants'
+import { CoWError, type CoWQuote } from './CoW.types'
+
+let quoteCounter = 0
 
 export class CoW extends LimitOrderBase {
   constructor({ supportedChains, protocol, sellToken, buyToken }: ProtocolContructor) {
@@ -171,6 +174,7 @@ export class CoW extends LimitOrderBase {
   }
 
   async getQuote(limitOrder?: LimitOrder) {
+    this.quoteErrorMessage = undefined
     if (this.userUpdatedLimitPrice) {
       return
     }
@@ -224,7 +228,12 @@ export class CoW extends LimitOrderBase {
         })
       }
     } catch (error: any) {
-      // TODO: SHOW ERROR in UI
+      quoteCounter = ++quoteCounter
+      if (quoteCounter < 3) {
+        if (this.#validateError(error)) {
+          this.getQuote()
+        }
+      }
       this.logger.error(error.message)
     }
   }
@@ -404,5 +413,13 @@ export class CoW extends LimitOrderBase {
     }
     this.getQuote()
     return '1'
+  }
+
+  #validateError(error: CoWError) {
+    if (ErrorCodes.includes(error.error_code)) {
+      this.quoteErrorMessage = error.message
+      return false
+    }
+    return true
   }
 }

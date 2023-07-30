@@ -41,6 +41,7 @@ interface OrderLimitPriceFieldProps {
   setBuyAmount(t: TokenAmount): void
   setKind(t: Kind): void
   setLoading(t: boolean): void
+  handleGetMarketPrice(): Promise<string>
 }
 
 export function OrderLimitPriceField({
@@ -55,6 +56,7 @@ export function OrderLimitPriceField({
   setBuyAmount,
   setKind,
   setLoading,
+  handleGetMarketPrice,
 }: OrderLimitPriceFieldProps) {
   const { t } = useTranslation('swap')
 
@@ -76,7 +78,6 @@ export function OrderLimitPriceField({
       setLoading(true)
       try {
         if (!protocol.userUpdatedLimitPrice) {
-          console.log('Hello')
           await protocol.getQuote()
         }
       } finally {
@@ -181,20 +182,21 @@ export function OrderLimitPriceField({
   }
 
   const onClickGetMarketPrice = async () => {
-    protocol.loading = true
-    setLoading(true)
+    // protocol.loading = true
+    // setLoading(true)
 
-    protocol.onUserUpadtedLimitPrice(false)
-    await protocol.getQuote()
-    protocol.loading = false
-    setLoading(false)
-    if (kind === Kind.Sell) {
-      setBuyAmount(protocol.buyAmount)
-    } else {
-      setSellAmount(protocol.sellAmount)
-    }
-    const limitPrice = protocol.getLimitPrice()
-    protocol.onLimitPriceChange(limitPrice)
+    // protocol.onUserUpadtedLimitPrice(false)
+    // await protocol.getQuote()
+    // protocol.loading = false
+    // setLoading(false)
+    // if (kind === Kind.Sell) {
+    //   setBuyAmount(protocol.buyAmount)
+    // } else {
+    //   setSellAmount(protocol.sellAmount)
+    // }
+    // const limitPrice = protocol.getLimitPrice()
+    // protocol.onLimitPriceChange(limitPrice)
+    const limitPrice = await handleGetMarketPrice()
     setInputLimitPrice(limitPrice)
   }
 
@@ -202,7 +204,7 @@ export function OrderLimitPriceField({
     <InputGroup>
       <LimitLabel htmlFor="limitPrice">
         <LimitLabelGroup>
-          <Flex flex={60}>
+          <Flex flex={58}>
             <p>
               {inputGroupLabel}
               {showPercentage && (
@@ -210,7 +212,7 @@ export function OrderLimitPriceField({
               )}
             </p>
           </Flex>
-          <Flex flex={40} flexDirection="row-reverse">
+          <Flex flex={42} flexDirection="row-reverse">
             {!protocol.userUpdatedLimitPrice && buyAmount?.currency && sellAmount?.currency ? (
               <MarketPriceButton key={`${buyToken.symbol}-${sellToken.symbol}-${protocol.limitPrice}`} />
             ) : (

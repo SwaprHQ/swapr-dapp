@@ -43,6 +43,7 @@ export abstract class LimitOrderBase {
   activeChainId: ChainId | undefined
   loading: boolean = false
   userUpdatedLimitPrice: boolean
+  quoteErrorMessage: string | undefined
 
   constructor({ protocol, supportedChains, kind, expiresAt, sellToken, buyToken }: LimitOrderBaseConstructor) {
     this.limitOrderProtocol = protocol
@@ -56,6 +57,7 @@ export abstract class LimitOrderBase {
     this.quoteSellAmount = new TokenAmount(sellToken, parseUnits('1', sellToken.decimals).toString())
     this.quoteBuyAmount = new TokenAmount(buyToken, parseUnits('1', buyToken.decimals).toString())
     this.userUpdatedLimitPrice = false
+    this.quoteErrorMessage = undefined
   }
 
   #logFormat = (message: string) => `LimitOrder:: ${this.limitOrderProtocol} : ${message}`

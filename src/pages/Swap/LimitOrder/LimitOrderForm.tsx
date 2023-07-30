@@ -20,10 +20,12 @@ import { maxAmountSpend } from '../../../utils/maxAmountSpend'
 import { ApprovalFlow } from './Components/ApprovalFlow'
 import { AutoRow } from './Components/AutoRow'
 import ConfirmLimitOrderModal from './Components/ConfirmLimitOrderModal'
+import { MaxAlert } from './Components/MaxAlert'
 import { OrderExpiryField } from './Components/OrderExpiryField'
 import { OrderLimitPriceField } from './Components/OrderLimitPriceField'
+import { SetToMarket } from './Components/OrderLimitPriceField/styles'
 import SwapTokens from './Components/SwapTokens'
-import { formatMarketPrice } from './Components/utils'
+import { formatMarketPrice, formatMaxValue } from './Components/utils'
 
 export default function LimitOrderForm() {
   const protocol = useContext(LimitOrderContext)
@@ -37,9 +39,10 @@ export default function LimitOrderForm() {
   const [buyToken, setBuyToken] = useState<Token>(protocol.buyToken)
   const [loading, setLoading] = useState<boolean>(protocol.loading)
 
-  // TODO: Error Message handling
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const [errorMessage, setErrorMessage] = useState('')
+  const [isPossibleToOrder, setIsPossibleToOrder] = useState({
+    status: false,
+    value: 0,
+  })
 
   const [sellCurrencyBalance, buyCurrencyBalance] = useCurrencyBalances(protocol.userAddress, [
     sellAmount.currency,
@@ -59,12 +62,42 @@ export default function LimitOrderForm() {
     getVaultRelayerAddress(protocol.activeChainId!)
   )
 
+  useEffect(() => {
+    let totalSellAmount = Number(sellAmount.toExact() ?? 0)
+    const maxAmountAvailable = Number(sellCurrencyMaxAmount?.toExact() ?? 0)
+
+    if (totalSellAmount > 0 && maxAmountAvailable >= 0) {
+      if (protocol.quoteSellAmount && sellAmount.token.address === protocol.quoteSellAmount.token.address) {
+        const quoteAmount = Number(protocol.quoteSellAmount.toExact() ?? 0)
+        if (quoteAmount < totalSellAmount) {
+          totalSellAmount = quoteAmount
+        }
+      }
+
+      if (totalSellAmount > maxAmountAvailable) {
+        const maxSellAmountPossible = maxAmountAvailable < 0 ? 0 : maxAmountAvailable
+        if (isPossibleToOrder.value !== maxSellAmountPossible || !isPossibleToOrder.status) {
+          setIsPossibleToOrder({
+            status: true,
+            value: maxSellAmountPossible,
+          })
+        }
+      } else {
+        if (isPossibleToOrder.value !== 0 || isPossibleToOrder.status) {
+          setIsPossibleToOrder({
+            status: false,
+            value: 0,
+          })
+        }
+      }
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [sellAmount, sellCurrencyMaxAmount, sellToken])
+
   // Determine if the token has to be approved first
   const showApproveFlow = tokenInApproval === ApprovalState.NOT_APPROVED || tokenInApproval === ApprovalState.PENDING
 
   const [kind, setKind] = useState<Kind>(protocol?.kind || Kind.Sell)
-  // TODO: Check the usage of marketPrices
-  // const [marketPrices] = useState<MarketPrices>({ buy: 0, sell: 0 })
 
   const [isModalOpen, setIsModalOpen] = useState(false)
 
@@ -114,6 +147,10 @@ export default function LimitOrderForm() {
 
     setSellAmount(protocol.sellAmount)
     setBuyAmount(protocol.buyAmount)
+    setIsPossibleToOrder({
+      status: false,
+      value: 0,
+    })
 
     setLoading(false)
 
@@ -137,6 +174,10 @@ export default function LimitOrderForm() {
     setSellAmount(protocol.sellAmount)
     setBuyAmount(protocol.buyAmount)
     setLoading(false)
+    setIsPossibleToOrder({
+      status: false,
+      value: 0,
+    })
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
@@ -247,7 +288,6 @@ export default function LimitOrderForm() {
 
     const errorCallback = (error: Error) => {
       console.error(error)
-      setErrorMessage('Failed to place limit order. Try again.')
       notify('Failed to place limit order. Try again.', false)
     }
 
@@ -255,6 +295,24 @@ export default function LimitOrderForm() {
 
     const response = await protocol.createOrder(successCallback, errorCallback, final)
     console.dir(response)
+  }
+
+  const handleGetMarketPrice = async () => {
+    protocol.loading = true
+    setLoading(true)
+
+    protocol.onUserUpadtedLimitPrice(false)
+    await protocol.getQuote()
+    protocol.loading = false
+    setLoading(false)
+    if (kind === Kind.Sell) {
+      setBuyAmount(protocol.buyAmount)
+    } else {
+      setSellAmount(protocol.sellAmount)
+    }
+    const limitPrice = protocol.getLimitPrice()
+    protocol.onLimitPriceChange(limitPrice)
+    return limitPrice
   }
 
   return (
@@ -321,6 +379,7 @@ export default function LimitOrderForm() {
               setBuyAmount={setBuyAmount}
               setKind={setKind}
               setLoading={setLoading}
+              handleGetMarketPrice={handleGetMarketPrice}
             />
           </Flex>
           <Flex flex={35}>
@@ -334,7 +393,29 @@ export default function LimitOrderForm() {
             approveCallback={tokenInApprovalCallback}
           />
         ) : (
-          <ButtonPrimary onClick={() => setIsModalOpen(true)}>Place Limit Order</ButtonPrimary>
+          <>
+            {protocol.quoteErrorMessage && (
+              <MaxAlert>{`${protocol.quoteErrorMessage}. Please try again. ${(
+                <SetToMarket onClick={handleGetMarketPrice}></SetToMarket>
+              )}`}</MaxAlert>
+            )}
+            {isPossibleToOrder.status && (
+              <MaxAlert>
+                {isPossibleToOrder.value > 0
+                  ? `Max possible amount with fees for ${sellToken.symbol} is ${formatMaxValue(
+                      isPossibleToOrder.value
+                    )}.`
+                  : isPossibleToOrder.value === 0
+                  ? `You dont have a positive balance for ${sellToken.symbol}.`
+                  : `Some error occurred please try again. ${(
+                      <SetToMarket onClick={handleGetMarketPrice}></SetToMarket>
+                    )}`}
+              </MaxAlert>
+            )}
+            <ButtonPrimary onClick={() => setIsModalOpen(true)} disabled={isPossibleToOrder.status}>
+              Place Limit Order
+            </ButtonPrimary>
+          </>
         )}
       </AutoColumn>
     </>

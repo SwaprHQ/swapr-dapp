@@ -1,4 +1,4 @@
-import { limitOrderConfig } from './LimitOrder.config'
+import { getLimitOrderCofig } from './LimitOrder.config'
 import { WalletData } from './LimitOrder.types'
 import { LimitOrderBase, logger } from './LimitOrder.utils'
 
@@ -8,7 +8,7 @@ export default class LimitOrder {
 
   constructor() {
     logger('LimitOrder constructor')
-    this.#protocols = limitOrderConfig
+    this.#protocols = getLimitOrderCofig()
   }
 
   updateSigner = async (signerData: WalletData) => {

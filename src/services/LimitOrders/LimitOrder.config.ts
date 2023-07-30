@@ -1,4 +1,4 @@
-import { ChainId, Currency, DAI, Token, USDT, WBNB, WETH, WMATIC, WXDAI } from '@swapr/sdk'
+import { ChainId, Currency, DAI, GNO, Token, USDT, WBNB, WETH, WMATIC, WXDAI } from '@swapr/sdk'
 
 import { OneInch } from './1Inch/OneInch'
 import { CoW } from './CoW/CoW'
@@ -12,7 +12,7 @@ export const DefaultTokens: Record<number, { sellToken: Currency; buyToken: Curr
   },
   [ChainId.GNOSIS]: {
     sellToken: WXDAI[ChainId.GNOSIS],
-    buyToken: USDT[ChainId.GNOSIS],
+    buyToken: GNO,
   },
   [ChainId.POLYGON]: {
     sellToken: WMATIC[ChainId.POLYGON],
@@ -40,7 +40,7 @@ export const getDefaultTokens = (chainId: ChainId) => {
   return { sellToken, buyToken }
 }
 
-export const limitOrderConfig: LimitOrderBase[] = [
+export const getLimitOrderCofig = (): LimitOrderBase[] => [
   new CoW({
     supportedChains: [ChainId.MAINNET, ChainId.GNOSIS],
     protocol: Providers.COW,

@@ -9,12 +9,16 @@ import AppBody from '../../AppBody'
 import LimitOrderFallback from './Components/LimitFallback'
 import LimitOrderForm from './LimitOrderForm'
 
-const limitSdk = new LimitOrder()
+let limitSdk: LimitOrder = new LimitOrder()
 
 export default function LimitOrderUI() {
   const { chainId, account, library: provider } = useActiveWeb3React()
 
   const [protocol, setProtocol] = useState(limitSdk.getActiveProtocol())
+
+  useEffect(() => {
+    limitSdk = new LimitOrder()
+  }, [])
 
   useEffect(() => {
     async function updateSigner(signerData: WalletData) {
