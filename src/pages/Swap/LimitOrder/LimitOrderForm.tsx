@@ -1,7 +1,7 @@
 import { Currency, Token, TokenAmount } from '@swapr/sdk'
 
 import { parseUnits } from 'ethers/lib/utils'
-import { useCallback, useContext, useEffect, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { Flex } from 'rebass'
 
@@ -10,9 +10,8 @@ import { AutoColumn } from '../../../components/Column'
 import { CurrencyInputPanel } from '../../../components/CurrencyInputPanel'
 import { ApprovalState, useApproveCallback } from '../../../hooks/useApproveCallback'
 import { useHigherUSDValue } from '../../../hooks/useUSDValue'
-import { Kind, MarketPrices } from '../../../services/LimitOrders'
+import { Kind, LimitOrderBase, MarketPrices } from '../../../services/LimitOrders'
 import { getVaultRelayerAddress } from '../../../services/LimitOrders/CoW/api/cow'
-import { LimitOrderContext } from '../../../services/LimitOrders/LimitOrder.provider'
 import { useNotificationPopup } from '../../../state/application/hooks'
 import { useCurrencyBalances } from '../../../state/wallet/hooks'
 import { maxAmountSpend } from '../../../utils/maxAmountSpend'
@@ -27,9 +26,7 @@ import { SetToMarket } from './Components/OrderLimitPriceField/styles'
 import SwapTokens from './Components/SwapTokens'
 import { formatMarketPrice, formatMaxValue } from './Components/utils'
 
-export default function LimitOrderForm() {
-  const protocol = useContext(LimitOrderContext)
-
+export default function LimitOrderForm({ protocol }: { protocol: LimitOrderBase }) {
   const notify = useNotificationPopup()
 
   const [buyAmount, setBuyAmount] = useState(protocol.buyAmount)
@@ -67,12 +64,12 @@ export default function LimitOrderForm() {
     const maxAmountAvailable = Number(sellCurrencyMaxAmount?.toExact() ?? 0)
 
     if (totalSellAmount > 0 && maxAmountAvailable >= 0) {
-      if (protocol.quoteSellAmount && sellAmount.token.address === protocol.quoteSellAmount.token.address) {
-        const quoteAmount = Number(protocol.quoteSellAmount.toExact() ?? 0)
-        if (quoteAmount < totalSellAmount) {
-          totalSellAmount = quoteAmount
-        }
-      }
+      // if (protocol.quoteSellAmount && sellAmount.token.address === protocol.quoteSellAmount.token.address) {
+      //   const quoteAmount = Number(protocol.quoteSellAmount.toExact() ?? 0)
+      //   if (quoteAmount < totalSellAmount) {
+      //     totalSellAmount = quoteAmount
+      //   }
+      // }
 
       if (totalSellAmount > maxAmountAvailable) {
         const maxSellAmountPossible = maxAmountAvailable < 0 ? 0 : maxAmountAvailable
@@ -92,7 +89,7 @@ export default function LimitOrderForm() {
       }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [sellAmount, sellCurrencyMaxAmount, sellToken])
+  }, [sellAmount, buyAmount, sellCurrencyMaxAmount, sellToken, buyToken])
 
   // Determine if the token has to be approved first
   const showApproveFlow = tokenInApproval === ApprovalState.NOT_APPROVED || tokenInApproval === ApprovalState.PENDING
@@ -103,15 +100,16 @@ export default function LimitOrderForm() {
 
   const onModalDismiss = () => {
     setIsModalOpen(false)
-    // setErrorMessage('')
   }
 
   useEffect(() => {
     async function getMarketPrice() {
-      await protocol.getMarketPrice()
-      setBuyAmount(protocol.buyAmount)
-
-      setLoading(false)
+      try {
+        await protocol.getMarketPrice()
+        setBuyAmount(protocol.buyAmount)
+      } finally {
+        setLoading(false)
+      }
     }
 
     setLoading(true)
@@ -140,20 +138,20 @@ export default function LimitOrderForm() {
     setKind(Kind.Sell)
 
     protocol.onKindChange(Kind.Sell)
+    try {
+      await protocol?.onSellTokenChange(newSellToken)
 
-    await protocol?.onSellTokenChange(newSellToken)
+      protocol.onLimitPriceChange(protocol.getLimitPrice())
 
-    protocol.onLimitPriceChange(protocol.getLimitPrice())
-
-    setSellAmount(protocol.sellAmount)
-    setBuyAmount(protocol.buyAmount)
-    setIsPossibleToOrder({
-      status: false,
-      value: 0,
-    })
-
-    setLoading(false)
-
+      setSellAmount(protocol.sellAmount)
+      setBuyAmount(protocol.buyAmount)
+    } finally {
+      setIsPossibleToOrder({
+        status: false,
+        value: 0,
+      })
+      setLoading(false)
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
@@ -166,19 +164,20 @@ export default function LimitOrderForm() {
     setKind(Kind.Buy)
 
     protocol.onKindChange(Kind.Buy)
+    try {
+      await protocol?.onBuyTokenChange(newBuyToken)
 
-    await protocol?.onBuyTokenChange(newBuyToken)
+      protocol.onLimitPriceChange(protocol.getLimitPrice())
 
-    protocol.onLimitPriceChange(protocol.getLimitPrice())
-
-    setSellAmount(protocol.sellAmount)
-    setBuyAmount(protocol.buyAmount)
-    setLoading(false)
-    setIsPossibleToOrder({
-      status: false,
-      value: 0,
-    })
-
+      setSellAmount(protocol.sellAmount)
+      setBuyAmount(protocol.buyAmount)
+    } finally {
+      setLoading(false)
+      setIsPossibleToOrder({
+        status: false,
+        value: 0,
+      })
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
@@ -199,8 +198,8 @@ export default function LimitOrderForm() {
       await protocol?.onSellAmountChange(newSellAmount)
 
       setBuyAmount(protocol.buyAmount)
-      setLoading(false)
     }
+    setLoading(false)
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
@@ -221,8 +220,8 @@ export default function LimitOrderForm() {
       await protocol?.onBuyAmountChange(newBuyAmount)
 
       setSellAmount(protocol.sellAmount)
-      setLoading(false)
     }
+    setLoading(false)
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
@@ -237,32 +236,38 @@ export default function LimitOrderForm() {
     setSellToken(buyToken)
     setBuyToken(sellToken)
     setKind(Kind.Sell)
-
-    await protocol.getQuote()
-
-    setBuyAmount(protocol.buyAmount)
-    setSellAmount(protocol.sellAmount)
-    setLoading(false)
+    try {
+      await protocol.getQuote()
+      setBuyAmount(protocol.buyAmount)
+      setSellAmount(protocol.sellAmount)
+    } finally {
+      setLoading(false)
+    }
   }
 
   const [marketPrices, setMarketPrices] = useState<MarketPrices>({ buy: 0, sell: 0 })
 
   const getMarketPrices = useCallback(async () => {
-    // const token = kind === Kind.Sell ? sellAmount : buyAmount
     const tokenSellAmount = Number(sellAmount.toExact()) > 1 ? sellAmount.toExact() : '1'
     const tokenBuyAmount = Number(buyAmount.toExact()) > 1 ? buyAmount.toExact() : '1'
 
-    // if (protocol.kind === Kind.Sell) {
-    setMarketPrices(() => ({
-      sell: formatMarketPrice(protocol.quoteSellAmount.raw.toString(), sellAmount.currency.decimals, tokenSellAmount),
-      buy: formatMarketPrice(protocol.quoteBuyAmount.raw.toString(), buyAmount.currency.decimals, tokenBuyAmount),
-    }))
-    // } else {
-    //   setMarketPrices(marketPrice => ({
-    //     ...marketPrice,
-    //     sell: formatMarketPrice(protocol.quoteSellAmount.raw.toString(), sellAmount.currency.decimals, tokenAmount),
-    //   }))
-    // }
+    const cowQuote = await protocol.getRawQuote()
+
+    if (cowQuote) {
+      const { buyAmount: quoteBuyAmount, sellAmount: quoteSellAmount } = cowQuote
+
+      if (protocol.kind === Kind.Sell) {
+        setMarketPrices(marketPrice => ({
+          ...marketPrice,
+          buy: formatMarketPrice(quoteBuyAmount, buyAmount.currency.decimals, tokenSellAmount),
+        }))
+      } else {
+        setMarketPrices(marketPrice => ({
+          ...marketPrice,
+          sell: formatMarketPrice(quoteSellAmount, sellAmount.currency.decimals, tokenBuyAmount),
+        }))
+      }
+    }
   }, [buyAmount, protocol, sellAmount])
 
   useEffect(() => {
@@ -326,7 +331,7 @@ export default function LimitOrderForm() {
         marketPrices={marketPrices}
         fiatValueInput={fiatValueInput}
         fiatValueOutput={fiatValueOutput}
-        market={protocol.limitOrderProtocol}
+        protocol={protocol}
       />
       <AutoColumn gap="12px">
         <AutoColumn gap="3px">
@@ -384,7 +389,7 @@ export default function LimitOrderForm() {
             />
           </Flex>
           <Flex flex={35}>
-            <OrderExpiryField />
+            <OrderExpiryField protocol={protocol} />
           </Flex>
         </AutoRow>
         {showApproveFlow ? (

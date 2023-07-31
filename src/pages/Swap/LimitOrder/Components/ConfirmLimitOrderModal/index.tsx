@@ -1,12 +1,12 @@
 import { CurrencyAmount } from '@swapr/sdk'
 
-import { useCallback, useContext } from 'react'
+import { useCallback } from 'react'
 
 import TransactionConfirmationModal, {
   ConfirmationModalContent,
   TransactionErrorContent,
 } from '../../../../../components/TransactionConfirmationModal'
-import { Kind, LimitOrderContext, MarketPrices, Providers } from '../../../../../services/LimitOrders'
+import { Kind, LimitOrderBase, MarketPrices, Providers } from '../../../../../services/LimitOrders'
 import { calculateMarketPriceDiffPercentage } from '../utils'
 
 import { ConfirmationFooter } from './ConfirmationFooter'
@@ -21,7 +21,7 @@ interface ConfirmLimitOrderModalProps {
   marketPrices: MarketPrices
   fiatValueInput: CurrencyAmount | null
   fiatValueOutput: CurrencyAmount | null
-  market: Providers
+  protocol: LimitOrderBase
 }
 
 export default function ConfirmLimitOrderModal({
@@ -33,9 +33,18 @@ export default function ConfirmLimitOrderModal({
   marketPrices,
   fiatValueInput,
   fiatValueOutput,
-  market = Providers.COW,
+
+  protocol,
 }: ConfirmLimitOrderModalProps) {
-  const { buyAmount, sellAmount, limitPrice, expiresAt, expiresAtUnit, kind } = useContext(LimitOrderContext)
+  const {
+    buyAmount,
+    sellAmount,
+    limitPrice,
+    expiresAt,
+    expiresAtUnit,
+    kind,
+    limitOrderProtocol = Providers.COW,
+  } = protocol
 
   const modalHeader = useCallback(() => {
     return (
@@ -65,7 +74,7 @@ export default function ConfirmLimitOrderModal({
         askPrice={askPrice}
         expiresIn={expiresInFormatted}
         marketPriceDifference={marketPriceDiffPercentage.toFixed(2)}
-        market={`${market} Protocol`}
+        market={`${limitOrderProtocol} Protocol`}
         isDiffPositive={isDiffPositive}
       />
     ) : null

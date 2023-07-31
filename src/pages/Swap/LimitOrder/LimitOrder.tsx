@@ -3,7 +3,6 @@ import { useEffect, useState } from 'react'
 import { PageMetaData } from '../../../components/PageMetaData'
 import { useActiveWeb3React } from '../../../hooks'
 import LimitOrder, { WalletData } from '../../../services/LimitOrders'
-import { LimitOrderProvider } from '../../../services/LimitOrders/LimitOrder.provider'
 import AppBody from '../../AppBody'
 
 import LimitOrderFallback from './Components/LimitFallback'
@@ -34,11 +33,7 @@ export default function LimitOrderUI() {
     <>
       <PageMetaData title="Limit Order | Swapr" />
       <AppBody>
-        {protocol && (
-          <LimitOrderProvider protocol={protocol}>
-            <LimitOrderForm />
-          </LimitOrderProvider>
-        )}
+        {protocol && <LimitOrderForm protocol={protocol} />}
         {!protocol && <LimitOrderFallback />}
       </AppBody>
     </>

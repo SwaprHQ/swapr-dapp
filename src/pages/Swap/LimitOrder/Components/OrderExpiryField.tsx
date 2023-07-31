@@ -1,8 +1,8 @@
-import { useContext, useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import styled from 'styled-components'
 
-import { OrderExpiresInUnit, LimitOrderContext } from '../../../../services/LimitOrders'
+import { OrderExpiresInUnit, LimitOrderBase } from '../../../../services/LimitOrders'
 
 import { ButtonAddonsWrapper, InnerWrapper, Input, InputGroup, Label } from './InputGroup'
 
@@ -38,8 +38,7 @@ export const MaxExpiryTime = styled.button`
   }
 `
 
-export function OrderExpiryField() {
-  const protocol = useContext(LimitOrderContext)
+export function OrderExpiryField({ protocol }: { protocol: LimitOrderBase }) {
   const { expiresAt, expiresAtUnit } = protocol
 
   const [inputExpiresIn, setInputExpiresIn] = useState<string | number>(expiresAt)

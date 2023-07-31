@@ -58,6 +58,10 @@ export class OneInch extends LimitOrderBase {
     throw new Error('Method not implemented.')
   }
 
+  getRawQuote(): Promise<any> {
+    throw new Error('Method not implemented.')
+  }
+
   init(): Promise<void> {
     throw new Error('Method not implemented.')
   }

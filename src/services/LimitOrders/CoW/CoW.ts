@@ -173,12 +173,7 @@ export class CoW extends LimitOrderBase {
     this.userUpdatedLimitPrice = status
   }
 
-  async getQuote(limitOrder?: LimitOrder) {
-    this.quoteErrorMessage = undefined
-    if (this.userUpdatedLimitPrice) {
-      return
-    }
-
+  async getRawQuote(limitOrder?: LimitOrder) {
     const signer = this.provider?.getSigner()
     const chainId = this.activeChainId
     const order = limitOrder ?? this.limitOrder
@@ -212,11 +207,37 @@ export class CoW extends LimitOrderBase {
 
       this.quote = cowQuote as CoWQuote
 
+      const response = cowQuote
+      if (!response) {
+        throw new Error('Quote error')
+      }
+
       const {
         id,
         quote: { buyAmount, sellAmount },
-      } = cowQuote
+      } = response
 
+      return { id, buyAmount, sellAmount }
+    } catch (error: any) {
+      quoteCounter = ++quoteCounter
+      if (quoteCounter < 3) {
+        if (this.#validateError(error)) {
+          this.getQuote()
+        }
+      }
+      this.logger.error(error.message)
+    }
+  }
+
+  async getQuote(limitOrder?: LimitOrder) {
+    this.quoteErrorMessage = undefined
+    if (this.userUpdatedLimitPrice) {
+      return
+    }
+
+    const response = await this.getRawQuote(limitOrder)
+    if (response) {
+      const { id, sellAmount, buyAmount } = response
       this.onLimitOrderChange({ quoteId: id })
       const buyTokenAmount = new TokenAmount(this.buyToken, buyAmount)
       const sellTokenAmount = new TokenAmount(this.sellToken, sellAmount)
@@ -224,7 +245,7 @@ export class CoW extends LimitOrderBase {
       this.quoteSellAmount = sellTokenAmount
       this.limitPrice = this.getLimitPrice()
 
-      if (kind === Kind.Sell) {
+      if (this.kind === Kind.Sell) {
         this.buyAmount = buyTokenAmount
         this.onLimitOrderChange({
           buyAmount: buyTokenAmount.raw.toString(),
@@ -235,14 +256,6 @@ export class CoW extends LimitOrderBase {
           sellAmount: sellTokenAmount.raw.toString(),
         })
       }
-    } catch (error: any) {
-      quoteCounter = ++quoteCounter
-      if (quoteCounter < 3) {
-        if (this.#validateError(error)) {
-          this.getQuote()
-        }
-      }
-      this.logger.error(error.message)
     }
   }
 

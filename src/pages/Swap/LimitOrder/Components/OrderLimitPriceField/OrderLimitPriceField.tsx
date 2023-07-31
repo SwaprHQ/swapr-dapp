@@ -182,20 +182,6 @@ export function OrderLimitPriceField({
   }
 
   const onClickGetMarketPrice = async () => {
-    // protocol.loading = true
-    // setLoading(true)
-
-    // protocol.onUserUpadtedLimitPrice(false)
-    // await protocol.getQuote()
-    // protocol.loading = false
-    // setLoading(false)
-    // if (kind === Kind.Sell) {
-    //   setBuyAmount(protocol.buyAmount)
-    // } else {
-    //   setSellAmount(protocol.sellAmount)
-    // }
-    // const limitPrice = protocol.getLimitPrice()
-    // protocol.onLimitPriceChange(limitPrice)
     const limitPrice = await handleGetMarketPrice()
     setInputLimitPrice(limitPrice)
   }

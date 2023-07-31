@@ -101,6 +101,14 @@ export abstract class LimitOrderBase {
   abstract onUserUpadtedLimitPrice(status: boolean): void
 
   abstract getQuote(limitOrder?: LimitOrder): Promise<void>
+  abstract getRawQuote(limitOrder?: LimitOrder): Promise<
+    | {
+        id: number | null
+        buyAmount: string
+        sellAmount: string
+      }
+    | undefined
+  >
   abstract getMarketPrice(): Promise<void>
   abstract getLimitPrice(): string
   abstract onSignerChange({ account, activeChainId, provider }: WalletData): Promise<void>
