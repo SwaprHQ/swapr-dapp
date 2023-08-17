@@ -1,12 +1,12 @@
-import { AbstractConnector } from '@web3-react/abstract-connector'
-import { UnsupportedChainIdError, useWeb3React } from '@web3-react/core'
-import { WalletConnectConnector } from '@web3-react/walletconnect-connector'
-import React, { useCallback, useEffect, useMemo, useState } from 'react'
+import { useWeb3React } from '@web3-react/core'
+import { Connector } from '@web3-react/types'
+import { WalletConnect } from '@web3-react/walletconnect-v2'
+import { useCallback, useEffect, useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { createSearchParams, useNavigate, useSearchParams } from 'react-router-dom'
 import styled from 'styled-components'
 
-import { NetworkContextName } from '../../constants'
+import { network } from '../../connectors'
 import { useActiveWeb3React, useUnsupportedChainIdError } from '../../hooks'
 import { useENSAvatar } from '../../hooks/useENSAvatar'
 import { useENSName } from '../../hooks/useENSName'
@@ -78,9 +78,8 @@ export enum ModalView {
 }
 
 export default function Web3Status() {
-  const { active, activate, account, error } = useWeb3React()
+  const { isActive, account, hooks } = useWeb3React()
   const { chainId: networkConnectorChainId, connector: activeConnector } = useActiveWeb3React()
-  const contextNetwork = useWeb3React(NetworkContextName)
   const navigate = useNavigate()
   const [searchParams] = useSearchParams()
 
@@ -99,29 +98,25 @@ export default function Web3Status() {
   const [modal, setModal] = useState<ModalView | null>(null)
 
   const [pendingError, setPendingError] = useState<boolean>()
-  const [pendingWallet, setPendingWallet] = useState<AbstractConnector | undefined>()
+  const [pendingWallet, setPendingWallet] = useState<Connector | undefined>()
 
   const toggleNetworkSwitcherPopover = useNetworkSwitcherPopoverToggle()
   const openUnsupportedNetworkModal = useOpenModal(ApplicationModal.UNSUPPORTED_NETWORK)
 
-  const tryActivation = async (connector: AbstractConnector | undefined) => {
+  const tryActivation = async (connector: Connector | undefined) => {
     setPendingWallet(connector)
     setModal(ModalView.Pending)
 
     // if the connector is walletconnect and the user has already tried to connect, manually reset the connector
     // eslint-disable-next-line
     // @ts-ignore
-    if (connector instanceof WalletConnectConnector && connector.walletConnectProvider?.wc?.uri) {
-      connector.walletConnectProvider = undefined
+    if (connector instanceof WalletConnect && connector.walletConnectProvider?.wc?.uri) {
+      connector.deactivate ? connector.deactivate() : connector.resetState()
     }
 
-    connector &&
-      activate(connector, undefined, true).catch(error => {
-        if (error instanceof UnsupportedChainIdError) {
-          activate(connector)
-        } else {
-          setPendingError(true)
-        }
+    if (connector)
+      connector.activate()?.catch(error => {
+        console.error('Error while activating connector: ', error)
       })
   }
 
@@ -147,18 +142,22 @@ export default function Web3Status() {
     isUnsupportedNetwork,
     openUnsupportedNetworkModal,
     isUnsupportedNetworkModal,
-    unsupportedChainIdError,
     closeModals,
+    unsupportedChainIdError,
   ])
 
   const clickHandler = useCallback(() => {
     toggleNetworkSwitcherPopover()
   }, [toggleNetworkSwitcherPopover])
 
-  if (!contextNetwork.active && !active) {
+  const { useSelectedIsActive } = hooks
+  const networkIsActive = useSelectedIsActive(network)
+
+  if (!networkIsActive && !isActive) {
     return null
   }
-  if (error) {
+
+  if (unsupportedChainIdError) {
     return (
       <NetworkSwitcherPopover modal={ApplicationModal.NETWORK_SWITCHER}>
         <SwitchNetworkButton onClick={clickHandler}>
@@ -173,7 +172,7 @@ export default function Web3Status() {
     <>
       <ConnectWalletPopover tryActivation={tryActivation}>
         <Row alignItems="center" justifyContent="flex-end">
-          {networkConnectorChainId && !account && (
+          {!account && (
             <Button id="connect-wallet" onClick={toggleWalletSwitcherPopover}>
               {mobileByMedia ? 'Connect' : t('connectWallet')}
             </Button>

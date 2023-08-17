@@ -1,4 +1,5 @@
 import { getAddress } from '@ethersproject/address'
+import { ChainId } from '@swapr/sdk'
 
 import { nanoid } from '@reduxjs/toolkit'
 import { TokenList } from '@uniswap/token-lists'
@@ -8,7 +9,7 @@ import { useDispatch } from 'react-redux'
 
 import { immediateCarrotSubgraphClients } from '../apollo/client'
 import carrotListLogoUrl from '../assets/images/carrot.png'
-import { getNetworkLibrary } from '../connectors'
+import { network } from '../connectors'
 import { KPI_TOKEN_CREATORS } from '../constants'
 import { AppDispatch } from '../state'
 import { fetchTokenList } from '../state/lists/actions'
@@ -18,22 +19,23 @@ import resolveENSContentHash from '../utils/resolveENSContentHash'
 import { useActiveWeb3React } from './index'
 
 export function useFetchListCallback(): (listUrl: string, sendDispatch?: boolean) => Promise<TokenList> {
-  const { chainId, library } = useActiveWeb3React()
+  const { chainId, provider, hooks } = useActiveWeb3React()
+  const { useSelectedProvider, useSelectedChainId } = hooks
+  const networkProvider = useSelectedProvider(network)
+  const networkChainId = useSelectedChainId(network)
   const dispatch = useDispatch<AppDispatch>()
 
   const ensResolver = useCallback(
     async (ensName: string) => {
-      if (!library || chainId !== 1) {
-        const networkLibrary = getNetworkLibrary()
-        const network = await networkLibrary.getNetwork()
-        if (networkLibrary && network.chainId === 1) {
-          return resolveENSContentHash(ensName, networkLibrary)
+      if (!provider || chainId !== 1) {
+        if (networkProvider && networkChainId === ChainId.MAINNET) {
+          return resolveENSContentHash(ensName, networkProvider)
         }
         throw new Error('Could not construct mainnet ENS resolver')
       }
-      return resolveENSContentHash(ensName, library)
+      return resolveENSContentHash(ensName, provider)
     },
-    [chainId, library]
+    [chainId, networkChainId, networkProvider, provider]
   )
 
   // note: prevent dispatch if using for list search or unsupported list

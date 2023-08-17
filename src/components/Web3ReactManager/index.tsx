@@ -1,11 +1,12 @@
+import { ChainId } from '@swapr/sdk'
+
 import { useWeb3React } from '@web3-react/core'
 import { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import styled from 'styled-components'
 
 import { network } from '../../connectors'
-import { NetworkContextName } from '../../constants'
-import { useEagerConnect, useInactiveListener } from '../../hooks'
+import { useEagerConnect, useInactiveListener, useUnsupportedChainIdError } from '../../hooks'
 import { useTargetedChainIdFromUrl } from '../../hooks/useTargetedChainIdFromUrl'
 import { Loader } from '../Loader'
 
@@ -22,22 +23,34 @@ const Message = styled.h2`
 
 export default function Web3ReactManager({ children }: { children: JSX.Element }) {
   const { t } = useTranslation('common')
-  const { active } = useWeb3React()
-  const { active: networkActive, error: networkError, activate: activateNetwork } = useWeb3React(NetworkContextName)
+  const { isActive, connector, hooks, chainId } = useWeb3React()
+  const { useSelectedIsActive, usePriorityChainId } = hooks
+  const networkIsActive = useSelectedIsActive(network)
+  const ativeChainId = usePriorityChainId()
   const targetedChainId = useTargetedChainIdFromUrl()
+  const isUnsupportedChainIdError = useUnsupportedChainIdError()
 
   // try to eagerly connect to an injected provider, if it exists and has granted access already
   const triedEager = useEagerConnect()
 
-  // after eagerly trying injected, if the network connect ever isn't active or in an error state, activate itd
+  //after eagerly trying injected, if the network connect ever isn't active or in an error state, activate itd
   useEffect(() => {
-    if (triedEager && !networkActive && !networkError && !active) {
-      if (targetedChainId && network.supportedChainIds && network.supportedChainIds.indexOf(targetedChainId) >= 0) {
-        network.changeChainId(targetedChainId)
+    if (triedEager && !networkIsActive && !isActive && !isUnsupportedChainIdError) {
+      if (targetedChainId && Boolean(ChainId[targetedChainId])) {
+        network.activate(targetedChainId)
       }
-      activateNetwork(network)
+      network.activate()
     }
-  }, [triedEager, networkActive, networkError, activateNetwork, active, targetedChainId])
+  }, [
+    triedEager,
+    targetedChainId,
+    isActive,
+    isUnsupportedChainIdError,
+    connector,
+    networkIsActive,
+    chainId,
+    ativeChainId,
+  ])
 
   // when there's no account connected, react to logins (broadly speaking) on the injected provider, if it exists
   useInactiveListener(!triedEager)
@@ -60,7 +73,7 @@ export default function Web3ReactManager({ children }: { children: JSX.Element }
   }
 
   // if the account context isn't active, and there's an error on the network context, it's an irrecoverable error
-  if (!active && networkError) {
+  if (!isActive && isUnsupportedChainIdError) {
     return (
       <MessageWrapper>
         <Message>{t('unknownError')}</Message>
@@ -69,7 +82,7 @@ export default function Web3ReactManager({ children }: { children: JSX.Element }
   }
 
   // if neither context is active, spin
-  if (!active && !networkActive) {
+  if (!isActive && !networkIsActive) {
     return showLoader ? (
       <MessageWrapper>
         <Loader />

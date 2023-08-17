@@ -1,11 +1,11 @@
-import { AbstractConnector } from '@web3-react/abstract-connector'
 import { useWeb3React } from '@web3-react/core'
+import { Connector } from '@web3-react/types'
 import { ReactNode, useRef } from 'react'
 import { isMobile } from 'react-device-detect'
 import styled from 'styled-components'
 
 import MetamaskIcon from '../../assets/images/metamask.png'
-import { injected } from '../../connectors'
+import { metaMask } from '../../connectors'
 import { SUPPORTED_WALLETS } from '../../constants'
 import { useOnClickOutside } from '../../hooks/useOnClickOutside'
 import { ApplicationModal } from '../../state/application/actions'
@@ -98,12 +98,15 @@ const StyledPopover = styled(Popover)<{ isActive?: boolean }>`
 `
 
 interface ConnectWalletProps {
-  tryActivation: (connector: AbstractConnector | undefined) => void
+  tryActivation: (connector: Connector | undefined) => void
   children: ReactNode
 }
 
 export const ConnectWalletPopover = ({ tryActivation, children }: ConnectWalletProps) => {
-  const { connector, active, deactivate } = useWeb3React()
+  const { connector, isActive, hooks } = useWeb3React()
+  const { useSelectedIsActive } = hooks
+  const selectedIsActive = useSelectedIsActive(connector)
+
   const popoverRef = useRef<HTMLDivElement | null>(null)
   const walletSwitcherPopoverOpen = useModalOpen(ApplicationModal.WALLET_SWITCHER)
   const closeModals = useCloseModals()
@@ -136,7 +139,7 @@ export const ConnectWalletPopover = ({ tryActivation, children }: ConnectWalletP
       }
 
       // overwrite injected when needed
-      if (option.connector === injected) {
+      if (option.connector === metaMask) {
         // don't show injected if there's no injected provider
         if (!(window.web3 || window.ethereum) || ((window.web3 || window.ethereum) && !isMetamask)) {
           if (option.name === 'MetaMask') {
@@ -173,11 +176,11 @@ export const ConnectWalletPopover = ({ tryActivation, children }: ConnectWalletP
             id={`connect-${key}`}
             onClick={() => {
               closeModals()
-              option.connector !== connector && !option.href && tryActivation(option.connector)
+              if (!selectedIsActive || option.connector !== connector) tryActivation(option.connector)
             }}
             name={option.name}
             icon={option.iconName}
-            isActive={option.connector && option.connector === connector}
+            isActive={selectedIsActive && option.connector === connector}
           />
         )
       )
@@ -191,11 +194,17 @@ export const ConnectWalletPopover = ({ tryActivation, children }: ConnectWalletP
         content={
           <List data-testid="wallet-connect-list">
             {getOptions()}
-            {active && <DisconnectButton onClick={deactivate}>Disconnect Wallet</DisconnectButton>}
+            {isActive && (
+              <DisconnectButton
+                onClick={() => connector && (connector.deactivate ? connector.deactivate() : connector.resetState())}
+              >
+                Disconnect Wallet
+              </DisconnectButton>
+            )}
           </List>
         }
         show={walletSwitcherPopoverOpen}
-        isActive={active}
+        isActive={isActive}
         placement="bottom-end"
       >
         {children}

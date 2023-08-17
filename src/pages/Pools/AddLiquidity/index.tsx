@@ -53,7 +53,7 @@ type CurrencySearchParams = {
 export default function AddLiquidity() {
   const { navigate, location } = useRouter()
   const { currencyIdA, currencyIdB } = useParams<CurrencySearchParams>()
-  const { account, chainId, library } = useActiveWeb3React()
+  const { account, chainId, provider } = useActiveWeb3React()
   const theme = useTheme()
   const nativeCurrency = useNativeCurrency()
   const nativeCurrencyWrapper = useWrappingToken(nativeCurrency)
@@ -129,8 +129,8 @@ export default function AddLiquidity() {
   const addTransaction = useTransactionAdder()
 
   async function onAdd() {
-    if (!chainId || !library || !account) return
-    const router = getRouterContract(chainId, library, UniswapV2RoutablePlatform.SWAPR, account)
+    if (!chainId || !provider || !account) return
+    const router = getRouterContract(chainId, provider, UniswapV2RoutablePlatform.SWAPR, account)
 
     const { [Field.CURRENCY_A]: parsedAmountA, [Field.CURRENCY_B]: parsedAmountB } = parsedAmounts
     if (!parsedAmountA || !parsedAmountB || !currencyA || !currencyB || !deadline) {
