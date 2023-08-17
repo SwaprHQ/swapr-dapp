@@ -44,7 +44,7 @@ const RETRY_OPTIONS_BY_CHAIN_ID: { [chainId: number]: RetryOptions } = {
 const DEFAULT_RETRY_OPTIONS: RetryOptions = { n: 1, minWait: 0, maxWait: 0 }
 
 export default function Updater(): null {
-  const { chainId, library } = useActiveWeb3React()
+  const { chainId, provider } = useActiveWeb3React()
 
   const lastBlockNumber = useBlockNumber()
 
@@ -59,11 +59,11 @@ export default function Updater(): null {
 
   const getTransactionReceipt = useCallback(
     (hash: string) => {
-      if (!library || !chainId) throw new Error('No library or chainId')
+      if (!provider || !chainId) throw new Error('No library or chainId')
       const retryOptions = RETRY_OPTIONS_BY_CHAIN_ID[chainId] ?? DEFAULT_RETRY_OPTIONS
       return retry(
         () =>
-          library.getTransactionReceipt(hash).then(receipt => {
+          provider.getTransactionReceipt(hash).then(receipt => {
             if (receipt === null) {
               console.debug('Retrying for hash', hash)
               throw new RetryableError()
@@ -73,7 +73,7 @@ export default function Updater(): null {
         retryOptions
       )
     },
-    [chainId, library]
+    [chainId, provider]
   )
 
   /**
@@ -96,7 +96,7 @@ export default function Updater(): null {
   )
 
   useEffect(() => {
-    if (!chainId || !library || !lastBlockNumber) return
+    if (!chainId || !provider || !lastBlockNumber) return
 
     const cancels = Object.values(transactions)
       .filter(({ hash }) => shouldCheck(lastBlockNumber, transactions[hash]))
@@ -208,7 +208,7 @@ export default function Updater(): null {
     }
   }, [
     chainId,
-    library,
+    provider,
     transactions,
     lastBlockNumber,
     dispatch,

@@ -1,6 +1,6 @@
 import { CurrencyAmount } from '@swapr/sdk'
 
-import { InjectedConnector } from '@web3-react/injected-connector'
+import { MetaMask } from '@web3-react/metamask'
 import { useCallback, useEffect, useState } from 'react'
 import styled from 'styled-components'
 
@@ -63,7 +63,7 @@ export function ActionButton({
 
   const handleLocalClick = useCallback(() => {
     if (!account) onConnectWallet()
-    else if (!correctNetwork && connector instanceof InjectedConnector) onSwitchToArbitrum()
+    else if (!correctNetwork && connector instanceof MetaMask) onSwitchToArbitrum()
     else if (isOldSwaprLp) {
       const anchor = document.createElement('a')
       Object.assign(anchor, {

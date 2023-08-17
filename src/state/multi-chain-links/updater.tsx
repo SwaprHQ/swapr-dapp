@@ -1,7 +1,9 @@
+import { ChainId } from '@swapr/sdk'
+
 import { useEffect } from 'react'
 import { useLocation, useSearchParams } from 'react-router-dom'
 
-import { useActiveWeb3React } from '../../hooks'
+import { useActiveWeb3React, useUnsupportedChainIdError } from '../../hooks'
 
 import { useIsSwitchingToCorrectChain, useIsSwitchingToCorrectChainUpdater } from './hooks'
 
@@ -11,6 +13,7 @@ export default function Updater(): null {
   const { pathname } = useLocation()
   const switchingToCorrectChain = useIsSwitchingToCorrectChain()
   const updateSwitchingToCorrectChain = useIsSwitchingToCorrectChainUpdater()
+  const unsupportedChainIdError = useUnsupportedChainIdError()
 
   // this effect updates the chain id in the URL.
   // Scenarios:
@@ -28,10 +31,7 @@ export default function Updater(): null {
     if (!chainId || !connector) return
     const stringChainId = chainId.toString()
     const requiredChainId = searchParams.get('chainId')
-    const requiredChainIdSupported =
-      requiredChainId &&
-      connector.supportedChainIds &&
-      connector.supportedChainIds.indexOf(parseInt(requiredChainId)) >= 0
+    const requiredChainIdSupported = requiredChainId && Boolean(ChainId[parseInt(requiredChainId, 10)])
 
     if (!pathname.includes('/account') && searchParams.get('filter')) {
       searchParams.delete('filter')
@@ -54,6 +54,7 @@ export default function Updater(): null {
     searchParams,
     setSearchParams,
     pathname,
+    unsupportedChainIdError,
   ])
 
   return null

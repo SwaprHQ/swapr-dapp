@@ -48,7 +48,7 @@ export function Account() {
   const [searchParams, setSearchParams] = useSearchParams()
 
   // Account details
-  const { account, chainId, active, deactivate } = useActiveWeb3React()
+  const { account, chainId, isActive, connector } = useActiveWeb3React()
   const { ENSName } = useENSName(account ?? undefined)
   const { avatar: ensAvatar } = useENSAvatar(ENSName)
 
@@ -162,7 +162,13 @@ export function Account() {
             </DetailActionWrapper>
             <CallToActionWrapper>
               <Button onClick={toggleWalletSwitcherPopover}>{t('changeWallet')}</Button>
-              {active && <Button onClick={deactivate}>{t('disconnect')}</Button>}
+              {isActive && (
+                <Button
+                  onClick={() => connector && (connector.deactivate ? connector.deactivate() : connector.resetState())}
+                >
+                  {t('disconnect')}
+                </Button>
+              )}
             </CallToActionWrapper>
           </Flex>
         </Flex>

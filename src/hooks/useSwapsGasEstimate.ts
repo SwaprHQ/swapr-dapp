@@ -25,7 +25,7 @@ export function useSwapsGasEstimations(
   recipientAddressOrName: string | null,
   trades?: (Trade | undefined)[]
 ): { loading: boolean; estimations: (BigNumber | null)[][] } {
-  const { account, library, chainId } = useActiveWeb3React()
+  const { account, provider, chainId } = useActiveWeb3React()
   const platformSwapCalls = useSwapsCallArguments(trades, allowedSlippage, recipientAddressOrName)
   const mainnetGasPrices = useMainnetGasPrices()
   const [preferredGasPrice] = useUserPreferredGasPrice()
@@ -116,7 +116,7 @@ export function useSwapsGasEstimations(
           let estimatedCall = null
           try {
             estimatedCall = calculateGasMargin(
-              await (library as Web3Provider).estimateGas(transactionParameters as any)
+              await (provider as Web3Provider).estimateGas(transactionParameters as any)
             )
           } catch (error) {
             console.error(error)
@@ -130,15 +130,15 @@ export function useSwapsGasEstimations(
     }
     setEstimations(estimatedCalls)
     setLoading(false)
-  }, [platformSwapCalls, library, routerAllowances, trades, typedIndependentCurrencyAmount])
+  }, [platformSwapCalls, provider, routerAllowances, trades, typedIndependentCurrencyAmount])
 
   useEffect(() => {
-    if (!trades || trades.length === 0 || !library || !chainId || !recipient || !account || !calculateGasFees) {
+    if (!trades || trades.length === 0 || !provider || !chainId || !recipient || !account || !calculateGasFees) {
       setEstimations([])
       return
     }
     updateEstimations()
-  }, [chainId, library, recipient, trades, updateEstimations, account, calculateGasFees])
+  }, [chainId, provider, recipient, trades, updateEstimations, account, calculateGasFees])
 
   return { loading: loading, estimations }
 }

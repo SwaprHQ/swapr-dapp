@@ -1,5 +1,5 @@
-import { AbstractConnector } from '@web3-react/abstract-connector'
 import { useWeb3React } from '@web3-react/core'
+import { Connector } from '@web3-react/types'
 import { useCallback, useEffect } from 'react'
 import { AlertTriangle } from 'react-feather'
 import { usePrevious } from 'react-use'
@@ -86,10 +86,10 @@ const HoverText = styled.div`
 interface WalletModalProps {
   modal: ModalView | null
   setModal: (modal: ModalView | null) => void
-  tryActivation: (connector: AbstractConnector | undefined) => void
+  tryActivation: (connector: Connector | undefined) => void
   pendingError: boolean | undefined
   setPendingError: (value: boolean) => void
-  pendingWallet: AbstractConnector | undefined
+  pendingWallet: Connector | undefined
 }
 
 export default function WalletModal({
@@ -100,7 +100,8 @@ export default function WalletModal({
   setPendingError,
   pendingWallet,
 }: WalletModalProps) {
-  const { active, account, connector, error } = useWeb3React()
+  const { isActive, account, connector } = useWeb3React()
+  const isUnsupportedChainIdError = useUnsupportedChainIdError()
 
   const closeModal = useCallback(() => setModal(null), [setModal])
 
@@ -122,13 +123,16 @@ export default function WalletModal({
     }
   }, [account, previousAccount, closeModal, isModalVisible])
 
-  const activePrevious = usePrevious(active)
+  const activePrevious = usePrevious(isActive)
   const connectorPrevious = usePrevious(connector)
   useEffect(() => {
-    if (!!modal && ((active && !activePrevious) || (connector && connector !== connectorPrevious && !error))) {
+    if (
+      !!modal &&
+      ((isActive && !activePrevious) || (connector && connector !== connectorPrevious && !isUnsupportedChainIdError))
+    ) {
       setModal(null)
     }
-  }, [setModal, active, error, connector, modal, activePrevious, connectorPrevious])
+  }, [setModal, isActive, connector, modal, activePrevious, connectorPrevious, isUnsupportedChainIdError])
 
   const toggleWalletSwitcherPopover = useWalletSwitcherPopoverToggle()
   const onBackButtonClick = () => {
@@ -136,10 +140,9 @@ export default function WalletModal({
     setModal(null)
     toggleWalletSwitcherPopover()
   }
-  const unsupportedChainIdError = useUnsupportedChainIdError()
 
   function getModalContent() {
-    if (error) {
+    if (isUnsupportedChainIdError) {
       return (
         <UpperSection>
           <CloseIcon onClick={closeModal}>
@@ -149,17 +152,13 @@ export default function WalletModal({
             <AutoRow gap="6px">
               <StyledWarningIcon size="20px" />
               <TYPE.Main fontSize="16px" lineHeight="22px" color={'text3'}>
-                {unsupportedChainIdError ? 'Wrong Network' : 'Error connecting'}
+                Wrong Network
               </TYPE.Main>
             </AutoRow>
           </HeaderRow>
           <ContentWrapper>
             <TYPE.Yellow color="text4">
-              <h5>
-                {unsupportedChainIdError
-                  ? 'Please connect to the appropriate network.'
-                  : 'Error connecting. Try refreshing the page.'}
-              </h5>
+              <h5>Please connect to the appropriate network.</h5>
             </TYPE.Yellow>
           </ContentWrapper>
         </UpperSection>
