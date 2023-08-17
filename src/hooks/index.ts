@@ -1,66 +1,77 @@
-import { Web3Provider } from '@ethersproject/providers'
 import { ChainId } from '@swapr/sdk'
 
-import { UnsupportedChainIdError, useWeb3React as useWeb3ReactCore } from '@web3-react/core'
-import { Web3ReactContextInterface } from '@web3-react/core/dist/types'
+import { Web3ContextType, useWeb3React as useWeb3ReactCore } from '@web3-react/core'
 import { useEffect, useState } from 'react'
-import { isMobile } from 'react-device-detect'
 
-import { injected } from '../connectors'
-import { NetworkContextName } from '../constants'
+import { metaMask, network } from '../connectors'
 
-export function useActiveWeb3React(): Web3ReactContextInterface<Web3Provider> & { chainId?: ChainId } {
-  const context = useWeb3ReactCore<Web3Provider>()
-  const contextNetwork = useWeb3ReactCore<Web3Provider>(NetworkContextName)
-  return context.active ? context : contextNetwork
+export function useActiveWeb3React(): Web3ContextType & { chainId?: ChainId } {
+  const context = useWeb3ReactCore()
+  const {
+    useSelectedChainId,
+    useSelectedAccounts,
+    useSelectedIsActivating,
+    useSelectedAccount,
+    useSelectedIsActive,
+    useSelectedProvider,
+    useSelectedENSNames,
+    useSelectedENSName,
+  } = context.hooks
+
+  const contextNetwork = {
+    chainId: useSelectedChainId(network) as ChainId,
+    accounts: useSelectedAccounts(network),
+    isActivating: useSelectedIsActivating(network),
+    account: useSelectedAccount(network),
+    isActive: useSelectedIsActive(network),
+    provider: useSelectedProvider(network),
+    ENSNames: useSelectedENSNames(network),
+    ENSName: useSelectedENSName(network),
+    connector: network,
+    hooks: context.hooks,
+  }
+
+  return context.isActive && context.chainId && Boolean(ChainId[context.chainId]) ? context : contextNetwork
 }
 
 export function useEagerConnect() {
-  const { activate, active } = useWeb3ReactCore() // specifically using useWeb3ReactCore because of what this hook does
+  const { isActive } = useWeb3ReactCore() // specifically using useWeb3ReactCore because of what this hook does
   const [tried, setTried] = useState(false)
 
   useEffect(() => {
-    injected.isAuthorized().then(isAuthorized => {
-      if (isAuthorized) {
-        activate(injected, undefined, true).catch(() => {
-          setTried(true)
-        })
-      } else {
-        if (isMobile && window.ethereum) {
-          activate(injected, undefined, true).catch(() => {
-            setTried(true)
-          })
-        } else {
-          setTried(true)
-        }
-      }
-    })
-  }, [activate]) // intentionally only running on mount (make sure it's only mounted once :))
+    if (!isActive) {
+      metaMask.connectEagerly().catch(() => {
+        console.error('Failed to connect eagerly to metamask')
+      })
+    }
+    setTried(true)
+  }, [isActive]) // intentionally only running on mount (make sure it's only mounted once :))
 
   // if the connection worked, wait until we get confirmation of that to flip the flag
   useEffect(() => {
-    if (active) {
+    if (isActive) {
       setTried(true)
     }
-  }, [active])
+  }, [isActive])
 
   return tried
 }
 
-/**
- * Use for network and injected - logs user in
- * and out after checking what network theyre on
- */
+// /**
+//  * Use for network and injected - logs user in
+//  * and out after checking what network theyre on
+//  */
 export function useInactiveListener(suppress = false) {
-  const { active, error, activate } = useWeb3ReactCore() // specifically using useWeb3React because of what this hook does
+  const { isActive, connector } = useWeb3ReactCore() // specifically using useWeb3React because of what this hook does
+  const isUnsupportedChainIdError = useUnsupportedChainIdError()
 
   useEffect(() => {
     const { ethereum } = window
 
-    if (ethereum && ethereum.on && !active && !error && !suppress) {
+    if (ethereum && ethereum.on && !isActive && !isUnsupportedChainIdError && !suppress) {
       const handleChainChanged = () => {
         // eat errors
-        activate(injected, undefined, true).catch(error => {
+        connector.activate()?.catch(error => {
           console.error('Failed to activate after chain changed', error)
         })
       }
@@ -68,7 +79,7 @@ export function useInactiveListener(suppress = false) {
       const handleAccountsChanged = (accounts: string[]) => {
         if (accounts.length > 0) {
           // eat errors
-          activate(injected, undefined, true).catch(error => {
+          connector.activate()?.catch(error => {
             console.error('Failed to activate after accounts changed', error)
           })
         }
@@ -85,10 +96,10 @@ export function useInactiveListener(suppress = false) {
       }
     }
     return undefined
-  }, [active, error, suppress, activate])
+  }, [suppress, isActive, isUnsupportedChainIdError, connector])
 }
 
 export function useUnsupportedChainIdError(): boolean {
-  const { error } = useWeb3ReactCore()
-  return error instanceof UnsupportedChainIdError
+  const { chainId } = useWeb3ReactCore()
+  return chainId ? !ChainId[chainId] : false
 }

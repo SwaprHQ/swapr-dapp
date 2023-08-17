@@ -25,7 +25,7 @@ export function useEcoRouterExactIn(currencyAmountIn?: CurrencyAmount, currencyO
   // Errors
   const [errors, setErrors] = useState<any[]>([])
   // Chain Id
-  const { chainId, account, library } = useActiveWeb3React()
+  const { chainId, account, provider } = useActiveWeb3React()
   // Uniswap V2 Trade option: using multi-hop option
   const uniswapV2IsMultihop = useIsMultihop()
   // Used to trigger computing trade route
@@ -37,7 +37,7 @@ export function useEcoRouterExactIn(currencyAmountIn?: CurrencyAmount, currencyO
     let isCancelled = false
 
     // Early exit and clean state if necessary
-    if (!currencyAmountIn || !account || !currencyAmountIn.currency || !library || !currencyOut || !chainId) {
+    if (!currencyAmountIn || !account || !currencyAmountIn.currency || !provider || !currencyOut || !chainId) {
       setTrades([])
       setLoading(false)
 
@@ -62,7 +62,7 @@ export function useEcoRouterExactIn(currencyAmountIn?: CurrencyAmount, currencyO
           useMultihops: uniswapV2IsMultihop,
         },
       },
-      library
+      provider
     )
       .then(newTrades => {
         // Only update this invokation is not cancelled
@@ -108,7 +108,7 @@ export function useEcoRouterExactOut(currencyIn?: Currency, currencyAmountOut?: 
   // Errors
   const [errors, setErrors] = useState<any[]>([])
   // Chain Id
-  const { chainId, account, library } = useActiveWeb3React()
+  const { chainId, account, provider } = useActiveWeb3React()
   // Uniswap V2 Trade option: using multi-hop option
   const uniswapV2IsMultihop = useIsMultihop()
   // Used to trigger computing trade route
@@ -144,7 +144,7 @@ export function useEcoRouterExactOut(currencyIn?: Currency, currencyAmountOut?: 
           useMultihops: uniswapV2IsMultihop,
         },
       },
-      library
+      provider
     )
       .then(newTrades => {
         // Only update this invokation is not cancelled

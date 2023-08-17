@@ -9,7 +9,7 @@ import { ecoBridgeConfig } from './EcoBridge.config'
 export const EcoBridgeContext = createContext<EcoBridge | null>(null)
 
 export function EcoBridgeProvider({ children }: { children: ReactNode }) {
-  const { library, account, chainId } = useActiveWeb3React()
+  const { provider, account, chainId } = useActiveWeb3React()
   const [ecoBridge, setEcoBridge] = useState<EcoBridge | null>(null)
 
   useEffect(() => {
@@ -19,24 +19,24 @@ export function EcoBridgeProvider({ children }: { children: ReactNode }) {
         setEcoBridge(ecoBridgeInstance)
       }
 
-      if (ecoBridge && account && library && chainId) {
+      if (ecoBridge && account && provider && chainId) {
         if (!ecoBridge.ready) {
           await ecoBridge.init({
             account,
             activeChainId: chainId,
-            activeProvider: library,
+            activeProvider: provider,
           })
         } else {
           await ecoBridge.updateSigner({
             account,
             activeChainId: chainId,
-            activeProvider: library,
+            activeProvider: provider,
           })
         }
       }
     }
     initEcoBridge()
-  }, [account, chainId, library, ecoBridge])
+  }, [account, chainId, provider, ecoBridge])
 
   return <EcoBridgeContext.Provider value={ecoBridge}>{children}</EcoBridgeContext.Provider>
 }

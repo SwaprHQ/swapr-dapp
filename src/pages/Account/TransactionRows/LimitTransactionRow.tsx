@@ -31,7 +31,7 @@ interface LimitTransactionRowProps {
 
 export function LimitTransactionRow({ transaction }: LimitTransactionRowProps) {
   const { type, status, uid, network, sellToken, buyToken, confirmedTime, cancelOrder } = transaction
-  const { chainId, library } = useActiveWeb3React()
+  const { chainId, provider } = useActiveWeb3React()
   const [flipPrice, setFlipPrice] = useState(true)
   const notify = useNotificationPopup()
   const formattedSellToken = useToken(sellToken.tokenAddress)
@@ -51,15 +51,15 @@ export function LimitTransactionRow({ transaction }: LimitTransactionRowProps) {
     : `${formattedSellToken?.symbol} / ${formattedBuyToken?.symbol}`
 
   const handleDeleteOpenOrders = useCallback(async () => {
-    if (chainId && library) {
-      const response = await cancelOrder?.(uid, library)
+    if (chainId && provider) {
+      const response = await cancelOrder?.(uid, provider)
       if (response) {
         notify('Open order cancelled successfully.')
       } else {
         notify('Failed to cancel open limit order.', false)
       }
     }
-  }, [cancelOrder, chainId, library, notify, uid])
+  }, [cancelOrder, chainId, provider, notify, uid])
 
   const handleFlip = useCallback(() => setFlipPrice(flip => !flip), [])
 

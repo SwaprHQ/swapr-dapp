@@ -130,7 +130,7 @@ const quoteTTL = 5 * 60 * 1000
 
 // from the current swap inputs, compute the best trade and return it.
 export function useDerivedSwapInfo(platformOverride?: RoutablePlatform): UseDerivedSwapInfoResult {
-  const { account, chainId, library: provider } = useActiveWeb3React()
+  const { account, chainId, provider } = useActiveWeb3React()
   // Get all options for the input and output currencies
   const {
     independentField,

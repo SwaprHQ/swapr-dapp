@@ -40,17 +40,17 @@ import { useActiveWeb3React } from './index'
 
 // returns null on errors
 function useContract(address: string | undefined, ABI: any, withSignerIfPossible = true): Contract | null {
-  const { library, account } = useActiveWeb3React()
+  const { provider, account } = useActiveWeb3React()
 
   return useMemo(() => {
-    if (!address || !ABI || !library) return null
+    if (!address || !ABI || !provider) return null
     try {
-      return getContract(address, ABI, library, withSignerIfPossible && account ? account : undefined)
+      return getContract(address, ABI, provider, withSignerIfPossible && account ? account : undefined)
     } catch (error) {
       console.error('Failed to get contract', error)
       return null
     }
-  }, [address, ABI, library, withSignerIfPossible, account])
+  }, [address, ABI, provider, withSignerIfPossible, account])
 }
 
 export function useTokenContract(tokenAddress?: string, withSignerIfPossible?: boolean): Contract | null {
@@ -144,24 +144,24 @@ export function useStakingRewardsDistributionContract(
 }
 
 export function useSWPRClaimerContract(): Contract | null {
-  const { library, chainId, account } = useActiveWeb3React()
+  const { provider, chainId, account } = useActiveWeb3React()
   return useMemo(() => {
     const address = SWPR_CLAIMER_ADDRESS[ChainId.ARBITRUM_ONE]
     const ABI = SWPR_CLAIMER_ABI
-    if (!address || !isAddress(address) || address === constants.AddressZero || !ABI || !library) return null
+    if (!address || !isAddress(address) || address === constants.AddressZero || !ABI || !provider) return null
     try {
       return new Contract(
         address,
         ABI,
         account
-          ? (getProviderOrSigner(chainId === ChainId.ARBITRUM_ONE ? library : ARBITRUM_ONE_PROVIDER, account) as any)
+          ? (getProviderOrSigner(chainId === ChainId.ARBITRUM_ONE ? provider : ARBITRUM_ONE_PROVIDER, account) as any)
           : account
       )
     } catch (error) {
       console.error('Failed to get contract', error)
       return null
     }
-  }, [library, chainId, account])
+  }, [provider, chainId, account])
 }
 
 export function useSWPRConverterContract(withSignerIfPossible?: boolean): Contract | null {

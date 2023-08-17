@@ -19,7 +19,7 @@ interface NetworkSwitcherPopoverProps {
 
 export default function NetworkSwitcherPopover({ children, modal, placement }: NetworkSwitcherPopoverProps) {
   const closeModals = useCloseModals()
-  const { connector, chainId: activeChainId } = useActiveWeb3React()
+  const { chainId: activeChainId } = useActiveWeb3React()
   const networkSwitcherPopoverOpen = useModalOpen(modal)
   const unsupportedChainIdError = useUnsupportedChainIdError()
 
@@ -28,9 +28,7 @@ export default function NetworkSwitcherPopover({ children, modal, placement }: N
   })
 
   const isNetworkDisabled = (chainId: ChainId) => {
-    return (
-      connector?.supportedChainIds?.indexOf(chainId) === -1 || (!unsupportedChainIdError && activeChainId === chainId)
-    )
+    return !unsupportedChainIdError && activeChainId === chainId
   }
 
   if (!activeChainId) {

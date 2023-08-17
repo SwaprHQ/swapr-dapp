@@ -23,7 +23,7 @@ import {
   UniswapV2RoutablePlatform,
 } from '@swapr/sdk'
 
-import { AbstractConnector } from '@web3-react/abstract-connector'
+import { Connector } from '@web3-react/types'
 import { providers } from 'ethers'
 import { ReactNode } from 'react'
 
@@ -46,7 +46,7 @@ import SushiswapNewLogo from '../assets/images/sushiswap-new-logo.svg'
 import UniswapLogo from '../assets/images/uniswap-logo.svg'
 import VelodromeLogo from '../assets/images/velodrome-logo.svg'
 import WalletConnect from '../assets/images/wallet-connect.svg'
-import { injected, walletConnect, walletLink } from '../connectors'
+import { metaMask, walletConnect, coinbaseWallet } from '../connectors'
 import { BridgeIds, EcoBridgeConfig } from '../services/EcoBridge/EcoBridge.types'
 
 export const ZERO_ADDRESS = '0x0000000000000000000000000000000000000000'
@@ -317,7 +317,7 @@ export const PINNED_PAIRS: {
 export const ARBITRUM_ONE_PROVIDER = new providers.JsonRpcProvider('https://arb1.arbitrum.io/rpc')
 
 export interface WalletInfo {
-  connector?: AbstractConnector
+  connector?: Connector
   name: string
   iconName: string
   description: string
@@ -330,7 +330,7 @@ export interface WalletInfo {
 
 export const SUPPORTED_WALLETS: { [key: string]: WalletInfo } = {
   INJECTED: {
-    connector: injected,
+    connector: metaMask,
     name: 'Injected',
     iconName: RightArrow,
     description: 'Injected web3 provider.',
@@ -339,7 +339,7 @@ export const SUPPORTED_WALLETS: { [key: string]: WalletInfo } = {
     primary: true,
   },
   METAMASK: {
-    connector: injected,
+    connector: metaMask,
     name: 'MetaMask',
     iconName: Metamask,
     description: 'Easy-to-use browser extension.',
@@ -357,7 +357,7 @@ export const SUPPORTED_WALLETS: { [key: string]: WalletInfo } = {
     mobile: true,
   },
   COINBASE: {
-    connector: walletLink,
+    connector: coinbaseWallet,
     name: 'Coinbase Wallet',
     iconName: Coinbase,
     description: 'Connect using Coinbase Wallet.',

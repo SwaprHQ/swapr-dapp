@@ -1,8 +1,8 @@
-import { AbstractConnector } from '@web3-react/abstract-connector'
+import { Connector } from '@web3-react/types'
 import { Box, Flex } from 'rebass'
 import styled from 'styled-components'
 
-import { injected } from '../../connectors'
+import { metaMask } from '../../connectors'
 import { SUPPORTED_WALLETS } from '../../constants'
 import { TYPE } from '../../theme'
 import { ButtonPrimary } from '../Button'
@@ -55,10 +55,10 @@ export default function PendingView({
   setPendingError,
   tryActivation,
 }: {
-  connector?: AbstractConnector
+  connector?: Connector
   error?: boolean
   setPendingError: (error: boolean) => void
-  tryActivation: (connector: AbstractConnector) => void
+  tryActivation: (connector: Connector) => void
 }) {
   const isMetamask = window?.ethereum?.isMetaMask
 
@@ -67,7 +67,7 @@ export default function PendingView({
       {Object.keys(SUPPORTED_WALLETS).map(key => {
         const option = SUPPORTED_WALLETS[key]
         if (option.connector === connector) {
-          if (option.connector === injected) {
+          if (option.connector === metaMask) {
             if (isMetamask && option.name !== 'MetaMask') {
               return null
             }

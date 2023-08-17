@@ -67,12 +67,12 @@ export function useSwapsCallArguments(
   allowedSlippage: number = INITIAL_ALLOWED_SLIPPAGE, // in bips
   recipient?: string | null // the ENS name or address of the recipient of the trade, or null if swap should be returned to sender
 ): SwapCall[][] {
-  const { chainId, library, account } = useActiveWeb3React()
+  const { chainId, provider, account } = useActiveWeb3React()
 
   const deadline = useTransactionDeadline()
 
   return useMemo(() => {
-    if (!trades || trades.length === 0 || !recipient || !library || !chainId || !deadline) {
+    if (!trades || trades.length === 0 || !recipient || !provider || !chainId || !deadline) {
       return []
     }
 
@@ -127,7 +127,7 @@ export function useSwapsCallArguments(
 
       return swapMethods.map(transactionParameters => ({ transactionParameters }))
     })
-  }, [allowedSlippage, chainId, deadline, library, trades, recipient, account])
+  }, [allowedSlippage, chainId, deadline, provider, trades, recipient, account])
 }
 
 /**
@@ -173,7 +173,7 @@ export function useSwapCallback({
   allowedSlippage = INITIAL_ALLOWED_SLIPPAGE,
   recipientAddressOrName,
 }: UseSwapCallbackParams): UseSwapCallbackReturn {
-  const { account, chainId, library } = useActiveWeb3React()
+  const { account, chainId, provider } = useActiveWeb3React()
   const mainnetGasPrices = useMainnetGasPrices()
   const [preferredGasPrice] = useUserPreferredGasPrice()
   const { activeChartTab } = useContext(SwapTabContext)
@@ -188,7 +188,7 @@ export function useSwapCallback({
   const addTransaction = useTransactionAdder()
 
   return useMemo(() => {
-    if (!trade || !library || !account || !chainId) {
+    if (!trade || !provider || !account || !chainId) {
       return { state: SwapCallbackState.INVALID, callback: null, error: 'Missing dependencies' }
     }
     if (!recipient) {
@@ -204,7 +204,7 @@ export function useSwapCallback({
       callback: async function onSwap(): Promise<string> {
         // GPv2 trade
         if (trade instanceof CoWTrade) {
-          const signer = library.getSigner()
+          const signer = provider.getSigner()
 
           // Sign the order
           // and then submit the order to GPv2
@@ -237,7 +237,7 @@ export function useSwapCallback({
               }
             }
 
-            return library
+            return provider
               .getSigner()
               .estimateGas(transactionRequest as any)
               .then(gasEstimate => ({
@@ -247,7 +247,7 @@ export function useSwapCallback({
               .catch(gasError => {
                 console.debug('Gas estimate failed, trying eth_call to extract error', transactionRequest, gasError)
 
-                return library
+                return provider
                   .call(transactionRequest as any)
                   .then(result => {
                     console.debug('Unexpected successful call after failed estimate gas', call, gasError, result)
@@ -300,7 +300,7 @@ export function useSwapCallback({
           }
         }
 
-        return library
+        return provider
           .getSigner()
           .sendTransaction({
             gasLimit: calculateGasMargin(gasEstimate),
@@ -330,7 +330,7 @@ export function useSwapCallback({
     }
   }, [
     trade,
-    library,
+    provider,
     account,
     chainId,
     recipient,
