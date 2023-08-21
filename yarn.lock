@@ -7509,7 +7509,7 @@ __metadata:
     "@typescript-eslint/eslint-plugin": ^5.49.0
     "@typescript-eslint/parser": ^5.49.0
     "@uniswap/token-lists": ^1.0.0-beta.27
-    "@uniswap/v3-periphery": 1.4.1
+    "@uniswap/v3-periphery": 1.4.3
     "@web3-react/core": ^6.1.9
     "@web3-react/injected-connector": ^6.0.7
     "@web3-react/network-connector": ^6.2.9
@@ -9526,7 +9526,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@uniswap/v3-periphery@npm:^1.0.1, @uniswap/v3-periphery@npm:^1.1.1":
+"@uniswap/v3-periphery@npm:1.4.3, @uniswap/v3-periphery@npm:^1.0.1, @uniswap/v3-periphery@npm:^1.1.1":
   version: 1.4.3
   resolution: "@uniswap/v3-periphery@npm:1.4.3"
   dependencies:
