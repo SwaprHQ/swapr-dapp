@@ -45,7 +45,7 @@ export default function ExpeditionsModal({ onDismiss }: { onDismiss: () => void 
           </Row>
           <Row>
             <Text>
-              Follow Swapr <ExternalLink href="https://twitter.com/swapreth">Twitter</ExternalLink> or{' '}
+              Follow Swapr <ExternalLink href="https://twitter.com/swapr_dapp">Twitter</ExternalLink> or{' '}
               <ExternalLink href="https://discord.gg/4QXEJQkvHH">Discord</ExternalLink> to get updates on Expeditions.
             </Text>
           </Row>
