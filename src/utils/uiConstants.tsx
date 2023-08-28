@@ -345,7 +345,7 @@ export const FooterContent = {
         },
         {
           label: 'Twitter',
-          href: 'https://twitter.com/SwaprEth',
+          href: 'https://twitter.com/Swapr_dapp',
         },
         {
           label: 'Forum',
