@@ -34,13 +34,13 @@ export const [walletConnect, walletConnectHooks] = initializeConnector<WalletCon
     new WalletConnect({
       actions,
       options: {
-        projectId: '47ba8ad6d35c9c9087a75b35360c4b3a',
+        projectId: process.env.REACT_APP_WALLET_CONNECT_ID as string,
         chains: [ChainId.MAINNET],
         optionalChains: [
           ChainId.RINKEBY,
           ChainId.ARBITRUM_ONE,
           ChainId.ARBITRUM_RINKEBY,
-          ChainId.XDAI,
+          ChainId.GNOSIS,
           ChainId.POLYGON,
           ChainId.ARBITRUM_GOERLI,
           ChainId.OPTIMISM_MAINNET,
