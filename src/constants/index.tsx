@@ -82,6 +82,14 @@ export const ARBITRUM_NATIVE_USDC = new Token(
   'USD Coin'
 )
 
+export const OPTIMISM_NATIVE_USDC = new Token(
+  ChainId.OPTIMISM_MAINNET,
+  '0x0b2C639c533813f4Aa9D7837CAf62653d097Ff85',
+  6,
+  'USDC',
+  'USD Coin'
+)
+
 export const HONEY = new Token(ChainId.XDAI, '0x71850b7E9Ee3f13Ab46d67167341E4bDc905Eef9', 18, 'HNY', 'Honey')
 
 export const STAKE = new Token(
@@ -207,6 +215,7 @@ export const BASES_TO_CHECK_TRADES_AGAINST: ChainTokenList = {
   [ChainId.OPTIMISM_GOERLI]: [],
   [ChainId.OPTIMISM_MAINNET]: [
     USDC[ChainId.OPTIMISM_MAINNET],
+    OPTIMISM_NATIVE_USDC,
     USDT[ChainId.OPTIMISM_MAINNET],
     WBTC[ChainId.OPTIMISM_MAINNET],
   ],
@@ -259,6 +268,7 @@ export const SUGGESTED_BASES: ChainTokenList = {
     OP[ChainId.OPTIMISM_MAINNET],
     DAI[ChainId.OPTIMISM_MAINNET],
     USDC[ChainId.OPTIMISM_MAINNET],
+    OPTIMISM_NATIVE_USDC,
     USDT[ChainId.OPTIMISM_MAINNET],
     WBTC[ChainId.OPTIMISM_MAINNET],
   ],
