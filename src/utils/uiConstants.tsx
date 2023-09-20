@@ -344,8 +344,8 @@ export const FooterContent = {
           href: 'https://discord.gg/QFkNsjTkzD',
         },
         {
-          label: 'Twitter',
-          href: 'https://twitter.com/Swapr_dapp',
+          label: 'X',
+          href: 'https://x.com/Swapr_dapp',
         },
         {
           label: 'Forum',
