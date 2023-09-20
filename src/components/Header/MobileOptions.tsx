@@ -80,7 +80,7 @@ export default function MobileOptions() {
         content={
           <List>
             <ListItem>
-              <StyledExternalLink id="stackly-nav-link" href="https://stackly.eth.limo/">
+              <StyledExternalLink id="stackly-nav-link" href={process.env.REACT_APP_STACKLY_URL as string}>
                 {t('DCA')}
                 <span>↗</span>
               </StyledExternalLink>

@@ -281,7 +281,7 @@ function Header() {
             {t('rewards')}
             {networkWithoutSWPR && <HeaderLinkBadge label="NOT&nbsp;AVAILABLE" />}
           </HeaderLink>
-          <HeaderLink id="stackly-nav-link" href="https://stackly.eth.limo/">
+          <HeaderLink id="stackly-nav-link" href={process.env.REACT_APP_STACKLY_URL}>
             {t('DCA')}
             <Text ml="4px" fontSize="13px">
               ↗
