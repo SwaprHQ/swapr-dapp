@@ -19,7 +19,12 @@ export function StacklyPopup({ isStacklyOldDesign }: IStacklyPopup) {
           <br />
           through Stackly
         </StacklyFont>
-        <StacklyButton as="a" href="https://stackly.eth.limo" target="_blank" isStacklyOldDesign={isStacklyOldDesign}>
+        <StacklyButton
+          as="a"
+          href={process.env.REACT_APP_STACKLY_URL}
+          target="_blank"
+          isStacklyOldDesign={isStacklyOldDesign}
+        >
           Learn more
         </StacklyButton>
         <StacklyImage
