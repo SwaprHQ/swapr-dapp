@@ -47,7 +47,7 @@
     "@reduxjs/toolkit": "^1.9.5",
     "@swapr/core": "^0.3.19",
     "@swapr/periphery": "^0.3.22",
-    "@swapr/sdk": "SwaprHQ/swapr-sdk#fix/swa-98-1inch-not-showing-as-router",
+    "@swapr/sdk": "1.9.3",
     "@tanstack/react-query": "4.24.6",
     "@uniswap/token-lists": "^1.0.0-beta.27",
     "@uniswap/v3-periphery": "1.4.1",
