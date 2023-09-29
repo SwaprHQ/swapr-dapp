@@ -7745,7 +7745,7 @@ __metadata:
     "@storybook/testing-library": 0.1.0
     "@swapr/core": ^0.3.19
     "@swapr/periphery": ^0.3.22
-    "@swapr/sdk": 1.9.2
+    "@swapr/sdk": 1.9.3
     "@synthetixio/synpress": ^2.3.3
     "@tanstack/react-query": 4.24.6
     "@testing-library/cypress": ^9.0.0
@@ -7886,9 +7886,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@swapr/sdk@npm:1.9.2":
-  version: 1.9.2
-  resolution: "@swapr/sdk@npm:1.9.2"
+"@swapr/sdk@npm:1.9.3":
+  version: 1.9.3
+  resolution: "@swapr/sdk@npm:1.9.3"
   dependencies:
     "@cowprotocol/cow-sdk": ^1.0.2-RC.0
     "@ethersproject/abi": ^5.6.4
@@ -7919,7 +7919,7 @@ __metadata:
     tslib: ^2.3.1
   peerDependencies:
     ethers: ^5.4.0
-  checksum: c8c14464936afbc3ed3903ca7b9f00e36be5b10968b7fcf086593a12dd2485771c673349086970951f86feb4a30521484ad4252718b835fb0275c09adb13e2c2
+  checksum: 9bc768db19b2b0177e2334214aadc368cfea79dc05a18d7bbe2719da2d792d36d965aabb98de76dc9e6340cf0c3c4fac54779fb9091853cdf992e5715b96a472
   languageName: node
   linkType: hard
 
