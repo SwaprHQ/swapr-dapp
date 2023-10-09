@@ -6,7 +6,7 @@
   "license": "GPL-3.0-or-later",
   "scripts": {
     "start": "yarn codegen:socket && yarn codegen:graphql && react-app-rewired start",
-    "build": "yarn codegen:socket && yarn codegen:graphql && cross-env GENERATE_SOURCEMAP=false react-app-rewired build",
+    "build": "yarn codegen:wallet-connect-domain-verification && yarn codegen:socket && yarn codegen:graphql && cross-env GENERATE_SOURCEMAP=false react-app-rewired build",
     "build:serve": "yarn build && serve -s ./build -l 5001",
     "ipfs-build": "cross-env PUBLIC_URL=\".\" GENERATE_SOURCEMAP=false react-app-rewired build",
     "lint": "eslint src --ext js,jsx,ts,tsx",
@@ -31,7 +31,8 @@
     "storybook": "storybook dev -p 6006 -s public",
     "build-storybook": "storybook build -s public",
     "chromatic": "chromatic --exit-zero-on-changes",
-    "codegen:graphql": "graphql-codegen --config graphql-codegen.yml"
+    "codegen:graphql": "graphql-codegen --config graphql-codegen.yml",
+    "codegen:wallet-connect-domain-verification": "./node_modules/.bin/ts-node --project ./bin/tsconfig.json ./bin/generate-wallet-connect-key/index.ts "
   },
   "dependencies": {
     "@apollo/client": "^3.7.5",

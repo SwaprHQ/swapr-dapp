@@ -20,6 +20,7 @@
 .env.local
 .env.development.local
 .env.production.local
+.env.production
 
 /.netlify
 netlify.toml
@@ -49,3 +50,4 @@ mochawesome-report
 !src/pages/Swap/LimitOrderBox/generated/**/*
 storybook-static
 
+public/.well-known
