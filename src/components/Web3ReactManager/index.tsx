@@ -23,10 +23,9 @@ const Message = styled.h2`
 
 export default function Web3ReactManager({ children }: { children: JSX.Element }) {
   const { t } = useTranslation('common')
-  const { isActive, connector, hooks, chainId } = useWeb3React()
-  const { useSelectedIsActive, usePriorityChainId } = hooks
+  const { isActive, hooks } = useWeb3React()
+  const { useSelectedIsActive } = hooks
   const networkIsActive = useSelectedIsActive(network)
-  const ativeChainId = usePriorityChainId()
   const targetedChainId = useTargetedChainIdFromUrl()
   const isUnsupportedChainIdError = useUnsupportedChainIdError()
 
@@ -35,22 +34,14 @@ export default function Web3ReactManager({ children }: { children: JSX.Element }
 
   //after eagerly trying injected, if the network connect ever isn't active or in an error state, activate itd
   useEffect(() => {
-    if (triedEager && !networkIsActive && !isActive && !isUnsupportedChainIdError) {
+    if (triedEager && !isUnsupportedChainIdError) {
       if (targetedChainId && Boolean(ChainId[targetedChainId])) {
         network.activate(targetedChainId)
+      } else {
+        network.activate()
       }
-      network.activate()
     }
-  }, [
-    triedEager,
-    targetedChainId,
-    isActive,
-    isUnsupportedChainIdError,
-    connector,
-    networkIsActive,
-    chainId,
-    ativeChainId,
-  ])
+  }, [triedEager, isUnsupportedChainIdError, targetedChainId])
 
   // when there's no account connected, react to logins (broadly speaking) on the injected provider, if it exists
   useInactiveListener(!triedEager)
