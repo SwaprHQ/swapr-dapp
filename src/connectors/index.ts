@@ -35,8 +35,9 @@ export const [walletConnect, walletConnectHooks] = initializeConnector<WalletCon
       actions,
       options: {
         projectId: process.env.REACT_APP_WALLET_CONNECT_ID as string,
-        chains: [ChainId.MAINNET],
+        chains: [],
         optionalChains: [
+          ChainId.MAINNET,
           ChainId.RINKEBY,
           ChainId.ARBITRUM_ONE,
           ChainId.ARBITRUM_RINKEBY,
@@ -49,8 +50,27 @@ export const [walletConnect, walletConnectHooks] = initializeConnector<WalletCon
           ChainId.ZK_SYNC_ERA_MAINNET,
           ChainId.ZK_SYNC_ERA_TESTNET,
         ],
+        rpcMap: {
+          [ChainId.MAINNET]: `https://mainnet.infura.io/v3/${INFURA_PROJECT_ID}`,
+          [ChainId.XDAI]: 'https://rpc.gnosischain.com/',
+          [ChainId.ARBITRUM_ONE]: 'https://arb1.arbitrum.io/rpc',
+          [ChainId.POLYGON]: 'https://polygon-rpc.com/',
+          [ChainId.ARBITRUM_GOERLI]: 'https://goerli-rollup.arbitrum.io/rpc',
+          [ChainId.OPTIMISM_MAINNET]: 'https://mainnet.optimism.io',
+          [ChainId.OPTIMISM_GOERLI]: 'https://goerli.optimism.io',
+          [ChainId.BSC_MAINNET]: 'https://bsc-dataseed.binance.org/',
+          [ChainId.ZK_SYNC_ERA_MAINNET]: `https://mainnet.era.zksync.io`,
+          [ChainId.ZK_SYNC_ERA_TESTNET]: `https://testnet.era.zksync.dev`,
+        },
         showQrModal: true,
+        optionalMethods: ['eth_signTypedData', 'eth_signTypedData_v4', 'eth_sign', 'eth_sendTransaction'],
+        qrModalOptions: {
+          themeVariables: {
+            '--wcm-z-index': '199',
+          },
+        },
       },
+      onError: error => console.log('Wallet Connect error: ', error),
     })
 )
 

@@ -114,10 +114,11 @@ export default function Web3Status() {
       connector.deactivate ? connector.deactivate() : connector.resetState()
     }
 
-    if (connector)
-      connector.activate()?.catch(error => {
+    if (connector) {
+      connector.activate(networkConnectorChainId)?.catch(error => {
         console.error('Error while activating connector: ', error)
       })
+    }
   }
 
   const toggleWalletSwitcherPopover = useWalletSwitcherPopoverToggle()
