@@ -103,7 +103,7 @@ interface ConnectWalletProps {
 }
 
 export const ConnectWalletPopover = ({ tryActivation, children }: ConnectWalletProps) => {
-  const { connector, isActive, hooks } = useWeb3React()
+  const { connector, isActive, hooks, account } = useWeb3React()
   const { useSelectedIsActive } = hooks
   const selectedIsActive = useSelectedIsActive(connector)
 
@@ -194,7 +194,7 @@ export const ConnectWalletPopover = ({ tryActivation, children }: ConnectWalletP
         content={
           <List data-testid="wallet-connect-list">
             {getOptions()}
-            {isActive && (
+            {isActive && Boolean(account) && (
               <DisconnectButton
                 onClick={() => connector && (connector.deactivate ? connector.deactivate() : connector.resetState())}
               >
