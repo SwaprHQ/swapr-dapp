@@ -1,4 +1,4 @@
-import { CurrencyAmount, Percent, RoutablePlatform, Trade, TradeType, UniswapV2Trade } from '@swapr/sdk'
+import { CurrencyAmount, Percent, RoutablePlatform, Trade, TradeType, UniswapV2Trade, ZERO } from '@swapr/sdk'
 
 import { useCallback, useEffect, useState } from 'react'
 import { ChevronsDown } from 'react-feather'
@@ -89,7 +89,13 @@ const PriceImpact = ({ priceImpact }: { priceImpact?: Percent }) => {
       fontSize="10px"
       lineHeight="12px"
     >
-      {priceImpact ? (priceImpact.lessThan(ONE_BIPS) ? '<0.01%' : `${priceImpact.toFixed(2)}%`) : '-'}
+      {priceImpact
+        ? priceImpact.equalTo(ZERO)
+          ? '0%'
+          : priceImpact.lessThan(ONE_BIPS)
+          ? '<0.01%'
+          : `${priceImpact.toFixed(2)}%`
+        : '-'}
     </TYPE.Main>
   )
 }
