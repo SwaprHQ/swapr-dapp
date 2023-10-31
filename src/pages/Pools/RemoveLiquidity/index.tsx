@@ -30,7 +30,6 @@ import { useCurrency } from '../../../hooks/Tokens'
 import { ApprovalState, useApproveCallback } from '../../../hooks/useApproveCallback'
 import { usePairContract, useWrappingToken } from '../../../hooks/useContract'
 import { useDebouncedChangeHandler } from '../../../hooks/useDebouncedChangeHandler'
-import useIsArgentWallet from '../../../hooks/useIsArgentWallet'
 import { useNativeCurrency } from '../../../hooks/useNativeCurrency'
 import { useRouter } from '../../../hooks/useRouter'
 import useTransactionDeadline from '../../../hooks/useTransactionDeadline'
@@ -131,14 +130,13 @@ export default function RemoveLiquidity() {
   const routerAddress = UniswapV2RoutablePlatform.SWAPR.routerAddress[chainId ? chainId : ChainId.MAINNET]
   const [approval, approveCallback] = useApproveCallback(parsedAmounts[Field.LIQUIDITY], routerAddress)
 
-  const isArgentWallet = useIsArgentWallet()
-
   async function onAttemptToApprove() {
-    if (!pairContract || !pair || !provider || !deadline) throw new Error('missing dependencies')
+    if (!pairContract || !pair || !provider || !deadline || !account) throw new Error('missing dependencies')
     const liquidityAmount = parsedAmounts[Field.LIQUIDITY]
     if (!liquidityAmount) throw new Error('missing liquidity amount')
+    const isSmartContractAccount = (await provider.getCode(account)) !== '0x'
 
-    if (isArgentWallet) {
+    if (isSmartContractAccount) {
       return approveCallback()
     }
 
