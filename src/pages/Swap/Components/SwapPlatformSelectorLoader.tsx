@@ -1,4 +1,3 @@
-import { FC } from 'react'
 import Skeleton from 'react-loading-skeleton'
 import styled from 'styled-components'
 
@@ -42,22 +41,16 @@ export const ListHeader = styled(ListContentItem)`
   }
 `
 
-interface PlatformSelectorLoaderProps {
-  showGasFeeColumn?: boolean
-}
-
 /**
  * A Skeleton loader for the platform selector
  */
-export const PlatformSelectorLoader: FC<PlatformSelectorLoaderProps> = ({ showGasFeeColumn }) => (
+export const PlatformSelectorLoader = () => (
   <>
     {[0, 1, 2].map(i => (
       <ListContentItem key={i}>
-        <Skeleton width="72px" height="12px" style={{ margin: '4px 0px' }} />
-        <Skeleton width="36px" height="12px" style={{ margin: '4px 0px' }} />
-        <Skeleton width="24px" height="12px" style={{ margin: '4px 0px' }} />
-        {showGasFeeColumn && <Skeleton width="20px" height="12px" style={{ margin: '4px 0px' }} />}
-        <Skeleton width="60px" height="12px" style={{ margin: '4px 0px' }} />
+        <Skeleton width="72px" height="12px" style={{ margin: '4px 6px' }} />
+        <Skeleton width="56px" height="12px" style={{ margin: '4px 0px' }} />
+        <Skeleton width="60px" height="12px" style={{ margin: '4px 6px' }} />
       </ListContentItem>
     ))}
   </>
