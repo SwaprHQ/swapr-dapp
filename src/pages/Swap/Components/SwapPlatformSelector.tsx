@@ -1,4 +1,4 @@
-import { CurrencyAmount, Percent, RoutablePlatform, Trade, TradeType, UniswapV2Trade, ZERO } from '@swapr/sdk'
+import { CurrencyAmount, RoutablePlatform, Trade, TradeType, UniswapV2Trade } from '@swapr/sdk'
 
 import { useCallback, useEffect, useState } from 'react'
 import { ChevronsDown } from 'react-feather'
@@ -19,21 +19,15 @@ import {
   SelectionListWindowWrapper,
 } from '../../../components/SelectionList'
 import WarningHelper from '../../../components/WarningHelper'
-import { ONE_BIPS, PRICE_IMPACT_MEDIUM, ROUTABLE_PLATFORM_LOGO } from '../../../constants'
+import { ROUTABLE_PLATFORM_LOGO } from '../../../constants'
 import useDebounce from '../../../hooks/useDebounce'
 import { useGasFeesUSD } from '../../../hooks/useGasFeesUSD'
 import { useIsMobileByMedia } from '../../../hooks/useIsMobileByMedia'
 import { useSwapsGasEstimations } from '../../../hooks/useSwapsGasEstimate'
 import { useSwapState } from '../../../state/swap/hooks'
-import { Field } from '../../../state/swap/types'
 import { useUserSlippageTolerance } from '../../../state/user/hooks'
 import { TYPE } from '../../../theme'
-import {
-  computeSlippageAdjustedAmounts,
-  computeTradePriceBreakdown,
-  limitNumberOfDecimalPlaces,
-  simpleWarningSeverity,
-} from '../../../utils/prices'
+import { computeTradePriceBreakdown, limitNumberOfDecimalPlaces } from '../../../utils/prices'
 
 import { PlatformSelectorLoader } from './SwapPlatformSelectorLoader'
 import SwapRoute from './SwapRoute'
@@ -82,24 +76,6 @@ function GasFee({ loading, gasFeeUSD }: GasFeeProps) {
   return <WarningHelper text="Could not estimate gas fee. Please make sure you've approved the traded token." />
 }
 
-const PriceImpact = ({ priceImpact }: { priceImpact?: Percent }) => {
-  return (
-    <TYPE.Main
-      color={simpleWarningSeverity(priceImpact) >= PRICE_IMPACT_MEDIUM ? 'red1' : 'text4'}
-      fontSize="10px"
-      lineHeight="12px"
-    >
-      {priceImpact
-        ? priceImpact.equalTo(ZERO)
-          ? '0%'
-          : priceImpact.lessThan(ONE_BIPS)
-          ? '<0.01%'
-          : `${priceImpact.toFixed(2)}%`
-        : '-'}
-    </TYPE.Main>
-  )
-}
-
 export function SwapPlatformSelector({
   isLoading,
   allPlatformTrades,
@@ -112,7 +88,7 @@ export function SwapPlatformSelector({
 
   const [showAllPlatformsTrades, setShowAllPlatformsTrades] = useState(false)
   const allowedSlippage = useUserSlippageTolerance()
-  const { recipient, independentField } = useSwapState()
+  const { recipient } = useSwapState()
   const { loading: loadingTradesGasEstimates, estimations } = useSwapsGasEstimations(
     allowedSlippage,
     recipient,
@@ -160,27 +136,20 @@ export function SwapPlatformSelector({
           <SelectionListLabel justify="start" flex={showGasFees ? '30%' : '45%'}>
             {t('platfromSelector.exchange')}
           </SelectionListLabel>
-          <SelectionListLabel>
-            {isMobileByMedia ? t('platfromSelector.pImp') : t('platfromSelector.pImpact')}
-          </SelectionListLabel>
           <SelectionListLabel>{t('platfromSelector.fee')}</SelectionListLabel>
-          {showGasFees && <SelectionListLabel>{t('platfromSelector.gas')}</SelectionListLabel>}
-          <SelectionListLabel flex="25%">
-            {independentField === Field.OUTPUT ? t('platfromSelector.maxSent') : t('platfromSelector.minReceived')}
+          <SelectionListLabel flex="15%" justify="end">
+            Price
           </SelectionListLabel>
         </SelectionListLabelWrapper>
         {isLoading && allPlatformTrades?.length === 0 ? (
-          <PlatformSelectorLoader showGasFeeColumn={showGasFees} />
+          <PlatformSelectorLoader />
         ) : (
           displayedPlatformTrade?.map((trade, i) => {
             if (!trade) return null // some platforms might not be compatible with the currently selected network
             const isExactIn = trade.tradeType === TradeType.EXACT_INPUT
             const gasFeeUSD = gasFeesUSD[i]
-            const { realizedLPFee, priceImpactWithoutFee } = computeTradePriceBreakdown(trade)
-            const slippageAdjustedAmounts = computeSlippageAdjustedAmounts(trade)
-            const tokenAmount = limitNumberOfDecimalPlaces(
-              isExactIn ? slippageAdjustedAmounts[Field.OUTPUT] : slippageAdjustedAmounts[Field.INPUT]
-            )
+            const { realizedLPFee } = computeTradePriceBreakdown(trade)
+            const tokenAmount = limitNumberOfDecimalPlaces(isExactIn ? trade.outputAmount : trade.inputAmount)
 
             return (
               <SelectionListOption
@@ -199,9 +168,6 @@ export function SwapPlatformSelector({
                     {trade.platform.name}
                   </StyledFlex>
                 </SelectionListName>
-                <SelectionListDetails>
-                  <PriceImpact priceImpact={priceImpactWithoutFee} />
-                </SelectionListDetails>
                 <SelectionListDetails>{realizedLPFee ? `${realizedLPFee.toFixed(2)}%` : '-'}</SelectionListDetails>
                 {showGasFees && (
                   <SelectionListDetails>
