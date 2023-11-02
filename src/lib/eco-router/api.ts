@@ -5,6 +5,7 @@ import {
   CurveTrade,
   getAllCommonUniswapV2Pairs,
   OneInchTrade,
+  Percent,
   RoutablePlatform,
   Token,
   Trade,
@@ -25,6 +26,8 @@ import {
   EcoRouterResults,
   EcoRouterSourceOptionsParams,
 } from './types'
+
+const ONE_PERCENT = new Percent('1', '100')
 
 /**
  * Sort trades by price in descending order. Best trades are first.
@@ -160,8 +163,10 @@ export async function getExactIn(
     })
   )
 
-  const unsortedTrades = ecoRouterTradeList.filter(trade => trade !== undefined || trade !== null) as Trade[]
-  // remove undefined values
+  // remove undefined values and hight impact prices
+  const unsortedTrades = ecoRouterTradeList
+    .filter(trade => trade !== undefined || trade !== null)
+    .filter(trade => trade?.priceImpact.lessThan(ONE_PERCENT)) as Trade[]
 
   // Return the list of sorted trades
   return {
@@ -276,7 +281,10 @@ export async function getExactOut(
     })
   )
 
-  const unsortedTrades = ecoRouterTradeList.filter(trade => trade !== undefined || trade !== null) as Trade[]
+  // remove undefined values and hight impact prices
+  const unsortedTrades = ecoRouterTradeList
+    .filter(trade => trade !== undefined || trade !== null)
+    .filter(trade => trade?.priceImpact.lessThan(ONE_PERCENT)) as Trade[]
 
   // Return the list of sorted trades
   return {
