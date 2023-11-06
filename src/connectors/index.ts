@@ -6,7 +6,7 @@ import { MetaMask } from '@web3-react/metamask'
 import { Network } from '@web3-react/network'
 import { WalletConnect } from '@web3-react/walletconnect-v2'
 
-export const INFURA_PROJECT_ID = 'e1a3bfc40093494ca4f36b286ab36f2d'
+export const INFURA_PROJECT_ID = process.env.REACT_APP_INFURA_KEY ?? ''
 
 export const [network, networkHooks] = initializeConnector<Network>(
   actions =>
