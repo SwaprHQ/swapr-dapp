@@ -13,7 +13,7 @@ export const [network, networkHooks] = initializeConnector<Network>(
     new Network({
       actions,
       urlMap: {
-        [ChainId.MAINNET]: `https://mainnet.infura.io/v3/${INFURA_PROJECT_ID}`,
+        [ChainId.MAINNET]: `https://rpc.mevblocker.io/`,
         [ChainId.XDAI]: 'https://rpc.gnosischain.com/',
         [ChainId.ARBITRUM_ONE]: 'https://arb1.arbitrum.io/rpc',
         [ChainId.POLYGON]: 'https://polygon-rpc.com/',
@@ -51,7 +51,7 @@ export const [walletConnect, walletConnectHooks] = initializeConnector<WalletCon
           ChainId.ZK_SYNC_ERA_TESTNET,
         ],
         rpcMap: {
-          [ChainId.MAINNET]: `https://mainnet.infura.io/v3/${INFURA_PROJECT_ID}`,
+          [ChainId.MAINNET]: `https://rpc.mevblocker.io/`,
           [ChainId.XDAI]: 'https://rpc.gnosischain.com/',
           [ChainId.ARBITRUM_ONE]: 'https://arb1.arbitrum.io/rpc',
           [ChainId.POLYGON]: 'https://polygon-rpc.com/',
@@ -79,7 +79,7 @@ export const [coinbaseWallet, coinbaseWalletHooks] = initializeConnector<Coinbas
     new CoinbaseWallet({
       actions,
       options: {
-        url: `https://mainnet.infura.io/v3/${INFURA_PROJECT_ID}`,
+        url: `https://rpc.mevblocker.io/`,
         appName: 'web3-react',
       },
     })
