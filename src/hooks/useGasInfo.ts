@@ -2,8 +2,6 @@ import { ChainId } from '@swapr/sdk'
 
 import { useEffect, useState } from 'react'
 
-import { INFURA_PROJECT_ID } from '../connectors'
-
 import { useActiveWeb3React } from './index'
 
 interface ChainGasInfo {
@@ -32,7 +30,7 @@ const gasInfoChainUrls: ChainGasInfo = {
     keys: ['ProposeGasPrice', 'FastGasPrice', 'SafeGasPrice'],
   },
   [ChainId.ARBITRUM_ONE]: {
-    url: `https://arbitrum-mainnet.infura.io/v3/${INFURA_PROJECT_ID}`,
+    url: `https://arb1.arbitrum.io/rpc`,
     requestConfig: {
       method: 'POST',
       headers: {
