@@ -17,6 +17,7 @@ import { useModalOpen, useToggleShowClaimPopup } from '../../state/application/h
 import { useDarkModeManager, useUpdateSelectedChartOption } from '../../state/user/hooks'
 import { ChartOption } from '../../state/user/reducer'
 import { useTokenBalance } from '../../state/wallet/hooks'
+import { ExternalLink } from '../../theme'
 import { breakpoints } from '../../utils/theme'
 import ClaimModal from '../Claim/ClaimModal'
 import { UnsupportedNetworkPopover } from '../NetworkUnsupportedPopover'
@@ -196,6 +197,40 @@ const StyledChevron = styled(ChevronUp)<{ open: boolean }>`
   stroke: ${({ theme }) => theme.orange1};
   transform: ${({ open }) => (open ? 'rotate(0deg)' : 'rotate(180deg)')};
 `
+const DCAExternalLink = styled(ExternalLink)`
+  display: none;
+  ${({ theme }) => theme.mediaWidth.upToMedium`
+    position: relative;
+    display: flex;
+    font-weight: 600;
+    font-size: 14px;
+    color: #c9c7db;
+    margin-right: 18px;
+  `}
+`
+
+const DCAHeaderLink = styled(HeaderLink)`
+  margin-right: 18px;
+`
+
+const RewardsHeaderMobileLink = styled(HeaderMobileLink)`
+  ${({ theme }) => theme.mediaWidth.upToSmall`
+    display: none;
+  `};
+`
+
+const DCABadge = styled.p`
+  position: absolute;
+  top: -12px;
+  right: -34px;
+  font-size: 10px;
+  background: #97df5c;
+  padding: 1px 6px;
+  border-radius: 16px;
+  color: black;
+  line-height: 16px;
+  font-weight: 600;
+`
 
 function Header() {
   const { account, chainId } = useActiveWeb3React()
@@ -281,12 +316,10 @@ function Header() {
             {t('rewards')}
             {networkWithoutSWPR && <HeaderLinkBadge label="NOT&nbsp;AVAILABLE" />}
           </HeaderLink>
-          <HeaderLink id="stackly-nav-link" href={process.env.REACT_APP_STACKLY_URL}>
+          <DCAHeaderLink id="stackly-nav-link" href={process.env.REACT_APP_STACKLY_URL}>
             {t('DCA')}
-            <Text ml="4px" fontSize="13px">
-              ↗
-            </Text>
-          </HeaderLink>
+            <DCABadge>NEW</DCABadge>
+          </DCAHeaderLink>
           <HeaderLink id="vote-nav-link" href="https://snapshot.org/#/swpr.eth">
             {t('vote')}
             <Text ml="4px" fontSize="13px">
@@ -361,10 +394,14 @@ function Header() {
             </HeaderMobileLink>
           )}
           {!networkWithoutSWPR && (
-            <HeaderMobileLink id="rewards-nav-link" to="/rewards">
+            <RewardsHeaderMobileLink id="rewards-nav-link" to="/rewards">
               {t('rewards')}
-            </HeaderMobileLink>
+            </RewardsHeaderMobileLink>
           )}
+          <DCAExternalLink id="stackly-nav-link" href={process.env.REACT_APP_STACKLY_URL || ''}>
+            {t('DCA')}
+            <DCABadge>NEW</DCABadge>
+          </DCAExternalLink>
           <HeaderMobileLink id="vote-nav-link" href={`https://snapshot.org/#/swpr.eth`}>
             {t('vote')}
             <Text ml="4px" fontSize="11px">

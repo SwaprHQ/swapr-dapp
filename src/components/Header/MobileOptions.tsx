@@ -1,3 +1,5 @@
+import { SWPR } from '@swapr/sdk'
+
 import { darken } from 'polished'
 import { useRef } from 'react'
 import { useTranslation } from 'react-i18next'
@@ -5,11 +7,14 @@ import styled from 'styled-components'
 
 import { ReactComponent as Cross } from '../../assets/images/crossIcon.svg'
 import { ReactComponent as ThreeBars } from '../../assets/images/three-bars.svg'
+import { useActiveWeb3React } from '../../hooks'
 import { useOnClickOutside } from '../../hooks/useOnClickOutside'
 import { ApplicationModal } from '../../state/application/actions'
 import { useModalOpen, useToggleMobileMenu } from '../../state/application/hooks'
 import { ExternalLink } from '../../theme'
 import Popover from '../Popover'
+
+import { HeaderMobileLink } from './HeaderLink'
 
 const StyledPopover = styled(Popover)`
   padding: 22px;
@@ -69,6 +74,11 @@ export default function MobileOptions() {
   const popoverRef = useRef(null)
   const open = useModalOpen(ApplicationModal.MOBILE)
   const toggle = useToggleMobileMenu()
+  const { chainId } = useActiveWeb3React()
+
+  const newSwpr = chainId ? SWPR[chainId] : undefined
+
+  const networkWithoutSWPR = !newSwpr
 
   const { t } = useTranslation('common')
   useOnClickOutside(popoverRef, open ? toggle : undefined)
@@ -79,12 +89,13 @@ export default function MobileOptions() {
         placement="bottom-end"
         content={
           <List>
-            <ListItem>
-              <StyledExternalLink id="stackly-nav-link" href={process.env.REACT_APP_STACKLY_URL as string}>
-                {t('DCA')}
-                <span>↗</span>
-              </StyledExternalLink>
-            </ListItem>
+            {networkWithoutSWPR && (
+              <ListItem>
+                <HeaderMobileLink id="rewards-nav-link" to="/rewards">
+                  {t('rewards')}
+                </HeaderMobileLink>
+              </ListItem>
+            )}
 
             <ListItem>
               <StyledExternalLink id="charts-nav-link" href="https://dxstats.eth.limo/">
