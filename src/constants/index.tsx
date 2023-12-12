@@ -49,6 +49,8 @@ import WalletConnect from '../assets/images/wallet-connect.svg'
 import { metaMask, walletConnect, coinbaseWallet } from '../connectors'
 import { BridgeIds, EcoBridgeConfig } from '../services/EcoBridge/EcoBridge.types'
 
+export * from './urls'
+
 export const ZERO_ADDRESS = '0x0000000000000000000000000000000000000000'
 export const SOCKET_NATIVE_TOKEN_ADDRESS = '0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee'
 

@@ -1,5 +1,7 @@
 import TextyAnim from 'rc-texty'
 
+import { DISCORD_INVITE_LINK } from '../constants'
+
 import Entry2 from './../assets/images/blog/blog-entry-2.jpg'
 import EcoRouterArticle from './../assets/images/blog/ecorouter-article.webp'
 import MevArticle from './../assets/images/blog/mev-article.webp'
@@ -88,7 +90,7 @@ export const HeroContent = {
     {
       label: 'Join Our Discord',
       type: 'dark',
-      href: '#',
+      href: DISCORD_INVITE_LINK,
     },
   ],
 } as const
@@ -341,7 +343,7 @@ export const FooterContent = {
       footerLinks: [
         {
           label: 'Discord',
-          href: 'https://discord.gg/QFkNsjTkzD',
+          href: DISCORD_INVITE_LINK,
         },
         {
           label: 'X',
