@@ -88,6 +88,7 @@
   "vote": "Votazione",
   "charts": "Grafici",
   "liquidity": "Liquidità",
+  "rangeLiquidity": "Liquidità dell'intervallo",
   "rewards": "Ricompense",
   "connectWallet": "Connect wallet"
 }

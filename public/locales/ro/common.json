@@ -76,6 +76,7 @@
   "vote": "Vot",
   "charts": "Diagrame",
   "liquidity": "Lichiditate",
+  "rangeLiquidity": "Lichiditatea intervalului",
   "rewards": "Recompense",
   "connectWallet": "Connect wallet"
 }

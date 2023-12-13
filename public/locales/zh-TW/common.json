@@ -72,10 +72,11 @@
   "label": "代幣符號",
   "decimals": "小數位數",
   "enterTokenCont": "輸入代幣地址",
-  "bridge": "Bridge",
-  "vote": "Vote",
-  "charts": "Charts",
-  "liquidity": "Liquidity",
-  "rewards": "Rewards",
+  "bridge": "橋",
+  "vote": "投票",
+  "charts": "圖表",
+  "liquidity": "流動性",
+  "rangeLiquidity": "流動性範圍",
+  "rewards": "獎勵",
   "connectWallet": "Connect wallet"
 }

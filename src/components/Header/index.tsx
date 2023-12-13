@@ -295,6 +295,14 @@ function Header() {
             {t('liquidity')}
             {networkWithoutSWPR && <HeaderLinkBadge label="NOT&nbsp;AVAILABLE" />}
           </HeaderLink>
+          <HeaderLink
+            data-testid="range-liquidity-nav-link"
+            id="range-liquidity-nav-link"
+            href="https://swapr.liquidity.eth.limo/"
+          >
+            {t('rangeLiquidity')}
+            {networkWithoutSWPR && <HeaderLinkBadge label="NOT&nbsp;AVAILABLE" />}
+          </HeaderLink>
           <HeaderLink data-testid="rewards-nav-link" id="rewards-nav-link" to="/rewards" disabled={networkWithoutSWPR}>
             {t('rewards')}
             {networkWithoutSWPR && <HeaderLinkBadge label="NOT&nbsp;AVAILABLE" />}
@@ -381,6 +389,10 @@ function Header() {
               {t('rewards')}
             </RewardsHeaderMobileLink>
           )}
+          <HeaderMobileLink id="range-liquidity-nav-link" href="https://swapr.liquidity.eth.limo/">
+            {t('rangeLiquidity')}
+          </HeaderMobileLink>
+
           <DCAExternalLink id="stackly-nav-link" href={process.env.REACT_APP_STACKLY_URL || ''}>
             {t('DCA')}
             <DCABadge>NEW</DCABadge>

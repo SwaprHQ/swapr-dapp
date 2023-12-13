@@ -76,6 +76,7 @@
   "vote": "投票",
   "charts": "图表",
   "liquidity": "流动性",
+  "rangeLiquidity": "流动性范围",
   "rewards": "奖励",
   "connectWallet": "Connect wallet"
 }
