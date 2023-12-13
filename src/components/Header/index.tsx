@@ -9,17 +9,13 @@ import styled from 'styled-components'
 
 import { ReactComponent as GasInfoSvg } from '../../assets/images/gas-info.svg'
 import { useActiveWeb3React, useUnsupportedChainIdError } from '../../hooks'
-import { useSwaprSinglelSidedStakeCampaigns } from '../../hooks/singleSidedStakeCampaigns/useSwaprSingleSidedStakeCampaigns'
 import { useGasInfo } from '../../hooks/useGasInfo'
-import { useLiquidityMiningCampaignPosition } from '../../hooks/useLiquidityMiningCampaignPosition'
 import { ApplicationModal } from '../../state/application/actions'
-import { useModalOpen, useToggleShowClaimPopup } from '../../state/application/hooks'
+import { useModalOpen } from '../../state/application/hooks'
 import { useDarkModeManager, useUpdateSelectedChartOption } from '../../state/user/hooks'
 import { ChartOption } from '../../state/user/reducer'
-import { useTokenBalance } from '../../state/wallet/hooks'
 import { ExternalLink } from '../../theme'
 import { breakpoints } from '../../utils/theme'
-import ClaimModal from '../Claim/ClaimModal'
 import { UnsupportedNetworkPopover } from '../NetworkUnsupportedPopover'
 import Row, { RowFixed, RowFlat } from '../Row'
 import { Settings } from '../Settings'
@@ -239,16 +235,11 @@ function Header() {
   const [isGasInfoOpen, setIsGasInfoOpen] = useState(false)
   const { gas } = useGasInfo()
   const [isDark] = useDarkModeManager()
-  const { loading, data } = useSwaprSinglelSidedStakeCampaigns()
-  const { stakedTokenAmount } = useLiquidityMiningCampaignPosition(data, account ? account : undefined)
 
   /*  Expeditions hidden by SWA-27 request
    * const toggleExpeditionsPopup = useToggleShowExpeditionsPopup()
    */
-  const toggleClaimPopup = useToggleShowClaimPopup()
-  const accountOrUndefined = useMemo(() => account || undefined, [account])
   const newSwpr = useMemo(() => (chainId ? SWPR[chainId] : undefined), [chainId])
-  const newSwprBalance = useTokenBalance(accountOrUndefined, newSwpr)
   const isUnsupportedNetworkModal = useModalOpen(ApplicationModal.UNSUPPORTED_NETWORK)
   const isUnsupportedChainIdError = useUnsupportedChainIdError()
 
@@ -279,14 +270,6 @@ function Header() {
 
   return (
     <HeaderFrame>
-      <ClaimModal
-        onDismiss={toggleClaimPopup}
-        newSwprBalance={newSwprBalance}
-        stakedAmount={stakedTokenAmount?.toFixed(3)}
-        singleSidedCampaignLink={
-          data && !loading ? `/rewards/single-sided-campaign/${data.stakeToken.address}/${data.address}` : undefined
-        }
-      />
       {/* Expeditions hidden by SWA-27 request */}
       {/* <ExpeditionsModal onDismiss={toggleExpeditionsPopup} /> */}
       <HeaderRow isDark={isDark}>
