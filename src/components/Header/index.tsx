@@ -216,7 +216,7 @@ const RewardsHeaderMobileLink = styled(HeaderMobileLink)`
   `};
 `
 
-const DCABadge = styled.p`
+const NewBadge = styled.p`
   position: absolute;
   top: -12px;
   right: -34px;
@@ -298,6 +298,7 @@ function Header() {
           </HeaderLink>
           <HeaderLink data-testid="liquidity-v3-nav-link" id="liquidity-v3-nav-link" href={LIQUIDITY_V3_LINK}>
             {t('liquidityV3')}
+            <NewBadge>NEW</NewBadge>
             {networkWithoutSWPR && <HeaderLinkBadge label="NOT&nbsp;AVAILABLE" />}
           </HeaderLink>
           <HeaderLink data-testid="rewards-nav-link" id="rewards-nav-link" to="/rewards" disabled={networkWithoutSWPR}>
@@ -306,7 +307,6 @@ function Header() {
           </HeaderLink>
           <DCAHeaderLink id="stackly-nav-link" href={process.env.REACT_APP_STACKLY_URL}>
             {t('DCA')}
-            <DCABadge>NEW</DCABadge>
           </DCAHeaderLink>
           <HeaderLink id="vote-nav-link" href="https://snapshot.org/#/swpr.eth">
             {t('vote')}
@@ -388,11 +388,11 @@ function Header() {
           )}
           <HeaderMobileLink id="liquidity-v3-nav-link" href="https://swapr.liquidity.eth.limo/">
             {t('liquidityV3')}
+            <NewBadge>NEW</NewBadge>
           </HeaderMobileLink>
 
           <DCAExternalLink id="stackly-nav-link" href={process.env.REACT_APP_STACKLY_URL || ''}>
             {t('DCA')}
-            <DCABadge>NEW</DCABadge>
           </DCAExternalLink>
           <HeaderMobileLink id="vote-nav-link" href={`https://snapshot.org/#/swpr.eth`}>
             {t('vote')}
