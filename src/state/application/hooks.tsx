@@ -3,6 +3,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import { Id, toast } from 'react-toastify'
 
 import { NotificationPopup } from '../../components/Popups/NotificationPopup'
+import { RangeLiquidityPopup } from '../../components/Popups/RangeLiquidityPopup'
 import { StacklyPopup } from '../../components/Popups/StacklyPopup'
 import { TransactionPopup } from '../../components/Popups/TransactionPopup'
 import { useActiveWeb3React } from '../../hooks'
@@ -104,6 +105,19 @@ export function useNotificationPopup() {
     toast.info(<NotificationPopup text={text} status={status} />, {
       autoClose,
       icon: false,
+      progressStyle: {
+        background: 'hsla(0,0%,100%,.7)',
+      },
+    })
+  }, [])
+}
+
+export function useRangeLiquidityPopup() {
+  return useCallback(() => {
+    toast.info(<RangeLiquidityPopup />, {
+      autoClose: false,
+      icon: false,
+      position: toast.POSITION.BOTTOM_RIGHT,
       progressStyle: {
         background: 'hsla(0,0%,100%,.7)',
       },
