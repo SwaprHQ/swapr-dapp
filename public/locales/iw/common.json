@@ -76,7 +76,7 @@
   "vote": "הַצבָּעָה",
   "charts": "תרשימים",
   "liquidity": "נְזִילוּת",
-  "rangeLiquidity": "נזילות טווח",
+  "liquidityV3": "נְזִילוּת V3",
   "rewards": "תגמולים",
   "connectWallet": "Connect wallet"
 }

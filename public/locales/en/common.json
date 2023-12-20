@@ -92,7 +92,7 @@
   "viewOnCowExplorer": "View on Cow Protocol Explorer",
   "viewTransactionOnBlockExplorer": "View Transaction on Block Explorer",
   "liquidity": "Liquidity",
-  "rangeLiquidity": "Range Liquidity",
+  "liquidityV3": "Liquidity V3",
   "rewards": "Rewards",
   "connectWallet": "Connect wallet",
   "chart": "chart",

@@ -2,8 +2,8 @@ import { ReactNode, useCallback } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { Id, toast } from 'react-toastify'
 
+import { LiquidityV3Popup } from '../../components/Popups/LiquidityV3Popup'
 import { NotificationPopup } from '../../components/Popups/NotificationPopup'
-import { RangeLiquidityPopup } from '../../components/Popups/RangeLiquidityPopup'
 import { StacklyPopup } from '../../components/Popups/StacklyPopup'
 import { TransactionPopup } from '../../components/Popups/TransactionPopup'
 import { useActiveWeb3React } from '../../hooks'
@@ -112,9 +112,9 @@ export function useNotificationPopup() {
   }, [])
 }
 
-export function useRangeLiquidityPopup() {
+export function useLiquidityV3Popup() {
   return useCallback(() => {
-    toast.info(<RangeLiquidityPopup />, {
+    toast.info(<LiquidityV3Popup />, {
       autoClose: false,
       icon: false,
       position: toast.POSITION.BOTTOM_RIGHT,

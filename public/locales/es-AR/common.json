@@ -76,7 +76,7 @@
   "vote": "Votar",
   "charts": "Gráficos",
   "liquidity": "Liquidez",
-  "rangeLiquidity": "Rango de Liquidez",
+  "liquidityV3": "Liquidez V3",
   "rewards": "Recompensas",
   "connectWallet": "Connect wallet"
 }

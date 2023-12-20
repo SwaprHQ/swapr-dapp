@@ -2,18 +2,18 @@ import styled from 'styled-components'
 
 import GnoTokenLogoDark from '../../assets/images/gnosis-chain-logo-dark.svg'
 import SwaprTokenLogoDarkWithRing from '../../assets/images/swapr-logo-dark-with-ring.svg'
-import { RANGE_LIQUIDITY_LINK } from '../../constants'
+import { LIQUIDITY_V3_LINK } from '../../constants'
 
-export const RangeLiquidityPopup = () => {
+export const LiquidityV3Popup = () => {
   return (
-    <FlexContainer onClick={() => document.location.assign(RANGE_LIQUIDITY_LINK)}>
+    <FlexContainer onClick={() => document.location.assign(LIQUIDITY_V3_LINK)}>
       <LeftColumnContainer>
         <TokenPairWrapper>
           <TokenPairLeftLogo src={SwaprTokenLogoDarkWithRing} />
           <TokenPairRightLogo src={GnoTokenLogoDark} />
         </TokenPairWrapper>
       </LeftColumnContainer>
-      <RangeLiquidityText>Provide liquidity on a range in Gnosis Chain.</RangeLiquidityText>
+      <LiquidityV3Text>Provide liquidity on a range in Gnosis Chain.</LiquidityV3Text>
     </FlexContainer>
   )
 }
@@ -31,7 +31,7 @@ const LeftColumnContainer = styled.div`
   align-items: center;
 `
 
-const RangeLiquidityText = styled.div`
+const LiquidityV3Text = styled.div`
   font-weight: 600;
   font-size: 26px;
   color: #fff;

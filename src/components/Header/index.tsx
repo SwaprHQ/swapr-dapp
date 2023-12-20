@@ -8,7 +8,7 @@ import { Flex, Text } from 'rebass'
 import styled from 'styled-components'
 
 import { ReactComponent as GasInfoSvg } from '../../assets/images/gas-info.svg'
-import { RANGE_LIQUIDITY_LINK } from '../../constants'
+import { LIQUIDITY_V3_LINK } from '../../constants'
 import { useActiveWeb3React, useUnsupportedChainIdError } from '../../hooks'
 import { useGasInfo } from '../../hooks/useGasInfo'
 import { ApplicationModal } from '../../state/application/actions'
@@ -296,8 +296,8 @@ function Header() {
             {t('liquidity')}
             {networkWithoutSWPR && <HeaderLinkBadge label="NOT&nbsp;AVAILABLE" />}
           </HeaderLink>
-          <HeaderLink data-testid="range-liquidity-nav-link" id="range-liquidity-nav-link" href={RANGE_LIQUIDITY_LINK}>
-            {t('rangeLiquidity')}
+          <HeaderLink data-testid="liquidity-v3-nav-link" id="liquidity-v3-nav-link" href={LIQUIDITY_V3_LINK}>
+            {t('liquidityV3')}
             {networkWithoutSWPR && <HeaderLinkBadge label="NOT&nbsp;AVAILABLE" />}
           </HeaderLink>
           <HeaderLink data-testid="rewards-nav-link" id="rewards-nav-link" to="/rewards" disabled={networkWithoutSWPR}>
@@ -386,8 +386,8 @@ function Header() {
               {t('rewards')}
             </RewardsHeaderMobileLink>
           )}
-          <HeaderMobileLink id="range-liquidity-nav-link" href="https://swapr.liquidity.eth.limo/">
-            {t('rangeLiquidity')}
+          <HeaderMobileLink id="liquidity-v3-nav-link" href="https://swapr.liquidity.eth.limo/">
+            {t('liquidityV3')}
           </HeaderMobileLink>
 
           <DCAExternalLink id="stackly-nav-link" href={process.env.REACT_APP_STACKLY_URL || ''}>

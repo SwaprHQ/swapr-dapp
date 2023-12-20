@@ -9,7 +9,7 @@ import styled, {
   ThemeProvider as StyledComponentsThemeProvider,
 } from 'styled-components'
 
-import RangeLiquidityBg from '../assets/images/range-liquidity-bg.svg'
+import LiquidityV3Bg from '../assets/images/liquidity-v3-bg.svg'
 import { useIsDarkMode } from '../state/user/hooks'
 
 import { Colors } from './styled'
@@ -397,7 +397,7 @@ body {
 }
 
 .custom-toast-container {
-  background: url(${RangeLiquidityBg});
+  background: url(${LiquidityV3Bg});
   background-repeat: round;
   box-shadow: 0px 16px 12px ${({ theme }) => transparentize(0.55, theme.boxShadow)};
   border-radius: 12px !important;
