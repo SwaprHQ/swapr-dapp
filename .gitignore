@@ -48,6 +48,7 @@ mochawesome-report
 **/generated/**/*
 !src/analytics/generated/**/*
 !src/pages/Swap/LimitOrderBox/generated/**/*
+!src/pages/Swap/LimitOrder/generated/**/*
 storybook-static
 
 public/.well-known
