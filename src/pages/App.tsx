@@ -3,7 +3,7 @@ import AOS from 'aos'
 import { Suspense, useEffect, useState } from 'react'
 import { SkeletonTheme } from 'react-loading-skeleton'
 import { useLocation } from 'react-router-dom'
-import { Slide, ToastContainer, toast } from 'react-toastify'
+import { Slide, ToastContainer } from 'react-toastify'
 import { Text } from 'rebass'
 import styled, { useTheme } from 'styled-components'
 
@@ -15,8 +15,7 @@ import { PageMetaData } from '../components/PageMetaData'
 import { SpaceBg } from '../components/SpaceBg/SpaceBg'
 import Web3ReactManager from '../components/Web3ReactManager'
 import { useActiveWeb3React } from '../hooks'
-import { useStacklyPopup } from '../state/application/hooks'
-import { useUpdateStacklyPopupOpen } from '../state/user/hooks'
+import { useRangeLiquidityPopup } from '../state/application/hooks'
 import { CloseIcon } from '../theme'
 import { SWPRSupportedChains } from '../utils/chainSupportsSWPR'
 
@@ -95,6 +94,7 @@ export default function App() {
   const [isSwapPage, setIsSwapPage] = useState(false)
   const [isOpenBanner, setIsOpenBanner] = useState(true)
   const isAdvancedTradeMode = location.pathname.includes('/swap/pro')
+  const rangeLiquidityPopup = useRangeLiquidityPopup()
 
   useEffect(() => {
     setIsSwapPage(!!location.pathname.includes('swap'))
@@ -111,15 +111,10 @@ export default function App() {
     }, 1000)
   }, [])
 
-  const stacklyPopup = useStacklyPopup()
-  const [stacklyPopupOpen] = useUpdateStacklyPopupOpen()
-
   useEffect(() => {
-    const currentTimestamp = new Date().getTime()
-    if ((!!stacklyPopupOpen && stacklyPopupOpen >= currentTimestamp) || !showStacklyPopup) return
-    const id = stacklyPopup()
-    return () => toast.done(id)
-  }, [stacklyPopupOpen, stacklyPopup])
+    rangeLiquidityPopup()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
 
   return (
     <>
@@ -160,8 +155,10 @@ export default function App() {
               toastClassName="custom-toast-container"
               bodyClassName="custom-toast-body"
               position="top-right"
+              limit={1}
               transition={Slide}
-            />
+              closeOnClick
+            ></ToastContainer>
           </ApolloProvider>
         </SkeletonTheme>
       </Suspense>

@@ -8,6 +8,7 @@ import { Flex, Text } from 'rebass'
 import styled from 'styled-components'
 
 import { ReactComponent as GasInfoSvg } from '../../assets/images/gas-info.svg'
+import { RANGE_LIQUIDITY_LINK } from '../../constants'
 import { useActiveWeb3React, useUnsupportedChainIdError } from '../../hooks'
 import { useGasInfo } from '../../hooks/useGasInfo'
 import { ApplicationModal } from '../../state/application/actions'
@@ -295,11 +296,7 @@ function Header() {
             {t('liquidity')}
             {networkWithoutSWPR && <HeaderLinkBadge label="NOT&nbsp;AVAILABLE" />}
           </HeaderLink>
-          <HeaderLink
-            data-testid="range-liquidity-nav-link"
-            id="range-liquidity-nav-link"
-            href="https://swapr.liquidity.eth.limo/"
-          >
+          <HeaderLink data-testid="range-liquidity-nav-link" id="range-liquidity-nav-link" href={RANGE_LIQUIDITY_LINK}>
             {t('rangeLiquidity')}
             {networkWithoutSWPR && <HeaderLinkBadge label="NOT&nbsp;AVAILABLE" />}
           </HeaderLink>
