@@ -5,16 +5,7 @@ import SwaprTokenLogoDarkWithRing from '../../assets/images/swapr-logo-dark-with
 import { LIQUIDITY_V3_LINK } from '../../constants'
 import { LiquidityPairLogo } from '../LiquidityPairLogo'
 
-export const LiquidityV3Popup = () => {
-  return (
-    <FlexContainer onClick={() => document.location.assign(LIQUIDITY_V3_LINK)}>
-      <LiquidityPairLogo leftLogoSrc={SwaprTokenLogoDarkWithRing} rightLogoSrc={GnoTokenLogoDark} />
-      <LiquidityV3Text>Provide concentrated liquidity in Gnosis Chain.</LiquidityV3Text>
-    </FlexContainer>
-  )
-}
-
-const FlexContainer = styled.div`
+const FlexLinkContainer = styled.a`
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -30,3 +21,12 @@ const LiquidityV3Text = styled.div`
   width: 65%;
   margin-left: 15px;
 `
+
+export const LiquidityV3Popup = () => {
+  return (
+    <FlexLinkContainer href={LIQUIDITY_V3_LINK} target="_blank">
+      <LiquidityPairLogo leftLogoSrc={SwaprTokenLogoDarkWithRing} rightLogoSrc={GnoTokenLogoDark} />
+      <LiquidityV3Text>Provide concentrated liquidity in Gnosis Chain.</LiquidityV3Text>
+    </FlexLinkContainer>
+  )
+}

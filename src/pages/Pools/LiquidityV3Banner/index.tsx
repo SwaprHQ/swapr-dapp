@@ -6,12 +6,11 @@ import SwaprTokenLogoDarkWithRing from '../../../assets/images/swapr-logo-dark-w
 import { LiquidityPairLogo } from '../../../components/LiquidityPairLogo'
 import { LIQUIDITY_V3_LINK } from '../../../constants'
 
-const FlexContainer = styled.div`
+const FlexLinkContainer = styled.a`
   align-items: center;
   background: url(${LiquidityV3BannerBg});
   background-position-x: center;
   border-radius: 16px;
-  cursor: pointer;
   display: flex;
   height: 96px;
   padding: 20px 24px;
@@ -30,7 +29,7 @@ const LiquidityBannerText = styled.p`
 
 export default function LiquidityV3Banner() {
   return (
-    <FlexContainer onClick={() => document.location.assign(LIQUIDITY_V3_LINK)}>
+    <FlexLinkContainer href={LIQUIDITY_V3_LINK} target="_blank">
       <LiquidityPairLogo
         leftLogoSrc={SwaprTokenLogoDarkWithRing}
         leftLogoWidth={56}
@@ -39,6 +38,6 @@ export default function LiquidityV3Banner() {
         rightLogoWidth={24}
       />
       <LiquidityBannerText>Pick your range when providing liquidity, only in Gnosis chain</LiquidityBannerText>
-    </FlexContainer>
+    </FlexLinkContainer>
   )
 }
