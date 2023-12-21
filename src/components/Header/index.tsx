@@ -299,7 +299,6 @@ function Header() {
           <HeaderLink data-testid="liquidity-v3-nav-link" id="liquidity-v3-nav-link" href={LIQUIDITY_V3_LINK}>
             {t('liquidityV3')}
             <NewBadge>NEW</NewBadge>
-            {networkWithoutSWPR && <HeaderLinkBadge label="NOT&nbsp;AVAILABLE" />}
           </HeaderLink>
           <HeaderLink data-testid="rewards-nav-link" id="rewards-nav-link" to="/rewards" disabled={networkWithoutSWPR}>
             {t('rewards')}
