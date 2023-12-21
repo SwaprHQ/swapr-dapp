@@ -113,7 +113,7 @@ export function useNotificationPopup() {
 }
 
 export function useLiquidityV3Popup() {
-  return useCallback(() => {
+  return () =>
     toast.info(<LiquidityV3Popup />, {
       autoClose: false,
       icon: false,
@@ -122,7 +122,6 @@ export function useLiquidityV3Popup() {
         background: 'hsla(0,0%,100%,.7)',
       },
     })
-  }, [])
 }
 
 const isStacklyOldDesign = process.env.REACT_APP_STACKLY_DESIGN_VERSION === 'old'
