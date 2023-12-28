@@ -5,6 +5,7 @@ import LiquidityV3BannerBg from '../../../assets/images/liquidity-v3-banner-bg.s
 import SwaprTokenLogoDarkWithRing from '../../../assets/images/swapr-logo-dark-with-ring.svg'
 import { LiquidityPairLogo } from '../../../components/LiquidityPairLogo'
 import { LIQUIDITY_V3_LINK } from '../../../constants'
+import { breakpoints } from '../../../utils/theme'
 
 const FlexLinkContainer = styled.a`
   align-items: center;
@@ -12,9 +13,12 @@ const FlexLinkContainer = styled.a`
   background-position-x: center;
   border-radius: 16px;
   display: flex;
-  height: 96px;
   padding: 20px 24px;
   width: 100%;
+
+  @media screen and (max-width: ${breakpoints.md}) {
+    padding: 10px 12px;
+  }
 `
 
 const LiquidityBannerText = styled.p`
@@ -24,7 +28,11 @@ const LiquidityBannerText = styled.p`
   line-height: 28px;
   letter-spacing: -0.24px;
   margin-left: 23px;
-  width: 60%;
+
+  @media screen and (max-width: ${breakpoints.md}) {
+    font-size: 16px;
+    width: 75%;
+  }
 `
 
 export default function LiquidityV3Banner() {
@@ -37,7 +45,7 @@ export default function LiquidityV3Banner() {
         rightLogoSrc={GnoTokenLogoDark}
         rightLogoWidth={24}
       />
-      <LiquidityBannerText>Pick your range when providing liquidity, only in Gnosis chain</LiquidityBannerText>
+      <LiquidityBannerText>Swapr concentrated liquidity AMM launching soon</LiquidityBannerText>
     </FlexLinkContainer>
   )
 }

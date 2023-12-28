@@ -11,6 +11,7 @@ import styled, {
 
 import LiquidityV3Bg from '../assets/images/liquidity-v3-bg.svg'
 import { useIsDarkMode } from '../state/user/hooks'
+import { breakpoints } from '../utils/theme'
 
 import { Colors } from './styled'
 
@@ -405,7 +406,6 @@ body {
 
 .custom-toast-body {
   padding: 0;
-  height: 136px;
 }
 
 .custom-toast-body a{
@@ -413,7 +413,11 @@ body {
 }
 
 .Toastify__toast {
-  padding: 9px 9px 9px 20px;
+  padding: 14px 9px 14px 20px;
+
+  @media screen and (max-width: ${breakpoints.md}) {
+    padding: 10px
+  }
 }
 
 .Toastify__close-button {

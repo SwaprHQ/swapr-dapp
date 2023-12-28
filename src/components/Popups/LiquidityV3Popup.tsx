@@ -26,7 +26,7 @@ export const LiquidityV3Popup = () => {
   return (
     <FlexLinkContainer href={LIQUIDITY_V3_LINK} target="_blank">
       <LiquidityPairLogo leftLogoSrc={SwaprTokenLogoDarkWithRing} rightLogoSrc={GnoTokenLogoDark} />
-      <LiquidityV3Text>Provide concentrated liquidity in Gnosis Chain.</LiquidityV3Text>
+      <LiquidityV3Text>Try Swapr's new AMM here!</LiquidityV3Text>
     </FlexLinkContainer>
   )
 }
