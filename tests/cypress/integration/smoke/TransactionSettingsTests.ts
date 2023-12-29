@@ -31,7 +31,7 @@ describe('Transactions Settings Smoke Test', () => {
   it('Check Discord hyperlink [TC-49]', () => {
     TransactionSettings.getDiscordHyperlink()
       .should('have.attr', 'href')
-      .and('include', 'https://discord.com/invite/4QXEJQkvHH')
+      .and('include', 'https://discord.com/invite/QFkNsjTkzD')
   })
   //TODO investigate why cypress consider this element as unvisible
   it.skip('Should not allow to type not numbers into Slippage Tolerance Field input [TC-50]', () => {

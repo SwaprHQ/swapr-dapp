@@ -4,6 +4,7 @@ import { Code, MessageCircle, Settings as SettingsIcon, X } from 'react-feather'
 import { Text } from 'rebass'
 import styled from 'styled-components'
 
+import { DISCORD_INVITE_LINK } from '../../constants'
 import { ApplicationModal } from '../../state/application/actions'
 import { useModalOpen, useSimpleSettingsModal, useToggleSettingsMenu } from '../../state/application/hooks'
 import {
@@ -309,7 +310,7 @@ export function Settings({ simple }: { simple?: boolean }) {
                         <Code size={14} />
                         Code
                       </MenuItem>
-                      <MenuItem href="https://discord.com/invite/4QXEJQkvHH" data-testid="discord-hyperlink">
+                      <MenuItem href={DISCORD_INVITE_LINK} data-testid="discord-hyperlink">
                         <MessageCircle size={14} />
                         Discord
                       </MenuItem>

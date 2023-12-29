@@ -88,6 +88,7 @@
   "vote": "Bỏ phiếu",
   "charts": "Biểu đồ",
   "liquidity": "Tính thanh khoản",
+  "liquidityV3": "Tính thanh khoản V3",
   "rewards": "Phần thưởng",
   "connectWallet": "Connect wallet"
 }

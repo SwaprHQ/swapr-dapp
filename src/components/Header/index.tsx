@@ -8,18 +8,15 @@ import { Flex, Text } from 'rebass'
 import styled from 'styled-components'
 
 import { ReactComponent as GasInfoSvg } from '../../assets/images/gas-info.svg'
+import { LIQUIDITY_V3_LINK } from '../../constants'
 import { useActiveWeb3React, useUnsupportedChainIdError } from '../../hooks'
-import { useSwaprSinglelSidedStakeCampaigns } from '../../hooks/singleSidedStakeCampaigns/useSwaprSingleSidedStakeCampaigns'
 import { useGasInfo } from '../../hooks/useGasInfo'
-import { useLiquidityMiningCampaignPosition } from '../../hooks/useLiquidityMiningCampaignPosition'
 import { ApplicationModal } from '../../state/application/actions'
-import { useModalOpen, useToggleShowClaimPopup } from '../../state/application/hooks'
+import { useModalOpen } from '../../state/application/hooks'
 import { useDarkModeManager, useUpdateSelectedChartOption } from '../../state/user/hooks'
 import { ChartOption } from '../../state/user/reducer'
-import { useTokenBalance } from '../../state/wallet/hooks'
 import { ExternalLink } from '../../theme'
 import { breakpoints } from '../../utils/theme'
-import ClaimModal from '../Claim/ClaimModal'
 import { UnsupportedNetworkPopover } from '../NetworkUnsupportedPopover'
 import Row, { RowFixed, RowFlat } from '../Row'
 import { Settings } from '../Settings'
@@ -219,7 +216,7 @@ const RewardsHeaderMobileLink = styled(HeaderMobileLink)`
   `};
 `
 
-const DCABadge = styled.p`
+const NewBadge = styled.p`
   position: absolute;
   top: -12px;
   right: -34px;
@@ -239,16 +236,11 @@ function Header() {
   const [isGasInfoOpen, setIsGasInfoOpen] = useState(false)
   const { gas } = useGasInfo()
   const [isDark] = useDarkModeManager()
-  const { loading, data } = useSwaprSinglelSidedStakeCampaigns()
-  const { stakedTokenAmount } = useLiquidityMiningCampaignPosition(data, account ? account : undefined)
 
   /*  Expeditions hidden by SWA-27 request
    * const toggleExpeditionsPopup = useToggleShowExpeditionsPopup()
    */
-  const toggleClaimPopup = useToggleShowClaimPopup()
-  const accountOrUndefined = useMemo(() => account || undefined, [account])
   const newSwpr = useMemo(() => (chainId ? SWPR[chainId] : undefined), [chainId])
-  const newSwprBalance = useTokenBalance(accountOrUndefined, newSwpr)
   const isUnsupportedNetworkModal = useModalOpen(ApplicationModal.UNSUPPORTED_NETWORK)
   const isUnsupportedChainIdError = useUnsupportedChainIdError()
 
@@ -279,14 +271,6 @@ function Header() {
 
   return (
     <HeaderFrame>
-      <ClaimModal
-        onDismiss={toggleClaimPopup}
-        newSwprBalance={newSwprBalance}
-        stakedAmount={stakedTokenAmount?.toFixed(3)}
-        singleSidedCampaignLink={
-          data && !loading ? `/rewards/single-sided-campaign/${data.stakeToken.address}/${data.address}` : undefined
-        }
-      />
       {/* Expeditions hidden by SWA-27 request */}
       {/* <ExpeditionsModal onDismiss={toggleExpeditionsPopup} /> */}
       <HeaderRow isDark={isDark}>
@@ -312,13 +296,16 @@ function Header() {
             {t('liquidity')}
             {networkWithoutSWPR && <HeaderLinkBadge label="NOT&nbsp;AVAILABLE" />}
           </HeaderLink>
+          <HeaderLink data-testid="liquidity-v3-nav-link" id="liquidity-v3-nav-link" href={LIQUIDITY_V3_LINK}>
+            {t('liquidityV3')}
+            <NewBadge>NEW</NewBadge>
+          </HeaderLink>
           <HeaderLink data-testid="rewards-nav-link" id="rewards-nav-link" to="/rewards" disabled={networkWithoutSWPR}>
             {t('rewards')}
             {networkWithoutSWPR && <HeaderLinkBadge label="NOT&nbsp;AVAILABLE" />}
           </HeaderLink>
           <DCAHeaderLink id="stackly-nav-link" href={process.env.REACT_APP_STACKLY_URL}>
             {t('DCA')}
-            <DCABadge>NEW</DCABadge>
           </DCAHeaderLink>
           <HeaderLink id="vote-nav-link" href="https://snapshot.org/#/swpr.eth">
             {t('vote')}
@@ -398,9 +385,13 @@ function Header() {
               {t('rewards')}
             </RewardsHeaderMobileLink>
           )}
+          <HeaderMobileLink id="liquidity-v3-nav-link" href="https://swapr.liquidity.eth.limo/">
+            {t('liquidityV3')}
+            <NewBadge>NEW</NewBadge>
+          </HeaderMobileLink>
+
           <DCAExternalLink id="stackly-nav-link" href={process.env.REACT_APP_STACKLY_URL || ''}>
             {t('DCA')}
-            <DCABadge>NEW</DCABadge>
           </DCAExternalLink>
           <HeaderMobileLink id="vote-nav-link" href={`https://snapshot.org/#/swpr.eth`}>
             {t('vote')}
