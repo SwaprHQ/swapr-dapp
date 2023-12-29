@@ -9,7 +9,9 @@ import styled, {
   ThemeProvider as StyledComponentsThemeProvider,
 } from 'styled-components'
 
+import LiquidityV3Bg from '../assets/images/liquidity-v3-bg.svg'
 import { useIsDarkMode } from '../state/user/hooks'
+import { breakpoints } from '../utils/theme'
 
 import { Colors } from './styled'
 
@@ -391,17 +393,19 @@ body {
 }
 
 .custom-toast-root {
-    margin-top: 86px;
-    min-width: 350px;
+  margin-top: 86px;
+  min-width: 376px;
 }
 
 .custom-toast-container {
-    box-shadow: 0px 16px 12px ${({ theme }) => transparentize(0.55, theme.boxShadow)};
-    border-radius: 12px !important;
+  background: url(${LiquidityV3Bg});
+  background-repeat: round;
+  box-shadow: 0px 16px 12px ${({ theme }) => transparentize(0.55, theme.boxShadow)};
+  border-radius: 12px !important;
 }
 
 .custom-toast-body {
-    padding: 4px 8px;
+  padding: 0;
 }
 
 .custom-toast-body a{
@@ -409,12 +413,16 @@ body {
 }
 
 .Toastify__toast {
-    min-height: auto !important;
-    padding: 8px 10px 12px 4px;
+  padding: 14px 9px 14px 20px;
+
+  @media screen and (max-width: ${breakpoints.md}) {
+    padding: 10px
+  }
 }
 
-.Toastify__toast--info {
-    background: ${props => props.theme.bg1};
+.Toastify__close-button {
+  color: #fff;
+  opacity: 0.7;
 }
 
 .walletconnect-connect__button__text {
@@ -422,6 +430,14 @@ body {
 }
 
 @media only screen and (max-width: 600px) {
+  .Toastify__toast-body {
+    padding: 0;
+  }
+
+  .Toastify__toast-container {
+    padding: 0;
+  }
+
 	.Toastify__toast-container--top-right {
 	    top: auto !important;
 	    bottom: 70px !important;

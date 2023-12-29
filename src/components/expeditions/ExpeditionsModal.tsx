@@ -2,6 +2,7 @@ import { ReactNode } from 'react'
 import styled from 'styled-components'
 
 import SwprLogo from '../../assets/images/swpr-logo.png'
+import { DISCORD_INVITE_LINK } from '../../constants'
 import { useShowExpeditionsPopup } from '../../state/application/hooks'
 import { ExternalLink, TYPE } from '../../theme'
 import { AutoColumn } from '../Column'
@@ -46,7 +47,7 @@ export default function ExpeditionsModal({ onDismiss }: { onDismiss: () => void 
           <Row>
             <Text>
               Follow Swapr <ExternalLink href="https://x.com/swapr_dapp">X</ExternalLink> or{' '}
-              <ExternalLink href="https://discord.gg/4QXEJQkvHH">Discord</ExternalLink> to get updates on Expeditions.
+              <ExternalLink href={DISCORD_INVITE_LINK}>Discord</ExternalLink> to get updates on Expeditions.
             </Text>
           </Row>
         </UpperAutoColumn>

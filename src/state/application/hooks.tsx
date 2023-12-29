@@ -2,6 +2,7 @@ import { ReactNode, useCallback } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { Id, toast } from 'react-toastify'
 
+import { LiquidityV3Popup } from '../../components/Popups/LiquidityV3Popup'
 import { NotificationPopup } from '../../components/Popups/NotificationPopup'
 import { StacklyPopup } from '../../components/Popups/StacklyPopup'
 import { TransactionPopup } from '../../components/Popups/TransactionPopup'
@@ -109,6 +110,18 @@ export function useNotificationPopup() {
       },
     })
   }, [])
+}
+
+export function useLiquidityV3Popup() {
+  return () =>
+    toast.info(<LiquidityV3Popup />, {
+      autoClose: false,
+      icon: false,
+      position: toast.POSITION.BOTTOM_RIGHT,
+      progressStyle: {
+        background: 'hsla(0,0%,100%,.7)',
+      },
+    })
 }
 
 const isStacklyOldDesign = process.env.REACT_APP_STACKLY_DESIGN_VERSION === 'old'
