@@ -88,6 +88,7 @@
   "vote": "Abstimmung",
   "charts": "Diagramme",
   "liquidity": "Liquidität",
+  "liquidityV3": "Liquidität V3",
   "rewards": "Belohnung",
   "connectWallet": "Connect wallet"
 }
