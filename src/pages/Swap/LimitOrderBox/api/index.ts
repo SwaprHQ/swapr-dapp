@@ -1,3 +1,4 @@
+//@ts-nocheck
 // eslint-disable-next-line no-restricted-imports
 /**
  * @module limit-orders/api

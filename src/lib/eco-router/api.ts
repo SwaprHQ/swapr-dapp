@@ -15,6 +15,7 @@ import {
   UniswapV2Trade,
   VelodromeTrade,
   ZeroXTrade,
+  SwaprV3Trade,
 } from '@swapr/sdk'
 
 // Low-level API for Uniswap V2
@@ -114,6 +115,16 @@ export async function getExactIn(
             tradeType: TradeType.EXACT_INPUT,
           })
         }
+        // Swapr v3
+        if (platform.name === RoutablePlatform.SWAPR_V3.name) {
+          return SwaprV3Trade.getQuote({
+            quoteCurrency: currencyOut,
+            amount: currencyAmountIn,
+            maximumSlippage,
+            recipient: receiver,
+            tradeType: TradeType.EXACT_INPUT,
+          })
+        }
         // Curve
         if (platform.name === RoutablePlatform.CURVE.name) {
           return CurveTrade.bestTradeExactIn({
@@ -147,6 +158,7 @@ export async function getExactIn(
             tradeType: TradeType.EXACT_INPUT,
           })
         }
+
         if (platform.name === RoutablePlatform.ONE_INCH.name) {
           return OneInchTrade.getQuote({
             quoteCurrency: currencyOut,
@@ -257,6 +269,15 @@ export async function getExactOut(
         }
         if (platform.name === RoutablePlatform.VELODROME.name) {
           return VelodromeTrade.getQuote({
+            quoteCurrency: currencyIn,
+            amount: currencyAmountOut,
+            maximumSlippage,
+            recipient: receiver,
+            tradeType: TradeType.EXACT_OUTPUT,
+          })
+        }
+        if (platform.name === RoutablePlatform.SWAPR_V3.name) {
+          return SwaprV3Trade.getQuote({
             quoteCurrency: currencyIn,
             amount: currencyAmountOut,
             maximumSlippage,
