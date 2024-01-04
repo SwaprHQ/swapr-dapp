@@ -1,5 +1,3 @@
-//@ts-nocheck
-
 import { Fragment, ReactNode, useEffect, useState } from 'react'
 import Marquee from 'react-fast-marquee'
 import styled, { keyframes } from 'styled-components'

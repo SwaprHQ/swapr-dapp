@@ -1,4 +1,3 @@
-//@ts-nocheck
 import { Web3Provider } from '@ethersproject/providers'
 import { parseUnits } from '@ethersproject/units'
 import { ChainId, Currency, CurrencyAmount, JSBI, Token, TokenAmount } from '@swapr/sdk'
