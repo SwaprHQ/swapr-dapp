@@ -11,6 +11,7 @@ import {
   UniswapV2RoutablePlatform,
   UniswapV2Trade,
   VelodromeTrade,
+  SwaprV3Trade,
   ZeroXTrade,
 } from '@swapr/sdk'
 
@@ -83,7 +84,12 @@ export function useSwapsCallArguments(
 
       const swapMethods = []
       // Curve, Uniswap v3, ZeroX
-      if (trade instanceof CurveTrade || trade instanceof UniswapTrade || trade instanceof ZeroXTrade) {
+      if (
+        trade instanceof CurveTrade ||
+        trade instanceof UniswapTrade ||
+        trade instanceof ZeroXTrade ||
+        trade instanceof SwaprV3Trade
+      ) {
         return [
           {
             transactionParameters: trade.swapTransaction({ recipient }),

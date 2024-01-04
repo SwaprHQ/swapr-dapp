@@ -23,11 +23,7 @@ export function getUniswapV2PlatformList(chainId: ChainId): UniswapV2RoutablePla
  */
 export function getSupportedPlatformsByChainId(chainId: ChainId) {
   return [
-    RoutablePlatform.ZEROX,
-    RoutablePlatform.ONE_INCH,
     UniswapV2RoutablePlatform.BISWAP,
-    RoutablePlatform.COW,
-    RoutablePlatform.CURVE,
     UniswapV2RoutablePlatform.DFYN,
     UniswapV2RoutablePlatform.HONEYSWAP,
     UniswapV2RoutablePlatform.LEVINSWAP,
@@ -35,7 +31,12 @@ export function getSupportedPlatformsByChainId(chainId: ChainId) {
     UniswapV2RoutablePlatform.QUICKSWAP,
     UniswapV2RoutablePlatform.SUSHISWAP,
     UniswapV2RoutablePlatform.SWAPR,
+    RoutablePlatform.ZEROX,
+    RoutablePlatform.ONE_INCH,
+    RoutablePlatform.COW,
+    RoutablePlatform.CURVE,
     RoutablePlatform.UNISWAP,
     RoutablePlatform.VELODROME,
+    RoutablePlatform.SWAPR_V3,
   ].filter(platform => platform.supportsChain(chainId))
 }

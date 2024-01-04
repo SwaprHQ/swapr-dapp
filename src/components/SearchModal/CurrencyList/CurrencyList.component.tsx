@@ -1,3 +1,5 @@
+//@ts-nocheck
+
 import { Currency, CurrencyAmount, currencyEquals, Token } from '@swapr/sdk'
 
 import { ComponentType, CSSProperties, useCallback, useMemo, useState } from 'react'

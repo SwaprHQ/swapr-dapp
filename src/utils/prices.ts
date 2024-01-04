@@ -19,6 +19,7 @@ import {
   VelodromeTrade,
   ZERO,
   ZeroXTrade,
+  SwaprV3Trade,
 } from '@swapr/sdk'
 
 import _Decimal from 'decimal.js-light'
@@ -70,7 +71,12 @@ export function computeTradePriceBreakdown(trade?: Trade): TradePriceBreakdown {
         ONE_HUNDRED_PERCENT
       )
       return ONE_HUNDRED_PERCENT.subtract(totalRoutesFee)
-    } else if (trade instanceof CoWTrade || trade instanceof UniswapTrade || trade instanceof ZeroXTrade) {
+    } else if (
+      trade instanceof CoWTrade ||
+      trade instanceof UniswapTrade ||
+      trade instanceof ZeroXTrade ||
+      trade instanceof SwaprV3Trade
+    ) {
       return trade.fee
     } else if (trade instanceof CurveTrade || trade instanceof VelodromeTrade || trade instanceof OneInchTrade) {
       return ONE_HUNDRED_PERCENT.subtract(ONE_HUNDRED_PERCENT.subtract(trade.fee))
