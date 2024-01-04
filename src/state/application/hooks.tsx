@@ -2,6 +2,7 @@ import { ReactNode, useCallback } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { Id, toast } from 'react-toastify'
 
+import LiquidityV3Bg from '../../assets/images/liquidity-v3-bg.svg'
 import { LiquidityV3Popup } from '../../components/Popups/LiquidityV3Popup'
 import { NotificationPopup } from '../../components/Popups/NotificationPopup'
 import { StacklyPopup } from '../../components/Popups/StacklyPopup'
@@ -118,8 +119,9 @@ export function useLiquidityV3Popup() {
       autoClose: false,
       icon: false,
       position: toast.POSITION.BOTTOM_RIGHT,
-      progressStyle: {
-        background: 'hsla(0,0%,100%,.7)',
+      style: {
+        background: `url(${LiquidityV3Bg})`,
+        backgroundRepeat: 'round',
       },
     })
 }
