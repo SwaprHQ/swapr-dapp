@@ -9,7 +9,6 @@ import styled, {
   ThemeProvider as StyledComponentsThemeProvider,
 } from 'styled-components'
 
-import LiquidityV3Bg from '../assets/images/liquidity-v3-bg.svg'
 import { useIsDarkMode } from '../state/user/hooks'
 import { breakpoints } from '../utils/theme'
 
@@ -398,8 +397,6 @@ body {
 }
 
 .custom-toast-container {
-  background: url(${LiquidityV3Bg});
-  background-repeat: round;
   box-shadow: 0px 16px 12px ${({ theme }) => transparentize(0.55, theme.boxShadow)};
   border-radius: 12px !important;
 }
@@ -418,6 +415,10 @@ body {
   @media screen and (max-width: ${breakpoints.md}) {
     padding: 10px
   }
+}
+
+.Toastify__toast--info {
+  background: ${props => props.theme.bg1};
 }
 
 .Toastify__close-button {
