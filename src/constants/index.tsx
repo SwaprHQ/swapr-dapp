@@ -43,6 +43,7 @@ import ZeroXLogo from '../assets/images/logos/ZeroX.svg'
 import Metamask from '../assets/images/metamask.png'
 import QuickswapLogo from '../assets/images/quickswap-logo.png'
 import SushiswapNewLogo from '../assets/images/sushiswap-new-logo.svg'
+import SwaprV3Logo from '../assets/images/swapr-v3-logo.svg'
 import UniswapLogo from '../assets/images/uniswap-logo.svg'
 import VelodromeLogo from '../assets/images/velodrome-logo.svg'
 import WalletConnect from '../assets/images/wallet-connect.svg'
@@ -818,6 +819,12 @@ export const ROUTABLE_PLATFORM_STYLE: {
     gradientColor: '#FB52A1',
     name: RoutablePlatform.VELODROME.name,
   },
+  [RoutablePlatform.SWAPR_V3.name]: {
+    logo: SwaprV3Logo,
+    alt: RoutablePlatform.SWAPR_V3.name,
+    gradientColor: '#9185F7',
+    name: RoutablePlatform.SWAPR_V3.name,
+  },
 }
 
 export const ROUTABLE_PLATFORM_LOGO: {
@@ -839,6 +846,7 @@ export const ROUTABLE_PLATFORM_LOGO: {
   [RoutablePlatform.UNISWAP.name]: <img width={16} height={16} src={UniswapLogo} alt="Uniswap Unicorn" />,
   [UniswapV2RoutablePlatform.UNISWAP.name]: <img width={16} height={16} src={UniswapLogo} alt="uniswap" />,
   [RoutablePlatform.VELODROME.name]: <img width={16} height={16} src={VelodromeLogo} alt="Velodrome" />,
+  [RoutablePlatform.SWAPR_V3.name]: <img width={16} height={16} src={SwaprV3Logo} alt="Swapr v3" />,
 }
 
 export const ChainLabel: any = {
