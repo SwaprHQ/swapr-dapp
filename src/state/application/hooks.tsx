@@ -121,7 +121,7 @@ export function useLiquidityV3Popup() {
       position: toast.POSITION.BOTTOM_RIGHT,
       style: {
         background: `url(${LiquidityV3Bg})`,
-        backgroundRepeat: 'round',
+        backgroundSize: 'cover',
       },
     })
 }
