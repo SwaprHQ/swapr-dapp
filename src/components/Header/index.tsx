@@ -8,7 +8,7 @@ import { Flex, Text } from 'rebass'
 import styled from 'styled-components'
 
 import { ReactComponent as GasInfoSvg } from '../../assets/images/gas-info.svg'
-import { LIQUIDITY_V3_LINK } from '../../constants'
+import { LIQUIDITY_V3_INFO_POOLS_LINK } from '../../constants'
 import { useActiveWeb3React, useUnsupportedChainIdError } from '../../hooks'
 import { useGasInfo } from '../../hooks/useGasInfo'
 import { ApplicationModal } from '../../state/application/actions'
@@ -227,6 +227,7 @@ const NewBadge = styled.p`
   color: black;
   line-height: 16px;
   font-weight: 600;
+  margin-left: 10px;
 `
 
 function Header() {
@@ -293,11 +294,15 @@ function Header() {
               networkWithoutSWPR && chainId !== ChainId.ARBITRUM_GOERLI
             } /* // FIXME: fix this once SWPR is on Arb Goerli */
           >
-            {t('liquidity')}
+            {t('pools')}
             {networkWithoutSWPR && <HeaderLinkBadge label="NOT&nbsp;AVAILABLE" />}
           </HeaderLink>
-          <HeaderLink data-testid="liquidity-v3-nav-link" id="liquidity-v3-nav-link" href={LIQUIDITY_V3_LINK}>
-            {t('liquidityV3')}
+          <HeaderLink
+            data-testid="liquidity-v3-nav-link"
+            id="liquidity-v3-nav-link"
+            href={LIQUIDITY_V3_INFO_POOLS_LINK}
+          >
+            {t('poolsV3')}
             <NewBadge>NEW</NewBadge>
           </HeaderLink>
           <HeaderLink data-testid="rewards-nav-link" id="rewards-nav-link" to="/rewards" disabled={networkWithoutSWPR}>
@@ -377,7 +382,7 @@ function Header() {
           </HeaderMobileLink>
           {!networkWithoutSWPR && (
             <HeaderMobileLink id="pool-nav-link" to="/pools">
-              {t('liquidity')}
+              {t('pools')}
             </HeaderMobileLink>
           )}
           {!networkWithoutSWPR && (
@@ -385,8 +390,8 @@ function Header() {
               {t('rewards')}
             </RewardsHeaderMobileLink>
           )}
-          <HeaderMobileLink id="liquidity-v3-nav-link" href="https://swapr.liquidity.eth.limo/">
-            {t('liquidityV3')}
+          <HeaderMobileLink id="liquidity-v3-nav-link" href={LIQUIDITY_V3_INFO_POOLS_LINK}>
+            {t('poolsV3')}
             <NewBadge>NEW</NewBadge>
           </HeaderMobileLink>
 

@@ -96,5 +96,7 @@
   "rewards": "Rewards",
   "connectWallet": "Connect wallet",
   "chart": "chart",
-  "off": "off"
+  "off": "off",
+  "pools": "Pools",
+  "poolsV3": "Pools V3"
 }

@@ -2,7 +2,7 @@ import styled from 'styled-components'
 
 import GnoTokenLogoDark from '../../assets/images/gnosis-chain-logo-dark.svg'
 import SwaprTokenLogoDarkWithRing from '../../assets/images/swapr-logo-dark-with-ring.svg'
-import { LIQUIDITY_V3_LINK } from '../../constants'
+import { LIQUIDITY_V3_INFO_POOLS_LINK } from '../../constants'
 import { LiquidityPairLogo } from '../LiquidityPairLogo'
 
 const FlexLinkContainer = styled.a`
@@ -24,7 +24,7 @@ const LiquidityV3Text = styled.div`
 
 export const LiquidityV3Popup = () => {
   return (
-    <FlexLinkContainer href={LIQUIDITY_V3_LINK} target="_blank">
+    <FlexLinkContainer href={LIQUIDITY_V3_INFO_POOLS_LINK} target="_blank">
       <LiquidityPairLogo leftLogoSrc={SwaprTokenLogoDarkWithRing} rightLogoSrc={GnoTokenLogoDark} />
       <LiquidityV3Text>Try Swapr's new AMM here!</LiquidityV3Text>
     </FlexLinkContainer>
