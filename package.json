@@ -48,7 +48,7 @@
     "@reduxjs/toolkit": "^1.9.5",
     "@swapr/core": "^0.3.19",
     "@swapr/periphery": "^0.3.22",
-    "@swapr/sdk": "1.10.3",
+    "@swapr/sdk": "SwaprHQ/swapr-sdk#improvement/swa-134-swapr-sdk-fix-cowtrade-type-errors",
     "@tanstack/react-query": "4.24.6",
     "@uniswap/token-lists": "^1.0.0-beta.27",
     "@uniswap/v3-periphery": "1.4.1",
