@@ -61,15 +61,7 @@ export const ecoBridgeConfig: EcoBridgeChildBase[] = [
     bridgeId: BRIDGES.SOCKET.id,
     displayName: BRIDGES.SOCKET.name,
     displayUrl: BRIDGES.SOCKET.url,
-    supportedChains: bridgeSupportedChains([
-      ChainId.ARBITRUM_ONE,
-      ChainId.MAINNET,
-      ChainId.POLYGON,
-      ChainId.GNOSIS,
-      ChainId.OPTIMISM_MAINNET,
-      ChainId.BSC_MAINNET,
-      ChainId.ZK_SYNC_ERA_MAINNET,
-    ]),
+    supportedChains: bridgeSupportedChains([]),
   }),
   new XdaiBridge({
     bridgeId: BRIDGES.XDAI.id,
