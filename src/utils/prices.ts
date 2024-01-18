@@ -20,6 +20,7 @@ import {
   ZERO,
   ZeroXTrade,
   SwaprV3Trade,
+  SushiswapTrade,
 } from '@swapr/sdk'
 
 import _Decimal from 'decimal.js-light'
@@ -75,7 +76,8 @@ export function computeTradePriceBreakdown(trade?: Trade): TradePriceBreakdown {
       trade instanceof CoWTrade ||
       trade instanceof UniswapTrade ||
       trade instanceof ZeroXTrade ||
-      trade instanceof SwaprV3Trade
+      trade instanceof SwaprV3Trade ||
+      trade instanceof SushiswapTrade
     ) {
       return trade.fee
     } else if (trade instanceof CurveTrade || trade instanceof VelodromeTrade || trade instanceof OneInchTrade) {
@@ -93,11 +95,15 @@ export function computeTradePriceBreakdown(trade?: Trade): TradePriceBreakdown {
 
   function computeRealizedLPFeeAmount(trade: Trade, realizedLPFee?: Fraction) {
     if (!realizedLPFee) return undefined
-
-    if (trade instanceof CoWTrade) return (trade as CoWTrade).feeAmount
-    else if (trade.inputAmount instanceof TokenAmount)
-      return new TokenAmount(trade.inputAmount.token, realizedLPFee.multiply(trade.inputAmount.raw).quotient)
-    else return CurrencyAmount.nativeCurrency(realizedLPFee.multiply(trade.inputAmount.raw).quotient, trade.chainId)
+    try {
+      if (trade instanceof CoWTrade) return (trade as CoWTrade).feeAmount
+      else if (trade.inputAmount instanceof TokenAmount)
+        return new TokenAmount(trade.inputAmount.token, realizedLPFee.multiply(trade.inputAmount.raw).quotient)
+      else return CurrencyAmount.nativeCurrency(realizedLPFee.multiply(trade.inputAmount.raw).quotient, trade.chainId)
+    } catch (error) {
+      console.error('Error on computeRealizedLPFeeAmount:', error, trade)
+      return undefined
+    }
   }
   const realizedLPFeeAmount = computeRealizedLPFeeAmount(trade, realizedLPFee)
 
