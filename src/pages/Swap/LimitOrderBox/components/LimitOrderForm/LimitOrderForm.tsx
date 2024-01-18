@@ -92,7 +92,7 @@ export function LimitOrderForm({ account, provider, chainId }: LimitOrderFormPro
   })
 
   const [fetchMarketPrice, setFetchMarketPrice] = useState<boolean>(true)
-  const [marketPriceInterval, setMarketPriceInterval] = useState<NodeJS.Timer | undefined>()
+  const [marketPriceInterval, setMarketPriceInterval] = useState<NodeJS.Timeout | undefined>()
 
   const [tokenInApproval, tokenInApprovalCallback] = useApproveCallback(
     sellTokenAmount,

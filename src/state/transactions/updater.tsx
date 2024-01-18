@@ -115,7 +115,7 @@ export default function Updater(): null {
 
               // The settlement contract from COW
               const GPv2Settlement = contractNetworks.GPv2Settlement as Record<
-                ChainId,
+                number,
                 Record<'transactionHash' | 'address', string>
               >
               const contractAddress = GPv2Settlement[chainId]?.address
