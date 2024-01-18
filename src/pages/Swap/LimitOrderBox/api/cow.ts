@@ -157,7 +157,7 @@ export async function createCoWLimitOrder({ order, signer, chainId }: GetLimitOr
  */
 export function getVaultRelayerAddress(chainId: ChainId) {
   const GPv2VaultRelayer = contractNetworks.GPv2VaultRelayer as Record<
-    ChainId,
+    number,
     Record<'transactionHash' | 'address', string>
   >
 
