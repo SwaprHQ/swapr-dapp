@@ -13,6 +13,7 @@ import {
   VelodromeTrade,
   SwaprV3Trade,
   ZeroXTrade,
+  SushiswapTrade,
 } from '@swapr/sdk'
 
 import { UnsignedTransaction } from 'ethers'
@@ -88,7 +89,8 @@ export function useSwapsCallArguments(
         trade instanceof CurveTrade ||
         trade instanceof UniswapTrade ||
         trade instanceof ZeroXTrade ||
-        trade instanceof SwaprV3Trade
+        trade instanceof SwaprV3Trade ||
+        trade instanceof SushiswapTrade
       ) {
         return [
           {
