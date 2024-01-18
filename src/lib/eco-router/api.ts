@@ -16,6 +16,7 @@ import {
   VelodromeTrade,
   ZeroXTrade,
   SwaprV3Trade,
+  SushiswapTrade,
 } from '@swapr/sdk'
 
 // Low-level API for Uniswap V2
@@ -118,6 +119,16 @@ export async function getExactIn(
         // Swapr v3
         if (platform.name === RoutablePlatform.SWAPR_V3.name) {
           return SwaprV3Trade.getQuote({
+            quoteCurrency: currencyOut,
+            amount: currencyAmountIn,
+            maximumSlippage,
+            recipient: receiver,
+            tradeType: TradeType.EXACT_INPUT,
+          })
+        }
+        // Sushiswap
+        if (platform.name === RoutablePlatform.SUSHISWAP.name) {
+          return SushiswapTrade.getQuote({
             quoteCurrency: currencyOut,
             amount: currencyAmountIn,
             maximumSlippage,
