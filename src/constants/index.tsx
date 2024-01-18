@@ -7,7 +7,6 @@ import {
   CurrencyAmount,
   DAI,
   DXD,
-  GNO,
   SWPR,
   USDC,
   USDT,
