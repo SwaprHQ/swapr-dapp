@@ -827,6 +827,12 @@ export const ROUTABLE_PLATFORM_STYLE: {
     gradientColor: '#9185F7',
     name: RoutablePlatform.SWAPR_V3.name,
   },
+  [RoutablePlatform.SUSHISWAP.name]: {
+    logo: SushiswapNewLogo,
+    alt: RoutablePlatform.SUSHISWAP.name,
+    gradientColor: '#FB52A1',
+    name: RoutablePlatform.SUSHISWAP.name,
+  },
 }
 
 export const ROUTABLE_PLATFORM_LOGO: {
@@ -849,6 +855,7 @@ export const ROUTABLE_PLATFORM_LOGO: {
   [UniswapV2RoutablePlatform.UNISWAP.name]: <img width={16} height={16} src={UniswapLogo} alt="uniswap" />,
   [RoutablePlatform.VELODROME.name]: <img width={16} height={16} src={VelodromeLogo} alt="Velodrome" />,
   [RoutablePlatform.SWAPR_V3.name]: <img width={16} height={16} src={SwaprV3Logo} alt="Swapr v3" />,
+  [RoutablePlatform.SUSHISWAP.name]: <img width={16} height={16} src={SushiswapNewLogo} alt="sushiswap" />,
 }
 
 export const ChainLabel: any = {
