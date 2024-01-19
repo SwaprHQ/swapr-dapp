@@ -251,7 +251,7 @@ jobs:
       - name: Setup Node
         uses: actions/setup-node@v3
         with:
-          node-version: '16'
+          node-version: '18'
       - name: Start Deployment
         uses: bobheadxi/deployments@v1.4.0
         id: deployment
