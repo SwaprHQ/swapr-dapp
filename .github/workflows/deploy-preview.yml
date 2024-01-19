@@ -38,11 +38,12 @@ jobs:
       - name: Build
         run: yarn ipfs-build
       - name: Deploy to IPFS
-        uses: web3-storage/add-to-web3@v2
-        id: web3
+        uses: web3-storage/add-to-web3@v3
+        id: w3up
         with:
-          web3_token: ${{secrets.WEB3_STORAGE_TOKEN}}
           path_to_add: 'build'
+          proof: ${{ secrets.W3_PROOF }}
+          secret_key: ${{ secrets.W3_PRINCIPAL }}
       - name: Update Deployment Status
         uses: bobheadxi/deployments@v1.4.0
         if: always()
