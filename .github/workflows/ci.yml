@@ -231,56 +231,6 @@ jobs:
           path: /tmp/build.tar.zst
           retention-days: 3
 
-  deploy:
-    name: ⬡・IPFS Deploy
-    needs: build
-    runs-on: ubuntu-20.04
-    if: ${{ !(github.event_name == 'schedule' || github.actor == 'dependabot[bot]') }}
-    steps:
-      - name: Inject slug variables
-        uses: rlespinasse/github-slug-action@v4.4.1
-
-      - name: 📥 ・Download workspace artifact
-        uses: actions/download-artifact@v3
-        with:
-          name: build
-
-      - name: Extract workspace artifact
-        run: tar --extract --use-compress-program='zstd -d' --file=build.tar.zst
-
-      - name: Setup Node
-        uses: actions/setup-node@v3
-        with:
-          node-version: '18'
-      - name: Start Deployment
-        uses: bobheadxi/deployments@v1.4.0
-        id: deployment
-        with:
-          step: start
-          token: ${{secrets.GITHUB_TOKEN}}
-          env: ${{env.GITHUB_HEAD_REF_SLUG_URL || env.GITHUB_REF_SLUG_URL}}
-          ref: ${{github.head_ref}}
-
-      - name: Deploy to IPFS
-        uses: web3-storage/add-to-web3@v3
-        id: w3up
-        with:
-          path_to_add: 'build'
-          proof: ${{ secrets.W3_PROOF }}
-          secret_key: ${{ secrets.W3_PRINCIPAL }}
-
-      - name: Update Deployment Status
-        uses: bobheadxi/deployments@v1.4.0
-        if: always()
-        with:
-          step: finish
-          token: ${{secrets.GITHUB_TOKEN}}
-          status: ${{job.status}}
-          env: ${{ steps.deployment.outputs.env }}
-          auto_inactive: true
-          deployment_id: ${{steps.deployment.outputs.deployment_id}}
-          env_url: 'https://${{steps.web3.outputs.cid}}.ipfs.dweb.link'
-
   synpress:
     name: 👘 ・Synpress
     runs-on: ubuntu-22.04
