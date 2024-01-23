@@ -1,5 +1,5 @@
 import type { Signer } from '@ethersproject/abstract-signer'
-import { ChainId, CoWTrade } from '@swapr/sdk'
+import { ChainId, CoWTrade, GPv2SupportedChainId } from '@swapr/sdk'
 
 import contractNetworks from '@cowprotocol/contracts/networks.json'
 import { OrderKind as CoWOrderKind } from '@cowprotocol/cow-sdk'
@@ -157,7 +157,7 @@ export async function createCoWLimitOrder({ order, signer, chainId }: GetLimitOr
  */
 export function getVaultRelayerAddress(chainId: ChainId) {
   const GPv2VaultRelayer = contractNetworks.GPv2VaultRelayer as Record<
-    number,
+    GPv2SupportedChainId,
     Record<'transactionHash' | 'address', string>
   >
 

@@ -1,4 +1,4 @@
-import { ChainId, CoWTrade } from '@swapr/sdk'
+import { ChainId, CoWTrade, GPv2SupportedChainId } from '@swapr/sdk'
 
 import contractNetworks from '@cowprotocol/contracts/networks.json'
 import { useCallback, useEffect, useMemo } from 'react'
@@ -115,7 +115,7 @@ export default function Updater(): null {
 
               // The settlement contract from COW
               const GPv2Settlement = contractNetworks.GPv2Settlement as Record<
-                number,
+                GPv2SupportedChainId,
                 Record<'transactionHash' | 'address', string>
               >
               const contractAddress = GPv2Settlement[chainId]?.address
