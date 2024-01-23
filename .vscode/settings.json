@@ -6,7 +6,7 @@
     "enable": true
   },
   "editor.codeActionsOnSave": {
-    "source.fixAll.eslint": true
+    "source.fixAll.eslint": "explicit"
   },
   "typescript.preferences.quoteStyle": "single",
   "editor.tabSize": 2,
