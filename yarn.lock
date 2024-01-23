@@ -8460,7 +8460,7 @@ __metadata:
     "@storybook/testing-library": 0.1.0
     "@swapr/core": ^0.3.19
     "@swapr/periphery": ^0.3.22
-    "@swapr/sdk": "https://github.com/SwaprHQ/swapr-sdk#build/swa-132-add-sushiswap-v3"
+    "@swapr/sdk": 1.10.5
     "@synthetixio/synpress": ^2.3.3
     "@tanstack/react-query": 4.24.6
     "@testing-library/cypress": ^9.0.0
@@ -8601,9 +8601,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@swapr/sdk@https://github.com/SwaprHQ/swapr-sdk#build/swa-132-add-sushiswap-v3":
-  version: 1.10.2
-  resolution: "@swapr/sdk@https://github.com/SwaprHQ/swapr-sdk.git#commit=977a641c164d43c332fd402446445b8bf612c19c"
+"@swapr/sdk@npm:1.10.5":
+  version: 1.10.5
+  resolution: "@swapr/sdk@npm:1.10.5"
   dependencies:
     "@cowprotocol/cow-sdk": ^1.0.2-RC.0
     "@ethersproject/abi": ^5.6.4
@@ -8634,7 +8634,7 @@ __metadata:
     tslib: ^2.3.1
   peerDependencies:
     ethers: ^5.4.0
-  checksum: e2e8fea825cf2c48dd2667c40fb8f2871d3ba8096ed76a92b28925388b1c47ee2bf1ca62e2b9b8a34159190517b9f63761261afe1be33eb61aa29511fa1e1e50
+  checksum: be1c503f32727391c79d9dcf82f776f9249009b3c5eebc7a28194c62e8810baadfa138122f21165276aa511568f8d11e434c46530f9e1ceec3c16ed9bc0b2918
   languageName: node
   linkType: hard
 
