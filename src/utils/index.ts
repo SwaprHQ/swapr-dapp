@@ -40,16 +40,18 @@ const getExplorerPrefix = (chainId: ChainId) => {
       return new URL('https://arbiscan.io')
     case ChainId.ARBITRUM_RINKEBY:
       return new URL('https://testnet.arbiscan.io')
-    case ChainId.XDAI:
-      return new URL('https://gnosisscan.io')
-    case ChainId.POLYGON:
-      return new URL('https://polygonscan.com')
-    case ChainId.OPTIMISM_MAINNET:
-      return new URL('https://optimistic.etherscan.io')
     case ChainId.BSC_MAINNET:
       return new URL('https://bscscan.com')
     case ChainId.BSC_TESTNET:
       return new URL('https://testnet.bscscan.com/')
+    case ChainId.OPTIMISM_MAINNET:
+      return new URL('https://optimistic.etherscan.io')
+    case ChainId.POLYGON:
+      return new URL('https://polygonscan.com')
+    case ChainId.SCROLL_MAINNET:
+      return new URL('https://scrollscan.com/')
+    case ChainId.XDAI:
+      return new URL('https://gnosisscan.io')
     case ChainId.ZK_SYNC_ERA_MAINNET:
       return new URL('https://explorer.zksync.io/')
     case ChainId.ZK_SYNC_ERA_TESTNET:

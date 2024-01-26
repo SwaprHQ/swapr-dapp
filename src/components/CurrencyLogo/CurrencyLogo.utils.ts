@@ -6,30 +6,32 @@ import PolygonMaticLogo from '../../assets/images/polygon-matic-logo.svg'
 import XDAILogo from '../../assets/images/xdai-logo.png'
 
 export const NATIVE_CURRENCY_LOGO: { [chainId in ChainId]: string } = {
-  [ChainId.XDAI]: XDAILogo,
-  [ChainId.MAINNET]: EtherLogo,
-  [ChainId.RINKEBY]: EtherLogo,
+  [ChainId.ARBITRUM_GOERLI]: EtherLogo,
   [ChainId.ARBITRUM_ONE]: EtherLogo,
   [ChainId.ARBITRUM_RINKEBY]: EtherLogo,
-  [ChainId.ARBITRUM_GOERLI]: EtherLogo,
   [ChainId.POLYGON]: PolygonMaticLogo,
-  [ChainId.OPTIMISM_GOERLI]: EtherLogo,
-  [ChainId.OPTIMISM_MAINNET]: EtherLogo,
-  [ChainId.GOERLI]: EtherLogo,
   [ChainId.BSC_MAINNET]: BNBLogo,
   [ChainId.BSC_TESTNET]: BNBLogo,
+  [ChainId.GOERLI]: EtherLogo,
+  [ChainId.MAINNET]: EtherLogo,
+  [ChainId.OPTIMISM_GOERLI]: EtherLogo,
+  [ChainId.OPTIMISM_MAINNET]: EtherLogo,
+  [ChainId.RINKEBY]: EtherLogo,
+  [ChainId.SCROLL_MAINNET]: EtherLogo,
+  [ChainId.XDAI]: XDAILogo,
   [ChainId.ZK_SYNC_ERA_MAINNET]: EtherLogo,
   [ChainId.ZK_SYNC_ERA_TESTNET]: EtherLogo,
 }
 
 // From repo https://github.com/trustwallet/assets/tree/master/blockchains
 const trustWalletChainMapping: { [chainId in ChainId]?: string } = {
-  [ChainId.XDAI]: 'xdai',
-  [ChainId.POLYGON]: 'polygon',
-  [ChainId.MAINNET]: 'ethereum',
   [ChainId.ARBITRUM_ONE]: 'arbitrum',
-  [ChainId.OPTIMISM_MAINNET]: 'optimism',
   [ChainId.BSC_MAINNET]: 'binance',
+  [ChainId.MAINNET]: 'ethereum',
+  [ChainId.OPTIMISM_MAINNET]: 'optimism',
+  [ChainId.POLYGON]: 'polygon',
+  [ChainId.SCROLL_MAINNET]: 'scroll',
+  [ChainId.XDAI]: 'xdai',
   [ChainId.ZK_SYNC_ERA_MAINNET]: 'zksync',
 }
 

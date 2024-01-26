@@ -168,21 +168,14 @@ export const PRE_SELECT_OUTPUT_CURRENCY_ID: { [chainId in ChainId]: string } = {
   [ChainId.OPTIMISM_MAINNET]: OP[ChainId.OPTIMISM_MAINNET].address,
   [ChainId.POLYGON]: WETH[ChainId.POLYGON].address,
   [ChainId.RINKEBY]: '',
+  [ChainId.SCROLL_MAINNET]: USDC[ChainId.SCROLL_MAINNET].address,
   [ChainId.ZK_SYNC_ERA_MAINNET]: USDC[ChainId.ZK_SYNC_ERA_MAINNET].address,
   [ChainId.ZK_SYNC_ERA_TESTNET]: '',
 }
 
 // used to construct intermediary pairs for trading
 export const BASES_TO_CHECK_TRADES_AGAINST: ChainTokenList = {
-  [ChainId.MAINNET]: [
-    WETH[ChainId.MAINNET],
-    DXD[ChainId.MAINNET],
-    DAI[ChainId.MAINNET],
-    USDC[ChainId.MAINNET],
-    WBTC[ChainId.MAINNET],
-    USDT[ChainId.MAINNET],
-  ],
-  [ChainId.RINKEBY]: [WETH[ChainId.RINKEBY]],
+  [ChainId.ARBITRUM_GOERLI]: [WETH[ChainId.ARBITRUM_GOERLI]],
   [ChainId.ARBITRUM_ONE]: [
     WETH[ChainId.ARBITRUM_ONE],
     DXD[ChainId.ARBITRUM_ONE],
@@ -192,7 +185,39 @@ export const BASES_TO_CHECK_TRADES_AGAINST: ChainTokenList = {
     USDT[ChainId.ARBITRUM_ONE],
   ],
   [ChainId.ARBITRUM_RINKEBY]: [WETH[ChainId.ARBITRUM_RINKEBY], DXD[ChainId.ARBITRUM_RINKEBY]],
-  [ChainId.ARBITRUM_GOERLI]: [WETH[ChainId.ARBITRUM_GOERLI]],
+  [ChainId.BSC_MAINNET]: [
+    BUSD[ChainId.BSC_MAINNET],
+    CAKE[ChainId.BSC_MAINNET],
+    DAI[ChainId.BSC_MAINNET],
+    WBNB[ChainId.BSC_MAINNET],
+    USDC[ChainId.BSC_MAINNET],
+    USDT[ChainId.BSC_MAINNET],
+  ],
+  [ChainId.BSC_TESTNET]: [],
+  [ChainId.GOERLI]: [],
+  [ChainId.MAINNET]: [
+    WETH[ChainId.MAINNET],
+    DXD[ChainId.MAINNET],
+    DAI[ChainId.MAINNET],
+    USDC[ChainId.MAINNET],
+    WBTC[ChainId.MAINNET],
+    USDT[ChainId.MAINNET],
+  ],
+  [ChainId.OPTIMISM_GOERLI]: [],
+  [ChainId.OPTIMISM_MAINNET]: [
+    USDC[ChainId.OPTIMISM_MAINNET],
+    USDT[ChainId.OPTIMISM_MAINNET],
+    WBTC[ChainId.OPTIMISM_MAINNET],
+  ],
+  [ChainId.POLYGON]: [WMATIC[ChainId.POLYGON], USDC[ChainId.POLYGON], WBTC[ChainId.POLYGON], USDT[ChainId.POLYGON]],
+  [ChainId.RINKEBY]: [WETH[ChainId.RINKEBY]],
+  [ChainId.SCROLL_MAINNET]: [
+    DAI[ChainId.SCROLL_MAINNET],
+    USDC[ChainId.SCROLL_MAINNET],
+    USDT[ChainId.SCROLL_MAINNET],
+    WBTC[ChainId.SCROLL_MAINNET],
+    WETH[ChainId.SCROLL_MAINNET],
+  ],
   [ChainId.XDAI]: [
     WXDAI[ChainId.XDAI],
     WETH[ChainId.XDAI],
@@ -205,23 +230,6 @@ export const BASES_TO_CHECK_TRADES_AGAINST: ChainTokenList = {
     AGAVE,
     BAO,
   ],
-  [ChainId.POLYGON]: [WMATIC[ChainId.POLYGON], USDC[ChainId.POLYGON], WBTC[ChainId.POLYGON], USDT[ChainId.POLYGON]],
-  [ChainId.OPTIMISM_GOERLI]: [],
-  [ChainId.OPTIMISM_MAINNET]: [
-    USDC[ChainId.OPTIMISM_MAINNET],
-    USDT[ChainId.OPTIMISM_MAINNET],
-    WBTC[ChainId.OPTIMISM_MAINNET],
-  ],
-  [ChainId.GOERLI]: [],
-  [ChainId.BSC_MAINNET]: [
-    BUSD[ChainId.BSC_MAINNET],
-    CAKE[ChainId.BSC_MAINNET],
-    DAI[ChainId.BSC_MAINNET],
-    WBNB[ChainId.BSC_MAINNET],
-    USDC[ChainId.BSC_MAINNET],
-    USDT[ChainId.BSC_MAINNET],
-  ],
-  [ChainId.BSC_TESTNET]: [],
   [ChainId.ZK_SYNC_ERA_MAINNET]: [USDC[ChainId.ZK_SYNC_ERA_MAINNET]],
   [ChainId.ZK_SYNC_ERA_TESTNET]: [],
 }
@@ -229,14 +237,7 @@ export const BASES_TO_CHECK_TRADES_AGAINST: ChainTokenList = {
 // used for display in the default list when adding liquidity (native currency is already shown
 // by default, so no need to add the wrapper to the list)
 export const SUGGESTED_BASES: ChainTokenList = {
-  [ChainId.MAINNET]: [
-    DAI[ChainId.MAINNET],
-    USDC[ChainId.MAINNET],
-    USDT[ChainId.MAINNET],
-    WBTC[ChainId.MAINNET],
-    SWPR[ChainId.MAINNET],
-  ],
-  [ChainId.RINKEBY]: [],
+  [ChainId.ARBITRUM_GOERLI]: [WETH[ChainId.ARBITRUM_GOERLI], ARB[ChainId.ARBITRUM_GOERLI]],
   [ChainId.ARBITRUM_ONE]: [
     ARB[ChainId.ARBITRUM_ONE],
     WETH[ChainId.ARBITRUM_ONE],
@@ -247,24 +248,6 @@ export const SUGGESTED_BASES: ChainTokenList = {
     USDT[ChainId.ARBITRUM_ONE],
   ],
   [ChainId.ARBITRUM_RINKEBY]: [WETH[ChainId.ARBITRUM_RINKEBY], DXD[ChainId.ARBITRUM_RINKEBY]],
-  [ChainId.ARBITRUM_GOERLI]: [WETH[ChainId.ARBITRUM_GOERLI], ARB[ChainId.ARBITRUM_GOERLI]],
-  [ChainId.XDAI]: [WXDAI[ChainId.XDAI], WETH[ChainId.XDAI], USDC[ChainId.XDAI], SWPR[ChainId.XDAI]],
-  [ChainId.POLYGON]: [
-    WMATIC[ChainId.POLYGON],
-    WETH[ChainId.POLYGON],
-    USDC[ChainId.POLYGON],
-    WBTC[ChainId.POLYGON],
-    USDT[ChainId.POLYGON],
-  ],
-  [ChainId.OPTIMISM_GOERLI]: [],
-  [ChainId.OPTIMISM_MAINNET]: [
-    OP[ChainId.OPTIMISM_MAINNET],
-    DAI[ChainId.OPTIMISM_MAINNET],
-    USDC[ChainId.OPTIMISM_MAINNET],
-    USDT[ChainId.OPTIMISM_MAINNET],
-    WBTC[ChainId.OPTIMISM_MAINNET],
-  ],
-  [ChainId.GOERLI]: [],
   [ChainId.BSC_MAINNET]: [
     WBNB[ChainId.BSC_MAINNET],
     BUSD[ChainId.BSC_MAINNET],
@@ -274,20 +257,45 @@ export const SUGGESTED_BASES: ChainTokenList = {
     USDT[ChainId.BSC_MAINNET],
   ],
   [ChainId.BSC_TESTNET]: [],
+  [ChainId.GOERLI]: [],
+  [ChainId.MAINNET]: [
+    DAI[ChainId.MAINNET],
+    USDC[ChainId.MAINNET],
+    USDT[ChainId.MAINNET],
+    WBTC[ChainId.MAINNET],
+    SWPR[ChainId.MAINNET],
+  ],
+  [ChainId.OPTIMISM_GOERLI]: [],
+  [ChainId.OPTIMISM_MAINNET]: [
+    OP[ChainId.OPTIMISM_MAINNET],
+    DAI[ChainId.OPTIMISM_MAINNET],
+    USDC[ChainId.OPTIMISM_MAINNET],
+    USDT[ChainId.OPTIMISM_MAINNET],
+    WBTC[ChainId.OPTIMISM_MAINNET],
+  ],
+  [ChainId.POLYGON]: [
+    WMATIC[ChainId.POLYGON],
+    WETH[ChainId.POLYGON],
+    USDC[ChainId.POLYGON],
+    WBTC[ChainId.POLYGON],
+    USDT[ChainId.POLYGON],
+  ],
+  [ChainId.RINKEBY]: [],
+  [ChainId.SCROLL_MAINNET]: [
+    DAI[ChainId.SCROLL_MAINNET],
+    USDC[ChainId.SCROLL_MAINNET],
+    USDT[ChainId.SCROLL_MAINNET],
+    WBTC[ChainId.SCROLL_MAINNET],
+    WETH[ChainId.SCROLL_MAINNET],
+  ],
+  [ChainId.XDAI]: [WXDAI[ChainId.XDAI], WETH[ChainId.XDAI], USDC[ChainId.XDAI], SWPR[ChainId.XDAI]],
   [ChainId.ZK_SYNC_ERA_MAINNET]: [USDC[ChainId.ZK_SYNC_ERA_MAINNET]],
   [ChainId.ZK_SYNC_ERA_TESTNET]: [],
 }
 
 // used to construct the list of all pairs we consider by default in the frontend
 export const BASES_TO_TRACK_LIQUIDITY_FOR: ChainTokenList = {
-  [ChainId.MAINNET]: [
-    WETH[ChainId.MAINNET],
-    DXD[ChainId.MAINNET],
-    DAI[ChainId.MAINNET],
-    USDC[ChainId.MAINNET],
-    USDT[ChainId.MAINNET],
-  ],
-  [ChainId.RINKEBY]: [WETH[ChainId.RINKEBY]],
+  [ChainId.ARBITRUM_GOERLI]: [WETH[ChainId.ARBITRUM_GOERLI]],
   [ChainId.ARBITRUM_ONE]: [
     WETH[ChainId.ARBITRUM_ONE],
     DXD[ChainId.ARBITRUM_ONE],
@@ -295,14 +303,28 @@ export const BASES_TO_TRACK_LIQUIDITY_FOR: ChainTokenList = {
     ARBITRUM_NATIVE_USDC,
   ],
   [ChainId.ARBITRUM_RINKEBY]: [WETH[ChainId.ARBITRUM_RINKEBY], DXD[ChainId.ARBITRUM_RINKEBY]],
-  [ChainId.ARBITRUM_GOERLI]: [WETH[ChainId.ARBITRUM_GOERLI]],
-  [ChainId.XDAI]: [WXDAI[ChainId.XDAI], DXD[ChainId.XDAI], WETH[ChainId.XDAI], USDC[ChainId.XDAI], STAKE],
-  [ChainId.POLYGON]: [WMATIC[ChainId.POLYGON], USDC[ChainId.POLYGON], WBTC[ChainId.POLYGON], USDT[ChainId.POLYGON]],
-  [ChainId.OPTIMISM_GOERLI]: [WETH[ChainId.OPTIMISM_GOERLI]],
-  [ChainId.OPTIMISM_MAINNET]: [WETH[ChainId.OPTIMISM_MAINNET]],
-  [ChainId.GOERLI]: [WETH[ChainId.OPTIMISM_MAINNET]],
   [ChainId.BSC_MAINNET]: [WBNB[ChainId.BSC_MAINNET]],
   [ChainId.BSC_TESTNET]: [WBNB[ChainId.BSC_TESTNET]],
+  [ChainId.GOERLI]: [WETH[ChainId.OPTIMISM_MAINNET]],
+  [ChainId.MAINNET]: [
+    WETH[ChainId.MAINNET],
+    DXD[ChainId.MAINNET],
+    DAI[ChainId.MAINNET],
+    USDC[ChainId.MAINNET],
+    USDT[ChainId.MAINNET],
+  ],
+  [ChainId.OPTIMISM_GOERLI]: [WETH[ChainId.OPTIMISM_GOERLI]],
+  [ChainId.OPTIMISM_MAINNET]: [WETH[ChainId.OPTIMISM_MAINNET]],
+  [ChainId.POLYGON]: [WMATIC[ChainId.POLYGON], USDC[ChainId.POLYGON], WBTC[ChainId.POLYGON], USDT[ChainId.POLYGON]],
+  [ChainId.RINKEBY]: [WETH[ChainId.RINKEBY]],
+  [ChainId.SCROLL_MAINNET]: [
+    DAI[ChainId.SCROLL_MAINNET],
+    USDC[ChainId.SCROLL_MAINNET],
+    USDT[ChainId.SCROLL_MAINNET],
+    WBTC[ChainId.SCROLL_MAINNET],
+    WETH[ChainId.SCROLL_MAINNET],
+  ],
+  [ChainId.XDAI]: [WXDAI[ChainId.XDAI], DXD[ChainId.XDAI], WETH[ChainId.XDAI], USDC[ChainId.XDAI], STAKE],
   [ChainId.ZK_SYNC_ERA_MAINNET]: [Token.WETH[ChainId.ZK_SYNC_ERA_MAINNET], USDC[ChainId.ZK_SYNC_ERA_MAINNET]],
   [ChainId.ZK_SYNC_ERA_TESTNET]: [Token.WETH[ChainId.ZK_SYNC_ERA_TESTNET], USDC[ChainId.ZK_SYNC_ERA_TESTNET]],
 }
@@ -431,27 +453,16 @@ export interface NetworkOptionalDetails {
  * [] Abstract chains explorers into a single source of truth and consume it where neded
  */
 export const NETWORK_DETAIL: { [chainId: number]: NetworkDetails } = {
-  [ChainId.MAINNET]: {
-    chainId: `0x${ChainId.MAINNET.toString(16)}`,
-    chainName: 'Ethereum mainnet',
+  [ChainId.ARBITRUM_GOERLI]: {
+    chainId: `0x${ChainId.ARBITRUM_GOERLI.toString(16)}`,
+    chainName: 'Arbitrum Goerli',
     nativeCurrency: {
       name: Currency.ETHER.name || 'Ether',
       symbol: Currency.ETHER.symbol || 'ETH',
       decimals: Currency.ETHER.decimals || 18,
     },
-    rpcUrls: ['https://mainnet.infura.io/v3'],
-    blockExplorerUrls: ['https://etherscan.io'],
-  },
-  [ChainId.XDAI]: {
-    chainId: `0x${ChainId.XDAI.toString(16)}`,
-    chainName: 'Gnosis Chain',
-    nativeCurrency: {
-      name: Currency.XDAI.name || 'xDAI',
-      symbol: Currency.XDAI.symbol || 'xDAI',
-      decimals: Currency.XDAI.decimals || 18,
-    },
-    rpcUrls: ['https://rpc.gnosischain.com/'],
-    blockExplorerUrls: ['https://gnosisscan.io'],
+    rpcUrls: ['https://goerli-rollup.arbitrum.io/rpc'],
+    blockExplorerUrls: ['https://goerli-rollup-explorer.arbitrum.io/'],
   },
   [ChainId.ARBITRUM_ONE]: {
     chainId: `0x${ChainId.ARBITRUM_ONE.toString(16)}`,
@@ -475,27 +486,27 @@ export const NETWORK_DETAIL: { [chainId: number]: NetworkDetails } = {
     rpcUrls: ['https://rinkeby.arbitrum.io/rpc'],
     blockExplorerUrls: ['https://rinkeby-explorer.arbitrum.io'],
   },
-  [ChainId.ARBITRUM_GOERLI]: {
-    chainId: `0x${ChainId.ARBITRUM_GOERLI.toString(16)}`,
-    chainName: 'Arbitrum Goerli',
+  [ChainId.BSC_MAINNET]: {
+    chainId: `0x${ChainId.BSC_MAINNET.toString(16)}`,
+    chainName: 'BSC Mainnet',
     nativeCurrency: {
-      name: Currency.ETHER.name || 'Ether',
-      symbol: Currency.ETHER.symbol || 'ETH',
-      decimals: Currency.ETHER.decimals || 18,
+      name: Currency.BNB.name || 'Binance Coin',
+      symbol: Currency.BNB.symbol || 'BNB',
+      decimals: Currency.BNB.decimals || 18,
     },
-    rpcUrls: ['https://goerli-rollup.arbitrum.io/rpc'],
-    blockExplorerUrls: ['https://goerli-rollup-explorer.arbitrum.io/'],
+    rpcUrls: ['https://bsc-dataseed.binance.org'],
+    blockExplorerUrls: ['https://bscscan.com'],
   },
-  [ChainId.RINKEBY]: {
-    chainId: `0x${ChainId.RINKEBY.toString(16)}`,
-    chainName: 'Rinkeby',
+  [ChainId.BSC_TESTNET]: {
+    chainId: `0x${ChainId.BSC_TESTNET.toString(16)}`,
+    chainName: 'BSC Testnet',
     nativeCurrency: {
-      name: Currency.ETHER.name || 'Ether',
-      symbol: Currency.ETHER.symbol || 'ETH',
-      decimals: Currency.ETHER.decimals || 18,
+      name: Currency.BNB.name || 'Binance Coin',
+      symbol: Currency.BNB.symbol || 'BNB',
+      decimals: Currency.BNB.decimals || 18,
     },
-    rpcUrls: ['https://rinkeby.infura.io/v3'],
-    blockExplorerUrls: ['https://rinkeby.etherscan.io'],
+    rpcUrls: ['https://data-seed-prebsc-1-s1.binance.org:8545/'],
+    blockExplorerUrls: ['https://testnet.bscscan.com/'],
   },
   [ChainId.GOERLI]: {
     chainId: `0x${ChainId.GOERLI.toString(16)}`,
@@ -507,6 +518,17 @@ export const NETWORK_DETAIL: { [chainId: number]: NetworkDetails } = {
     },
     rpcUrls: ['https://goerli.infura.io/v3'],
     blockExplorerUrls: ['https://goerli.etherscan.io'],
+  },
+  [ChainId.MAINNET]: {
+    chainId: `0x${ChainId.MAINNET.toString(16)}`,
+    chainName: 'Ethereum mainnet',
+    nativeCurrency: {
+      name: Currency.ETHER.name || 'Ether',
+      symbol: Currency.ETHER.symbol || 'ETH',
+      decimals: Currency.ETHER.decimals || 18,
+    },
+    rpcUrls: ['https://mainnet.infura.io/v3'],
+    blockExplorerUrls: ['https://etherscan.io'],
   },
   [ChainId.POLYGON]: {
     chainId: `0x${ChainId.POLYGON.toString(16)}`,
@@ -541,27 +563,38 @@ export const NETWORK_DETAIL: { [chainId: number]: NetworkDetails } = {
     rpcUrls: ['https://goerli.optimism.io'],
     blockExplorerUrls: ['https://blockscout.com/optimism/goerli'],
   },
-  [ChainId.BSC_MAINNET]: {
-    chainId: `0x${ChainId.BSC_MAINNET.toString(16)}`,
-    chainName: 'BSC Mainnet',
+  [ChainId.RINKEBY]: {
+    chainId: `0x${ChainId.RINKEBY.toString(16)}`,
+    chainName: 'Rinkeby',
     nativeCurrency: {
-      name: Currency.BNB.name || 'Binance Coin',
-      symbol: Currency.BNB.symbol || 'BNB',
-      decimals: Currency.BNB.decimals || 18,
+      name: Currency.ETHER.name || 'Ether',
+      symbol: Currency.ETHER.symbol || 'ETH',
+      decimals: Currency.ETHER.decimals || 18,
     },
-    rpcUrls: ['https://bsc-dataseed.binance.org'],
-    blockExplorerUrls: ['https://bscscan.com'],
+    rpcUrls: ['https://rinkeby.infura.io/v3'],
+    blockExplorerUrls: ['https://rinkeby.etherscan.io'],
   },
-  [ChainId.BSC_TESTNET]: {
-    chainId: `0x${ChainId.BSC_TESTNET.toString(16)}`,
-    chainName: 'BSC Testnet',
+  [ChainId.SCROLL_MAINNET]: {
+    chainId: `0x${ChainId.SCROLL_MAINNET.toString(16)}`,
+    chainName: 'Scroll',
     nativeCurrency: {
-      name: Currency.BNB.name || 'Binance Coin',
-      symbol: Currency.BNB.symbol || 'BNB',
-      decimals: Currency.BNB.decimals || 18,
+      name: Currency.ETHER.name || 'Ether',
+      symbol: Currency.ETHER.symbol || 'ETH',
+      decimals: Currency.ETHER.decimals || 18,
     },
-    rpcUrls: ['https://data-seed-prebsc-1-s1.binance.org:8545/'],
-    blockExplorerUrls: ['https://testnet.bscscan.com/'],
+    rpcUrls: ['https://rpc.scroll.io/'],
+    blockExplorerUrls: ['https://scrollscan.com/'],
+  },
+  [ChainId.XDAI]: {
+    chainId: `0x${ChainId.XDAI.toString(16)}`,
+    chainName: 'Gnosis Chain',
+    nativeCurrency: {
+      name: Currency.XDAI.name || 'xDAI',
+      symbol: Currency.XDAI.symbol || 'xDAI',
+      decimals: Currency.XDAI.decimals || 18,
+    },
+    rpcUrls: ['https://rpc.gnosischain.com/'],
+    blockExplorerUrls: ['https://gnosisscan.io'],
   },
   [ChainId.ZK_SYNC_ERA_MAINNET]: {
     chainId: `0x${ChainId.ZK_SYNC_ERA_MAINNET.toString(16)}`,
@@ -594,40 +627,44 @@ export const NETWORK_OPTIONAL_DETAIL: {
     partnerChainId: ChainId.ARBITRUM_ONE,
     isArbitrum: false,
   },
-  [ChainId.XDAI]: {
-    isArbitrum: false,
+  [ChainId.ARBITRUM_GOERLI]: {
+    partnerChainId: ChainId.GOERLI,
+    isArbitrum: true,
   },
   [ChainId.ARBITRUM_ONE]: {
     partnerChainId: ChainId.MAINNET,
     isArbitrum: true,
   },
-  [ChainId.OPTIMISM_MAINNET]: {
-    partnerChainId: ChainId.MAINNET,
-    isArbitrum: false,
-  },
-  [ChainId.BSC_MAINNET]: {
-    partnerChainId: ChainId.BSC_MAINNET,
-    isArbitrum: false,
-  },
   [ChainId.ARBITRUM_RINKEBY]: {
     partnerChainId: ChainId.RINKEBY,
     isArbitrum: true,
   },
-  [ChainId.RINKEBY]: {
-    partnerChainId: ChainId.ARBITRUM_RINKEBY,
-    isArbitrum: false,
-  },
-  [ChainId.OPTIMISM_GOERLI]: {
-    partnerChainId: ChainId.OPTIMISM_GOERLI,
+  [ChainId.BSC_MAINNET]: {
+    partnerChainId: ChainId.BSC_MAINNET,
     isArbitrum: false,
   },
   [ChainId.GOERLI]: {
     partnerChainId: ChainId.ARBITRUM_GOERLI,
     isArbitrum: false,
   },
-  [ChainId.ARBITRUM_GOERLI]: {
-    partnerChainId: ChainId.GOERLI,
-    isArbitrum: true,
+  [ChainId.OPTIMISM_GOERLI]: {
+    partnerChainId: ChainId.OPTIMISM_GOERLI,
+    isArbitrum: false,
+  },
+  [ChainId.OPTIMISM_MAINNET]: {
+    partnerChainId: ChainId.MAINNET,
+    isArbitrum: false,
+  },
+  [ChainId.RINKEBY]: {
+    partnerChainId: ChainId.ARBITRUM_RINKEBY,
+    isArbitrum: false,
+  },
+  [ChainId.SCROLL_MAINNET]: {
+    partnerChainId: ChainId.SCROLL_MAINNET,
+    isArbitrum: false,
+  },
+  [ChainId.XDAI]: {
+    isArbitrum: false,
   },
   [ChainId.ZK_SYNC_ERA_MAINNET]: {
     partnerChainId: ChainId.ZK_SYNC_ERA_MAINNET,
@@ -640,6 +677,30 @@ export const NETWORK_OPTIONAL_DETAIL: {
 }
 
 export const RoutablePlatformKeysByNetwork = {
+  [ChainId.ARBITRUM_GOERLI]: [],
+  [ChainId.ARBITRUM_ONE]: [
+    UniswapV2RoutablePlatform.SWAPR.name,
+    RoutablePlatform.UNISWAP.name,
+    UniswapV2RoutablePlatform.SUSHISWAP.name,
+    RoutablePlatform.ONE_INCH.name,
+  ],
+  [ChainId.ARBITRUM_RINKEBY]: [
+    UniswapV2RoutablePlatform.SWAPR.name,
+    RoutablePlatform.UNISWAP.name,
+    UniswapV2RoutablePlatform.SUSHISWAP.name,
+    UniswapV2RoutablePlatform.HONEYSWAP.name,
+    UniswapV2RoutablePlatform.LEVINSWAP.name,
+    UniswapV2RoutablePlatform.BAOSWAP.name,
+    RoutablePlatform.CURVE.name,
+  ],
+  [ChainId.BSC_MAINNET]: [
+    UniswapV2RoutablePlatform.BISWAP.name,
+    UniswapV2RoutablePlatform.SUSHISWAP.name,
+    UniswapV2RoutablePlatform.PANCAKESWAP.name,
+    RoutablePlatform.ONE_INCH.name,
+  ],
+  [ChainId.BSC_TESTNET]: [],
+  [ChainId.GOERLI]: [],
   [ChainId.MAINNET]: [
     UniswapV2RoutablePlatform.SWAPR.name,
     RoutablePlatform.UNISWAP.name,
@@ -648,12 +709,32 @@ export const RoutablePlatformKeysByNetwork = {
     RoutablePlatform.GNOSIS_PROTOCOL.name,
     RoutablePlatform.ONE_INCH.name,
   ],
-  [ChainId.ARBITRUM_ONE]: [
+  [ChainId.OPTIMISM_GOERLI]: [],
+  [ChainId.OPTIMISM_MAINNET]: [
+    RoutablePlatform.UNISWAP.name,
+    UniswapV2RoutablePlatform.SUSHISWAP.name,
+    RoutablePlatform.CURVE.name,
+    RoutablePlatform.VELODROME.name,
+    RoutablePlatform.ONE_INCH.name,
+  ],
+  [ChainId.POLYGON]: [
+    RoutablePlatform.UNISWAP.name,
+    UniswapV2RoutablePlatform.SUSHISWAP.name,
+    UniswapV2RoutablePlatform.QUICKSWAP.name,
+    UniswapV2RoutablePlatform.DFYN.name,
+    RoutablePlatform.ZEROX.name,
+    RoutablePlatform.ONE_INCH.name,
+  ],
+  [ChainId.RINKEBY]: [
     UniswapV2RoutablePlatform.SWAPR.name,
     RoutablePlatform.UNISWAP.name,
     UniswapV2RoutablePlatform.SUSHISWAP.name,
-    RoutablePlatform.ONE_INCH.name,
+    UniswapV2RoutablePlatform.HONEYSWAP.name,
+    UniswapV2RoutablePlatform.LEVINSWAP.name,
+    UniswapV2RoutablePlatform.BAOSWAP.name,
+    RoutablePlatform.CURVE.name,
   ],
+  [ChainId.SCROLL_MAINNET]: [RoutablePlatform.SUSHISWAP.name],
   [ChainId.XDAI]: [
     UniswapV2RoutablePlatform.SWAPR.name,
     RoutablePlatform.UNISWAP.name,
@@ -665,51 +746,7 @@ export const RoutablePlatformKeysByNetwork = {
     RoutablePlatform.GNOSIS_PROTOCOL.name,
     RoutablePlatform.ONE_INCH.name,
   ],
-  [ChainId.POLYGON]: [
-    RoutablePlatform.UNISWAP.name,
-    UniswapV2RoutablePlatform.SUSHISWAP.name,
-    UniswapV2RoutablePlatform.QUICKSWAP.name,
-    UniswapV2RoutablePlatform.DFYN.name,
-    RoutablePlatform.ZEROX.name,
-    RoutablePlatform.ONE_INCH.name,
-  ],
-  [ChainId.BSC_MAINNET]: [
-    UniswapV2RoutablePlatform.BISWAP.name,
-    UniswapV2RoutablePlatform.SUSHISWAP.name,
-    UniswapV2RoutablePlatform.PANCAKESWAP.name,
-    RoutablePlatform.ONE_INCH.name,
-  ],
   [ChainId.ZK_SYNC_ERA_MAINNET]: [RoutablePlatform.ONE_INCH.name],
-  // TEST NETS WITH ALL DEXES
-  [ChainId.RINKEBY]: [
-    UniswapV2RoutablePlatform.SWAPR.name,
-    RoutablePlatform.UNISWAP.name,
-    UniswapV2RoutablePlatform.SUSHISWAP.name,
-    UniswapV2RoutablePlatform.HONEYSWAP.name,
-    UniswapV2RoutablePlatform.LEVINSWAP.name,
-    UniswapV2RoutablePlatform.BAOSWAP.name,
-    RoutablePlatform.CURVE.name,
-  ],
-  [ChainId.ARBITRUM_RINKEBY]: [
-    UniswapV2RoutablePlatform.SWAPR.name,
-    RoutablePlatform.UNISWAP.name,
-    UniswapV2RoutablePlatform.SUSHISWAP.name,
-    UniswapV2RoutablePlatform.HONEYSWAP.name,
-    UniswapV2RoutablePlatform.LEVINSWAP.name,
-    UniswapV2RoutablePlatform.BAOSWAP.name,
-    RoutablePlatform.CURVE.name,
-  ],
-  [ChainId.ARBITRUM_GOERLI]: [],
-  [ChainId.GOERLI]: [],
-  [ChainId.OPTIMISM_GOERLI]: [],
-  [ChainId.OPTIMISM_MAINNET]: [
-    RoutablePlatform.UNISWAP.name,
-    UniswapV2RoutablePlatform.SUSHISWAP.name,
-    RoutablePlatform.CURVE.name,
-    RoutablePlatform.VELODROME.name,
-    RoutablePlatform.ONE_INCH.name,
-  ],
-  [ChainId.BSC_TESTNET]: [],
   [ChainId.ZK_SYNC_ERA_TESTNET]: [],
 }
 
@@ -858,14 +895,15 @@ export const ROUTABLE_PLATFORM_LOGO: {
 }
 
 export const ChainLabel: any = {
-  [ChainId.MAINNET]: 'Ethereum',
-  [ChainId.RINKEBY]: 'Rinkeby',
   [ChainId.ARBITRUM_ONE]: 'Arbitrum One',
   [ChainId.ARBITRUM_RINKEBY]: 'Arbitrum Rinkeby',
-  [ChainId.XDAI]: 'Gnosis Chain',
-  [ChainId.POLYGON]: 'Polygon',
-  [ChainId.OPTIMISM_MAINNET]: 'Optimism',
   [ChainId.BSC_MAINNET]: 'Binance Chain',
+  [ChainId.MAINNET]: 'Ethereum',
+  [ChainId.OPTIMISM_MAINNET]: 'Optimism',
+  [ChainId.POLYGON]: 'Polygon',
+  [ChainId.RINKEBY]: 'Rinkeby',
+  [ChainId.SCROLL_MAINNET]: 'Scroll',
+  [ChainId.XDAI]: 'Gnosis Chain',
   [ChainId.ZK_SYNC_ERA_MAINNET]: 'zkSync Era',
   [ChainId.ZK_SYNC_ERA_TESTNET]: 'zkSync Era Testnet',
 }
