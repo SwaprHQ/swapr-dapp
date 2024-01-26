@@ -37,6 +37,7 @@ export function getSupportedPlatformsByChainId(chainId: ChainId) {
     RoutablePlatform.CURVE,
     RoutablePlatform.UNISWAP,
     RoutablePlatform.VELODROME,
+    RoutablePlatform.SUSHISWAP,
     RoutablePlatform.SWAPR_V3,
     RoutablePlatform.SUSHISWAP,
   ].filter(platform => platform.supportsChain(chainId))
