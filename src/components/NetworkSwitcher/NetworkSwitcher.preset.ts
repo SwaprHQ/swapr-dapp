@@ -59,7 +59,7 @@ export const networkOptionsPreset: NetworkOptionsPreset[] = [
     chainId: ChainId.SCROLL_MAINNET,
     name: 'Scroll',
     logoSrc: ScrolLogo,
-    color: '#1E69FF',
+    color: '#FFDBB0',
   },
 
   // TESTNETS
