@@ -48,7 +48,7 @@
     "@reduxjs/toolkit": "^1.9.5",
     "@swapr/core": "^0.3.19",
     "@swapr/periphery": "^0.3.22",
-    "@swapr/sdk": "SwaprHQ/swapr-sdk#feat/swa-129-add-scroll-chain-dist-test",
+    "@swapr/sdk": "1.11.0",
     "@tanstack/react-query": "4.24.6",
     "@uniswap/token-lists": "^1.0.0-beta.27",
     "@uniswap/v3-periphery": "1.4.1",
