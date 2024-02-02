@@ -210,6 +210,11 @@ export type FathomRegisteredEventName =
   | 'undefined-324/ecoRouter/1inch/volumeUSD'
   | 'undefined-324/ecoRouter/1inch/volumeUSD/pro'
   | 'bsc-56/ecoRouter/biswap/volumeUSD/pro'
+  | 'gnosis-100/ecoRouter/sushiswap/volumeUSD'
+  | 'optimism-10/ecoRouter/sushiswap/volumeUSD'
+  | 'gnosis-100/ecoRouter/sushiswap/volumeUSD/pro'
+  | 'optimism-10/ecoRouter/sushiswap/volumeUSD/pro'
+  | 'undefined'
 export type FathomRegisteredNetworkName =
   | 'ethereum'
   | 'rinkeby'
@@ -1699,8 +1704,36 @@ export const siteEvents: FathomSiteInformation = {
       currency: null,
       created_at: '2023-06-20 14:52:02',
     },
+    {
+      id: '2BRDLVOG',
+      object: 'event',
+      name: 'gnosis-100/ecoRouter/sushiswap/volumeUSD',
+      currency: null,
+      created_at: '2024-01-25 20:43:16',
+    },
+    {
+      id: 'WSDDMCY3',
+      object: 'event',
+      name: 'optimism-10/ecoRouter/sushiswap/volumeUSD',
+      currency: null,
+      created_at: '2024-01-25 20:43:16',
+    },
+    {
+      id: 'EM0SJT3A',
+      object: 'event',
+      name: 'gnosis-100/ecoRouter/sushiswap/volumeUSD/pro',
+      currency: null,
+      created_at: '2024-01-25 20:43:17',
+    },
+    {
+      id: 'LPBAST5C',
+      object: 'event',
+      name: 'optimism-10/ecoRouter/sushiswap/volumeUSD/pro',
+      currency: null,
+      created_at: '2024-01-25 20:43:17',
+    },
   ],
-  timestamp: '2023-06-20T17:55:12.893Z',
+  timestamp: '2024-01-25T20:50:58.718Z',
 }
 
 /**

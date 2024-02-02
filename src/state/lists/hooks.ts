@@ -107,15 +107,16 @@ export function useListsByAddress() {
 
 function combineMaps(map1: TokenAddressMap, map2: TokenAddressMap): TokenAddressMap {
   const chainList = [
-    ChainId.MAINNET,
-    ChainId.RINKEBY,
-    ChainId.XDAI,
-    ChainId.POLYGON,
     ChainId.ARBITRUM_ONE,
     ChainId.ARBITRUM_RINKEBY,
-    ChainId.OPTIMISM_MAINNET,
-    ChainId.OPTIMISM_GOERLI,
     ChainId.BSC_MAINNET,
+    ChainId.MAINNET,
+    ChainId.OPTIMISM_GOERLI,
+    ChainId.OPTIMISM_MAINNET,
+    ChainId.POLYGON,
+    ChainId.RINKEBY,
+    ChainId.SCROLL_MAINNET,
+    ChainId.XDAI,
     ChainId.ZK_SYNC_ERA_MAINNET,
     ChainId.ZK_SYNC_ERA_TESTNET,
   ]

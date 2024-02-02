@@ -26,34 +26,36 @@ const PANCAKESWAP_LIST =
   'https://raw.githubusercontent.com/pancakeswap/pancake-toolkit/master/packages/token-lists/lists/pancakeswap-default.json'
 // const UNISWAP_LIST = 'https://tokens.coingecko.com/uniswap/all.json'
 const ARBITRUM_LIST = 'https://tokens.coingecko.com/arbitrum-one/all.json'
+const SCROLL_LIST = 'https://raw.githubusercontent.com/scroll-tech/token-list/main/scroll.tokenlist.json'
 export const ZK_SYNC_ERA_LIST = 'https://tokens.coingecko.com/zksync/all.json'
 
 export const UNSUPPORTED_LIST_URLS: string[] = [BA_LIST]
 
 // lower index == higher priority for token import
 export const DEFAULT_LIST_OF_LISTS: string[] = [
-  DEFAULT_TOKEN_LIST,
-  QUICKSWAP_LIST,
-  COMPOUND_LIST,
-  HONEYSWAP_LIST,
-  LEVINSWAP_LIST,
-  BAOSWAP_LIST,
   AAVE_LIST,
-  SYNTHETIX_LIST,
-  UMA_LIST,
-  WRAPPED_LIST,
-  SET_LIST,
-  ROLL_LIST,
+  ARBITRUM_LIST,
+  BAOSWAP_LIST,
   COINGECKO_LIST,
   CMC_ALL_LIST,
   CMC_STABLECOIN,
-  KLEROS_LIST,
-  GEMINI_LIST,
+  COMPOUND_LIST,
+  DEFAULT_TOKEN_LIST,
   DFYN_LIST,
+  GEMINI_LIST,
+  HONEYSWAP_LIST,
+  KLEROS_LIST,
+  LEVINSWAP_LIST,
   OPTIMISM_LIST,
   PANCAKESWAP_LIST,
+  QUICKSWAP_LIST,
+  ROLL_LIST,
+  SCROLL_LIST,
+  SET_LIST,
+  SYNTHETIX_LIST,
+  UMA_LIST,
   // UNISWAP_LIST,
-  ARBITRUM_LIST,
+  WRAPPED_LIST,
   ZK_SYNC_ERA_LIST,
   ...UNSUPPORTED_LIST_URLS, // need to load unsupported tokens as well
 ]
