@@ -21,29 +21,31 @@ function getApiUrl(subString: string) {
 }
 
 const COINGECKO_ASSET_PLATFORM: { [chainId in ChainId]: string | null } = {
-  [ChainId.MAINNET]: 'ethereum',
-  [ChainId.RINKEBY]: null,
+  [ChainId.ARBITRUM_GOERLI]: null,
   [ChainId.ARBITRUM_ONE]: 'arbitrum-one',
   [ChainId.ARBITRUM_RINKEBY]: null,
-  [ChainId.ARBITRUM_GOERLI]: null,
-  [ChainId.XDAI]: 'xdai',
-  [ChainId.POLYGON]: 'polygon-pos',
-  [ChainId.GOERLI]: null,
-  [ChainId.OPTIMISM_MAINNET]: 'optimistic-ethereum',
-  [ChainId.OPTIMISM_GOERLI]: null,
   [ChainId.BSC_MAINNET]: 'binance-smart-chain',
   [ChainId.BSC_TESTNET]: null,
-  [ChainId.ZK_SYNC_ERA_MAINNET]: 'zksync',
+  [ChainId.GOERLI]: null,
+  [ChainId.MAINNET]: 'ethereum',
+  [ChainId.OPTIMISM_GOERLI]: null,
+  [ChainId.OPTIMISM_MAINNET]: 'optimistic-ethereum',
+  [ChainId.POLYGON]: 'polygon-pos',
+  [ChainId.RINKEBY]: null,
+  [ChainId.SCROLL_MAINNET]: null,
+  [ChainId.XDAI]: 'xdai',
+  [ChainId.ZK_SYNC_ERA_MAINNET]: null,
   [ChainId.ZK_SYNC_ERA_TESTNET]: null,
 }
 
 export const COINGECKO_NATIVE_CURRENCY: Record<number, string> = {
-  [ChainId.MAINNET]: 'ethereum',
   [ChainId.ARBITRUM_ONE]: 'ethereum',
-  [ChainId.XDAI]: 'xdai',
-  [ChainId.POLYGON]: 'matic-network',
-  [ChainId.OPTIMISM_MAINNET]: 'ethereum',
   [ChainId.BSC_MAINNET]: 'binancecoin',
+  [ChainId.MAINNET]: 'ethereum',
+  [ChainId.OPTIMISM_MAINNET]: 'ethereum',
+  [ChainId.POLYGON]: 'matic-network',
+  [ChainId.SCROLL_MAINNET]: 'ethereum',
+  [ChainId.XDAI]: 'xdai',
   [ChainId.ZK_SYNC_ERA_MAINNET]: 'ethereum',
 }
 

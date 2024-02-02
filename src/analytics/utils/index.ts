@@ -20,7 +20,6 @@ export function getProModeEventNameByChainId(chainId?: ChainId): string {
     [ChainId.GNOSIS]: 'proMode/gnosis/15seconds',
     [ChainId.RINKEBY]: 'proMode/rinkbey/15seconds',
     [ChainId.ARBITRUM_ONE]: 'proMode/arbitrum/15seconds',
-    [ChainId.OPTIMISM_MAINNET]: 'proMode/optimism/15seconds',
     [ChainId.POLYGON]: 'proMode/polygon/15seconds',
     [ChainId.ARBITRUM_GOERLI]: 'proMode/arbitrum-goerli/15seconds',
     [ChainId.ARBITRUM_RINKEBY]: 'proMode/arbitrum-rinkeby/15seconds',
@@ -28,6 +27,7 @@ export function getProModeEventNameByChainId(chainId?: ChainId): string {
     [ChainId.BSC_TESTNET]: 'proMode/bsc-testnet/15seconds',
     [ChainId.OPTIMISM_MAINNET]: 'proMode/optimism/15seconds',
     [ChainId.OPTIMISM_GOERLI]: 'proMode/optimism-goerli/15seconds',
+    [ChainId.SCROLL_MAINNET]: 'proMode/scroll/15seconds',
     [ChainId.ZK_SYNC_ERA_MAINNET]: 'proMode/zksync/15seconds',
     [ChainId.ZK_SYNC_ERA_TESTNET]: 'proMode/zksync-testnet/15seconds',
   }[chainId]
