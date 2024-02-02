@@ -15,6 +15,7 @@ import EthereumLogo from '../../assets/images/ethereum-logo.svg'
 import GnosisLogo from '../../assets/images/gnosis-chain-logo.svg'
 import OptimismLogo from '../../assets/images/optimism-logo.svg'
 import PolygonMaticLogo from '../../assets/images/polygon-matic-logo.svg'
+import ScrollLogo from '../../assets/images/scroll-logo.svg'
 import ZkSyncEraLogo from '../../assets/images/zk-sync-era-logo.svg'
 import { ENSAvatarData } from '../../hooks/useENSAvatar'
 import { ApplicationModal } from '../../state/application/actions'
@@ -26,17 +27,18 @@ import NetworkSwitcherPopover from '../NetworkSwitcherPopover'
 import { RowBetween } from '../Row'
 
 const ChainLogo: any = {
-  [ChainId.MAINNET]: EthereumLogo,
-  [ChainId.RINKEBY]: EthereumLogo,
-  [ChainId.GOERLI]: EthereumLogo,
+  [ChainId.ARBITRUM_GOERLI]: ArbitrumLogo,
   [ChainId.ARBITRUM_ONE]: ArbitrumLogo,
   [ChainId.ARBITRUM_RINKEBY]: ArbitrumLogo,
-  [ChainId.XDAI]: GnosisLogo,
-  [ChainId.POLYGON]: PolygonMaticLogo,
-  [ChainId.OPTIMISM_MAINNET]: OptimismLogo,
-  [ChainId.OPTIMISM_GOERLI]: OptimismLogo,
-  [ChainId.ARBITRUM_GOERLI]: ArbitrumLogo,
   [ChainId.BSC_MAINNET]: BSCLogo,
+  [ChainId.GOERLI]: EthereumLogo,
+  [ChainId.MAINNET]: EthereumLogo,
+  [ChainId.OPTIMISM_GOERLI]: OptimismLogo,
+  [ChainId.OPTIMISM_MAINNET]: OptimismLogo,
+  [ChainId.POLYGON]: PolygonMaticLogo,
+  [ChainId.RINKEBY]: EthereumLogo,
+  [ChainId.SCROLL_MAINNET]: ScrollLogo,
+  [ChainId.XDAI]: GnosisLogo,
   [ChainId.ZK_SYNC_ERA_MAINNET]: ZkSyncEraLogo,
   [ChainId.ZK_SYNC_ERA_TESTNET]: ZkSyncEraLogo,
 }
