@@ -5,14 +5,18 @@ import { GraphQLClient } from 'graphql-request'
 
 import { SWPRSupportedChains } from '../utils/chainSupportsSWPR'
 
+/**
+ * We use these subgraphs fo fetch Swapr pools related data.
+ * Use an empty string if there's no pool for the added chain.
+ */
 export const subgraphClientsUris: { [chainId in SWPRSupportedChains]: string } = {
-  [ChainId.ARBITRUM_GOERLI]: '', // FIXME: fix this once the subgraph is deployed
+  [ChainId.ARBITRUM_GOERLI]: '',
   [ChainId.ARBITRUM_RINKEBY]: 'https://api.thegraph.com/subgraphs/name/dxgraphs/swapr-arbitrum-rinkeby-v2',
   [ChainId.ARBITRUM_ONE]: 'https://api.thegraph.com/subgraphs/name/dxgraphs/swapr-arbitrum-one-v3',
   [ChainId.GOERLI]: 'https://api.thegraph.com/subgraphs/name/dxgraphs/swapr-goerli',
   [ChainId.MAINNET]: 'https://api.thegraph.com/subgraphs/name/dxgraphs/swapr-mainnet-v2',
   [ChainId.RINKEBY]: 'https://api.thegraph.com/subgraphs/name/dxgraphs/swapr-rinkeby',
-  [ChainId.SCROLL_MAINNET]: '', // FIXME: fix this once the subgraph is deployed
+  [ChainId.SCROLL_MAINNET]: '',
   [ChainId.XDAI]: 'https://api.thegraph.com/subgraphs/name/dxgraphs/swapr-xdai-v2',
 }
 

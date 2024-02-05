@@ -3,7 +3,8 @@
 import { DEFAULT_TOKEN_LIST } from '.'
 
 const COMPOUND_LIST = 'https://raw.githubusercontent.com/compound-finance/token-list/master/compound.tokenlist.json'
-const UMA_LIST = 'https://umaproject.org/uma.tokenlist.json'
+const UMA_LIST =
+  'https://raw.githubusercontent.com/UMAprotocol/website/faff59b2f03ef219c8d205c46f6be78cfc5c824b/public/uma.tokenlist.json'
 const AAVE_LIST = 'tokenlist.aave.eth'
 const SYNTHETIX_LIST = 'synths.snx.eth'
 const WRAPPED_LIST = 'wrapped.tokensoft.eth'
@@ -17,14 +18,14 @@ const GEMINI_LIST = 'https://www.gemini.com/uniswap/manifest.json'
 const BA_LIST = 'https://raw.githubusercontent.com/The-Blockchain-Association/sec-notice-list/master/ba-sec-list.json'
 const HONEYSWAP_LIST = 'https://tokens.honeyswap.org'
 const LEVINSWAP_LIST =
-  'https://ipfs.io/ipfs/QmUWxthidUYXUJ2kiZLLPxkMKYDAinnpA591R3SRN6wufs?filename=levinswap-default.tokenlist.json'
+  'https://ipfs.io/ipfs/QmUmN7Be3LLHiEwcVZDm6WsPjcTddWsc6C7hrLCmPzsanv?filename=levinswap-default.tokenlist.json'
 const BAOSWAP_LIST = 'https://raw.githubusercontent.com/baofinance/tokenlists/main/xdai.json'
 const QUICKSWAP_LIST = 'https://unpkg.com/quickswap-default-token-list@1.2.29/build/quickswap-default.tokenlist.json'
 const DFYN_LIST = 'https://raw.githubusercontent.com/dfyn/new-host/main/list-token.tokenlist.json'
 const OPTIMISM_LIST = 'https://static.optimism.io/optimism.tokenlist.json'
 const PANCAKESWAP_LIST =
   'https://raw.githubusercontent.com/pancakeswap/pancake-toolkit/master/packages/token-lists/lists/pancakeswap-default.json'
-// const UNISWAP_LIST = 'https://tokens.coingecko.com/uniswap/all.json'
+const UNISWAP_LIST = 'tokens.uniswap.eth'
 const ARBITRUM_LIST = 'https://tokens.coingecko.com/arbitrum-one/all.json'
 const SCROLL_LIST = 'https://raw.githubusercontent.com/scroll-tech/token-list/main/scroll.tokenlist.json'
 export const ZK_SYNC_ERA_LIST = 'https://tokens.coingecko.com/zksync/all.json'
@@ -54,7 +55,7 @@ export const DEFAULT_LIST_OF_LISTS: string[] = [
   SET_LIST,
   SYNTHETIX_LIST,
   UMA_LIST,
-  // UNISWAP_LIST,
+  UNISWAP_LIST,
   WRAPPED_LIST,
   ZK_SYNC_ERA_LIST,
   ...UNSUPPORTED_LIST_URLS, // need to load unsupported tokens as well
@@ -68,7 +69,7 @@ export const DEFAULT_ACTIVE_LIST_URLS: string[] = [
   QUICKSWAP_LIST,
   OPTIMISM_LIST,
   PANCAKESWAP_LIST,
-  // UNISWAP_LIST,
+  UNISWAP_LIST,
   ARBITRUM_LIST,
   ZK_SYNC_ERA_LIST,
 ]
