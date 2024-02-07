@@ -37,16 +37,14 @@ export async function trackEcoRouterTradeVolume(
     })
   }
 
-  const tradeUSDValueInCents = (parseFloat(parseFloat(tradeUSDValue).toFixed(2)) * 100).toString() // convert to cents because fathom requires it
+  const tradeUSDValueInCents = parseFloat(parseFloat(tradeUSDValue).toFixed(2)) * 100
   const networkName = getNetworkNameByChainId(trade.chainId as number)
   const chartOptionString = chartOptionToString[chartOption]
   const eventName = getEcoRouterVolumeUSDEventName(networkName, trade.chainId, trade.platform.name, chartOptionString)
-  const eventId = site.events.find(event => event.name === eventName)?.id
 
-  if (!eventId) {
-    throw new Error(`Event ID for (${eventName}) not found in site (${site.siteId})`)
-  }
-  window.fathom.trackGoal(eventId, tradeUSDValueInCents)
+  window.fathom.trackEvent(eventName, {
+    _value: tradeUSDValueInCents,
+  })
 }
 
 /**
