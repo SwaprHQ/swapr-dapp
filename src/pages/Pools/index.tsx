@@ -118,8 +118,8 @@ function Title({
   )
 
   return (
-    <>
-      <PageMetaData title="Liquidity | Swapr" />
+    <div>
+      <PageMetaData title="Pools | Swapr" />
       <TitleRow style={{ marginTop: '1rem' }} padding={'0'}>
         <Flex alignItems="center" justifyContent="space-between" marginBottom={[3, 0]}>
           {aggregatedDataFilter === PairsFilterType.MY ? (
@@ -189,7 +189,7 @@ function Title({
         onCurrencySelect={onCurrencySelection}
         showNativeCurrency={false}
       />
-    </>
+    </div>
   )
 }
 

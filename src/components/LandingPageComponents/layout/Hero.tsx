@@ -1,45 +1,12 @@
 import { Fragment, ReactNode, useEffect, useState } from 'react'
 import Marquee from 'react-fast-marquee'
-import styled, { keyframes } from 'styled-components'
+import styled from 'styled-components'
 
-import Arrow from '../../../assets/images/arrow-down-hero.svg'
 import { breakpoints } from '../../../utils/theme'
 import { HeroContent, RoutingThroughContent } from '../../../utils/uiConstants'
 import Button from '../common/Button'
 
 import Layout from './Layout'
-
-const arrowIndicatorAnimation = keyframes`
-  0% {opacity: 1}
-  10% {opacity: 0.3}
-  20% {opacity: 1}
-  100% {opacity: 1}
-`
-
-const ArrowIndicator = styled.section`
-  width: 100%;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  margin-top: 46px;
-  .arrow {
-    width: 12px;
-    height: 5px;
-    margin-bottom: 2px;
-    background-image: url('${Arrow}');
-    background-size: contain;
-    bakground-position: center;
-    animation: ${arrowIndicatorAnimation} infinite;
-    animation-duration: 3s;
-    background-repeat: no-repeat;
-    &:nth-child(2) {
-      animation-delay: 0.4s;
-    }
-    &:nth-child(3) {
-      animation-delay: 0.8s;
-    }
-  }
-`
 
 const RoutingThroughImage = styled.img`
   height: 20px;
@@ -150,11 +117,6 @@ const Hero = ({ children, showMarquee }: HeroProps) => {
                 </Marquee>
               </div>
             </div>
-            <ArrowIndicator>
-              <div className="arrow" />
-              <div className="arrow" />
-              <div className="arrow" />
-            </ArrowIndicator>
             <div className="routing-through mobile" data-aos="fade-up">
               <div className="routing-through-header">
                 <div className="left-line"></div>
