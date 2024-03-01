@@ -206,10 +206,6 @@ const DCAExternalLink = styled(ExternalLink)`
   `}
 `
 
-const DCAHeaderLink = styled(HeaderLink)`
-  margin-right: 18px;
-`
-
 const RewardsHeaderMobileLink = styled(HeaderMobileLink)`
   ${({ theme }) => theme.mediaWidth.upToSmall`
     display: none;
@@ -218,8 +214,8 @@ const RewardsHeaderMobileLink = styled(HeaderMobileLink)`
 
 const NewBadge = styled.p`
   position: absolute;
-  top: -12px;
-  right: -34px;
+  top: -16px;
+  right: -26px;
   font-size: 10px;
   background: #97df5c;
   padding: 1px 6px;
@@ -297,33 +293,56 @@ function Header() {
             {t('pools')}
             {networkWithoutSWPR && <HeaderLinkBadge label="NOT&nbsp;AVAILABLE" />}
           </HeaderLink>
-          <HeaderLink
-            data-testid="liquidity-v3-nav-link"
-            id="liquidity-v3-nav-link"
-            href={LIQUIDITY_V3_INFO_POOLS_LINK}
-          >
-            {t('poolsV3')}
-            <NewBadge>NEW</NewBadge>
-          </HeaderLink>
-          <HeaderLink data-testid="rewards-nav-link" id="rewards-nav-link" to="/rewards" disabled={networkWithoutSWPR}>
-            {t('rewards')}
-            {networkWithoutSWPR && <HeaderLinkBadge label="NOT&nbsp;AVAILABLE" />}
-          </HeaderLink>
-          <DCAHeaderLink id="stackly-nav-link" href={process.env.REACT_APP_STACKLY_URL}>
-            {t('DCA')}
-          </DCAHeaderLink>
-          <HeaderLink id="vote-nav-link" href="https://snapshot.org/#/swpr.eth">
-            {t('vote')}
-            <Text ml="4px" fontSize="13px">
-              ↗
-            </Text>
-          </HeaderLink>
-          <HeaderLink id="charts-nav-link" href={`https://dxstats.eth.limo/#/?chainId=${chainId}`}>
-            {t('charts')}
-            <Text ml="4px" fontSize="13px">
-              ↗
-            </Text>
-          </HeaderLink>
+          <div style={{ display: 'flex', alignItems: 'center' }}>
+            <HeaderLink
+              data-testid="liquidity-v3-nav-link"
+              id="liquidity-v3-nav-link"
+              href={LIQUIDITY_V3_INFO_POOLS_LINK}
+            >
+              {t('poolsV3')}
+              <NewBadge>NEW</NewBadge>
+            </HeaderLink>
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="12"
+              height="12"
+              fill="#8780BF"
+              viewBox="0 0 256 256"
+              style={{ marginLeft: '4px', marginBottom: '2px' }}
+            >
+              <path d="M224,104a8,8,0,0,1-16,0V59.32l-66.33,66.34a8,8,0,0,1-11.32-11.32L196.68,48H152a8,8,0,0,1,0-16h64a8,8,0,0,1,8,8Zm-40,24a8,8,0,0,0-8,8v72H48V80h72a8,8,0,0,0,0-16H48A16,16,0,0,0,32,80V208a16,16,0,0,0,16,16H176a16,16,0,0,0,16-16V136A8,8,0,0,0,184,128Z"></path>
+            </svg>
+          </div>
+          <div style={{ display: 'flex', alignItems: 'center' }}>
+            <HeaderLink id="stackly-nav-link" href={process.env.REACT_APP_STACKLY_URL}>
+              {t('DCA')}
+            </HeaderLink>
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="12"
+              height="12"
+              fill="#8780BF"
+              viewBox="0 0 256 256"
+              style={{ marginLeft: '4px', marginBottom: '2px' }}
+            >
+              <path d="M224,104a8,8,0,0,1-16,0V59.32l-66.33,66.34a8,8,0,0,1-11.32-11.32L196.68,48H152a8,8,0,0,1,0-16h64a8,8,0,0,1,8,8Zm-40,24a8,8,0,0,0-8,8v72H48V80h72a8,8,0,0,0,0-16H48A16,16,0,0,0,32,80V208a16,16,0,0,0,16,16H176a16,16,0,0,0,16-16V136A8,8,0,0,0,184,128Z"></path>
+            </svg>
+          </div>
+          <div style={{ display: 'flex', alignItems: 'center' }}>
+            <HeaderLink id="vote-nav-link" href="https://snapshot.org/#/swpr.eth">
+              {t('vote')}
+            </HeaderLink>
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="12"
+              height="12"
+              fill="#8780BF"
+              viewBox="0 0 256 256"
+              style={{ marginLeft: '4px', marginBottom: '2px' }}
+            >
+              <path d="M224,104a8,8,0,0,1-16,0V59.32l-66.33,66.34a8,8,0,0,1-11.32-11.32L196.68,48H152a8,8,0,0,1,0-16h64a8,8,0,0,1,8,8Zm-40,24a8,8,0,0,0-8,8v72H48V80h72a8,8,0,0,0,0-16H48A16,16,0,0,0,32,80V208a16,16,0,0,0,16,16H176a16,16,0,0,0,16-16V136A8,8,0,0,0,184,128Z"></path>
+            </svg>
+          </div>
         </HeaderLinks>
       </HeaderRow>
       <AdditionalDataWrap>
