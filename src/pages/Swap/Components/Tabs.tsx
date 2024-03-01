@@ -1,21 +1,15 @@
 import { useContext } from 'react'
 import { Sliders } from 'react-feather'
 import { useTranslation } from 'react-i18next'
-import { useDispatch } from 'react-redux'
 import styled from 'styled-components'
 
-import { ReactComponent as Bridge } from '../../../assets/images/bridge.svg'
 import { ReactComponent as EcoRouter } from '../../../assets/images/eco-router.svg'
 import Row from '../../../components/Row'
 import { MouseoverTooltip } from '../../../components/Tooltip'
 import { useActiveWeb3React } from '../../../hooks'
-import { useRouter } from '../../../hooks/useRouter'
-import { ecoBridgeUIActions } from '../../../services/EcoBridge/store/UI.reducer'
 import { SwapTab } from '../../../state/user/reducer'
 import { supportedChainIdList } from '../LimitOrderBox/constants'
 import { SwapTabContext } from '../SwapContext'
-
-import { ChartTabs } from './ChartTabs'
 
 const TabsColumn = styled.div`
   max-width: 457px;
@@ -69,18 +63,9 @@ const StyledSliders = styled(Sliders)`
   margin-right: 5px;
   width: 14px;
 `
-const StyledBridge = styled(Bridge)`
-  margin-right: 5px;
-  width: 14px;
-  fill: ${({ theme }) => theme.text5};
-`
 
 export function Tabs() {
-  const { t } = useTranslation('swap')
-  const { activeTab, setActiveTab, setActiveChartTab, activeChartTab } = useContext(SwapTabContext)
-  const dispatch = useDispatch()
-
-  const { navigate } = useRouter()
+  const { activeTab, setActiveTab } = useContext(SwapTabContext)
 
   return (
     <TabsColumn>
@@ -95,19 +80,7 @@ export function Tabs() {
           Swap
         </Button>
         <LimitOrderTab className={activeTab === SwapTab.LIMIT_ORDER ? 'active' : ''} setActiveTab={setActiveTab} />
-        <Button
-          title="Bridge Swap"
-          onClick={() => {
-            dispatch(ecoBridgeUIActions.setBridgeSwapStatus(true))
-            navigate('/bridge')
-          }}
-          className={activeTab === SwapTab.BRIDGE_SWAP ? 'active' : ''}
-        >
-          <StyledBridge height={11} />
-          {t('tabs.bridgeSwap')}
-        </Button>
       </TabsRow>
-      <ChartTabs setActiveChartTab={setActiveChartTab} activeChartTab={activeChartTab} />
     </TabsColumn>
   )
 }
