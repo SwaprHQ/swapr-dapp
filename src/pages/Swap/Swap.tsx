@@ -4,6 +4,7 @@ import { Fragment, useEffect, useState } from 'react'
 import { redirect } from 'react-router-dom'
 import styled from 'styled-components'
 
+import Footer from '../../components/Footer'
 import Hero from '../../components/LandingPageComponents/layout/Hero'
 import { useActiveWeb3React } from '../../hooks'
 import { useRouter } from '../../hooks/useRouter'
@@ -11,7 +12,6 @@ import { ChartOption, SwapTab } from '../../state/user/reducer'
 
 import { AdvancedTradingViewBox } from './AdvancedTradingViewBox'
 import { Tabs } from './Components/Tabs'
-import { LandingSections } from './LandingSections'
 import { LimitOrderBox } from './LimitOrderBox'
 import { supportedChainIdList } from './LimitOrderBox/constants'
 import { SwapBox } from './SwapBox/SwapBox.component'
@@ -74,7 +74,7 @@ export function Swap() {
           </AdvancedViewWrapper>
         </AppBodyContainer>
       </Hero>
-      {!isPro && <LandingSections />}
+      {!isPro && <Footer />}
     </SwapTabContext.Provider>
   )
 }

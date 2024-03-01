@@ -1,12 +1,9 @@
 import styled from 'styled-components'
 
-import { scrollTo } from '../../../utils/helperFunctions'
-import { breakpoints } from '../../../utils/theme'
-import { FooterContent } from '../../../utils/uiConstants'
-
-import SwaprLogo from './../../../assets/images/swapr-logo.svg'
-import NavigationButton from './../../../assets/images/timeline-assets/navigation-button.png'
-import Layout from './Layout'
+import SwaprLogo from '../../assets/images/swapr-logo.svg'
+import { breakpoints } from '../../utils/theme'
+import { FooterContent } from '../../utils/uiConstants'
+import Layout from '../LandingPageComponents/layout/Layout'
 
 const Footer = () => {
   return (
@@ -31,38 +28,26 @@ const Footer = () => {
             </li>
           ))}
         </ul>
-        <div className="cta-container">
-          <div
-            onClick={() => {
-              scrollTo('app-wrapper')
-            }}
-            className="timeline-navigation-button up"
-          />
-        </div>
       </div>
     </StyledFooter>
   )
 }
 
 const StyledFooter = styled(Layout)`
+  background: #0c0b11;
+  border-radius: 24px;
+
   &#footer {
     display: flex;
     flex-direction: column;
-    /* margin-bottom: 80px; */
-    margin-top: 1rem;
+    margin-top: 8rem;
     position: relative;
-    .footer-top {
-      margin-bottom: 42px;
-      position: absolute;
-      top: -12px;
-      img {
-        width: 113px;
-      }
-    }
+
     .footer-content {
       display: flex;
       position: relative;
       padding-bottom: 42px;
+
       .footer-column-list {
         display: flex;
         margin-left: auto;
@@ -92,24 +77,6 @@ const StyledFooter = styled(Layout)`
         display: flex;
         align-items: center;
         height: 32px;
-        .timeline-navigation-button {
-          width: 56px;
-          height: 56px;
-          background-image: url('${NavigationButton}');
-          background-position: center;
-          background-repeat: no-repeat;
-          background-size: contain;
-          cursor: pointer;
-          transition: ease-in-out 0.1s all;
-          transform: rotate(90deg);
-          &[disabled] {
-            opacity: 0;
-            pointer-events: none;
-          }
-          &:active {
-            transform: rotate(90deg) scale(0.9);
-          }
-        }
       }
       &:after {
         content: '';

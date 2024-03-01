@@ -30,6 +30,7 @@ const AppWrapper = styled.div`
   flex-flow: column;
   align-items: flex-start;
   overflow: hidden;
+  background: #0c0b11;
 `
 
 const HeaderWrapper = styled.div`
@@ -45,7 +46,6 @@ const BodyWrapper = styled.div<{
   flex-direction: column;
   min-height: calc(100vh - 172px);
   width: 100%;
-  padding-top: ${({ isAdvancedTradeMode }) => (isAdvancedTradeMode ? '30px' : '60px')};
   align-items: center;
   flex: 1;
   overflow-y: auto;
@@ -60,8 +60,8 @@ const BodyWrapper = styled.div<{
   `};
 
   /* [PR#531] */
-  padding-left: ${({ isAdvancedTradeMode }) => (isAdvancedTradeMode ? '0' : '16px')};
-  padding-right: ${({ isAdvancedTradeMode }) => (isAdvancedTradeMode ? '0' : '16px')};
+  // padding-left: ${({ isAdvancedTradeMode }) => (isAdvancedTradeMode ? '0' : '16px')};
+  // padding-right: ${({ isAdvancedTradeMode }) => (isAdvancedTradeMode ? '0' : '16px')};
 
   z-index: 1;
 `
