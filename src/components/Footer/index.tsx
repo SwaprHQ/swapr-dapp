@@ -1,3 +1,4 @@
+import { Link } from 'react-router-dom'
 import styled from 'styled-components'
 
 import SwaprLogo from '../../assets/images/swapr-logo.svg'
@@ -6,6 +7,10 @@ import { FooterContent } from '../../utils/uiConstants'
 import Layout from '../LandingPageComponents/layout/Layout'
 
 const Footer = () => {
+  function hasHttp(url: string) {
+    return url.includes('http://') || url.includes('https://')
+  }
+
   return (
     <StyledFooter id="footer" width="main-width">
       <div className="footer-top">
@@ -19,9 +24,13 @@ const Footer = () => {
               <ul className="footer-link-list">
                 {column.footerLinks.map((link, key) => (
                   <li key={key} className="footer-link-item">
-                    <a href={link.href} target="_blank" rel="noopener noreferrer">
-                      {link.label}
-                    </a>
+                    {hasHttp(link.href) ? (
+                      <a href={link.href} target="_blank" rel="noopener noreferrer">
+                        {link.label}
+                      </a>
+                    ) : (
+                      <Link to={link.href}>{link.label}</Link>
+                    )}
                   </li>
                 ))}
               </ul>
@@ -49,6 +58,7 @@ const StyledFooter = styled(Layout)`
       padding-bottom: 42px;
 
       .footer-column-list {
+        margin-top: 6px;
         display: flex;
         margin-left: auto;
         .footer-column {
@@ -91,6 +101,8 @@ const StyledFooter = styled(Layout)`
       width: 928px;
       .footer-content {
         .footer-column-list {
+          margin-top: 32px;
+
           .footer-column {
             width: 152px;
           }
@@ -102,6 +114,7 @@ const StyledFooter = styled(Layout)`
         position: unset;
       }
       .footer-content {
+        margin-top: 0px;
         flex-direction: column;
         .footer-column-list {
           margin-left: 0;

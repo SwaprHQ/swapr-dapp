@@ -1,4 +1,4 @@
-import { ChainId, SWPR } from '@swapr/sdk'
+import { SWPR } from '@swapr/sdk'
 
 import { useEffect, useMemo, useState } from 'react'
 import { ChevronUp } from 'react-feather'
@@ -25,7 +25,6 @@ import Web3Status from '../Web3Status'
 
 import { Balances } from './Balances'
 import { HeaderLink, HeaderMobileLink } from './HeaderLink'
-import { HeaderLinkBadge } from './HeaderLinkBadge'
 import MobileOptions from './MobileOptions'
 import { Amount } from './styled'
 
@@ -217,7 +216,7 @@ const NewBadge = styled.p`
   top: -16px;
   right: -26px;
   font-size: 10px;
-  background: #97df5c;
+  background: #3a9ee8;
   padding: 1px 6px;
   border-radius: 16px;
   color: black;
@@ -281,17 +280,6 @@ function Header() {
           </HeaderLink>
           <HeaderLink data-testid="bridge-nav-link" id="bridge-nav-link" to="/bridge">
             {t('bridge')}
-          </HeaderLink>
-          <HeaderLink
-            data-testid="pool-nav-link"
-            id="pool-nav-link"
-            to="/pools"
-            disabled={
-              networkWithoutSWPR && chainId !== ChainId.ARBITRUM_GOERLI
-            } /* // FIXME: fix this once SWPR is on Arb Goerli */
-          >
-            {t('pools')}
-            {networkWithoutSWPR && <HeaderLinkBadge label="NOT&nbsp;AVAILABLE" />}
           </HeaderLink>
           <div style={{ display: 'flex', alignItems: 'center' }}>
             <HeaderLink
