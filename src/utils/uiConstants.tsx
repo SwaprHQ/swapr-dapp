@@ -143,6 +143,19 @@ export const RoutingThroughContent = {
 export const FooterContent = {
   linkColumns: [
     {
+      title: 'Product',
+      footerLinks: [
+        {
+          label: 'Pools',
+          href: '/pools',
+        },
+        {
+          label: 'Rewards',
+          href: '/rewards',
+        },
+      ],
+    },
+    {
       title: 'About',
       footerLinks: [
         {
@@ -190,8 +203,4 @@ export const FooterContent = {
       ],
     },
   ],
-  footerCta: {
-    label: 'GO TO SWAPR',
-    href: '#',
-  },
 } as const
