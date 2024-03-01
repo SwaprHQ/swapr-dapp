@@ -15,7 +15,6 @@ import { PageMetaData } from '../components/PageMetaData'
 import { SpaceBg } from '../components/SpaceBg/SpaceBg'
 import Web3ReactManager from '../components/Web3ReactManager'
 import { useActiveWeb3React } from '../hooks'
-import { useLiquidityV3Popup } from '../state/application/hooks'
 import { CloseIcon } from '../theme'
 import { SWPRSupportedChains } from '../utils/chainSupportsSWPR'
 
@@ -92,7 +91,6 @@ export default function App() {
   const [isSwapPage, setIsSwapPage] = useState(false)
   const [isOpenBanner, setIsOpenBanner] = useState(true)
   const isAdvancedTradeMode = location.pathname.includes('/swap/pro')
-  const liquidityV3Popup = useLiquidityV3Popup()
 
   useEffect(() => {
     setIsSwapPage(!!location.pathname.includes('swap'))
@@ -107,11 +105,6 @@ export default function App() {
         duration: 500,
       })
     }, 1000)
-  }, [])
-
-  useEffect(() => {
-    liquidityV3Popup()
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   return (
