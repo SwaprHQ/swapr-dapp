@@ -13,7 +13,6 @@ import { ApplicationModal } from '../../state/application/actions'
 import { useModalOpen } from '../../state/application/hooks'
 import { useDarkModeManager, useUpdateSelectedChartOption } from '../../state/user/hooks'
 import { ChartOption } from '../../state/user/reducer'
-import { ExternalLink } from '../../theme'
 import { breakpoints } from '../../utils/theme'
 import { UnsupportedNetworkPopover } from '../NetworkUnsupportedPopover'
 import Row, { RowFixed, RowFlat } from '../Row'
@@ -190,17 +189,6 @@ const AdditionalDataWrap = styled.div`
 const StyledChevron = styled(ChevronUp)<{ open: boolean }>`
   stroke: ${({ theme }) => theme.orange1};
   transform: ${({ open }) => (open ? 'rotate(0deg)' : 'rotate(180deg)')};
-`
-const DCAExternalLink = styled(ExternalLink)`
-  display: none;
-  ${({ theme }) => theme.mediaWidth.upToMedium`
-    position: relative;
-    display: flex;
-    font-weight: 600;
-    font-size: 14px;
-    color: #c9c7db;
-    margin-right: 18px;
-  `}
 `
 
 const NewBadge = styled.p`
