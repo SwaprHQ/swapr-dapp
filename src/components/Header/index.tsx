@@ -1,6 +1,4 @@
-import { SWPR } from '@swapr/sdk'
-
-import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { ChevronUp } from 'react-feather'
 import { useTranslation } from 'react-i18next'
 import { Link } from 'react-router-dom'
@@ -205,12 +203,6 @@ const DCAExternalLink = styled(ExternalLink)`
   `}
 `
 
-const RewardsHeaderMobileLink = styled(HeaderMobileLink)`
-  ${({ theme }) => theme.mediaWidth.upToSmall`
-    display: none;
-  `};
-`
-
 const NewBadge = styled.p`
   position: absolute;
   top: -16px;
@@ -236,11 +228,8 @@ function Header() {
   /*  Expeditions hidden by SWA-27 request
    * const toggleExpeditionsPopup = useToggleShowExpeditionsPopup()
    */
-  const newSwpr = useMemo(() => (chainId ? SWPR[chainId] : undefined), [chainId])
   const isUnsupportedNetworkModal = useModalOpen(ApplicationModal.UNSUPPORTED_NETWORK)
   const isUnsupportedChainIdError = useUnsupportedChainIdError()
-
-  const networkWithoutSWPR = !newSwpr
 
   const onScrollHander = () => {
     const headerControls = document.getElementById('header-controls')
@@ -387,16 +376,6 @@ function Header() {
           <HeaderMobileLink id="bridge-nav-link" to="/bridge">
             {t('bridge')}
           </HeaderMobileLink>
-          {!networkWithoutSWPR && (
-            <HeaderMobileLink id="pool-nav-link" to="/pools">
-              {t('pools')}
-            </HeaderMobileLink>
-          )}
-          {!networkWithoutSWPR && (
-            <RewardsHeaderMobileLink id="rewards-nav-link" to="/rewards">
-              {t('rewards')}
-            </RewardsHeaderMobileLink>
-          )}
           <HeaderMobileLink id="liquidity-v3-nav-link" href={LIQUIDITY_V3_INFO_POOLS_LINK}>
             {t('poolsV3')}
             <NewBadge>NEW</NewBadge>
