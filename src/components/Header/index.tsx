@@ -6,7 +6,7 @@ import { Flex, Text } from 'rebass'
 import styled from 'styled-components'
 
 import { ReactComponent as GasInfoSvg } from '../../assets/images/gas-info.svg'
-import { LIQUIDITY_V3_INFO_POOLS_LINK } from '../../constants'
+import { LIQUIDITY_V3_INFO_POOLS_LINK, STACKLY_URL } from '../../constants'
 import { useActiveWeb3React, useUnsupportedChainIdError } from '../../hooks'
 import { useGasInfo } from '../../hooks/useGasInfo'
 import { ApplicationModal } from '../../state/application/actions'
@@ -291,7 +291,7 @@ function Header() {
             </svg>
           </div>
           <div style={{ display: 'flex', alignItems: 'center' }}>
-            <HeaderLink id="stackly-nav-link" href={process.env.REACT_APP_STACKLY_URL}>
+            <HeaderLink id="stackly-nav-link" href={STACKLY_URL}>
               {t('DCA')}
             </HeaderLink>
             <svg
@@ -378,12 +378,17 @@ function Header() {
           </HeaderMobileLink>
           <HeaderMobileLink id="liquidity-v3-nav-link" href={LIQUIDITY_V3_INFO_POOLS_LINK}>
             {t('poolsV3')}
-            <NewBadge>NEW</NewBadge>
+            <Text ml="4px" fontSize="11px">
+              ↗
+            </Text>
           </HeaderMobileLink>
 
-          <DCAExternalLink id="stackly-nav-link" href={process.env.REACT_APP_STACKLY_URL || ''}>
+          <HeaderMobileLink id="stackly-nav-link" href={STACKLY_URL}>
             {t('DCA')}
-          </DCAExternalLink>
+            <Text ml="4px" fontSize="11px">
+              ↗
+            </Text>
+          </HeaderMobileLink>
           <HeaderMobileLink id="vote-nav-link" href={`https://snapshot.org/#/swpr.eth`}>
             {t('vote')}
             <Text ml="4px" fontSize="11px">

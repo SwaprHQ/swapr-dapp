@@ -67,8 +67,8 @@ const StyledExternalMobileLink = styled(ExternalLink)`
     color:#C9C7DB;
   `};
   ${({ theme }) => theme.mediaWidth.upToSmall`
-    display: none;
-   `};
+      display: none;
+    `};
 `
 
 export interface HeaderLinkProps extends Omit<NavLinkProps, 'to'> {
