@@ -7,6 +7,7 @@ import styled from 'styled-components'
 
 import { ReactComponent as Cross } from '../../assets/images/crossIcon.svg'
 import { ReactComponent as ThreeBars } from '../../assets/images/three-bars.svg'
+import { LIQUIDITY_V3_INFO_POOLS_LINK, STACKLY_URL } from '../../constants'
 import { useActiveWeb3React } from '../../hooks'
 import { useOnClickOutside } from '../../hooks/useOnClickOutside'
 import { ApplicationModal } from '../../state/application/actions'
@@ -97,6 +98,18 @@ export default function MobileOptions() {
               </ListItem>
             )}
 
+            <ListItem>
+              <StyledExternalLink id="charts-nav-link" href={LIQUIDITY_V3_INFO_POOLS_LINK}>
+                {t('Pools V3')}
+                <span>↗</span>
+              </StyledExternalLink>
+            </ListItem>
+            <ListItem>
+              <StyledExternalLink id="charts-nav-link" href={STACKLY_URL}>
+                {t('DCA')}
+                <span>↗</span>
+              </StyledExternalLink>
+            </ListItem>
             <ListItem>
               <StyledExternalLink id="charts-nav-link" href="https://dxstats.eth.limo/">
                 {t('charts')}
