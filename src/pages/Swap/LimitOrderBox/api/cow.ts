@@ -1,5 +1,5 @@
 import type { Signer } from '@ethersproject/abstract-signer'
-import { ChainId, CoWTrade, GPv2SupportedChainId } from '@swapr/sdk'
+import { ChainId, CoWTrade, GPv2SupportedChainId, JSBI } from '@swapr/sdk'
 
 import contractNetworks from '@cowprotocol/contracts/networks.json'
 import { OrderKind as CoWOrderKind } from '@cowprotocol/cow-sdk'
@@ -86,14 +86,25 @@ export async function signLimitOrder({
   })
 
   // Get feeAmount from CoW
-  const { buyAmount, buyToken, receiverAddress, feeAmount, expiresAt, sellAmount, sellToken, kind } = order
+  const {
+    buyAmount,
+    buyToken,
+    receiverAddress,
+    feeAmount,
+    expiresAt,
+    sellAmount: quoteSellAmount,
+    sellToken,
+    kind,
+  } = order
+
+  const sellAmount = JSBI.add(JSBI.BigInt(quoteSellAmount.toString()), JSBI.BigInt(feeAmount.toString())).toString()
 
   const signedResult = await cowSdk.signOrder({
     buyAmount,
     buyToken,
     sellAmount,
     sellToken,
-    feeAmount, // from CoW APIs
+    feeAmount: '0',
     receiver: receiverAddress, // the account that will receive the order
     validTo: expiresAt,
     kind: kind === LimitOrderKind.BUY ? CoWOrderKind.BUY : CoWOrderKind.SELL,
@@ -106,7 +117,7 @@ export async function signLimitOrder({
 
   return {
     ...order,
-    feeAmount, // from CoW APIs
+    feeAmount,
     signature: signedResult.signature,
     signingScheme: signedResult.signingScheme,
   }
@@ -118,12 +129,17 @@ export async function createCoWLimitOrder({ order, signer, chainId }: GetLimitOr
     appDataHash: getAppDataIPFSHash(chainId),
   })
 
+  const sellAmount = JSBI.add(
+    JSBI.BigInt(order.sellAmount.toString()),
+    JSBI.BigInt(order.feeAmount.toString())
+  ).toString()
+
   const cowUnsignedOrder: Omit<UnsignedOrder, 'appData'> = {
     buyAmount: order.buyAmount,
     buyToken: order.buyToken,
-    sellAmount: order.sellAmount,
+    sellAmount: sellAmount,
     sellToken: order.sellToken,
-    feeAmount: '0', // from CoW APIs
+    feeAmount: '0',
     receiver: order.receiverAddress, // the account that will receive the order
     validTo: order.expiresAt,
     kind: order.kind === LimitOrderKind.BUY ? CoWOrderKind.BUY : CoWOrderKind.SELL,
