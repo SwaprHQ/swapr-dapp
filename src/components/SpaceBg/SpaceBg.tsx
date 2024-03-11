@@ -23,4 +23,8 @@ const StyledHero = styled.div<{ isAdvancedTradeMode: boolean }>`
   background-position: top center;
   width: 100%;
   min-height: calc(100vh - 218px);
+
+  @media (min-width: 2000px) {
+    background-size: cover;
+  }
 `
