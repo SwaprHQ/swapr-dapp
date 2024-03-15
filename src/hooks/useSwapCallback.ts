@@ -5,6 +5,7 @@ import {
   CoWTrade,
   CurveTrade,
   OneInchTrade,
+  OpenoceanTrade,
   Trade,
   TradeType,
   UniswapTrade,
@@ -84,13 +85,13 @@ export function useSwapsCallArguments(
       }
 
       const swapMethods = []
-      // Curve, Uniswap v3, ZeroX
       if (
         trade instanceof CurveTrade ||
         trade instanceof UniswapTrade ||
         trade instanceof ZeroXTrade ||
         trade instanceof SwaprV3Trade ||
-        trade instanceof SushiswapTrade
+        trade instanceof SushiswapTrade ||
+        trade instanceof OpenoceanTrade
       ) {
         return [
           {

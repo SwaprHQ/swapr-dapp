@@ -40,6 +40,7 @@ import LevinswapLogo from '../assets/images/levinswap-logo.svg'
 import SwaprLogo from '../assets/images/logo.svg'
 import ZeroXLogo from '../assets/images/logos/ZeroX.svg'
 import Metamask from '../assets/images/metamask.png'
+import OpenoceanLogo from '../assets/images/openocean-logo.png'
 import QuickswapLogo from '../assets/images/quickswap-logo.png'
 import SushiswapNewLogo from '../assets/images/sushiswap-new-logo.svg'
 import SwaprV3Logo from '../assets/images/swapr-v3-logo.svg'
@@ -683,6 +684,7 @@ export const RoutablePlatformKeysByNetwork = {
     RoutablePlatform.UNISWAP.name,
     UniswapV2RoutablePlatform.SUSHISWAP.name,
     RoutablePlatform.ONE_INCH.name,
+    RoutablePlatform.OPENOCEAN.name,
   ],
   [ChainId.ARBITRUM_RINKEBY]: [
     UniswapV2RoutablePlatform.SWAPR.name,
@@ -698,6 +700,7 @@ export const RoutablePlatformKeysByNetwork = {
     UniswapV2RoutablePlatform.SUSHISWAP.name,
     UniswapV2RoutablePlatform.PANCAKESWAP.name,
     RoutablePlatform.ONE_INCH.name,
+    RoutablePlatform.OPENOCEAN.name,
   ],
   [ChainId.BSC_TESTNET]: [],
   [ChainId.GOERLI]: [],
@@ -708,6 +711,7 @@ export const RoutablePlatformKeysByNetwork = {
     RoutablePlatform.ZEROX.name,
     RoutablePlatform.GNOSIS_PROTOCOL.name,
     RoutablePlatform.ONE_INCH.name,
+    RoutablePlatform.OPENOCEAN.name,
   ],
   [ChainId.OPTIMISM_GOERLI]: [],
   [ChainId.OPTIMISM_MAINNET]: [
@@ -716,6 +720,7 @@ export const RoutablePlatformKeysByNetwork = {
     RoutablePlatform.CURVE.name,
     RoutablePlatform.VELODROME.name,
     RoutablePlatform.ONE_INCH.name,
+    RoutablePlatform.OPENOCEAN.name,
   ],
   [ChainId.POLYGON]: [
     RoutablePlatform.UNISWAP.name,
@@ -724,6 +729,7 @@ export const RoutablePlatformKeysByNetwork = {
     UniswapV2RoutablePlatform.DFYN.name,
     RoutablePlatform.ZEROX.name,
     RoutablePlatform.ONE_INCH.name,
+    RoutablePlatform.OPENOCEAN.name,
   ],
   [ChainId.RINKEBY]: [
     UniswapV2RoutablePlatform.SWAPR.name,
@@ -734,7 +740,7 @@ export const RoutablePlatformKeysByNetwork = {
     UniswapV2RoutablePlatform.BAOSWAP.name,
     RoutablePlatform.CURVE.name,
   ],
-  [ChainId.SCROLL_MAINNET]: [RoutablePlatform.SUSHISWAP.name],
+  [ChainId.SCROLL_MAINNET]: [RoutablePlatform.OPENOCEAN.name, RoutablePlatform.SUSHISWAP.name],
   [ChainId.XDAI]: [
     UniswapV2RoutablePlatform.SWAPR.name,
     RoutablePlatform.UNISWAP.name,
@@ -745,8 +751,9 @@ export const RoutablePlatformKeysByNetwork = {
     RoutablePlatform.CURVE.name,
     RoutablePlatform.GNOSIS_PROTOCOL.name,
     RoutablePlatform.ONE_INCH.name,
+    RoutablePlatform.OPENOCEAN.name,
   ],
-  [ChainId.ZK_SYNC_ERA_MAINNET]: [RoutablePlatform.ONE_INCH.name],
+  [ChainId.ZK_SYNC_ERA_MAINNET]: [RoutablePlatform.ONE_INCH.name, RoutablePlatform.OPENOCEAN.name],
   [ChainId.ZK_SYNC_ERA_TESTNET]: [],
 }
 
@@ -869,6 +876,12 @@ export const ROUTABLE_PLATFORM_STYLE: {
     gradientColor: '#FB52A1',
     name: RoutablePlatform.SUSHISWAP.name,
   },
+  [RoutablePlatform.OPENOCEAN.name]: {
+    logo: OpenoceanLogo,
+    alt: RoutablePlatform.OPENOCEAN.name,
+    gradientColor: '#FB52A1',
+    name: RoutablePlatform.OPENOCEAN.name,
+  },
 }
 
 export const ROUTABLE_PLATFORM_LOGO: {
@@ -892,6 +905,7 @@ export const ROUTABLE_PLATFORM_LOGO: {
   [RoutablePlatform.VELODROME.name]: <img width={16} height={16} src={VelodromeLogo} alt="Velodrome" />,
   [RoutablePlatform.SWAPR_V3.name]: <img width={16} height={16} src={SwaprV3Logo} alt="Swapr v3" />,
   [RoutablePlatform.SUSHISWAP.name]: <img width={16} height={16} src={SushiswapNewLogo} alt="sushiswap" />,
+  [RoutablePlatform.OPENOCEAN.name]: <img width={16} height={16} src={OpenoceanLogo} alt="openocean" />,
 }
 
 export const ChainLabel: any = {
