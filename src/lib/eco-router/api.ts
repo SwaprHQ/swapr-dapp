@@ -308,7 +308,7 @@ export async function getExactOut(
           })
         }
         if (platform.name === RoutablePlatform.OPENOCEAN.name) {
-          return SwaprV3Trade.getQuote({
+          return OpenoceanTrade.getQuote({
             quoteCurrency: currencyIn,
             amount: currencyAmountOut,
             maximumSlippage,
