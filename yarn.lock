@@ -8572,7 +8572,7 @@ __metadata:
 
 "@swapr/sdk@SwaprHQ/swapr-sdk#feat/swa-146-add-openocean-support-test":
   version: 1.11.0
-  resolution: "@swapr/sdk@https://github.com/SwaprHQ/swapr-sdk.git#commit=465458c8b2601aaa04c43cca34023d3b1cf30c51"
+  resolution: "@swapr/sdk@https://github.com/SwaprHQ/swapr-sdk.git#commit=95f5d63f31f14f8c0036afdce600ace8d06f63c9"
   dependencies:
     "@cowprotocol/cow-sdk": ^1.0.2-RC.0
     "@ethersproject/abi": ^5.6.4
