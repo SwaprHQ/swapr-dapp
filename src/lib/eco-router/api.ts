@@ -307,15 +307,6 @@ export async function getExactOut(
             tradeType: TradeType.EXACT_OUTPUT,
           })
         }
-        if (platform.name === RoutablePlatform.OPENOCEAN.name) {
-          return OpenoceanTrade.getQuote({
-            quoteCurrency: currencyIn,
-            amount: currencyAmountOut,
-            maximumSlippage,
-            recipient: receiver,
-            tradeType: TradeType.EXACT_OUTPUT,
-          })
-        }
         // Trade out doesn't yet work on OneInch
         /* if (platform.name === RoutablePlatform.ONE_INCH.name) {
           return OneInchTrade.getQuote({
