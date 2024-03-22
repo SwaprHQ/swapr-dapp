@@ -1,4 +1,4 @@
-import { DISCORD_INVITE_LINK } from '../constants'
+import { DISCORD_INVITE_LINK, SWAPR_DOCS_BASE_URL, SWAPR_DOCS_PATH_URLS } from '../constants'
 
 import BNBLogo from './../assets/images/BNBLogo.svg'
 import ArbitrumLogo from './../assets/images/logo-Arbitrum.svg'
@@ -25,7 +25,7 @@ import RoutingZerox from './../assets/images/routing-Zerox.svg'
 export const mainNavigation = [
   {
     label: 'Documentation',
-    href: 'http://dxdocs.eth.limo.ipns.localhost:8080/docs/Products/swapr/',
+    href: SWAPR_DOCS_BASE_URL,
   },
   {
     label: 'Stats',
@@ -160,7 +160,7 @@ export const FooterContent = {
       footerLinks: [
         {
           label: 'FAQ',
-          href: 'https://dxdocs.eth.limo/docs/Products/swapr/faq/',
+          href: `${SWAPR_DOCS_BASE_URL}${SWAPR_DOCS_PATH_URLS.FAQ}`,
         },
         {
           label: 'Blog',
@@ -172,7 +172,7 @@ export const FooterContent = {
         },
         {
           label: 'Brand Assets',
-          href: 'https://dxdocs.eth.limo/docs/BrandingAssets/#swapr-brand-assets',
+          href: `${SWAPR_DOCS_BASE_URL}${SWAPR_DOCS_PATH_URLS.PROJECT_INFO_BRANDING}`,
         },
       ],
     },
