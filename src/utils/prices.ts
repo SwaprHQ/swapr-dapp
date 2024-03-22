@@ -21,6 +21,7 @@ import {
   ZeroXTrade,
   SwaprV3Trade,
   SushiswapTrade,
+  OpenoceanTrade,
 } from '@swapr/sdk'
 
 import _Decimal from 'decimal.js-light'
@@ -77,7 +78,8 @@ export function computeTradePriceBreakdown(trade?: Trade): TradePriceBreakdown {
       trade instanceof UniswapTrade ||
       trade instanceof ZeroXTrade ||
       trade instanceof SwaprV3Trade ||
-      trade instanceof SushiswapTrade
+      trade instanceof SushiswapTrade ||
+      trade instanceof OpenoceanTrade
     ) {
       return trade.fee
     } else if (trade instanceof CurveTrade || trade instanceof VelodromeTrade || trade instanceof OneInchTrade) {

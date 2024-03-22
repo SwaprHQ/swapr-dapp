@@ -17,6 +17,7 @@ import {
   ZeroXTrade,
   SwaprV3Trade,
   SushiswapTrade,
+  OpenoceanTrade,
 } from '@swapr/sdk'
 
 // Low-level API for Uniswap V2
@@ -129,6 +130,16 @@ export async function getExactIn(
         // Sushiswap
         if (platform.name === RoutablePlatform.SUSHISWAP.name) {
           return SushiswapTrade.getQuote({
+            quoteCurrency: currencyOut,
+            amount: currencyAmountIn,
+            maximumSlippage,
+            recipient: receiver,
+            tradeType: TradeType.EXACT_INPUT,
+          })
+        }
+        // Openocean
+        if (platform.name === RoutablePlatform.OPENOCEAN.name) {
+          return OpenoceanTrade.getQuote({
             quoteCurrency: currencyOut,
             amount: currencyAmountIn,
             maximumSlippage,
