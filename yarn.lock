@@ -8429,7 +8429,7 @@ __metadata:
     "@storybook/testing-library": 0.1.0
     "@swapr/core": ^0.3.19
     "@swapr/periphery": ^0.3.22
-    "@swapr/sdk": "SwaprHQ/swapr-sdk#feat/swa-146-add-openocean-support-test"
+    "@swapr/sdk": 1.11.4
     "@synthetixio/synpress": ^2.3.3
     "@tanstack/react-query": 4.24.6
     "@testing-library/cypress": ^9.0.0
@@ -8570,9 +8570,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@swapr/sdk@SwaprHQ/swapr-sdk#feat/swa-146-add-openocean-support-test":
-  version: 1.11.0
-  resolution: "@swapr/sdk@https://github.com/SwaprHQ/swapr-sdk.git#commit=95f5d63f31f14f8c0036afdce600ace8d06f63c9"
+"@swapr/sdk@npm:1.11.4":
+  version: 1.11.4
+  resolution: "@swapr/sdk@npm:1.11.4"
   dependencies:
     "@cowprotocol/cow-sdk": ^1.0.2-RC.0
     "@ethersproject/abi": ^5.6.4
@@ -8603,7 +8603,7 @@ __metadata:
     tslib: ^2.3.1
   peerDependencies:
     ethers: ^5.4.0
-  checksum: 22c0f38acb845c0e46a36acd7cd8470207f05ac45a4aeee2b9a326e4a06620afb4610409966daf5901bb9dffa17c8dc1441bbcbcbf582505f2f1f6bcf56601b0
+  checksum: 2ae6bb18dec24ad0ef91ab968335e288d76beb756d62b21e013a25210397cc4ee5006e17b20d4279291c4371f06f23e6baf9bbcd1ac7fc8b979b1eb88888b140
   languageName: node
   linkType: hard
 
