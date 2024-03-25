@@ -1,6 +1,6 @@
 {
   "name": "@swapr/frontend",
-  "version": "1.0.0-beta.22.2",
+  "version": "1.0.0-beta.22.3",
   "private": true,
   "description": "DXswap Decentralized Application",
   "license": "GPL-3.0-or-later",
@@ -48,7 +48,7 @@
     "@reduxjs/toolkit": "^1.9.5",
     "@swapr/core": "^0.3.19",
     "@swapr/periphery": "^0.3.22",
-    "@swapr/sdk": "1.11.3",
+    "@swapr/sdk": "1.11.4",
     "@tanstack/react-query": "4.24.6",
     "@uniswap/token-lists": "^1.0.0-beta.27",
     "@uniswap/v3-periphery": "1.4.1",
