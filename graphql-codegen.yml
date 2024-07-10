@@ -1,5 +1,5 @@
 overwrite: true
-schema: 'https://api.thegraph.com/subgraphs/name/dxgraphs/swapr-mainnet-v2'
+schema: 'https://gateway-arbitrum.network.thegraph.com/api/5f28b2eb91e916650da7ffe9bd228774/subgraphs/id/DQApa5vhVyx1sajkrF8zEFmLJTYyyMyw8WdiYt5hw9Fn'
 documents: 'src/**/*.{gql,graphql}'
 generates:
   src/graphql/generated/schema.ts:
