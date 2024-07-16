@@ -44,7 +44,7 @@ const HeaderFrame = styled.div`
 const ShutterButton = styled(ButtonPrimary)`
   background-image: ${({ disabled }) => !disabled && `linear-gradient(90deg, #2E17F2 19.74%, #FB52A1 120.26%)`};
   font-size: 10px;
-  max-width: 165px;
+  max-width: 150px;
   height: 22px;
   padding: 0px 8px;
   margin-right: 8px;
