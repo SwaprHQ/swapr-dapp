@@ -6,6 +6,7 @@ import { Flex, Text } from 'rebass'
 import styled from 'styled-components'
 
 import { ReactComponent as GasInfoSvg } from '../../assets/images/gas-info.svg'
+import ShutterLogo from '../../assets/images/shutter-logo.svg'
 import { LIQUIDITY_V3_INFO_POOLS_LINK, STACKLY_URL } from '../../constants'
 import { useActiveWeb3React, useUnsupportedChainIdError } from '../../hooks'
 import { useGasInfo } from '../../hooks/useGasInfo'
@@ -14,6 +15,7 @@ import { useModalOpen } from '../../state/application/hooks'
 import { useDarkModeManager, useUpdateSelectedChartOption } from '../../state/user/hooks'
 import { ChartOption } from '../../state/user/reducer'
 import { breakpoints } from '../../utils/theme'
+import { ButtonPrimary } from '../Button'
 import { UnsupportedNetworkPopover } from '../NetworkUnsupportedPopover'
 import Row, { RowFixed, RowFlat } from '../Row'
 import { Settings } from '../Settings'
@@ -37,6 +39,16 @@ const HeaderFrame = styled.div`
     position: relative;
   `};
   height: 100px;
+`
+
+const ShutterButton = styled(ButtonPrimary)`
+  background-image: ${({ disabled }) => !disabled && `linear-gradient(90deg, #2E17F2 19.74%, #FB52A1 120.26%)`};
+  font-size: 10px;
+  max-width: 165px;
+  height: 22px;
+  padding: 0px 8px;
+  margin-right: 8px;
+  gap: 10px;
 `
 
 const HeaderControls = styled.div<{ isConnected: boolean }>`
@@ -242,6 +254,35 @@ function Header() {
 
   const swapRoute = selectedChartTab === ChartOption.PRO ? '/swap/pro' : '/swap'
 
+  async function changeOrAddNetwork() {
+    const chainId = '0x64'
+    if (window.ethereum && window.ethereum.request) {
+      try {
+        const chainParams = {
+          chainId: chainId,
+          rpcUrls: ['https://erpc.gnosis.shutter.network'],
+          chainName: 'Shutterized Gnosis Chain',
+          nativeCurrency: {
+            name: 'xDai',
+            symbol: 'xDAI',
+            decimals: 18,
+          },
+          blockExplorerUrls: ['https://www.gnosisscan.com'],
+        }
+
+        await window.ethereum.request({
+          method: 'wallet_addEthereumChain',
+          params: [chainParams],
+        })
+        console.log('Network added and switched to:', chainParams.chainName)
+      } catch (addError) {
+        console.error('Failed to add the network:', addError)
+      }
+    } else {
+      console.error('MetaMask is not installed!')
+    }
+  }
+
   return (
     <HeaderFrame>
       {/* Expeditions hidden by SWA-27 request */}
@@ -316,13 +357,16 @@ function Header() {
           <Settings />
         </HeaderSubRow>
 
-        <Flex maxHeight={'22px'} justifyContent={'end'}>
+        <Flex maxHeight="22px" justifyContent="end" width="325px">
           {account && (
             <>
               {/* Expeditions hidden by SWA-27 request */}
               {/* <HeaderButton onClick={toggleExpeditionsPopup} style={{ marginRight: '7px' }}>
                 &#10024;&nbsp;Expeditions
               </HeaderButton> */}
+              <ShutterButton onClick={changeOrAddNetwork}>
+                <img src={ShutterLogo} alt="Shutter logotype" /> ADD SHUTTER RPC
+              </ShutterButton>
               <Balances />
             </>
           )}
