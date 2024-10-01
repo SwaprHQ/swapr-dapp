@@ -1,3 +1,5 @@
+import { ChainId } from '@swapr/sdk'
+
 import { useEffect, useState } from 'react'
 import { ChevronUp } from 'react-feather'
 import { useTranslation } from 'react-i18next'
@@ -17,6 +19,7 @@ import { ChartOption } from '../../state/user/reducer'
 import { breakpoints } from '../../utils/theme'
 import { ButtonPrimary } from '../Button'
 import { UnsupportedNetworkPopover } from '../NetworkUnsupportedPopover'
+import QuestionHelper from '../QuestionHelper'
 import Row, { RowFixed, RowFlat } from '../Row'
 import { Settings } from '../Settings'
 import { SwaprVersionLogo } from '../SwaprVersionLogo'
@@ -42,13 +45,22 @@ const HeaderFrame = styled.div`
 `
 
 const ShutterButton = styled(ButtonPrimary)`
-  background-image: ${({ disabled }) => !disabled && `linear-gradient(90deg, #2E17F2 19.74%, #FB52A1 120.26%)`};
   font-size: 10px;
-  max-width: 150px;
+  gap: 4px;
   height: 22px;
-  padding: 0px 8px;
   margin-right: 8px;
-  gap: 10px;
+  max-width: 200px;
+  padding: 0px 8px;
+  text-transform: none !important;
+
+  img {
+    height: 12px;
+    width: 12px;
+  }
+
+  svg {
+    stroke: white;
+  }
 `
 
 const HeaderControls = styled.div<{ isConnected: boolean }>`
@@ -217,6 +229,9 @@ const NewBadge = styled.p`
   margin-left: 10px;
 `
 
+const SHUTTER_HELP_TEXT =
+  'Shutter protects you against sandwich attacks and voting whales. Transactions with this RPC are encrypted before going into the public mempool, and kept encrypted until the order is finalized.'
+
 function Header() {
   const { account, chainId } = useActiveWeb3React()
 
@@ -364,9 +379,12 @@ function Header() {
               {/* <HeaderButton onClick={toggleExpeditionsPopup} style={{ marginRight: '7px' }}>
                 &#10024;&nbsp;Expeditions
               </HeaderButton> */}
-              <ShutterButton onClick={changeOrAddNetwork}>
-                <img src={ShutterLogo} alt="Shutter logotype" /> ADD SHUTTER RPC
-              </ShutterButton>
+              {chainId === ChainId.GNOSIS && (
+                <ShutterButton onClick={changeOrAddNetwork}>
+                  Add <img src={ShutterLogo} alt="Shutter RPC connector" /> Shutter Gnosis RPC{' '}
+                  <QuestionHelper text={SHUTTER_HELP_TEXT} />
+                </ShutterButton>
+              )}
               <Balances />
             </>
           )}
