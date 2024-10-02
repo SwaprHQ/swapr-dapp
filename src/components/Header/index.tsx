@@ -230,7 +230,7 @@ const NewBadge = styled.p`
 `
 
 const SHUTTER_HELP_TEXT =
-  'Shutter protects you against sandwich attacks and voting whales. Transactions with this RPC are encrypted before going into the public mempool, and kept encrypted until the order is finalized.'
+  'Shutter protects you against malicious MEV and provides censorship resistance. Transactions with this RPC are encrypted before going into the public mempool and are kept encrypted until the order is finalized.'
 
 function Header() {
   const { account, chainId } = useActiveWeb3React()
