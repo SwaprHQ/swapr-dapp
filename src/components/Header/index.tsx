@@ -382,7 +382,7 @@ function Header() {
               {chainId === ChainId.GNOSIS && (
                 <ShutterButton onClick={changeOrAddNetwork}>
                   Add <img src={ShutterLogo} alt="Shutter RPC connector" /> Shutter Gnosis RPC{' '}
-                  <QuestionHelper text={SHUTTER_HELP_TEXT} />
+                  <QuestionHelper size={14} text={SHUTTER_HELP_TEXT} />
                 </ShutterButton>
               )}
               <Balances />
