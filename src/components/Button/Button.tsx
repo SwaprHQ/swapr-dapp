@@ -132,8 +132,9 @@ export const ButtonPurpleDim = styled(Base)`
 
 export const ButtonInvisible = styled.button`
   border: none;
-  outline: none;
   background: transparent;
+  display: flex;
+  outline: none;
 `
 
 export const ButtonDark = styled(Base)`

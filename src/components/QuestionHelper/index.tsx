@@ -4,16 +4,15 @@ import styled from 'styled-components'
 
 import Tooltip from '../Tooltip'
 
-const QuestionWrapper = styled.div`
+const QuestionWrapper = styled.div<{ width?: string }>`
   display: flex;
   align-items: center;
   justify-content: flex-end;
   background: none;
   color: ${({ theme }) => theme.purple3};
   transition: opacity 0.3s ease;
-  width: 20px;
+  width: ${({ width }) => width ?? 20}px;
   height: 16px;
-  margin-left: 4;
 
   :hover,
   :focus {
@@ -37,10 +36,12 @@ const QuestionMark = styled.span`
 `
 
 export default function QuestionHelper({
+  iconWrapperWidth = '20',
   text,
   className,
   size = 16,
 }: {
+  iconWrapperWidth?: string
   text: string
   className?: string
   size?: number
@@ -52,7 +53,13 @@ export default function QuestionHelper({
 
   return (
     <Tooltip text={text} show={show}>
-      <QuestionWrapper onClick={open} onMouseEnter={open} onMouseLeave={close} className={className}>
+      <QuestionWrapper
+        onClick={open}
+        onMouseEnter={open}
+        onMouseLeave={close}
+        className={className}
+        width={iconWrapperWidth}
+      >
         <Question size={size} />
       </QuestionWrapper>
     </Tooltip>

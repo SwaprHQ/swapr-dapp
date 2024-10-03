@@ -16,6 +16,7 @@ import { ApplicationModal } from '../../state/application/actions'
 import { useModalOpen } from '../../state/application/hooks'
 import { useDarkModeManager, useUpdateSelectedChartOption } from '../../state/user/hooks'
 import { ChartOption } from '../../state/user/reducer'
+import { CloseIcon } from '../../theme'
 import { breakpoints } from '../../utils/theme'
 import { ButtonPrimary } from '../Button'
 import { UnsupportedNetworkPopover } from '../NetworkUnsupportedPopover'
@@ -45,13 +46,21 @@ const HeaderFrame = styled.div`
 `
 
 const ShutterButton = styled(ButtonPrimary)`
+  align-items: center;
+  display: flex;
   font-size: 10px;
-  gap: 4px;
+  justify-content: space-between;
   height: 22px;
   margin-right: 8px;
-  max-width: 200px;
-  padding: 0px 8px;
+  max-width: 235px;
+  padding: 0px 8px 0px 16px;
   text-transform: none !important;
+
+  .shutter-button-content-wrapper {
+    align-items: center;
+    display: flex;
+    gap: 4px;
+  }
 
   img {
     height: 12px;
@@ -233,18 +242,23 @@ const SHUTTER_HELP_TEXT =
   'Shutter protects you against malicious MEV and provides censorship resistance. Transactions with this RPC are encrypted before going into the public mempool and are kept encrypted until the order is finalized.'
 
 function Header() {
-  const { account, chainId } = useActiveWeb3React()
-
-  const { t } = useTranslation('common')
   const [isGasInfoOpen, setIsGasInfoOpen] = useState(false)
-  const { gas } = useGasInfo()
+  const [showShutterButton, setShowShutterButton] = useState(true)
+  const { account, chainId } = useActiveWeb3React()
   const [isDark] = useDarkModeManager()
+  const { gas } = useGasInfo()
+  const { t } = useTranslation('common')
 
   /*  Expeditions hidden by SWA-27 request
    * const toggleExpeditionsPopup = useToggleShowExpeditionsPopup()
    */
   const isUnsupportedNetworkModal = useModalOpen(ApplicationModal.UNSUPPORTED_NETWORK)
   const isUnsupportedChainIdError = useUnsupportedChainIdError()
+
+  const handleShutterCloseClick = (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+    event.preventDefault()
+    setShowShutterButton(false)
+  }
 
   const onScrollHander = () => {
     const headerControls = document.getElementById('header-controls')
@@ -379,10 +393,13 @@ function Header() {
               {/* <HeaderButton onClick={toggleExpeditionsPopup} style={{ marginRight: '7px' }}>
                 &#10024;&nbsp;Expeditions
               </HeaderButton> */}
-              {chainId === ChainId.GNOSIS && (
+              {chainId === ChainId.GNOSIS && showShutterButton && (
                 <ShutterButton onClick={changeOrAddNetwork}>
-                  Add <img src={ShutterLogo} alt="Shutter RPC connector" /> Shutter Gnosis RPC{' '}
-                  <QuestionHelper size={14} text={SHUTTER_HELP_TEXT} />
+                  <div className="shutter-button-content-wrapper">
+                    Add <img src={ShutterLogo} alt="Shutter RPC connector" /> Shutter Gnosis RPC{' '}
+                    <QuestionHelper iconWrapperWidth="auto" size={14} text={SHUTTER_HELP_TEXT} />
+                  </div>
+                  <CloseIcon height={14} width={14} onClick={handleShutterCloseClick} />
                 </ShutterButton>
               )}
               <Balances />
