@@ -257,6 +257,7 @@ function Header() {
 
   const handleShutterCloseClick = (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
     event.preventDefault()
+    event.stopPropagation()
     setShowShutterButton(false)
   }
 
@@ -399,7 +400,7 @@ function Header() {
                     Add <img src={ShutterLogo} alt="Shutter RPC connector" /> Shutter Gnosis RPC{' '}
                     <QuestionHelper iconWrapperWidth="auto" size={14} text={SHUTTER_HELP_TEXT} />
                   </div>
-                  <CloseIcon height={14} width={14} onClick={handleShutterCloseClick} />
+                  <CloseIcon onClick={handleShutterCloseClick} size={14} />
                 </ShutterButton>
               )}
               <Balances />
