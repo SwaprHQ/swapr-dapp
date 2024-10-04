@@ -387,7 +387,7 @@ function Header() {
           <Settings />
         </HeaderSubRow>
 
-        <Flex maxHeight="22px" justifyContent="end" width="325px">
+        <Flex maxHeight="22px" justifyContent="end" width="345px">
           {account && (
             <>
               {/* Expeditions hidden by SWA-27 request */}
