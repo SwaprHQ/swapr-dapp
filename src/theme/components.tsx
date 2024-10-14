@@ -39,16 +39,19 @@ export const Button = styled.button.attrs<{ warning: boolean }, { backgroundColo
   }
 `
 
-const StyledCloseIcon = styled(X)`
+const StyledCloseIcon = styled(X)<{ size?: number | string }>`
   color: ${({ theme }) => theme.purple3};
-  width: 16px;
-  height: 16px;
+  width: ${({ size }) => size ?? 16}px;
+  height: ${({ size }) => size ?? 16}px;
   cursor: pointer;
 `
-export const CloseIcon = (props: ButtonProps) => {
+interface CloseIconProps extends ButtonProps {
+  size?: number | string
+}
+export const CloseIcon = ({ size, ...props }: CloseIconProps) => {
   return (
     <ButtonInvisible {...props}>
-      <StyledCloseIcon />
+      <StyledCloseIcon size={size} />
     </ButtonInvisible>
   )
 }
