@@ -49,7 +49,7 @@
     "@reduxjs/toolkit": "^1.9.5",
     "@swapr/core": "^0.3.19",
     "@swapr/periphery": "^0.3.22",
-    "@swapr/sdk": "1.11.4",
+    "@swapr/sdk": "1.12.0",
     "@tanstack/react-query": "4.24.6",
     "@uniswap/token-lists": "^1.0.0-beta.27",
     "@uniswap/v3-periphery": "1.4.1",
