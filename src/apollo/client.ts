@@ -5,6 +5,7 @@ import { GraphQLClient } from 'graphql-request'
 
 import { SWPRSupportedChains } from '../utils/chainSupportsSWPR'
 
+const SUBGRAPH_API_KEY = '5f28b2eb91e916650da7ffe9bd228774'
 /**
  * We use these subgraphs fo fetch Swapr pools related data.
  * Use an empty string if there's no pool for the added chain.
@@ -12,12 +13,12 @@ import { SWPRSupportedChains } from '../utils/chainSupportsSWPR'
 export const subgraphClientsUris: { [chainId in SWPRSupportedChains]: string } = {
   [ChainId.ARBITRUM_GOERLI]: '',
   [ChainId.ARBITRUM_RINKEBY]: 'https://api.thegraph.com/subgraphs/name/dxgraphs/swapr-arbitrum-rinkeby-v2',
-  [ChainId.ARBITRUM_ONE]: 'https://api.thegraph.com/subgraphs/name/dxgraphs/swapr-arbitrum-one-v3',
+  [ChainId.ARBITRUM_ONE]: `https://gateway-arbitrum.network.thegraph.com/api/${SUBGRAPH_API_KEY}/subgraphs/id/H2EYoeTL5qDNeUeFecReCBvEq6BPCx4EnEDoAv7UTyL5`,
   [ChainId.GOERLI]: 'https://api.thegraph.com/subgraphs/name/dxgraphs/swapr-goerli',
-  [ChainId.MAINNET]: 'https://api.thegraph.com/subgraphs/name/dxgraphs/swapr-mainnet-v2',
+  [ChainId.MAINNET]: `https://gateway-arbitrum.network.thegraph.com/api/${SUBGRAPH_API_KEY}/subgraphs/id/DQApa5vhVyx1sajkrF8zEFmLJTYyyMyw8WdiYt5hw9Fn`,
   [ChainId.RINKEBY]: 'https://api.thegraph.com/subgraphs/name/dxgraphs/swapr-rinkeby',
   [ChainId.SCROLL_MAINNET]: '',
-  [ChainId.XDAI]: 'https://api.thegraph.com/subgraphs/name/dxgraphs/swapr-xdai-v2',
+  [ChainId.XDAI]: `https://gateway-arbitrum.network.thegraph.com/api/${SUBGRAPH_API_KEY}/subgraphs/id/EWoa3JwNntAWtaLsLixTU25smp4R5tzGvs9rFXx9NHKZ`,
 }
 
 const setupApolloClient = (network: SWPRSupportedChains) =>

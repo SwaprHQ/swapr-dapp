@@ -198,9 +198,8 @@ export async function getExactIn(
   )
 
   // remove undefined values and hight impact prices
-  const unsortedTrades = ecoRouterTradeList
-    .filter(trade => trade !== undefined || trade !== null)
-    .filter(trade => trade?.priceImpact.lessThan(FIVE_PERCENT)) as Trade[]
+  const unsortedTrades = ecoRouterTradeList.filter(trade => trade !== undefined || trade !== null) as Trade[]
+  // .filter(trade => trade?.priceImpact.lessThan(FIVE_PERCENT)) as Trade[]
 
   // Return the list of sorted trades
   return {

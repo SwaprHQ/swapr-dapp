@@ -237,7 +237,7 @@ export const limitNumberOfDecimalPlaces = (
   format = { groupSeparator: '' },
   rounding = Decimal.ROUND_DOWN
 ): string | undefined => {
-  if (!value || value.equalTo(ZERO)) return undefined
+  if (!value || value.equalTo(ZERO) || JSBI.equal(value.denominator, ZERO)) return undefined
   if (value instanceof CurrencyAmount && value.currency.decimals < significantDigits)
     significantDigits =
       typeof value.currency.decimals === 'string' ? parseInt(value.currency.decimals) : value.currency.decimals
