@@ -27,9 +27,6 @@ import { TYPE } from '../../theme'
 import { PageWrapper } from '../../ui/StyledElements/PageWrapper'
 import { getAccountAnalyticsLink } from '../../utils'
 import { unwrappedToken } from '../../utils/wrappedCurrency'
-
-import LiquidityV3Banner from './LiquidityV3Banner'
-
 const TitleRow = styled(RowBetween)`
   ${({ theme }) => theme.mediaWidth.upToSmall`
     flex-wrap: wrap;
@@ -228,7 +225,6 @@ export default function Pools() {
     <PageWrapper>
       <AutoColumn gap="lg" justify="center">
         <AutoColumn gap="27px" style={{ width: '100%' }}>
-          <LiquidityV3Banner />
           <Title
             aggregatedDataFilter={aggregatedDataFilter}
             onCurrencySelection={handleCurrencySelect}

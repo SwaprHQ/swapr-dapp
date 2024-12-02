@@ -123,6 +123,10 @@ export default function App() {
                       <Text as="span" fontWeight="bold">
                         swapr.eth.limo
                       </Text>
+                      &nbsp;or&nbsp;
+                      <Text as="span" fontWeight="bold">
+                        swapr.eth.link
+                      </Text>
                     </TextBanner>
                     <CloseIcon height={16} width={16} onClick={() => setIsOpenBanner(false)} />
                   </WarningBanner>
