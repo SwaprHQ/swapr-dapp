@@ -453,7 +453,7 @@ function Header() {
               ↗
             </Text>
           </HeaderMobileLink>
-          <HeaderMobileLink id="pools-nav-link" to="/pools">
+          <HeaderMobileLink id="pools-nav-link-mobile" to="/pools">
             {t('Pools V2')}
           </HeaderMobileLink>
           <HeaderMobileLink id="stackly-nav-link" href={STACKLY_URL}>
