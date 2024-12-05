@@ -1,10 +1,10 @@
-import { BigintIsh, Pair, Token } from '@swapr/sdk'
+import { BigintIsh, Pair } from '@swapr/sdk'
 
 import { useCallback, useMemo } from 'react'
 
-import { SubgraphLiquidityMiningCampaign, SubgraphSingleSidedStakingCampaign } from '../apollo'
+import { SubgraphLiquidityMiningCampaign } from '../apollo'
 import { PairsFilterType } from '../components/Pool/ListFilter'
-import { useGetLiquidityMiningCampaignsQuery, useGetStakingCampaignsQuery } from '../graphql/generated/schema'
+import { useGetLiquidityMiningCampaignsQuery } from '../graphql/generated/schema'
 import { useAllTokensFromActiveListsOnCurrentChain } from '../state/lists/hooks'
 import {
   getLowerTimeLimit,
@@ -13,7 +13,6 @@ import {
   sortActiveCampaigns,
   sortExpiredCampaigns,
   toLiquidityMiningCampaign,
-  toSingleSidedStakeCampaign,
 } from '../utils/liquidityMining'
 
 import { useSWPRToken } from './swpr/useSWPRToken'
@@ -23,8 +22,6 @@ import { useNativeCurrency } from './useNativeCurrency'
 import { useActiveWeb3React } from './index'
 
 export function useAllLiquidityMiningCampaigns(pair?: Pair, dataFilter?: PairsFilterType) {
-  const token0Address = pair?.token0?.address.toLowerCase()
-  const token1Address = pair?.token1?.address.toLowerCase()
   const pairAddress = pair?.liquidityToken.address.toLowerCase()
 
   const { chainId, account } = useActiveWeb3React()
@@ -38,16 +35,6 @@ export function useAllLiquidityMiningCampaigns(pair?: Pair, dataFilter?: PairsFi
 
   const memoizedLowerTimeLimit = useMemo(() => getLowerTimeLimit(), [])
   const tokensInCurrentChain = useAllTokensFromActiveListsOnCurrentChain()
-
-  const {
-    data: singleSidedCampaigns,
-    loading: singleSidedLoading,
-    error: singleSidedCampaignsError,
-  } = useGetStakingCampaignsQuery({
-    variables: {
-      userId: subgraphAccountId,
-    },
-  })
 
   const {
     data: pairCampaigns,
@@ -69,14 +56,10 @@ export function useAllLiquidityMiningCampaigns(pair?: Pair, dataFilter?: PairsFi
 
   return useMemo(() => {
     if (
-      singleSidedLoading ||
       !chainId ||
       campaignLoading ||
       !SWPRToken ||
-      singleSidedCampaignsError ||
       campaignError ||
-      !singleSidedCampaigns ||
-      !singleSidedCampaigns?.singleSidedStakingCampaigns ||
       !pairCampaigns ||
       !pairCampaigns.liquidityMiningCampaigns ||
       loadingKpiTokens
@@ -132,64 +115,6 @@ export function useAllLiquidityMiningCampaigns(pair?: Pair, dataFilter?: PairsFi
       }
     }
 
-    for (let i = 0; i < singleSidedCampaigns.singleSidedStakingCampaigns.length; i++) {
-      const campaign = singleSidedCampaigns.singleSidedStakingCampaigns[i]
-
-      if (
-        (token0Address &&
-          token1Address &&
-          campaign.stakeToken.id.toLowerCase() !== token0Address &&
-          campaign.stakeToken.id.toLowerCase() !== token1Address) ||
-        (dataFilter === PairsFilterType.MY && campaign.singleSidedStakingPositions.length === 0)
-      )
-        continue
-      const containsKpiToken = !!campaign.rewards.find(
-        reward => !!kpiTokens.find(kpiToken => kpiToken.address.toLowerCase() === reward?.token.address.toLowerCase())
-      )
-      const stakeToken = new Token(
-        chainId,
-        campaign.stakeToken.id,
-        parseInt(campaign.stakeToken.decimals),
-        campaign.stakeToken.symbol,
-        campaign.stakeToken.name
-      )
-
-      let singleSidedStakeCampaign
-      try {
-        singleSidedStakeCampaign = toSingleSidedStakeCampaign(
-          chainId,
-          campaign as SubgraphSingleSidedStakingCampaign,
-          stakeToken,
-          campaign.stakeToken.totalSupply,
-          nativeCurrency,
-          campaign.stakeToken.derivedNativeCurrency
-        )
-      } catch (e) {
-        // TODO: Investigate why `derivedNativeCurrency` is zero
-        console.error('Campaign', { campaign })
-        continue
-      }
-
-      const hasStake = campaign.singleSidedStakingPositions.length > 0
-      const isExpired = parseInt(campaign.endsAt) < timestamp || parseInt(campaign.endsAt) > memoizedLowerTimeLimit
-
-      if (dataFilter !== PairsFilterType.SWPR || SWPRToken.equals(stakeToken)) {
-        if (hasStake || singleSidedStakeCampaign.currentlyActive || isUpcoming(singleSidedStakeCampaign.startsAt)) {
-          activeCampaigns.unshift({
-            campaign: singleSidedStakeCampaign,
-            staked: hasStake,
-            containsKpiToken: containsKpiToken,
-          })
-        } else if (isExpired) {
-          expiredCampaigns.unshift({
-            campaign: singleSidedStakeCampaign,
-            staked: hasStake,
-            containsKpiToken: containsKpiToken,
-          })
-        }
-      }
-    }
-
     return {
       loading: false,
       miningCampaigns: {
@@ -198,12 +123,9 @@ export function useAllLiquidityMiningCampaigns(pair?: Pair, dataFilter?: PairsFi
       },
     }
   }, [
-    singleSidedLoading,
     chainId,
     campaignLoading,
-    singleSidedCampaignsError,
     campaignError,
-    singleSidedCampaigns,
     pairCampaigns,
     loadingKpiTokens,
     pairAddress,
@@ -215,7 +137,5 @@ export function useAllLiquidityMiningCampaigns(pair?: Pair, dataFilter?: PairsFi
     memoizedLowerTimeLimit,
     SWPRToken,
     isUpcoming,
-    token0Address,
-    token1Address,
   ])
 }
