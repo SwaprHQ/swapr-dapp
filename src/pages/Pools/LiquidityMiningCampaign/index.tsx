@@ -13,7 +13,6 @@ import { RowBetween, RowFixed } from '../../../components/Row'
 import { UndecoratedLink } from '../../../components/UndercoratedLink'
 import { PairState, usePair } from '../../../data/Reserves'
 import { useActiveWeb3React } from '../../../hooks'
-import { useSingleSidedCampaign } from '../../../hooks/singleSidedStakeCampaigns/useSingleSidedCampaign'
 import { useToken } from '../../../hooks/Tokens'
 import { useLiquidityMiningCampaign } from '../../../hooks/useLiquidityMiningCampaign'
 import { useRouter } from '../../../hooks/useRouter'
@@ -56,10 +55,6 @@ export default function LiquidityMiningCampaign() {
   const token1 = useToken(currencyIdB)
   const isSingleSidedCampaign = location.pathname.includes('/single-sided-campaign')
 
-  const { singleSidedStakingCampaign, loading: singleSidedCampaignLoading } = useSingleSidedCampaign(
-    liquidityMiningCampaignId!
-  )
-
   const wrappedPair = usePair(token0 || undefined, token1 || undefined)
   const pairOrUndefined = useMemo(() => wrappedPair[1] || undefined, [wrappedPair])
   const { campaign, containsKpiToken, loading } = useLiquidityMiningCampaign(pairOrUndefined, liquidityMiningCampaignId)
@@ -77,7 +72,7 @@ export default function LiquidityMiningCampaign() {
   const AddLiquidityButtonComponent =
     lpTokenBalance && lpTokenBalance.equalTo('0') ? ResponsiveButtonPrimary : ResponsiveButtonSecondary
 
-  const showSingleSidedCampaignLoader = isSingleSidedCampaign && (token0 === null || singleSidedCampaignLoading)
+  const showSingleSidedCampaignLoader = isSingleSidedCampaign && !token0 === null
   const showCampaignLoader = !isSingleSidedCampaign && (token1 === null || token0 === null)
 
   return (
@@ -142,10 +137,10 @@ export default function LiquidityMiningCampaign() {
                 </NavLink>
               </ButtonRow>
             </TitleRow>
-            {((!isSingleSidedCampaign && !loading) || (!singleSidedCampaignLoading && isSingleSidedCampaign)) && (
+            {((!isSingleSidedCampaign && !loading) || isSingleSidedCampaign) && (
               <LiquidityMiningCampaignView
                 isSingleSidedStake={isSingleSidedCampaign}
-                campaign={isSingleSidedCampaign ? singleSidedStakingCampaign : campaign}
+                campaign={campaign}
                 containsKpiToken={containsKpiToken}
               />
             )}

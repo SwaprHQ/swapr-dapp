@@ -20,7 +20,6 @@ import { CurrencySearchModal } from '../../components/SearchModal/CurrencySearch
 import { Switch } from '../../components/Switch'
 import { LIQUIDITY_SORTING_TYPES } from '../../constants'
 import { useActiveWeb3React } from '../../hooks'
-import { useSwaprSinglelSidedStakeCampaigns } from '../../hooks/singleSidedStakeCampaigns/useSwaprSingleSidedStakeCampaigns'
 import { useAllPairsWithLiquidityAndMaximumApyAndStakingIndicator } from '../../hooks/useAllPairsWithLiquidityAndMaximumApyAndStakingIndicator'
 import { useLPPairs } from '../../hooks/useLiquidityPositions'
 import { TYPE } from '../../theme'
@@ -205,8 +204,6 @@ export default function Pools() {
     sortBy
   )
 
-  const { loading: ssLoading, data } = useSwaprSinglelSidedStakeCampaigns(filterToken, aggregatedDataFilter)
-
   const { loading: loadingUserLpPositions, data: userLpPairs } = useLPPairs(account || undefined)
 
   const handleCurrencySelect = useCallback((token: Currency) => {
@@ -239,12 +236,11 @@ export default function Pools() {
             sortBy={sortBy}
           />
           {aggregatedDataFilter === PairsFilterType.MY ? (
-            <PairsList loading={loadingUserLpPositions} aggregatedPairs={userLpPairs} singleSidedStake={data} />
+            <PairsList loading={loadingUserLpPositions} aggregatedPairs={userLpPairs} />
           ) : (
             <PairsList
-              loading={loadingUserLpPositions || loadingAggregatedData || ssLoading}
+              loading={loadingUserLpPositions || loadingAggregatedData}
               aggregatedPairs={aggregatedData}
-              singleSidedStake={data}
               filter={aggregatedDataFilter}
             />
           )}
