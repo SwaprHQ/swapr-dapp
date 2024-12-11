@@ -5,7 +5,7 @@
   "description": "DXswap Decentralized Application",
   "license": "GPL-3.0-or-later",
   "scripts": {
-    "start": "yarn codegen:graphql && react-app-rewired start",
+    "start": "yarn codegen:socket && yarn codegen:graphql && react-app-rewired start",
     "build": "git config --global --add safe.directory /workspace && yarn codegen:wallet-connect-domain-verification && cross-env GENERATE_SOURCEMAP=false react-app-rewired build",
     "build:simple": "git config --global --add safe.directory /workspace && cross-env GENERATE_SOURCEMAP=false react-app-rewired build",
     "build:serve": "yarn build && serve -s ./build -l 5001",
