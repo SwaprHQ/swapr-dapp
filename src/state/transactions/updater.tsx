@@ -1,10 +1,11 @@
-import { ChainId, CoWTrade, GPv2SupportedChainId } from '@swapr/sdk'
+import { ChainId, CoWTrade } from '@swapr/sdk'
 
 import contractNetworks from '@cowprotocol/contracts/networks.json'
 import { useCallback, useEffect, useMemo } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 
 import { useActiveWeb3React } from '../../hooks'
+import { GPV2ContractChainId } from '../../pages/Swap/LimitOrderBox/api/cow'
 import { retry, RetryableError, RetryOptions } from '../../utils/retry'
 import { updateBlockNumber } from '../application/actions'
 import { useAddPopup, useBlockNumber } from '../application/hooks'
@@ -115,10 +116,10 @@ export default function Updater(): null {
 
               // The settlement contract from COW
               const GPv2Settlement = contractNetworks.GPv2Settlement as Record<
-                GPv2SupportedChainId,
+                GPV2ContractChainId,
                 Record<'transactionHash' | 'address', string>
               >
-              const contractAddress = GPv2Settlement[chainId]?.address
+              const contractAddress = GPv2Settlement[chainId as unknown as GPV2ContractChainId]?.address
 
               dispatch(
                 finalizeTransaction({
