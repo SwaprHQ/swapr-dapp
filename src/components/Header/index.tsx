@@ -1,3 +1,5 @@
+import { ChainId } from '@swapr/sdk'
+
 import { useEffect, useState } from 'react'
 import { ChevronUp } from 'react-feather'
 import { useTranslation } from 'react-i18next'
@@ -6,6 +8,7 @@ import { Flex, Text } from 'rebass'
 import styled from 'styled-components'
 
 import { ReactComponent as GasInfoSvg } from '../../assets/images/gas-info.svg'
+import ShutterLogo from '../../assets/images/shutter-logo.svg'
 import { LIQUIDITY_V3_INFO_POOLS_LINK, STACKLY_URL } from '../../constants'
 import { useActiveWeb3React, useUnsupportedChainIdError } from '../../hooks'
 import { useGasInfo } from '../../hooks/useGasInfo'
@@ -13,8 +16,11 @@ import { ApplicationModal } from '../../state/application/actions'
 import { useModalOpen } from '../../state/application/hooks'
 import { useDarkModeManager, useUpdateSelectedChartOption } from '../../state/user/hooks'
 import { ChartOption } from '../../state/user/reducer'
+import { CloseIcon } from '../../theme'
 import { breakpoints } from '../../utils/theme'
+import { ButtonPrimary } from '../Button'
 import { UnsupportedNetworkPopover } from '../NetworkUnsupportedPopover'
+import QuestionHelper from '../QuestionHelper'
 import Row, { RowFixed, RowFlat } from '../Row'
 import { Settings } from '../Settings'
 import { SwaprVersionLogo } from '../SwaprVersionLogo'
@@ -37,6 +43,33 @@ const HeaderFrame = styled.div`
     position: relative;
   `};
   height: 100px;
+`
+
+const ShutterButton = styled(ButtonPrimary)`
+  align-items: center;
+  display: flex;
+  font-size: 10px;
+  justify-content: space-between;
+  height: 22px;
+  margin-right: 8px;
+  max-width: 235px;
+  padding: 0px 8px 0px 16px;
+  text-transform: none !important;
+
+  .shutter-button-content-wrapper {
+    align-items: center;
+    display: flex;
+    gap: 4px;
+  }
+
+  img {
+    height: 12px;
+    width: 12px;
+  }
+
+  svg {
+    stroke: white;
+  }
 `
 
 const HeaderControls = styled.div<{ isConnected: boolean }>`
@@ -205,19 +238,28 @@ const NewBadge = styled.p`
   margin-left: 10px;
 `
 
-function Header() {
-  const { account, chainId } = useActiveWeb3React()
+const SHUTTER_HELP_TEXT =
+  'Shutter protects you against malicious MEV and provides censorship resistance. Transactions with this RPC are encrypted before going into the public mempool and are kept encrypted until the order is finalized.'
 
-  const { t } = useTranslation('common')
+function Header() {
   const [isGasInfoOpen, setIsGasInfoOpen] = useState(false)
-  const { gas } = useGasInfo()
+  const [showShutterButton, setShowShutterButton] = useState(true)
+  const { account, chainId } = useActiveWeb3React()
   const [isDark] = useDarkModeManager()
+  const { gas } = useGasInfo()
+  const { t } = useTranslation('common')
 
   /*  Expeditions hidden by SWA-27 request
    * const toggleExpeditionsPopup = useToggleShowExpeditionsPopup()
    */
   const isUnsupportedNetworkModal = useModalOpen(ApplicationModal.UNSUPPORTED_NETWORK)
   const isUnsupportedChainIdError = useUnsupportedChainIdError()
+
+  const handleShutterCloseClick = (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+    event.preventDefault()
+    event.stopPropagation()
+    setShowShutterButton(false)
+  }
 
   const onScrollHander = () => {
     const headerControls = document.getElementById('header-controls')
@@ -241,6 +283,35 @@ function Header() {
   const [selectedChartTab] = useUpdateSelectedChartOption()
 
   const swapRoute = selectedChartTab === ChartOption.PRO ? '/swap/pro' : '/swap'
+
+  async function changeOrAddNetwork() {
+    const chainId = '0x64'
+    if (window.ethereum && window.ethereum.request) {
+      try {
+        const chainParams = {
+          chainId: chainId,
+          rpcUrls: ['https://erpc.gnosis.shutter.network'],
+          chainName: 'Shutterized Gnosis Chain',
+          nativeCurrency: {
+            name: 'xDai',
+            symbol: 'xDAI',
+            decimals: 18,
+          },
+          blockExplorerUrls: ['https://www.gnosisscan.com'],
+        }
+
+        await window.ethereum.request({
+          method: 'wallet_addEthereumChain',
+          params: [chainParams],
+        })
+        console.log('Network added and switched to:', chainParams.chainName)
+      } catch (addError) {
+        console.error('Failed to add the network:', addError)
+      }
+    } else {
+      console.error('MetaMask is not installed!')
+    }
+  }
 
   return (
     <HeaderFrame>
@@ -278,6 +349,9 @@ function Header() {
               <path d="M224,104a8,8,0,0,1-16,0V59.32l-66.33,66.34a8,8,0,0,1-11.32-11.32L196.68,48H152a8,8,0,0,1,0-16h64a8,8,0,0,1,8,8Zm-40,24a8,8,0,0,0-8,8v72H48V80h72a8,8,0,0,0,0-16H48A16,16,0,0,0,32,80V208a16,16,0,0,0,16,16H176a16,16,0,0,0,16-16V136A8,8,0,0,0,184,128Z"></path>
             </svg>
           </div>
+          <HeaderLink data-testid="pools-nav-link" id="pools-nav-link" to="/pools">
+            {t('Pools V2')}
+          </HeaderLink>
           <div style={{ display: 'flex', alignItems: 'center' }}>
             <HeaderLink id="stackly-nav-link" href={STACKLY_URL}>
               {t('DCA')}
@@ -316,13 +390,22 @@ function Header() {
           <Settings />
         </HeaderSubRow>
 
-        <Flex maxHeight={'22px'} justifyContent={'end'}>
+        <Flex maxHeight="22px" justifyContent="end" width="345px">
           {account && (
             <>
               {/* Expeditions hidden by SWA-27 request */}
               {/* <HeaderButton onClick={toggleExpeditionsPopup} style={{ marginRight: '7px' }}>
                 &#10024;&nbsp;Expeditions
               </HeaderButton> */}
+              {chainId === ChainId.GNOSIS && showShutterButton && (
+                <ShutterButton onClick={changeOrAddNetwork}>
+                  <div className="shutter-button-content-wrapper">
+                    Add <img src={ShutterLogo} alt="Shutter RPC connector" /> Shutter Gnosis RPC{' '}
+                    <QuestionHelper iconWrapperWidth="auto" size={14} text={SHUTTER_HELP_TEXT} />
+                  </div>
+                  <CloseIcon onClick={handleShutterCloseClick} size={14} />
+                </ShutterButton>
+              )}
               <Balances />
             </>
           )}
@@ -370,7 +453,9 @@ function Header() {
               ↗
             </Text>
           </HeaderMobileLink>
-
+          <HeaderMobileLink id="pools-nav-link-mobile" to="/pools">
+            {t('Pools V2')}
+          </HeaderMobileLink>
           <HeaderMobileLink id="stackly-nav-link" href={STACKLY_URL}>
             {t('DCA')}
             <Text ml="4px" fontSize="11px">

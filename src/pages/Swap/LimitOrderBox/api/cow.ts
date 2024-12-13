@@ -1,5 +1,5 @@
 import type { Signer } from '@ethersproject/abstract-signer'
-import { ChainId, CoWTrade, GPv2SupportedChainId, JSBI } from '@swapr/sdk'
+import { CoWTrade, JSBI } from '@swapr/sdk'
 
 import contractNetworks from '@cowprotocol/contracts/networks.json'
 import { OrderKind as CoWOrderKind } from '@cowprotocol/cow-sdk'
@@ -171,9 +171,14 @@ export async function createCoWLimitOrder({ order, signer, chainId }: GetLimitOr
  * @param chainId The chain Id
  * @returns The vault relayer address
  */
-export function getVaultRelayerAddress(chainId: ChainId) {
+export type GPV2ContractChainId = keyof typeof contractNetworks.GPv2VaultRelayer
+export function getVaultRelayerAddress(chainId: GPV2ContractChainId) {
+  const gpv2RelayerChainIds = Object.keys(JSON.parse(JSON.stringify(contractNetworks.GPv2VaultRelayer)))
+
+  if (!chainId || !gpv2RelayerChainIds.includes(chainId.toString())) return undefined
+
   const GPv2VaultRelayer = contractNetworks.GPv2VaultRelayer as Record<
-    GPv2SupportedChainId,
+    GPV2ContractChainId,
     Record<'transactionHash' | 'address', string>
   >
 

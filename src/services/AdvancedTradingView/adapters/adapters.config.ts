@@ -12,15 +12,17 @@ import {
   UniswapV3SwapsBurnsAndMints,
 } from './uniswapV3/uniswapV3.types'
 
+const SUBGRAPH_API_KEY = '5f28b2eb91e916650da7ffe9bd228774'
+
 export const adapters: Adapters<AppState> = {
   swapr: new BaseAdapter<AppState, PairSwapsBurnsAndMints, PairSwaps, PairBurnsAndMints>({
     key: AdapterKey.SWAPR,
     adapterSupportedChains: [ChainId.MAINNET, ChainId.ARBITRUM_ONE, ChainId.GNOSIS],
     platform: UniswapV2RoutablePlatform.SWAPR,
     subgraphUrls: {
-      [ChainId.MAINNET]: 'https://api.thegraph.com/subgraphs/name/dxgraphs/swapr-mainnet-v2',
-      [ChainId.ARBITRUM_ONE]: 'https://api.thegraph.com/subgraphs/name/dxgraphs/swapr-arbitrum-one-v3',
-      [ChainId.GNOSIS]: 'https://api.thegraph.com/subgraphs/name/dxgraphs/swapr-xdai-v2',
+      [ChainId.MAINNET]: `https://gateway-arbitrum.network.thegraph.com/api/${SUBGRAPH_API_KEY}/subgraphs/id/DQApa5vhVyx1sajkrF8zEFmLJTYyyMyw8WdiYt5hw9Fn`,
+      [ChainId.ARBITRUM_ONE]: `https://gateway-arbitrum.network.thegraph.com/api/${SUBGRAPH_API_KEY}/subgraphs/id/H2EYoeTL5qDNeUeFecReCBvEq6BPCx4EnEDoAv7UTyL5`,
+      [ChainId.GNOSIS]: `https://gateway-arbitrum.network.thegraph.com/api/${SUBGRAPH_API_KEY}/subgraphs/id/EWoa3JwNntAWtaLsLixTU25smp4R5tzGvs9rFXx9NHKZ`,
       [ChainId.POLYGON]: '',
       [ChainId.OPTIMISM_MAINNET]: '',
     },

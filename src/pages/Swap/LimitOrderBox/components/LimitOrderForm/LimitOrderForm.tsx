@@ -22,7 +22,7 @@ import { Field } from '../../../../../state/swap/types'
 import { useCurrencyBalances } from '../../../../../state/wallet/hooks'
 import { maxAmountSpend } from '../../../../../utils/maxAmountSpend'
 import AppBody from '../../../../AppBody'
-import { createCoWLimitOrder, getQuote, getVaultRelayerAddress } from '../../api/cow'
+import { createCoWLimitOrder, getQuote, getVaultRelayerAddress, GPV2ContractChainId } from '../../api/cow'
 import { BUY_LIMIT_PRICE_PERCENTAGE, GET_QUOTE_EXPIRY_MINUTES, SELL_LIMIT_PRICE_PERCENTAGE } from '../../constants'
 import { LimitOrderFormContext } from '../../contexts/LimitOrderFormContext'
 import { InputFocus, LimitOrderKind, MarketPrices, OrderExpiresInUnit } from '../../interfaces'
@@ -96,7 +96,7 @@ export function LimitOrderForm({ account, provider, chainId }: LimitOrderFormPro
 
   const [tokenInApproval, tokenInApprovalCallback] = useApproveCallback(
     sellTokenAmount,
-    getVaultRelayerAddress(chainId)
+    getVaultRelayerAddress(chainId as unknown as GPV2ContractChainId)
   )
 
   const onModalDismiss = () => {
